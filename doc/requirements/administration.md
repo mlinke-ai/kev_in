@@ -12,8 +12,8 @@
 | Originator | data protection officer |
 | Fit Criterion | federal data protection officer approves the design |
 | Customer Satisfaction | 1 |
-| Customer Dissatisfaction | 8 |
-| Priority | 8 |
+| Customer Dissatisfaction | 3 |
+| Priority | 3 |
 | Dependencies | General Data Protection Regulation |
 | Conflicts | 2 |
 | Support Materials |  |
@@ -28,9 +28,9 @@
 | Rationale | the customer wishes it |
 | Originator | customer |
 | Fit Criterion | the customer has no further requirements |
-| Customer Satisfaction | 16 |
-| Customer Dissatisfaction | 16 |
-| Priority | 16 |
+| Customer Satisfaction | 5 |
+| Customer Dissatisfaction | 5 |
+| Priority | 5 |
 | Dependencies |  |
 | Conflicts | 1 |
 | Support Materials | user story |
@@ -45,9 +45,9 @@
 | Rationale | the customer wishes it |
 | Originator | customer |
 | Fit Criterion | the customer has no further requirements |
-| Customer Satisfaction | 16 |
-| Customer Dissatisfaction | 16 |
-| Priority | 8 |
+| Customer Satisfaction | 5 |
+| Customer Dissatisfaction | 5 |
+| Priority | 3 |
 | Dependencies |  |
 | Conflicts |  |
 | Support Materials | user story |
@@ -64,9 +64,9 @@
 | Rationale | the customer wishes it |
 | Originator | all administrators of the system |
 | Fit Criterion | an administrator shall perform a task in less then 15 minutes after reading the user manuell |
-| Customer Satisfaction | 4 |
-| Customer Dissatisfaction | 8 |
-| Priority | 2 |
+| Customer Satisfaction | 3 |
+| Customer Dissatisfaction | 4 |
+| Priority | 1 |
 | Dependencies |  |
 | Conflicts |  |
 | Support Materials |  |
@@ -81,9 +81,9 @@
 | Rationale | the customer wishes it |
 | Originator | all administrators of the system |
 | Fit Criterion | the administration system returns results after a maximum of one second |
-| Customer Satisfaction | 4 |
-| Customer Dissatisfaction | 8 |
-| Priority | 2 |
+| Customer Satisfaction | 3 |
+| Customer Dissatisfaction | 4 |
+| Priority | 1 |
 | Dependencies |  |
 | Conflicts |  |
 | Support Materials |  |
