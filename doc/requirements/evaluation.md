@@ -28,8 +28,8 @@
 | Rationale | learning progress is evident |
 | Originator | customer |
 | Fit Criterion | validation with test data |
-| Customer Satisfaction | 3 |
-| Customer Dissatisfaction | 5 |
+| Customer Satisfaction | 2 |
+| Customer Dissatisfaction | 4 |
 | Priority | 2 |
 | Dependencies |  |
 | Conflicts |  |
@@ -46,7 +46,7 @@
 | Originator | customer |
 | Fit Criterion | validation with wrong solutions |
 | Customer Satisfaction | 5 |
-| Customer Dissatisfaction | 2 |
+| Customer Dissatisfaction | 4 |
 | Priority | 3 |
 | Dependencies |  |
 | Conflicts |  |
