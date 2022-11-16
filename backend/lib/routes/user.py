@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from flask_restful import Resource, reqparse
-from lib.interfaces.database import UserModel, db_engine
 from flask_sqlalchemy.query import sqlalchemy
+from lib.interfaces.database import UserModel, db_engine
 
 
 class UserResource(Resource):

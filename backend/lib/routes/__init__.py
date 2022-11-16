@@ -2,6 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from .course import *
-from .login import *
 from .exercise import *
+from .login import *
 from .user import *

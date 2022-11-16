@@ -9,8 +9,7 @@ from flask import Flask
 from flask_restful import Api
 from lib.core import config, errors
 from lib.interfaces import db_engine
-from lib.routes import Course, Login, Exercise, UserResource
-
+from lib.routes import Course, Exercise, Login, UserResource
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
