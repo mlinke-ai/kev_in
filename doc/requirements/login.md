@@ -4,26 +4,26 @@
 
 | Field | Value |
 |---|---|
-| Requirement # |  |
-| Requirement Type | functional requirement (9) |
-| Event/BUC/PUC # | login system |
+| Requirement # | 1.1 |
+| Requirement Type | functional |
+| Event/BUC/PUC # | login |
 | Description | button press triggers the login process |
 | Rationale | pressing the login button starts the login process |
-| Originator | user, customer, admin |
+| Originator | user, customer, administrator |
 | Fit Criterion | shibboleth system prompts for user credentials |
 | Customer Satisfaction | 5 |
 | Customer Dissatisfaction | 5 |
 | Priority | 5 |
-| Dependencies | shibboleth documentation |
+| Dependencies |  |
 | Conflicts |  |
-| Support Materials |  |
+| Support Materials | shibboleth documentation |
 | History | created 09.11.2022 |
 
 | Field | Value |
 |---|---|
-| Requirement # |  |
-| Requirement Type | functional requirement (9) |
-| Event/BUC/PUC # | login system |
+| Requirement # | 1.2 |
+| Requirement Type | functional |
+| Event/BUC/PUC # | login |
 | Description | user has the option to change his/her password |
 | Rationale | when forgetting his/her password the user can request the system to send an e-mail to change the password |
 | Originator | user, administrator |
@@ -40,29 +40,29 @@
 
 | Field | Value |
 |---|---|
-| Requirement # |  |
-| Requirement Type | functional requirement (9) |
-| Event/BUC/PUC # | login system |
+| Requirement # | 1.3 |
+| Requirement Type | non-functional |
+| Event/BUC/PUC # | login |
 | Description | the front page has an intuitive design |
 | Rationale | lowering the hurdles for the user to start using the platform |
 | Originator | user |
-| Fit Criterion | a test group of users spots the login button in less than 3 seconds |
+| Fit Criterion | a test group of users spots the login button in less than 3 seconds on average |
 | Customer Satisfaction | 2 |
 | Customer Dissatisfaction | 3 |
 | Priority | 2 |
-| Dependencies | https://m3.material.io |
+| Dependencies |  |
 | Conflicts |  |
-| Support Materials |  |
+| Support Materials | https://m3.material.io |
 | History | created 09.11.2022 |
 
 | Field | Value |
 |---|---|
 | Requirement # |  |
-| Requirement Type | functional requirement (9) |
+| Requirement Type | non-functional |
 | Event/BUC/PUC # | login system |
 | Description | the front page has an appealing design |
 | Rationale | making a good first impression and don't annoy the users |
-| Originator | customer |
+| Originator | user, customer |
 | Fit Criterion | a test group of potential users considers creating a user account |
 | Customer Satisfaction | 2 |
 | Customer Dissatisfaction | 3 |
