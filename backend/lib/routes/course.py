@@ -4,5 +4,5 @@
 from flask_restful import Resource
 
 
-class Course(Resource):
+class CourseResource(Resource):
     pass

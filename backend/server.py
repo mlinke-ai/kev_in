@@ -1,45 +1,39 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import argparse
-import json
 import os
 
-from flask import Flask, send_from_directory
+from flask import Flask, Response, send_from_directory
 from flask_restful import Api
-from lib.core import config, errors
-from lib.interfaces import db_engine
-from lib.routes import Course, Exercise, Login, UserResource
+
+from backend.lib.core import config, errors
+from backend.lib.interfaces import db_engine
+from backend.lib.routes import (CourseResource, ExerciseResource,
+                                LoginResource, UserResource)
 
 
-def base():
-    return send_from_directory("../frontend/public", "index.html")
+class Server:
+    def __init__(self) -> None:
+        self.app = Flask(__name__)
+        self.app.add_url_rule("/", "base", self._base)
+        self.app.add_url_rule("/<path:path>", "assets", self._assets)
+        if os.environ.get("SQLALCHEMY_DATABASE_URI", None) == None:
+            self.app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
+        with self.app.app_context():
+            db_engine.init_app(self.app)
+            db_engine.create_all()
 
+        self.api = Api(self.app)
+        self.api.add_resource(CourseResource, "/course")
+        self.api.add_resource(ExerciseResource, "/exercise")
+        self.api.add_resource(LoginResource, "/login")
+        self.api.add_resource(UserResource, "/user")
 
-def assets(path):
-    return send_from_directory("../frontend/public", path)
+    def _base(self) -> Response:
+        return send_from_directory("../frontend/public", "index.html")
 
+    def _assets(self, path: str) -> Response:
+        return send_from_directory("../frontend/public", path)
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="Kev.in Backend Server", description="The backend server of Kev.in exposing a REST API."
-    )
-    parser.add_argument("-d", "--debug", action="store_true")
-    args = parser.parse_args()
-
-    app = Flask(__name__)
-    app.add_url_rule("/", "base", base)
-    app.add_url_rule("/<path:path>", "home", assets)
-    if os.environ.get("SQLALCHEMY_DATABASE_URI", None) == None:
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
-    with app.app_context():
-        db_engine.init_app(app)
-        db_engine.create_all()
-
-    api = Api(app)
-    api.add_resource(Course, "/course")
-    api.add_resource(Login, "/login")
-    api.add_resource(Exercise, "/exercise")
-    api.add_resource(UserResource, "/user")
-
-    app.run(debug=args.debug)
+    def run(self, debug: bool) -> None:
+        self.app.run(debug=debug)

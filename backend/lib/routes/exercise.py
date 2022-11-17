@@ -3,10 +3,11 @@
 
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
-from lib.interfaces.database import ExerciseModel, db_engine
+
+from backend.lib.interfaces.database import ExerciseModel, db_engine
 
 
-class Exercise(Resource):
+class ExerciseResource(Resource):
     def get(self) -> dict:
         """Implementation of the HTTP GET method. Use this method to query the system for exercises.
         TODO: add explanation of all request fields

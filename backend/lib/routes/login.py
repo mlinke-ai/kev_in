@@ -4,5 +4,5 @@
 from flask_restful import Resource
 
 
-class Login(Resource):
+class LoginResource(Resource):
     pass

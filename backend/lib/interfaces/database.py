@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import flask_sqlalchemy
-from lib.core import errors
+
+from backend.lib.core import errors
 
 db_engine = flask_sqlalchemy.SQLAlchemy()
 
