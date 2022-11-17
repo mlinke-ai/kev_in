@@ -5,11 +5,20 @@ import argparse
 import json
 import os
 
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_restful import Api
 from lib.core import config, errors
 from lib.interfaces import db_engine
 from lib.routes import Course, Exercise, Login, UserResource
+
+
+def base():
+    return send_from_directory("../frontend/public", "index.html")
+
+
+def assets(path):
+    return send_from_directory("../frontend/public", path)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -19,6 +28,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     app = Flask(__name__)
+    app.add_url_rule("/", "base", base)
+    app.add_url_rule("/<path:path>", "home", assets)
     if os.environ.get("SQLALCHEMY_DATABASE_URI", None) == None:
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
     with app.app_context():
