@@ -1,8 +1,10 @@
 ---
-Tags: #meeting #SoftwareEngineering 
-
-Date: 2022-11-16
-Time: 10:15
+tags:
+- meeting
+- Lab
+- SoftwareEngineering 
+date: 2022-11-16
+time: 10:15
 ---
 
 **Links:**  [[SE]]
