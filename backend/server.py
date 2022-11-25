@@ -8,8 +8,7 @@ from flask_restful import Api
 
 from backend.lib.core import config, errors
 from backend.lib.interfaces import db_engine
-from backend.lib.routes import (CourseResource, ExerciseResource,
-                                LoginResource, UserResource)
+from backend.lib.routes import CourseResource, ExerciseResource, LoginResource, UserResource
 
 
 class Server:
@@ -30,10 +29,10 @@ class Server:
         self.api.add_resource(UserResource, "/user")
 
     def _base(self) -> Response:
-        return send_from_directory("../frontend/public", "index.html")
+        return send_from_directory("../frontend/dist", "index.html")
 
     def _assets(self, path: str) -> Response:
-        return send_from_directory("../frontend/public", path)
+        return send_from_directory("../frontend/dist", path)
 
     def run(self, debug: bool) -> None:
         self.app.run(debug=debug)
