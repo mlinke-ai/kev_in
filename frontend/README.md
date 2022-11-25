@@ -32,7 +32,7 @@ git clone https://github.com/mlinke-ai/kev.in.git
 cd kev.in 
 
 # change to the dev-svelte-frontend branch
-git checkout remotes/origin/dev-svelte-frontend
+git checkout remotes/origin/dev-frontend
 
 # cd into frontend directory
 cd frontend
