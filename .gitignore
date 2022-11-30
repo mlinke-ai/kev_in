@@ -1,2 +1,7 @@
 notes.md
 tex
+node_modules
+dist
+instance
+__pycache__
+.vscode
