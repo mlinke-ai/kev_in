@@ -1,8 +1,7 @@
 <script>
     import NavbarLink from "./NavbarLink.svelte"
     import NavbarButton from "./NavbarButton.svelte"
-    import { navbarSettings } from "./config"
-    import { navbarSettingsAdmin } from "./config"
+    import { navbarConfig } from "./config"
     import { Link } from "svelte-routing"
 
     let loggedIn = false
@@ -17,11 +16,11 @@
     </div>
     <ul class="navbar-links">
         {#if admin}
-            {#each navbarSettingsAdmin.items as item}
+            {#each navbarConfig.admin.items as item}
                 <NavbarLink label={item.label} route={item.route} icon={item.icon} />
             {/each}
         {/if}
-        {#each navbarSettings.items as item}
+        {#each navbarConfig.default.items as item}
             <NavbarLink label={item.label} route={item.route} icon={item.icon} />
         {/each}
     </ul>

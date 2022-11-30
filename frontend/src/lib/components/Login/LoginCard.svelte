@@ -42,13 +42,13 @@
 
 <div class="login-card-container">
     <Card variant=outlined>
-        <TabBar tabs={['Kev.In Account', "Shibboleth"]} let:tab bind:active>
+        <TabBar tabs={["Kev.In Account", "University Login"]} let:tab bind:active>
             <Tab {tab}>
                 <TLabel>{tab}</TLabel>
             </Tab>
         </TabBar>   
         
-        {#if active == "Shibboleth"}
+        {#if active == "University Login"}
             <div class="idp-select-menu">
                 <Select style="width: 90%" bind:value label="Select ID Provider">
                     {#each idProviders as fruit}
