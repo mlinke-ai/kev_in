@@ -95,7 +95,7 @@ class UserResource(Resource):
             try:
                 # get the only element from the selection
                 row = selection.scalar_one()
-            except sqlalchemy.exec.NoResultFound:
+            except sqlalchemy.exc.NoResultFound:
                 # if there is no element the element could not be added
                 result = dict(message="An error occurred while creating the user")
             else:
