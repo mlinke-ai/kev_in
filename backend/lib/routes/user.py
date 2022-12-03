@@ -19,7 +19,7 @@
 
 from flask import Response, jsonify, make_response
 from flask_restful import Resource, reqparse
-from flask_sqlalchemy import sqlalchemy
+from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.interfaces.database import UserModel, db_engine
 from backend.lib.core import config
