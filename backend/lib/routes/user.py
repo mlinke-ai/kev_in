@@ -63,7 +63,7 @@ class UserResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("user_name", type=str, help="Name of the user is missing", required=True)
-        parser.add_argument("user_cred", type=str, help="Credentials of the user are missing", required=True)
+        parser.add_argument("user_pass", type=str, help="Credentials of the user are missing", required=True)
         # TODO: add more user properties
         args = parser.parse_args()
         # load the user table
@@ -80,7 +80,7 @@ class UserResource(Resource):
         if selection.scalar() == 0:
             # if the selection contains no elements it means we can safely create the new element
             # create a new element
-            user = UserModel(user_name=args["user_name"], user_cred=args["user_cred"])
+            user = UserModel(user_name=args["user_name"], user_pass=args["user_pass"])
             # add the new element
             db_engine.session.add(user)
             # compose a query to check wether the new element was added successfully

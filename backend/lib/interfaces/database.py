@@ -12,7 +12,7 @@ class UserModel(db_engine.Model):
     # __tablename__ = "users"
     user_id = db_engine.Column(db_engine.Integer, primary_key=True)
     user_name = db_engine.Column(db_engine.String(100))
-    user_cred = db_engine.Column(db_engine.String(32))
+    user_pass = db_engine.Column(db_engine.String(64))
 
 
 class ExerciseModel(db_engine.Model):
