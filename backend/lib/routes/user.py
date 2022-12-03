@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from flask import Response, jsonify, make_response
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -25,7 +26,7 @@ from backend.lib.core import config
 
 
 class UserResource(Resource):
-    def get(self) -> dict:
+    def get(self) -> Response:
         """Implementation of the HTTP GET method. Use this method to query the system for users.
         TODO: add explanation o fall request fields.
 
@@ -46,13 +47,13 @@ class UserResource(Resource):
             query = query.where(user_table.c.user_id == args["user_id"])
         if args["user_name"]:
             query = query.where(user_table.c.user_name == args["user_name"])
-        result = dict()
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
+        result = dict()
         for row in selection.fetchall():
             result[row[0]] = dict(user_id=row[0], user_name=row[1])
-        return result
+        return make_response((jsonify(result)), 200)
 
     def post(self) -> dict:
         """Implementation of the HTTP POST method. Use this method to create a new user. This method prevents duplication.
