@@ -16,3 +16,7 @@ nav:
 plugins:
   - search
   - mkdocstrings
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
