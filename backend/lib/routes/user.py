@@ -21,6 +21,7 @@ from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.interfaces.database import UserModel, db_engine
+from backend.lib.core import config
 
 
 class UserResource(Resource):
@@ -38,7 +39,7 @@ class UserResource(Resource):
         # TODO: add more user properties
         args = parser.parse_args()
         # load the user table
-        user_table = sqlalchemy.Table("user_model", db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = db_engine.select(user_table).select_from(user_table)
         if args["user_id"]:
@@ -67,7 +68,7 @@ class UserResource(Resource):
         # TODO: add more user properties
         args = parser.parse_args()
         # load the user table
-        user_table = sqlalchemy.Table("user_model", db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose the query
         query = (
             db_engine.select([sqlalchemy.func.count()])
@@ -122,7 +123,7 @@ class UserResource(Resource):
         # TODO: add more user properties
         args = parser.parse_args()
         # load the user table
-        user_table = sqlalchemy.Table("user_model", db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # drop the ID as we don't want to update it
         values = args.copy()
         del values["user_id"]
@@ -148,7 +149,7 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing")
         args = parser.parse_args()
         # load the user table
-        user_table = sqlalchemy.Table("user_model", db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose the query to delete the requested element
         query = db_engine.delete(user_table).where(user_table.c.user_id == args["user_id"])
         if args["user_name"]:

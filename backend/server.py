@@ -37,7 +37,7 @@ class Server:
         return send_from_directory("../frontend/dist", path)
 
     def _sadmin_check(self) -> None:
-        user_table = sqlalchemy.Table("user_model", db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == config.SADMIN_NAME)
         selection = db_engine.session.execute(query)
         try:

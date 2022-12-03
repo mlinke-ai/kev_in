@@ -5,6 +5,7 @@ from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.interfaces.database import ExerciseModel, db_engine
+from backend.lib.core import config
 
 
 class ExerciseResource(Resource):
@@ -21,7 +22,7 @@ class ExerciseResource(Resource):
         # TODO: add more exercise properties
         args = parser.parse_args()
         # load the exercise table
-        exercise_table = sqlalchemy.Table("exercise_model", db_engine.metadata, autoload=True)
+        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = db_engine.select(exercise_table).select_from(exercise_table)
         if args["exercise_id"]:
@@ -47,7 +48,7 @@ class ExerciseResource(Resource):
         # TODO: add more exercise properties
         args = parser.parse_args()
         # load the exercise table
-        exercise_table = sqlalchemy.Table("exercise_model", db_engine.metadata, autoload=True)
+        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         # compose the query
         query = db_engine.select([sqlalchemy.func.count()]).select_from(exercise_table)
         if args["exercise_title"]:
@@ -104,7 +105,7 @@ class ExerciseResource(Resource):
         # TODO: add more exercise properties
         args = parser.parse_args()
         # load the exercise table
-        exercise_table = sqlalchemy.Table("exercise_model", db_engine.metadata, autoload=True)
+        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         # drop the ID as we don't want to update it
         values = args.copy()
         del values["exercise_id"]
@@ -132,7 +133,7 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
         args = parser.parse_args()
         # load the exercise table
-        exercise_table = sqlalchemy.Table("exercise_model", db_engine.metadata, autoload=True)
+        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         # compose the query to delete the requested element
         query = db_engine.delete(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"])
         if args["exercise_title"]:
