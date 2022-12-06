@@ -28,6 +28,10 @@ class LoginResource(Resource):
             "user_pass": "9f5ba68f21489544d985797d58847b65e9a22c4981aeccafc96b351e84df254c"
         }
 
+        Arguments:
+            user_name: account name of the user (required)
+            user_pass: SHA256-hash of account passwort (required)
+
         Returns:
             HTTP-Response as JSON with an JWT token. (on success) 
             HTTP-Response as JSON with an error message. (on fail)
