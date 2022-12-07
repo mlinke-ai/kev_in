@@ -44,13 +44,6 @@
 
 | Attribute | Value |
 |---|---|
-| Class name | AbstractExercise |
-| Superclass |  |
-| Responsibilities |  |
-| Collaborators |  |
-
-| Attribute | Value |
-|---|---|
 | Class name | GapTextExercise |
 | Superclass | AbstractExercise |
 | Responsibilities |  |
