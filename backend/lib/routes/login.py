@@ -62,4 +62,4 @@ class LoginResource(Resource):
             token = jwt.encode({"user_id": user[0]}, config.JWT_KEY)
             result = dict(token=token)
 
-        return make_response(jsonify(result))
+        return make_response(jsonify(result), 200)
