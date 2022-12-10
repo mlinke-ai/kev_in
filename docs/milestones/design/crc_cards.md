@@ -5,14 +5,14 @@
 | Class name | Database |
 | Superclass |  |
 | Responsibilities | create, read, update, delete exercise data; create, read, update, delete user data |
-| Collaborators | AbstractExercise; User |
+| Collaborators | AbstractExercise; AbstractUser |
 
 | Attribute | Value |
 |---|---|
 | Class name | Server |
 | Superclass |  |
 | Responsibilities | serve webpages and related files; provide API interface; translate API requests into SQL queries |
-| Collaborators | Database |
+| Collaborators | Database; AbstractUser; AbstractExercise |
 
 | Attribute | Value |
 |---|---|
@@ -96,28 +96,21 @@
 | Class name | ExerciseTracker |
 | Superclass |  |
 | Responsibilities | track solving time |
-| Collaborators | Exercise |
+| Collaborators | AbstractExercise |
 
 | Attribute | Value |
 |---|---|
-| Class name | AbstractEvaluator |
+| Class name | ExerciseEvaluator |
 | Superclass |  |
 | Responsibilities | evaluate solution; store solution attempt and solving time |
-| Collaborators | AbstractExercise; ExerciseTracker; Database; Administrator |
+| Collaborators | SourceCodeEvaluator; AbstractExercise; ExerciseTracker; Database; Administrator |
 
 | Attribute | Value |
 |---|---|
 | Class name | SourceCodeEvaluator |
-| Superclass | AbstractEvaluator |
-| Responsibilities | parse user code; execute user code in sandbox |
-| Collaborators | CodeSandbox |
-
-| Attribute | Value |
-|---|---|
-| Class name | CodeSandbox |
 | Superclass |  |
-| Responsibilities | encapsulate user code |
-| Collaborators |  |
+| Responsibilities | parse user code; execute user code in sandbox |
+| Collaborators | ExerciseEvaluator; AbstractExercise; ExerciseTracker; Database; Administrator |
 
 | Attribute | Value |
 |---|---|
@@ -138,7 +131,7 @@
 | Class name | HomePage |
 | Superclass |  |
 | Responsibilities | provide login |
-| Collaborators | User; LoginArea |
+| Collaborators | AbstractUser; LoginArea |
 
 | Attribute | Value |
 |---|---|
