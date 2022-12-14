@@ -20,14 +20,18 @@
     "vite": "^3.2.3"
   },
   "dependencies": {
+    "@mdi/js": "^7.0.96",
     "@smui-extra/badge": "^7.0.0-beta.0",
     "@smui/button": "^7.0.0-beta.0",
     "@smui/card": "^7.0.0-beta.0",
+    "@smui/common": "^7.0.0-beta.0",
     "@smui/icon-button": "^7.0.0-beta.0",
+    "@smui/ripple": "^7.0.0-beta.0",
     "@smui/select": "^7.0.0-beta.0",
     "@smui/tab": "^7.0.0-beta.0",
     "@smui/tab-bar": "^7.0.0-beta.0",
     "@smui/textfield": "^7.0.0-beta.0",
+    "@smui/top-app-bar": "^7.0.0-beta.0",
     "smui-theme": "^7.0.0-beta.0",
     "svelte-routing": "^1.6.0"
   }

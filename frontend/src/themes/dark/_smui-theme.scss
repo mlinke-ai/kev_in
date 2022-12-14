@@ -19,8 +19,6 @@ body {
 }
 
 a {
-  color: #40b3ff;
-}
-a:visited {
-  color: color.scale(#40b3ff, $lightness: -35%);
+  color: #dddddd;
+  text-decoration: none;
 }
