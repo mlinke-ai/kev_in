@@ -1,0 +1,22 @@
+site_name: Kev.in
+repo_url: https://github.com/mlinke-ai/kev.in
+theme:
+  name: material
+nav:
+  - Home: "index.md"
+  - Installation: "installation.md"
+  - Manuals:
+      - Users: "manuals/users.md"
+      - Administrators: "manuals/administrators.md"
+  - API:
+      - User: "api/user.md"
+      - Exercise: "api/exercise.md"
+      - Login: "api/login.md"
+  - License: "license.md"
+plugins:
+  - search
+  - mkdocstrings
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences

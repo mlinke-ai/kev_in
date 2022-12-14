@@ -1,15 +1,26 @@
 <script>
     import { Router, Route } from "svelte-routing"
-    import Demo from "./routes/demo.svelte"
     import Error from "./routes/error.svelte"
+  import Navbar from "./lib/components/Navbar/Navbar.svelte";
+  import Login from "./routes/login.svelte";
+  import Home from "./routes/home.svelte";
 
-    let url=""
+  let url = "";
 </script>
 
-<Router url="{url}">
-    <main>
-      <!--<Route path="/example" component={Example} />-->
-      <Route path="/error" component={Error} />
-      <Route path="/"><Demo /></Route>
-    </main>
+<Router {url}>
+  <Navbar />
+  <main>
+    <Route path="/auth" component={Login} />
+    <!--<Route path="/example" component="{Example}" />-->
+    <Route path="/"><Home /></Route>
+    <Route path="/error" component={Error} />
+  </main>
 </Router>
+
+<style>
+  main {
+    margin-top: 5rem;
+  }
+</style>
+
