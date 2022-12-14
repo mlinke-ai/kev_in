@@ -11,10 +11,11 @@ def main():
         prog="Kev.in Management Script", description="The control script to manage the server."
     )
     parser.add_argument("-d", "--debug", action="store_true")
+    parser.add_argument("--host", action="store_true")
     args = parser.parse_args()
 
     server = Server()
-    server.run(args.debug)
+    server.run(args.debug, args.host)
 
 
 if __name__ == "__main__":
