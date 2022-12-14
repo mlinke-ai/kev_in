@@ -29,7 +29,7 @@
             <NavbarButton label="Profile" route="/profile" variant="unelevated" />
         {:else}
             <NavbarButton label="Register" route="/register" variant="outlined" />
-            <NavbarButton label="Login" route="/login" variant="unelevated" />
+            <NavbarButton label="Login" route="/auth" variant="unelevated" />
         {/if}
     </div>
 </nav>
