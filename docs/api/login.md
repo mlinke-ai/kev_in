@@ -46,7 +46,7 @@ Replace `<address>` and `<port>` with your respective setup.
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `user_name` | `string` | required | `John Doe` | The name of the user. |
-| `user_pass` | `string` | required | `b94d27b9934d3e08a...` | The SHA256 hash of the user password as defined in FIPS 180-2. |
+| `user_pass` | `string` | required | `testPW` | The user password as defined in the registration of the user account. |
 
 Arguments are constructed as dictionaries or JSON objects.
 

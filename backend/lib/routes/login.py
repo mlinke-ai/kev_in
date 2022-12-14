@@ -5,6 +5,7 @@ from flask import Response, jsonify, make_response
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 import jwt
+import hashlib
 
 from backend.lib.interfaces.database import db_engine
 from backend.lib.core import config
@@ -25,12 +26,12 @@ class LoginResource(Resource):
 
         {
             "user_name": "sadmin",
-            "user_pass": "9f5ba68f21489544d985797d58847b65e9a22c4981aeccafc96b351e84df254c"
+            "user_pass": "sadmin"
         }
 
         Arguments:
             user_name: account name of the user (required)
-            user_pass: SHA256-hash of account passwort (required)
+            user_pass: account passwort (required)
 
         Returns:
             HTTP-Response as JSON with an JWT token. (on success) 
@@ -42,6 +43,8 @@ class LoginResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing.", required=True)
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing.", required=True)
         args = parser.parse_args()
+        #hash the password with sha-256
+        args["user_pass"] = hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest()
         # load the user table
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
@@ -58,6 +61,7 @@ class LoginResource(Resource):
             user = selection.one()
         except sqlalchemy.exc.NoResultFound as e:
             result = dict(message="Incorrect user name or password")
+            return make_response(jsonify(result), 401)
         else:
             token = jwt.encode({"user_id": user[0]}, config.JWT_KEY)
             result = dict(token=token)
