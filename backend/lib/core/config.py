@@ -6,3 +6,5 @@ SADMIN_PASS = "sadmin"
 
 USER_TABLE = "users"
 EXERCISE_TABLE = "exercises"
+
+JWT_KEY = "9457645763984570345"
