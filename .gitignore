@@ -1,6 +1,8 @@
-notes.md
 __pycache__
 instance
-tex
 .svelte-kit
 .vscode
+tex
+notes.md
+instance
+node_modules
