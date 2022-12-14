@@ -1,6 +1,6 @@
 <script>
     import { Router, Route } from "svelte-routing"
-    import Demo from "./routes/demo.svelte"
+    import Login from "./routes/login.svelte";
     import Home from "./routes/home.svelte"
 
     let url=""
@@ -8,8 +8,8 @@
 
 <Router url="{url}">
     <main>
+     <Route path="/auth" component="{Login}" />
       <!--<Route path="/example" component="{Example}" />-->
-      <Route path="/"><Demo /></Route>
-      <Route path="/home"><Home></Home></Route>
+      <Route path="/"><Home /></Route>
     </main>
 </Router>
