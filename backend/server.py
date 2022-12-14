@@ -55,5 +55,5 @@ class Server:
         else:
             print("exactly one sadmin")
 
-    def run(self, debug: bool) -> None:
-        self.app.run(debug=debug)
+    def run(self, debug: bool, host: bool) -> None:
+        self.app.run(debug=debug, host="0.0.0.0" if host else "127.0.0.1")
