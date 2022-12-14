@@ -1,13 +1,12 @@
 <script>
     import { Router, Route } from "svelte-routing"
-    import Demo from "./routes/demo.svelte"
+    import Login from "./routes/login.svelte";
 
     let url=""
 </script>
 
 <Router url="{url}">
     <main>
-      <!--<Route path="/example" component="{Example}" />-->
-      <Route path="/"><Demo /></Route>
+     <Route path="/auth" component="{Login}" />
     </main>
 </Router>
