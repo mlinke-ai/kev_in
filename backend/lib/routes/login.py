@@ -63,7 +63,7 @@ class LoginResource(Resource):
             result = dict(message="Incorrect user name or password")
             return make_response(jsonify(result), 401)
         else:
-            token = jwt.encode({"user_id": user[0]}, config.JWT_KEY)
+            token = jwt.encode({"user_id": user[0]}, config.JWT_SECRET)
             result = dict(token=token)
 
         return make_response(jsonify(result), 200)

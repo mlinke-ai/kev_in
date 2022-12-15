@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import jwt
+
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -19,8 +21,12 @@ class ExerciseResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing")
+        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers")
         # TODO: add more exercise properties
         args = parser.parse_args()
+        #check if the client has access
+        if args["Authorization"] and args["exercise_id"]:
+            self._authorize(args["Authorization"], args["exercise_id"])
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
@@ -143,3 +149,11 @@ class ExerciseResource(Resource):
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
         return result
+
+    def _authorize(self, JWTKey, exerciseID):
+        """This method is used to determine if a certain client has the right to change or access data, based on the
+        HTTP request. Therefore the JWT is decoded. Therefor we need an relation in the database which defines which
+        user has access to which exercise"""
+        
+        userData = jwt.decode(JWTKey, config.JWT_SECRET)
+        print(userData)
