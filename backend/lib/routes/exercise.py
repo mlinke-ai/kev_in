@@ -150,10 +150,22 @@ class ExerciseResource(Resource):
         db_engine.session.commit()
         return result
 
-    def _authorize(self, JWTKey, exerciseID):
+    def _authorize(self, authHeaderVal: str, exerciseID:int):
         """This method is used to determine if a certain client has the right to change or access data, based on the
         HTTP request. Therefore the JWT is decoded. Therefor we need an relation in the database which defines which
         user has access to which exercise"""
         
-        userData = jwt.decode(JWTKey, config.JWT_SECRET)
+        #authHeaderVal should be 'Bearer <token>' like in the JWT standard
+        values = authHeaderVal.split(" ")
+        if values[0] != "Bearer":
+            return #wrong format
+        try:
+            JWT = values[1]
+        except IndexError:
+            return #wrong format
+        
+        #decode JWT to dict
+        userData = jwt.decode(JWT, config.JWT_SECRET, algorithms=["HS256"])
         print(userData)
+        print(userData["user_id"])
+        #now check in database if user has access to requested exercise
