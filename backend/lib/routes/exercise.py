@@ -21,6 +21,7 @@ class ExerciseResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing")
+        #watch for the JWT in the header
         parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers")
         # TODO: add more exercise properties
         args = parser.parse_args()
