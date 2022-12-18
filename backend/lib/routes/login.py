@@ -34,8 +34,8 @@ class LoginResource(Resource):
             user_pass: account passwort (required)
 
         Returns:
-            HTTP-Response as JSON with an JWT token. (on success) 
-            HTTP-Response as JSON with an error message. (on fail)
+            HTTP-Response as JSON with an JWT token. (on success) -> status 200
+            HTTP-Response as JSON with an error message. (on fail) -> status 401
         """
 
         # create a parser for the request data and parse the request
