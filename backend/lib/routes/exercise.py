@@ -20,7 +20,7 @@ class ExerciseResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing")
+        parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", location="args")
         #watch for the JWT in the header
         parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers")
         # TODO: add more exercise properties
@@ -39,7 +39,7 @@ class ExerciseResource(Resource):
         selection = db_engine.session.execute(query)
         # load the selection into the response data
         for row in selection.fetchall():
-            result[row[0]] = dict(exercise_id=row[0])
+            result[row[0]] = dict(exercise_id=row[0],exercise_title=row[1])
         return result
 
     def post(self) -> dict:
@@ -69,10 +69,11 @@ class ExerciseResource(Resource):
             exercise = ExerciseModel(exercise_title=args["exercise_title"])
             # add the new element
             db_engine.session.add(exercise)
+            db_engine.session.commit()
             # compose a query to check wether the new element was added successfully
             # TODO: query for last created element not based on given parameters
             query = (
-                db_engine.select([exercise_table.c.exercise_title])
+                db_engine.select([exercise_table.c.exercise_title, exercise_table.c.exercise_id])
                 .select_from(exercise_table)
                 .where(exercise_table.c.exercise_title == args["exercise_title"])
             )
@@ -80,13 +81,12 @@ class ExerciseResource(Resource):
             selection = db_engine.session.execute(query)
             try:
                 # get the only element from the selection
-                row = selection.scalar_one()
-            except sqlalchemy.exec.NoResultFound:
+                row = selection.fetchone()
+                print(row)
+            except sqlalchemy.exc.NoResultFound:
                 # if there is no element the element could not be added
                 result = dict(message="An error occurred while creating the exercise")
             else:
-                # if the element got added commit the changes
-                db_engine.session.commit()
                 result = dict(
                     message="The exercise was created successfully",
                     exercise_title=row.exercise_title,
@@ -118,7 +118,7 @@ class ExerciseResource(Resource):
         del values["exercise_id"]
         # compose the query to update the requested element
         query = (
-            db_engine.update(exercise_table).wehre(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
+            db_engine.update(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
         )
         result = dict()
         # execute the query (the selection is not needed)
