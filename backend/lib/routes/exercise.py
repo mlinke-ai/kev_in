@@ -13,7 +13,8 @@ from backend.lib.core import config
 
 class ExerciseResource(Resource):
     def get(self) -> Response:
-        """Implementation of the HTTP GET method. Use this method to query the system for exercises.
+        """
+        Implementation of the HTTP GET method. Use this method to query the system for exercises.
         TODO: add explanation of all request fields
 
         Returns:
@@ -23,16 +24,13 @@ class ExerciseResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", location="args")
         #watch for the JWT in the header
-        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers")
+        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers", required=True)
         # TODO: add more exercise properties
         args = parser.parse_args()
 
         #check if the client has access
-        if args["Authorization"]:
-            if not self._authorize(args["Authorization"]):
-                return make_response((jsonify(dict(message="No Access."))), 403)
-        else:
-            return make_response((jsonify(dict(message="Login required."))), 401)
+        if not self._authorize(args["Authorization"]):
+            return make_response((jsonify(dict(message="No Access"))), 403)
         
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
@@ -59,16 +57,13 @@ class ExerciseResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
         #watch for the JWT in the header
-        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers")
+        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers", required=True)
         # TODO: add more exercise properties
         args = parser.parse_args()
 
         #check if the client has access
-        if args["Authorization"]:
-            if not self._authorize(args["Authorization"]):
-                return make_response((jsonify(dict(message="No Access."))), 403)
-        else:
-            return make_response((jsonify(dict(message="Login required."))), 401)
+        if not self._authorize(args["Authorization"]):
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
@@ -116,7 +111,8 @@ class ExerciseResource(Resource):
         # return the new element (importend for the ID) or an error message
 
     def put(self) -> Response:
-        """Implementation of the HTTP PUT method. Use this method to change an exercise.
+        """
+        Implementation of the HTTP PUT method. Use this method to change an exercise.
         TODO: add explanation of all request fields
 
         Returns:
@@ -127,16 +123,13 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", required=True)
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
         #watch for the JWT in the header
-        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers")
+        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers", required=True)
         # TODO: add more exercise properties
         args = parser.parse_args()
 
         #check if the client has access
-        if args["Authorization"]:
-            if not self._authorize(args["Authorization"]):
-                return make_response((jsonify(dict(message="No Access."))), 403)
-        else:
-            return make_response((jsonify(dict(message="Login required."))), 401)
+        if not self._authorize(args["Authorization"]):
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
@@ -161,7 +154,8 @@ class ExerciseResource(Resource):
         return make_response((jsonify(result)), 200)
 
     def delete(self) -> Response:
-        """Implementation of the HTTP DELETE method. Use this method to delete an exercise.
+        """
+        Implementation of the HTTP DELETE method. Use this method to delete an exercise.
         TODO: add explanation of all request fields
 
         Returns:
@@ -173,14 +167,11 @@ class ExerciseResource(Resource):
         # TODO: do we really need any other argument besides the ID?
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
         #watch for the JWT in the header
-        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers")
+        parser.add_argument("Authorization", type=str, help="no JSON Web Token was sent", location="headers", required=True)
         args = parser.parse_args()
 
-        if args["Authorization"]:
-            if not self._authorize(args["Authorization"]):
-                return make_response((jsonify(dict(message="No Access."))), 403)
-        else:
-            return make_response((jsonify(dict(message="Login required."))), 401)
+        if not self._authorize(args["Authorization"]):
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)

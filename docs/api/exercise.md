@@ -73,15 +73,17 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 - If no token was sent:
     ```JSON
     {
-        "message": "Login required."
+        "message": {
+            "Authorization": "no JSON Web Token was sent"
+        }
     }
     ```
-    `HTTP status 401`
+    `HTTP status 400`
 
 - If an unauthorized client sends a request:
     ```JSON
     {
-        "message": "No Access."
+        "message": "No Access"
     }
     ```
     `HTTP status 403`
@@ -145,15 +147,17 @@ The response is a dictionary or JSON object, Together with HTTP status 201. All 
 - If no token was sent:
     ```JSON
     {
-        "message": "Login required."
+        "message": {
+            "Authorization": "no JSON Web Token was sent"
+        }
     }
     ```
-    `HTTP status 401`
+    `HTTP status 400`
 
 - If an unauthorized client sends a request:
     ```JSON
     {
-        "message": "No Access."
+        "message": "No Access"
     }
     ```
     `HTTP status 403`
@@ -232,15 +236,17 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 - If no token was sent:
     ```JSON
     {
-        "message": "Login required."
+        "message": {
+            "Authorization": "no JSON Web Token was sent"
+        }
     }
     ```
-    `HTTP status 401`
+    `HTTP status 400`
 
 - If an unauthorized client sends a request:
     ```JSON
     {
-        "message": "No Access."
+        "message": "No Access"
     }
     ```
     `HTTP status 403`
@@ -311,15 +317,17 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 - If no token was sent:
     ```JSON
     {
-        "message": "Login required."
+        "message": {
+            "Authorization": "no JSON Web Token was sent"
+        }
     }
     ```
-    `HTTP status 401`
+    `HTTP status 400`
 
 - If an unauthorized client sends a request:
     ```JSON
     {
-        "message": "No Access."
+        "message": "No Access"
     }
     ```
     `HTTP status 403`
