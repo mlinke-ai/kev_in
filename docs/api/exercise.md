@@ -116,7 +116,7 @@ fetch("http://<address>:<port>/exercise", {method: "POST", headers={"Content-Typ
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with the arguments listed below. (in curl in key value pairs "<key>": "<value>")
+Replace `<arguments>` with the arguments listed below. (in curl in key value pairs `"<key>": "<value>"`)
 Replace `<token>` with the JWT.
 
 ### Arguments
@@ -204,7 +204,7 @@ fetch("http://<address>:<port>/exercise", {method: "PUT", headers={"Content-Type
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with the arguments listed below. (in curl in key value pairs "<key>": "<value>")
+Replace `<arguments>` with the arguments listed below. (in curl in key value pairs `"<key>": "<value>"`)
 Replace `<token>` with the JWT.
 
 ### Arguments
@@ -283,7 +283,7 @@ fetch("http://<address>:<port>/exercise", {method: "DELETE", headers={"Content-T
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with the arguments listed below. (in curl in key value pairs "<key>": "<value>")
+Replace `<arguments>` with the arguments listed below. (in curl in key value pairs `"<key>": "<value>"`)
 Replace `<token>` with the JWT.
 
 ### Arguments
