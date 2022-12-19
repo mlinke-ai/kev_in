@@ -35,8 +35,9 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, help="ID of the user is missing")
-        parser.add_argument("user_name", type=str, help="Name of the user is missing")
+        #in get requests the location of the data is in the arguments
+        parser.add_argument("user_id", type=int, help="ID of the user is missing", location="args")
+        parser.add_argument("user_name", type=str, help="Name of the user is missing", location="args")
         # TODO: add more user properties
         args = parser.parse_args()
         # load the user table
@@ -85,6 +86,7 @@ class UserResource(Resource):
             user = UserModel(user_name=args["user_name"], user_pass=args["user_pass"])
             # add the new element
             db_engine.session.add(user)
+            db_engine.session.commit()
             # compose a query to check wether the new element was added successfully
             # TODO: query for last created element not based on given parameters
             query = (
@@ -96,13 +98,11 @@ class UserResource(Resource):
             selection = db_engine.session.execute(query)
             try:
                 # get the only element from the selection
-                row = selection.scalar_one()
+                row = selection.fetchone()
             except sqlalchemy.exc.NoResultFound:
                 # if there is no element the element could not be added
                 result = dict(message="An error occurred while creating the user")
             else:
-                # if the element got added commit the changes
-                db_engine.session.commit()
                 result = dict(message="The user was created successfully", user_name=row.user_name, user_id=row.user_id)
         else:
             # if the selection contains an element we can't create a new one as would create a duplicate
@@ -119,7 +119,7 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, help="ID of the user is missing")
+        parser.add_argument("user_id", type=int, help="ID of the user is missing", required=True)
         parser.add_argument("user_name", type=str, help="Name of the user is missing")
         # TODO: add more user properties
         args = parser.parse_args()
@@ -130,10 +130,10 @@ class UserResource(Resource):
         del values["user_id"]
         # compose the query to update the requested element
         query = db_engine.update(user_table).where(user_table.c.user_id == args["user_id"]).values(values)
-        result = dict()
         # execute the query (the selection is not needed)
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
+        result = dict(message="User propeties have been successfully changed")
         return result
 
     def delete(self) -> dict:
@@ -155,8 +155,8 @@ class UserResource(Resource):
         query = db_engine.delete(user_table).where(user_table.c.user_id == args["user_id"])
         if args["user_name"]:
             query = query.where(user_table.c.user_name == args["user_name"])
-        result = dict()
         # execute the query (the selection is not needed)
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
+        result = dict(message=f"Deleted user with user_id {args['user_id']}")
         return result
