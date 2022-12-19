@@ -40,6 +40,7 @@ fetch("http://<address>:<port>/login", {method: "POST", headers: {"Content-Type"
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
+Replace `<arguments>` with the arguments listed below.
 
 ### Arguments
 
@@ -52,17 +53,21 @@ Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
-The response is a dictionary or JSON object. If authentication process succeeds the JWT (JSON Web Token) is returned with HTTP status 200. Otherwise an error message will be returned with HTTP status 401.
+The response is a dictionary or JSON object. If authentication process succeeds the JWT (JSON Web Token) is returned with HTTP status 200.
 
 ```JSON
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.HFnoe0RmWao72CHwfjaaUHPmXs8QW8jPL_vXfmHIH38"
 }
 ```
-HTTP status 200
-```JSON
-{
-    "message": "Incorrect user name or password"
-}
-```
-HTTP status 401
+`HTTP status 200`
+
+### Fails
+
+- if password or username are incorrect
+    ```JSON
+    {
+        "message": "Incorrect user name or password"
+    }
+    ```
+    `HTTP status 401`
