@@ -53,7 +53,7 @@ class ExerciseResource(Resource):
         TODO: add explanation of all request fields
 
         Returns:
-            dict: Either the new element or an error message in JSON.
+            Response: Either the new element or an error message in JSON as HTTP response.
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
@@ -111,7 +111,7 @@ class ExerciseResource(Resource):
                 return make_response((jsonify(result)), 201)
         else:
             # if the selection contains an element we can't create a new one as we would create a duplicate
-            result = dict(message="A exercise with this title already exists")
+            result = dict(message="An exercise with this title already exists")
             return make_response((jsonify(result)), 409)
         # return the new element (importend for the ID) or an error message
 
@@ -120,7 +120,7 @@ class ExerciseResource(Resource):
         TODO: add explanation of all request fields
 
         Returns:
-            dict: TODO: add return message
+            Response: Either a success message, or an error message as HTTP response.
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
@@ -150,9 +150,14 @@ class ExerciseResource(Resource):
         )
         # execute the query (the selection is not needed)
         selection = db_engine.session.execute(query)
+        print(selection.rowcount)
         db_engine.session.commit()
+        #if no element was updated, the rowcount is 0
+        if selection.rowcount == 0:
+            result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
+            return make_response((jsonify(result)), 404)
 
-        result = dict(message=f"Successfully chanaged exercise with id {args['exercise_id']}")
+        result = dict(message=f"Successfully chanaged exercise with exercise_id {args['exercise_id']}")
         return make_response((jsonify(result)), 200)
 
     def delete(self) -> Response:
@@ -160,7 +165,7 @@ class ExerciseResource(Resource):
         TODO: add explanation of all request fields
 
         Returns:
-            dict: TODO: add return message
+             Response: Either a success message, or an error message as HTTP response.
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
@@ -187,8 +192,12 @@ class ExerciseResource(Resource):
         # execute the query (the selection is not needed)
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
+        #if no element was updated, the rowcount is 0
+        if selection.rowcount == 0:
+            result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
+            return make_response((jsonify(result)), 404)
 
-        result = dict(message=f"Successfully deleted exercise with id {args['exercise_id']}")
+        result = dict(message=f"Successfully deleted exercise with exercise_id {args['exercise_id']}")
         return make_response((jsonify(result)), 200)
 
     def _authorize(self, authHeaderVal: str) -> bool:
