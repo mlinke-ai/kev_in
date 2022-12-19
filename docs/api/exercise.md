@@ -30,7 +30,10 @@ requests.request("GET", "http://<address>:<port>/exercise?<arguments>", headers=
 Unix `curl`:
 
 ```
-curl -X GET -H "Content-Type: application/json" \-H "Authorization: Bearer <token>" http://<address>:<port>/exercise?<arguments>
+curl --location --request GET 'http://<address>:<port>/erxercise?<arguments>' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token>' \
+--data-raw ''
 ```
 
 JavaScript `fetch`:
@@ -98,7 +101,12 @@ requests.request("POST", "http://<address>:<port>/exercise", json=<arguments>, h
 Unix `curl`:
 
 ```
-curl -X POST -d '<arguments>' -H "Content-Type: application/json" \-H "Authorization: Bearer <token>" http://<address>:<port>/exercise
+curl --location --request POST 'http://<address>:<port>/exercise' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token>' \
+--data-raw '{
+    <arguments>
+}'
 ```
 
 JavaScript `fetch`:
@@ -108,7 +116,7 @@ fetch("http://<address>:<port>/exercise", {method: "POST", headers={"Content-Typ
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with the arguments listed below.
+Replace `<arguments>` with the arguments listed below. (in curl in key value pairs "<key>": "<value>")
 Replace `<token>` with the JWT.
 
 ### Arguments
@@ -181,7 +189,12 @@ requests.request("PUT", "http://<address>:<port>/exercise", json=<arguments>, he
 Unix `curl`:
 
 ```
-curl -X PUT -d '<arguments>' -H "Content-Type: application/json" \-H "Authorization: Bearer <token>" http://<address>:<port>/exercise
+curl --location --request POST 'http://<address>:<port>/exercise' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token>' \
+--data-raw '{
+    <arguments>
+}'
 ```
 
 JavaScript `fetch`:
@@ -191,7 +204,7 @@ fetch("http://<address>:<port>/exercise", {method: "PUT", headers={"Content-Type
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with the arguments listed below.
+Replace `<arguments>` with the arguments listed below. (in curl in key value pairs "<key>": "<value>")
 Replace `<token>` with the JWT.
 
 ### Arguments
@@ -255,7 +268,12 @@ requests.request("DELETE", "http://<address>:<port>/exercise", json=<arguments>,
 Unix `curl`:
 
 ```
-curl -X DELETE -d '<arguments>' -H "Content-Type: application/json" \-H "Authorization: Bearer <token>" http://<address>:<port>/exercise
+curl --location --request POST 'http://<address>:<port>/exercise' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer <token>' \
+--data-raw '{
+    <arguments>
+}'
 ```
 
 JavaScript `fetch`:
@@ -265,7 +283,7 @@ fetch("http://<address>:<port>/exercise", {method: "DELETE", headers={"Content-T
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with the arguments listed below.
+Replace `<arguments>` with the arguments listed below. (in curl in key value pairs "<key>": "<value>")
 Replace `<token>` with the JWT.
 
 ### Arguments

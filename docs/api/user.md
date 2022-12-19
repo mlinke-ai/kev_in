@@ -31,7 +31,9 @@ requests.request("GET", "http://<address>:<port>/user?<arguments>", headers={"Co
 Unix `curl`:
 
 ```
-curl -X GET -H "Content-Type: application/json" http://<address>:<port>/user?<arguments>
+curl --location --request GET 'http://<adress>:<port>/user?<arguments>' \
+--header 'Content-Type: application/json' \
+--data-raw ''
 ```
 
 JavaScript `fetch`:
