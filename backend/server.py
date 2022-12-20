@@ -47,6 +47,9 @@ class Server:
             sadmin = UserModel(
                 user_name=config.SADMIN_NAME,
                 user_pass=hashlib.sha256(bytes(config.SADMIN_PASS, encoding="utf-8")).hexdigest(),
+                user_mail=config.SADMIN_MAIL,
+                user_admin=True,
+                user_sadmin=True,
             )
             db_engine.session.add(sadmin)
             db_engine.session.commit()
