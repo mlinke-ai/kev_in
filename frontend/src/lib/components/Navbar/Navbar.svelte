@@ -3,17 +3,20 @@
     import NavbarButton from "./NavbarButton.svelte"
     import { navbarConfig } from "./config"
     import { Link } from "svelte-routing"
+    import Logo from "../Logo/Logo.svelte"
 
     let loggedIn = false
     let admin = false
 </script>
 
 <nav class="navbar-container">
-    <div class="navbar-icon">
-        <Link to="/">
-            Kev.In
-        </Link>
-    </div>
+
+    <Link to="/">
+        <div class="navbar-icon">
+            <Logo/>
+        </div>
+    </Link>
+
     <ul class="navbar-links">
         {#if admin}
             {#each navbarConfig.admin.items as item}
@@ -49,11 +52,15 @@
     }
 
     .navbar-icon {
-        padding-left: 2rem;
-        display: flex;
+        /* display: flex; */
         align-items: center;
+        justify-content: center;
         font-size: 2rem;
         font-family: "Roboto Mono";
+        width: 10rem;
+        position: relative;
+        margin: auto;
+        top: 20%
     }
 
     .navbar-links {
