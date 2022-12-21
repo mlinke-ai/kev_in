@@ -2,11 +2,11 @@
   import Button, { Label } from "@smui/button";
   import Card from "@smui/card";
   import { Media } from "@smui/card";
-  import Page from "./Page.svelte";
+  import Page from "../lib/components/Page.svelte";
 </script>
 
 <Page title="Home">
-  <div class="home-page" in:blur={{ duration: 250 }}>
+  <div class="home-page">
     <h1 class="headline">Your best choice to learn how to code.</h1>
     <hr />
     <h2 class="headline">
