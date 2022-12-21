@@ -28,10 +28,10 @@
     </ul>
     <div class="navbar-buttons">
         {#if loggedIn}
-            <NavbarButton label="Profile" route="/profile" variant="unelevated" />
+            <NavbarButton label="Profile" route="#/profile" variant="unelevated" />
         {:else}
-            <NavbarButton label="Register" route="/register" variant="outlined" />
-            <NavbarButton label="Login" route="/auth" variant="unelevated" />
+            <NavbarButton label="Register" route="#/register" variant="outlined" />
+            <NavbarButton label="Login" route="#/auth" variant="unelevated" />
         {/if}
     </div>
 </nav>
