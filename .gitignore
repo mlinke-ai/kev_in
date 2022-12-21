@@ -3,9 +3,7 @@ notes.md
 tex
 
 # directories:
-/frontend/src/static
 __pycache__/
 instance/
-.svelte-kit/
 .vscode/
 node_modules/

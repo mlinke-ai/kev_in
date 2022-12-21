@@ -1,5 +1,4 @@
 <script>
-    import { Link } from "svelte-routing"
     import { Icon } from "@smui/button"
     import Ripple from "@smui/ripple"
 
@@ -9,12 +8,12 @@
 </script>
 
 <li class="navbar-item">
-    <Link to={route}>
+    <a href={route}>
         <div class="navbar-link" use:Ripple={{ surface: true, color: "primary"}}>
             <!--<Icon class="material-icons">{icon}</Icon>-->
             {label}
         </div>
-    </Link>
+    </a>
 </li>
 
 <style>

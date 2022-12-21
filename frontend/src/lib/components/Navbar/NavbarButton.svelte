@@ -1,5 +1,4 @@
 <script>
-    import { Link } from "svelte-routing";
     import Button from "@smui/button";
     
     export let label = ""
@@ -8,9 +7,9 @@
 </script>
 
 <div class="navbar-button">
-    <Link to={route}>
+    <a href={route}>
         <Button variant={variant}>{label}</Button>
-    </Link>
+    </a>
 </div>
 
 <style>

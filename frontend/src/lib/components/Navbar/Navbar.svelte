@@ -2,8 +2,7 @@
     import NavbarLink from "./NavbarLink.svelte"
     import NavbarButton from "./NavbarButton.svelte"
     import { navbarConfig } from "./config"
-    import { Link } from "svelte-routing"
-    import Logo from "../Logo/Logo.svelte"
+    import Logo from "./Logo.svelte"
 
     let loggedIn = false
     let admin = false
@@ -11,11 +10,11 @@
 
 <nav class="navbar-container">
 
-    <Link to="/">
+    <a href="/#">
         <div class="navbar-icon">
             <Logo/>
         </div>
-    </Link>
+    </a>
 
     <ul class="navbar-links">
         {#if admin}
@@ -29,10 +28,10 @@
     </ul>
     <div class="navbar-buttons">
         {#if loggedIn}
-            <NavbarButton label="Profile" route="/profile" variant="unelevated" />
+            <NavbarButton label="Profile" route="#/profile" variant="unelevated" />
         {:else}
-            <NavbarButton label="Register" route="/register" variant="outlined" />
-            <NavbarButton label="Login" route="/auth" variant="unelevated" />
+            <NavbarButton label="Register" route="#/register" variant="outlined" />
+            <NavbarButton label="Login" route="#/login" variant="unelevated" />
         {/if}
     </div>
 </nav>
