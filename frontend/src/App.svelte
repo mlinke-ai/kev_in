@@ -1,19 +1,16 @@
 <script>
+  import Navbar from "./lib/components/Navbar/Navbar.svelte";
   import Router from "svelte-spa-router";
   import routes from "./routes/";
-
-  import Navbar from "./lib/components/Navbar/Navbar.svelte";
-
-  let url = "";
 </script>
 
 <Navbar />
 <main>
-  <Router {routes} />
+    <Router {routes} />
 </main>
 
 <style>
   main {
-    margin-top: 5rem;
+    padding: 5rem;
   }
 </style>

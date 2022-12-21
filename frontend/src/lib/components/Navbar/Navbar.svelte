@@ -2,7 +2,7 @@
     import NavbarLink from "./NavbarLink.svelte"
     import NavbarButton from "./NavbarButton.svelte"
     import { navbarConfig } from "./config"
-    import Logo from "../Logo/Logo.svelte"
+    import Logo from "./Logo.svelte"
 
     let loggedIn = false
     let admin = false
@@ -31,7 +31,7 @@
             <NavbarButton label="Profile" route="#/profile" variant="unelevated" />
         {:else}
             <NavbarButton label="Register" route="#/register" variant="outlined" />
-            <NavbarButton label="Login" route="#/auth" variant="unelevated" />
+            <NavbarButton label="Login" route="#/login" variant="unelevated" />
         {/if}
     </div>
 </nav>

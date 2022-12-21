@@ -4,6 +4,6 @@ import Error from "./Error.svelte"
 
 export default {
     "/": Home,
-    "/auth": Login,
+    "/login": Login,
     "*": Error
 }

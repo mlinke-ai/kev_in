@@ -1,9 +1,8 @@
 <script>
     import LoginCard from "../lib/components/Login/LoginCard.svelte"
+    import Page from "./Page.svelte";
 </script>
 
-<svelte:head>
-    <title>Kev.In - Login</title>
-</svelte:head>
-
-<LoginCard />
+<Page title="Login">
+    <LoginCard />
+</Page>
