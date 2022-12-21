@@ -4,17 +4,17 @@ export let navbarConfig = {
         items: [
             {
                 label: "Lecture",
-                route: "/lecture",
+                route: "#/lecture",
                 icon: "",
             },
             {
                 label: "Training",
-                route: "/",
+                route: "#/",
                 icon: "",
             },
             {
                 label: "Coding",
-                route: "/",
+                route: "#/",
                 icon: "",
             },
         ]
@@ -23,12 +23,12 @@ export let navbarConfig = {
         items: [
             {
                 label: "Users",
-                route: "/",
+                route: "#/",
                 icon: "",
             },
             {
                 label: "Stats",
-                route: "/",
+                route: "#/",
                 icon: "",
             },
         ]

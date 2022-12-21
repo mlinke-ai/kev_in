@@ -7,7 +7,6 @@
   import Tab, { Label as TLabel } from "@smui/tab";
   import TabBar from "@smui/tab-bar";
   import Select, { Option } from "@smui/select";
-  import { navigate } from "svelte-routing";
   import { userName, userIsAdmin, userLevel } from "../../../stores"
 
   let username = "";
@@ -41,7 +40,6 @@
             $userName = username
             $userIsAdmin = true
             $userLevel = 9000
-            navigate("/dashboard", { replace: true })
           } else {
             console.log(data.message)
             wrongPassword = true
