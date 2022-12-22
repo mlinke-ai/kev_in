@@ -2,18 +2,20 @@
     import NavbarLink from "./NavbarLink.svelte"
     import NavbarButton from "./NavbarButton.svelte"
     import { navbarConfig } from "./config"
-    import { Link } from "svelte-routing"
+    import Logo from "./Logo.svelte"
 
     let loggedIn = false
     let admin = false
 </script>
 
 <nav class="navbar-container">
-    <div class="navbar-icon">
-        <Link to="/">
-            Kev.In
-        </Link>
-    </div>
+
+    <a href="/#">
+        <div class="navbar-icon">
+            <Logo/>
+        </div>
+    </a>
+
     <ul class="navbar-links">
         {#if admin}
             {#each navbarConfig.admin.items as item}
@@ -26,10 +28,10 @@
     </ul>
     <div class="navbar-buttons">
         {#if loggedIn}
-            <NavbarButton label="Profile" route="/profile" variant="unelevated" />
+            <NavbarButton label="Profile" route="#/profile" variant="unelevated" />
         {:else}
-            <NavbarButton label="Register" route="/register" variant="outlined" />
-            <NavbarButton label="Login" route="/auth" variant="unelevated" />
+            <NavbarButton label="Register" route="#/register" variant="outlined" />
+            <NavbarButton label="Login" route="#/login" variant="unelevated" />
         {/if}
     </div>
 </nav>
@@ -49,11 +51,15 @@
     }
 
     .navbar-icon {
-        padding-left: 2rem;
-        display: flex;
+        /* display: flex; */
         align-items: center;
+        justify-content: center;
         font-size: 2rem;
         font-family: "Roboto Mono";
+        width: 10rem;
+        position: relative;
+        margin: auto;
+        top: 20%
     }
 
     .navbar-links {

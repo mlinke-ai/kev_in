@@ -33,6 +33,6 @@
     "@smui/textfield": "^7.0.0-beta.0",
     "@smui/top-app-bar": "^7.0.0-beta.0",
     "smui-theme": "^7.0.0-beta.0",
-    "svelte-routing": "^1.6.0"
+    "svelte-spa-router": "^3.3.0"
   }
 }

@@ -1,8 +1,9 @@
-__pycache__
-instance
-.svelte-kit
-.vscode
-tex
+# files:
 notes.md
-instance
-node_modules
+tex
+
+# directories:
+__pycache__/
+instance/
+.vscode/
+node_modules/

@@ -7,7 +7,6 @@
   import Tab, { Label as TLabel } from "@smui/tab";
   import TabBar from "@smui/tab-bar";
   import Select, { Option } from "@smui/select";
-  import { navigate } from "svelte-routing";
   import { userName, userIsAdmin, userLevel } from "../../../stores"
 
   let username = "";
@@ -41,7 +40,6 @@
             $userName = username
             $userIsAdmin = true
             $userLevel = 9000
-            navigate("/dashboard", { replace: true })
           } else {
             console.log(data.message)
             wrongPassword = true
@@ -59,8 +57,8 @@
 
 <div class="login-card-container">
   <Card variant="outlined">
-    <TabBar tabs={["Kev.In Account", "University Login"]} let:tab bind:active>
-      <Tab {tab}>
+    <TabBar tabs={["Kev.In Account Login"]} let:tab bind:active> <!--"University Login"--> 
+      <Tab style={"cursor: default"} disabled {tab}>
         <TLabel>{tab}</TLabel>
       </Tab>
     </TabBar>
@@ -81,7 +79,7 @@
             id="username-input"
             style="width: 20rem"
             bind:value={username}
-            label="Username"
+            label="Email"
             variant="outlined"
           >
             <HelperText slot="helper"
@@ -122,12 +120,7 @@
 
   .login-card-container {
     width: 25rem;
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+    margin: auto;
   }
 
   .idp-select-menu {
