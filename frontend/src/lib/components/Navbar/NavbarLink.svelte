@@ -5,6 +5,7 @@
 
     export let label = "";
     export let route = "/";
+    export let id = 0;
     let ready = false
 
     onMount(() => {
@@ -13,7 +14,7 @@
 </script>
 
 {#if ready}
-<li class="navbar-item" transition:blur="{{ duration: 1000 }}">
+<li class="navbar-item" in:blur="{{ duration: 250, delay: (id + 1) * 250 }}">
     <a href={route}>
         <div
             class="navbar-link"

@@ -3,11 +3,11 @@
     import NavbarButton from "./NavbarButton.svelte";
     import { navbarConfig } from "./config";
     import { userLoggedIn, userIsAdmin } from "../../../stores";
-    import { flip } from "svelte/animate";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
 
     let ready = false
+    let linkCount = 0
 
 onMount(() => {
     ready = true
@@ -21,12 +21,12 @@ onMount(() => {
     </a>
     <ul class="navbar-links">
         {#if $userIsAdmin}
-            {#each navbarConfig.admin.links as item}
-                <NavbarLink label={item.label} route={item.route} />
+            {#each navbarConfig.admin.links as item, index}
+                <NavbarLink label={item.label} route={item.route} id={index} />
             {/each}
         {/if}
-        {#each navbarConfig.default.links as item}
-            <NavbarLink label={item.label} route={item.route} />
+        {#each navbarConfig.default.links as item, index}
+            <NavbarLink label={item.label} route={item.route} id={linkCount + index} />
         {/each}
     </ul>
     <div class="navbar-buttons">
@@ -37,14 +37,13 @@ onMount(() => {
                 variant="unelevated"
             />
         {:else}
-            {#each navbarConfig.default.buttons as button, id (id)}
-                <div animate:flip>
+            {#each navbarConfig.default.buttons as button, index}
                     <NavbarButton
                         label={button.label}
                         route={button.route}
                         variant={button.variant}
+                        id={navbarConfig.default.links.length + index}
                     />
-                </div>
             {/each}
         {/if}
     </div>
