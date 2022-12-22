@@ -43,7 +43,7 @@
   }
 
   * :global(.card-media-16x9) {
-    background-image: url(src/assets/404-not-found.png);
+    background-image: url("404-not-found.png");
     background-repeat: no-repeat;
     background-position: center;
   }

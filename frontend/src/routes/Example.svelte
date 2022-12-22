@@ -2,6 +2,6 @@
     import Page from "../lib/components/Page.svelte";
 </script>
 
-<Page title="Your Title">
+<Page title="<Page Title>">
     <!-- Your content here, no body tag required --> 
 </Page>

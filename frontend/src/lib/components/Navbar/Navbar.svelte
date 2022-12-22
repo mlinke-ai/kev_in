@@ -1,65 +1,79 @@
 <script>
-    import NavbarLink from "./NavbarLink.svelte"
-    import NavbarButton from "./NavbarButton.svelte"
-    import { navbarConfig } from "./config"
-    import Logo from "./Logo.svelte"
+    import NavbarLink from "./NavbarLink.svelte";
+    import NavbarButton from "./NavbarButton.svelte";
+    import { navbarConfig } from "./config";
+    import { userLoggedIn, userIsAdmin } from "../../../stores";
+    import { flip } from "svelte/animate";
+    import { onMount } from "svelte";
+    import { blur } from "svelte/transition";
 
-    let loggedIn = false
-    let admin = false
+    let ready = false
+
+onMount(() => {
+    ready = true
+})
 </script>
 
-<nav class="navbar-container">
-
-    <a href="/#">
-        <div class="navbar-icon">
-            <Logo/>
-        </div>
+{#if ready}
+<nav class="navbar-container" in:blur="{{ duration: 2000 }}">
+    <a class="navbar-icon" href="/#">
+        <img src={navbarConfig.logo.src} alt={navbarConfig.logo.alt} />
     </a>
-
     <ul class="navbar-links">
-        {#if admin}
-            {#each navbarConfig.admin.items as item}
-                <NavbarLink label={item.label} route={item.route} icon={item.icon} />
+        {#if $userIsAdmin}
+            {#each navbarConfig.admin.links as item}
+                <NavbarLink label={item.label} route={item.route} />
             {/each}
         {/if}
-        {#each navbarConfig.default.items as item}
-            <NavbarLink label={item.label} route={item.route} icon={item.icon} />
+        {#each navbarConfig.default.links as item}
+            <NavbarLink label={item.label} route={item.route} />
         {/each}
     </ul>
     <div class="navbar-buttons">
-        {#if loggedIn}
-            <NavbarButton label="Profile" route="#/profile" variant="unelevated" />
+        {#if $userLoggedIn}
+            <NavbarButton
+                label="Profile"
+                route="#/profile"
+                variant="unelevated"
+            />
         {:else}
-            <NavbarButton label="Register" route="#/register" variant="outlined" />
-            <NavbarButton label="Login" route="#/login" variant="unelevated" />
+            {#each navbarConfig.default.buttons as button, id (id)}
+                <div animate:flip>
+                    <NavbarButton
+                        label={button.label}
+                        route={button.route}
+                        variant={button.variant}
+                    />
+                </div>
+            {/each}
         {/if}
     </div>
 </nav>
+{/if}
 
 <style>
     .navbar-container {
         position: fixed;
-        margin: 0;
+        margin: auto;
+        box-sizing:border-box;
         top: 0;
         left: 0;
         width: 100vw;
-        height: 4rem;
         display: flex;
-        background-color: #333333;
+        align-items: center;
+        background-color: none;
         font-family: "Roboto";
         z-index: 999;
+        padding-left: 1rem;
+        padding-right: 1rem;
     }
 
     .navbar-icon {
-        /* display: flex; */
+        display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 2rem;
-        font-family: "Roboto Mono";
         width: 10rem;
-        position: relative;
-        margin: auto;
-        top: 20%
+        margin: 1rem;
+        font-family: "Roboto Mono";
     }
 
     .navbar-links {
@@ -68,7 +82,7 @@
         margin-left: auto;
         padding-right: 2rem;
     }
-    
+
     .navbar-buttons {
         display: flex;
         align-items: center;

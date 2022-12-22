@@ -1,14 +1,16 @@
 <script>
+    // @ts-nocheck
     import Button from "@smui/button";
-    
-    export let label = ""
-    export let route = ""
-    export let variant = ""
+    import { onMount } from "svelte";
+
+    export let label = "";
+    export let route = "";
+    export let variant = "outlined";
 </script>
 
 <div class="navbar-button">
     <a href={route}>
-        <Button variant={variant}>{label}</Button>
+        <Button {variant}>{label}</Button>
     </a>
 </div>
 
