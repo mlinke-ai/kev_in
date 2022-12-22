@@ -1,3 +1,5 @@
+<!-- Component for animated language cards with media background -->
+
 <script>
   import Card, { Media } from "@smui/card/";
   import Ripple from "@smui/ripple";
@@ -11,11 +13,10 @@
 </script>
 
 <div
-  class="language-card-container"
   use:Ripple={{ surface: true, color: "primary", unbounded: true }}
 >
   <Card
-    style="border-radius:40px;"
+    class="language-card"
     variant="outlined"
     on:mouseenter={() => (showText = true)}
     on:mouseleave={() => (showText = false)}
@@ -41,9 +42,13 @@
 </div>
 
 <style>
-  .language-card-container {
+  * :global(.language-card) {
+    border-radius: 40px;
     width: 400px;
+    height: 400px;
+    box-sizing: border-box;
   }
+
   .language-card-description {
     color: #ccc;
     position: absolute;

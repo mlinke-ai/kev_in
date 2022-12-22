@@ -1,4 +1,4 @@
 pushd frontend
 npm run build
 popd
-./run.py
+./run.py --host

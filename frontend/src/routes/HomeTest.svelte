@@ -1,7 +1,6 @@
 <script>
   import Button, { Label } from "@smui/button";
-  import JavaSvg from "../lib/components/AnimatedSVG/JavaSVG.svelte";
-  import PythonSvg from "../lib/components/AnimatedSVG/PythonSVG.svelte";
+  import { PythonSvg, JavaSvg } from "../lib/components/AnimatedSVG/";
   import Page from "../lib/components/Page.svelte";
   import LanguageCard from "../lib/components/LanguageCard.svelte";
 </script>
@@ -26,19 +25,19 @@
   <main>
     <div class="language-cards-area">
       <LanguageCard
-      title="Python."
-      description="Worldwide beloved and broadly used high-level programming
+        title="Python."
+        description="Worldwide beloved and broadly used high-level programming
     language."
-    >
-      <PythonSvg />
-    </LanguageCard>
-    <LanguageCard
-      title="Java."
-      description="Oracle Java is the #1 programming language and development
+      >
+        <PythonSvg />
+      </LanguageCard>
+      <LanguageCard
+        title="Java."
+        description="Oracle Java is the #1 programming language and development
       platform."
-    >
-      <JavaSvg />
-    </LanguageCard>
+      >
+        <JavaSvg />
+      </LanguageCard>
     </div>
   </main>
 </Page>
