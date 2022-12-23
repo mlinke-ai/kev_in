@@ -4,7 +4,7 @@ summary: A learning platform for programming beginners.
 authors:
     - Max Linke
     - and others
-date: 2022-12-19
+date: 2022-12-23
 ---
 
 # Exercise API

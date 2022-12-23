@@ -4,7 +4,7 @@ summary: A learning platform for programming beginners.
 authors:
     - Max Linke
     - and others
-date: 2022-12-09
+date: 2022-12-23
 ---
 
 # Login API
