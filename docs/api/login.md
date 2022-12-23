@@ -9,9 +9,9 @@ date: 2022-12-09
 
 # Login API
 
-The login route is the enpoint to perform the login authentication process. After the login is performed the client gets a JWT (JSON Web Token) which it has to store and which it can use to authenticate against the server. 
+The login route is the enpoint to perform the login authentication process. After the login is performed the client gets a session Cookie.
 
-After the login Process is done the client has to send the JWT with every following HTTP-request as a header `Authorization: Bearer <token>` until logging out.
+After the login Process is done the client has to send the session cookie with every HTTP request until logging out. (the cookie expires after one hour)
 
 The endpoint can be accessed at `<address>:<port>/login`.
 
@@ -53,11 +53,11 @@ Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
-The response is a dictionary or JSON object. If authentication process succeeds the JWT (JSON Web Token) is returned with HTTP status 200.
+The response is a dictionary or JSON object. If authentication process succeeds a success message with a seesion cookie is returned with HTTP status 200.
 
 ```JSON
 {
-    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxfQ.HFnoe0RmWao72CHwfjaaUHPmXs8QW8jPL_vXfmHIH38"
+    "token": "Welcome John Doe!"
 }
 ```
 `HTTP status 200`
