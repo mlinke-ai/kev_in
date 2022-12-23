@@ -13,13 +13,15 @@ The exercise route is the endpoint to perform all different kinds of operations 
 
 The endpoint can be accessed at `<address>:<port>/exercise`.
 
-At the moment all kinds of operation can be done if a client authenticates itself as an existing user with the JWT (JSON Web Token). Therefor the client has to send his JWT in the following format as HTTP header field: `Authorization: Bearer <token>`.
+This endpoint is only accessable if the client is logged in as a existing user (if he sends the session cookie with a JWT inside).
 
 ## GET
 
 The GET method is used to get exercise data based on attributes.
 
 ### Access
+
+This method is usable for all users.
 
 Python `requests`:
 
@@ -50,19 +52,22 @@ Replace `<token>` with the JWT.
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `exercise_id` | `int` | optional | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
+| `exercise_id` | `int` | required | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
 
 Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
-The response is a dictionary or JSON object, Together with HTTP status 200. The exercise ID is mapped to all exercise attributes.
+The response is a dictionary or JSON object, Together with HTTP status 200. The exercise ID is mapped to all exercise attributes. If you pass `exercise_id = 0` then all existing exercises will be returned.
 
 ```JSON
 {
     "1": {
+        "exercise_content": "1+1=",
+        "exercise_description": "This is a good Test example!",
         "exercise_id": 1,
-        "exercise_title": "My Exercise"
+        "exercise_title": "MyExercise",
+        "exercise_type": "ExerciseType.ParsonsPuzzleExercise"
     }
 }
 ```
@@ -70,15 +75,23 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 
 ### Fails
 
-- If no token was sent:
+- if a required argument was not send:
     ```JSON
     {
         "message": {
-            "Authorization": "no JSON Web Token was sent"
+            "argument": "Error Text"
         }
     }
     ```
     `HTTP status 400`
+
+- If no session cookie was provided:
+    ```JSON
+    {
+        "message": "Login required"
+    }
+    ```
+    `HTTP status 401`
 
 - If an unauthorized client sends a request:
     ```JSON
@@ -93,6 +106,8 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 The post method is used to create new exercises.
 
 ### Access
+
+This method is usable for all admins.
 
 Python `requests`:
 
@@ -125,7 +140,10 @@ Replace `<token>` with the JWT.
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
+| `exercise_title` | `string` | required | `My Exercise` | The display title of the exercise. |
+| `exercise_description` | `string` | required | `This is a good Test example!` | The description of the exercise
+| `exercise_type` | `int` | required | `1` | Number between 1 and 7 for the different exercise types, as defined in the database model. |
+| `exercise_content` | `string` | required | `1+1=` | The content of the exercise. |
 
 Arguments are constructed as dictionaries or JSON objects.
 
@@ -144,15 +162,23 @@ The response is a dictionary or JSON object, Together with HTTP status 201. All 
 
 ### Fails
 
-- If no token was sent:
+- if a required argument was not send:
     ```JSON
     {
         "message": {
-            "Authorization": "no JSON Web Token was sent"
+            "argument": "Error Text"
         }
     }
     ```
     `HTTP status 400`
+
+- If no session cookie was provided:
+    ```JSON
+    {
+        "message": "Login required"
+    }
+    ```
+    `HTTP status 401`
 
 - If an unauthorized client sends a request:
     ```JSON
@@ -183,6 +209,8 @@ The response is a dictionary or JSON object, Together with HTTP status 201. All 
 The put method is used to change arguments from an exercise.
 
 ### Access
+
+This method is usable for all admins.
 
 Python `requests`:
 
@@ -217,6 +245,9 @@ Replace `<token>` with the JWT.
 |---|---|---|---|---|
 | `exercise_id` | `int` | required | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
 | `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
+| `exercise_description` | `string` | optional | `This is a good Test example!` | The description of the exercise
+| `exercise_type` | `int` | optional | `1` | Number between 1 and 7 for the different exercise types, as defined in the database model. |
+| `exercise_content` | `string` | optional | `1+1=` | The content of the exercise. |
 
 Arguments are constructed as dictionaries or JSON objects.
 
@@ -233,15 +264,23 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 
 ### Fails
 
-- If no token was sent:
+- if a required argument was not send:
     ```JSON
     {
         "message": {
-            "Authorization": "no JSON Web Token was sent"
+            "argument": "Error Text"
         }
     }
     ```
     `HTTP status 400`
+
+- If no session cookie was provided:
+    ```JSON
+    {
+        "message": "Login required"
+    }
+    ```
+    `HTTP status 401`
 
 - If an unauthorized client sends a request:
     ```JSON
@@ -264,6 +303,8 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 The delete method is used to delete an existing exercise.
 
 ### Access
+
+This method is usable for all admins.
 
 Python `requests`:
 
@@ -297,7 +338,6 @@ Replace `<token>` with the JWT.
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `exercise_id` | `int` | required | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
-| `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
 
 Arguments are constructed as dictionaries or JSON objects.
 
@@ -314,15 +354,23 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
 
 ### Fails
 
-- If no token was sent:
+- if a required argument was not send:
     ```JSON
     {
         "message": {
-            "Authorization": "no JSON Web Token was sent"
+            "argument": "Error Text"
         }
     }
     ```
     `HTTP status 400`
+
+- If no session cookie was provided:
+    ```JSON
+    {
+        "message": "Login required"
+    }
+    ```
+    `HTTP status 401`
 
 - If an unauthorized client sends a request:
     ```JSON
