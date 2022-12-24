@@ -23,7 +23,6 @@ class ExerciseResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", location="args", required=True)
-        # TODO: add more exercise properties
 
         args = parser.parse_args()
 
@@ -164,9 +163,8 @@ class ExerciseResource(Resource):
         query = (
             db_engine.update(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
         )
-        # execute the query (the selection is not needed)
+        # execute the query
         selection = db_engine.session.execute(query)
-        print(selection.rowcount)
         db_engine.session.commit()
         #if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
@@ -202,7 +200,7 @@ class ExerciseResource(Resource):
         # compose the query to delete the requested element
         query = db_engine.delete(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"])
         
-        # execute the query (the selection is not needed)
+        # execute the query
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
         #if no element was updated, the rowcount is 0

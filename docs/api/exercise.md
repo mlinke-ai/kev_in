@@ -380,7 +380,7 @@ The response is a dictionary or JSON object, Together with HTTP status 200. The 
     ```
     `HTTP status 403`
 
-- If no exercise with the given `exercise_id` or `exercise_title` exists:
+- If no exercise with the given `exercise_id` exists:
     ```JSON
     {
         "message": "Exercise with exercise_id 1 does not exist"
