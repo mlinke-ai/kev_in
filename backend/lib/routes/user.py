@@ -91,9 +91,18 @@ class UserResource(Resource):
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing", required=True)
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing", required=True)
         parser.add_argument("user_admin", type=bool, help="Admin status is missing", required=True)
-        parser.add_argument("user_sadmin", type=bool, help="SAdmin status is missing", required=True)
 
         args = parser.parse_args()
+
+        if args["user_admin"]: #somebody wants to create an admin account
+            #check if token cookie was sent
+            cookies = request.cookies.to_dict(True) #we only use the first value from each key
+            if not "token" in cookies:
+                return make_response((jsonify(dict(message="Login required"))), 401)
+            #check if the client has access
+            if not self._authorize(cookies["token"], change_admin=True):
+                return make_response((jsonify(dict(message="No Access"))), 403)
+
         # load the user table
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose the query
@@ -113,7 +122,7 @@ class UserResource(Resource):
                 user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
                 user_mail=args["user_mail"],
                 user_admin=args["user_admin"],
-                user_sadmin=args["user_sadmin"]
+                user_sadmin=False
                 )
             # add the new element
             db_engine.session.add(user)
@@ -136,7 +145,7 @@ class UserResource(Resource):
                 return make_response((jsonify(result)), 500)
             else:
                 result = dict(message="The user was created successfully", user_name=row.user_name, user_id=row.user_id)
-                return make_response((jsonify(result)), 200)
+                return make_response((jsonify(result)), 201)
         else:
             # if the selection contains an element we can't create a new one as would create a duplicate
             result = dict(message="A user with this name already exists")
@@ -157,7 +166,6 @@ class UserResource(Resource):
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing")
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing")
         parser.add_argument("user_admin", type=bool, help="Admin status is missing")
-        parser.add_argument("user_sadmin", type=bool, help="SAdmin status is missing")
 
         args = parser.parse_args()
 
@@ -166,7 +174,7 @@ class UserResource(Resource):
         if not "token" in cookies:
             return make_response((jsonify(dict(message="Login required"))), 401)
         #check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"]):
+        if not self._authorize(cookies["token"], args["user_id"], args["user_admin"]):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the user table
@@ -213,8 +221,6 @@ class UserResource(Resource):
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose the query to delete the requested element
         query = db_engine.delete(user_table).where(user_table.c.user_id == args["user_id"])
-        if args["user_name"]:
-            query = query.where(user_table.c.user_name == args["user_name"])
         # execute the query
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
@@ -227,12 +233,20 @@ class UserResource(Resource):
         result = dict(message=f"Successfully deleted user with user_id {args['user_id']}")
         return make_response((jsonify(result)), 200)
 
-    def _authorize(self, token: str, user_id: int) -> bool:
+    def _authorize(self, token: str, user_id: int = None, change_admin: bool = False) -> bool:
         """
         This method is used to determine if a certain client has the right to change or access data, based on the
         HTTP request. Therefore the JWT is decoded. Returns True if access is granted and False when access is denied.
         This method grants access to all admins and to users, if they want to access or change their own data.
-        TODO prevent creating admin accounts, except for admins.
+
+        Params:
+            `token`:    the JWT, the client sends with it's request
+            `user_id`:  the user_id of the user acocunt about which the client wants to access or change data
+            `change_admin`: True, if the client wants to change the admin status of an account to True or wants to
+                            create an admin account
+
+        Returns:
+            `True` if access is granted, otherwise `False`
         """
         
         #decode JWT to dict
@@ -252,5 +266,8 @@ class UserResource(Resource):
         else:
             if row["user_admin"]: #our client is an admin
                 return True
-            else: #our client is no admin and wants to access data from a certain account
-                return user_id == row["user_id"] 
+            elif user_id == None: #in POST when somebody wants to create an admin account but is no admin
+                return False 
+            else: #our client is no admin and wants to access/change data from a certain account
+                #if client can access/change data from own account, but can't change admin status
+                return (user_id == row["user_id"]) and (not change_admin) 
