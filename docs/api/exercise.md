@@ -26,22 +26,22 @@ This method is usable for all users.
 Python `requests`:
 
 ```python
-requests.request("GET", "http://<address>:<port>/exercise?<arguments>", headers={"Content-Type": "application/json", "Authorization": "Bearer <token>"})
+requests.request("GET", "http://<address>:<port>/exercise?<arguments>", headers={"Content-Type": "application/json", "Cookie": "token=<token>"})
 ```
 
 Unix `curl`:
 
 ```
-curl --location --request GET 'http://<address>:<port>/erxercise?<arguments>' \
+curl --location --request GET 'http://<address>:<port>/exercise?<arguments>' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer <token>' \
+--header 'Cookie: token=<token>' \
 --data-raw ''
 ```
 
 JavaScript `fetch`:
 
 ```javascript
-fetch("http://<address>:<port>/exercise?<arguments>", {method: "GET", headers: {"Content-Type": "application/json", "Authorization": "Bearer <token>"}})
+fetch("http://<address>:<port>/exercise?<arguments>", {method: "GET", headers: {"Content-Type": "application/json", "Cookie": "token=<token>"}})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
@@ -112,7 +112,7 @@ This method is usable for all admins.
 Python `requests`:
 
 ```python
-requests.request("POST", "http://<address>:<port>/exercise", json=<arguments>, headers={"Content-Type": "application/json", "Authorization": "Bearer <token>"})
+requests.request("POST", "http://<address>:<port>/exercise", json=<arguments>, headers={"Content-Type": "application/json", "Cookie": "token=<token>"})
 ```
 
 Unix `curl`:
@@ -120,7 +120,7 @@ Unix `curl`:
 ```
 curl --location --request POST 'http://<address>:<port>/exercise' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer <token>' \
+--header 'Cookie: token=<token>' \
 --data-raw '{
     <arguments>
 }'
@@ -129,7 +129,7 @@ curl --location --request POST 'http://<address>:<port>/exercise' \
 JavaScript `fetch`:
 
 ```javascript
-fetch("http://<address>:<port>/exercise", {method: "POST", headers={"Content-Type": "application/json", "Authorization": "Bearer <token>"}, body: JSON.stringify(<arguments>)})
+fetch("http://<address>:<port>/exercise", {method: "POST", headers={"Content-Type": "application/json", "Cookie": "token=<token>"}, body: JSON.stringify(<arguments>)})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
@@ -215,15 +215,15 @@ This method is usable for all admins.
 Python `requests`:
 
 ```python
-requests.request("PUT", "http://<address>:<port>/exercise", json=<arguments>, headers={"Content-Type": "application/json", "Authorization": "Bearer <token>"})
+requests.request("PUT", "http://<address>:<port>/exercise", json=<arguments>, headers={"Content-Type": "application/json", "Cookie": "token=<token>"})
 ```
 
 Unix `curl`:
 
 ```
-curl --location --request POST 'http://<address>:<port>/exercise' \
+curl --location --request PUT 'http://<address>:<port>/exercise' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer <token>' \
+--header 'Cookie: token=<token>' \
 --data-raw '{
     <arguments>
 }'
@@ -232,7 +232,7 @@ curl --location --request POST 'http://<address>:<port>/exercise' \
 JavaScript `fetch`:
 
 ```javascript
-fetch("http://<address>:<port>/exercise", {method: "PUT", headers={"Content-Type": "application/json", "Authorization": "Bearer <token>"}, body: JSON.stringify(<arguments>)})
+fetch("http://<address>:<port>/exercise", {method: "PUT", headers={"Content-Type": "application/json", "Cookie": "token=<token>"}, body: JSON.stringify(<arguments>)})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
@@ -309,15 +309,15 @@ This method is usable for all admins.
 Python `requests`:
 
 ```python
-requests.request("DELETE", "http://<address>:<port>/exercise", json=<arguments>, headers={"Content-Type": "application/json", "Authorization": "Bearer <token>"})
+requests.request("DELETE", "http://<address>:<port>/exercise", json=<arguments>, headers={"Content-Type": "application/json", "Cookie": "token=<token>"})
 ```
 
 Unix `curl`:
 
 ```
-curl --location --request POST 'http://<address>:<port>/exercise' \
+curl --location --request DELETE 'http://<address>:<port>/exercise' \
 --header 'Content-Type: application/json' \
---header 'Authorization: Bearer <token>' \
+--header 'Cookie: token=<token>' \
 --data-raw '{
     <arguments>
 }'
@@ -326,7 +326,7 @@ curl --location --request POST 'http://<address>:<port>/exercise' \
 JavaScript `fetch`:
 
 ```javascript
-fetch("http://<address>:<port>/exercise", {method: "DELETE", headers={"Content-Type": "application/json", "Authorization": "Bearer <token>"}, body: JSON.stringify(<arguments>)})
+fetch("http://<address>:<port>/exercise", {method: "DELETE", headers={"Content-Type": "application/json", "Cookie": "token=<token>"}, body: JSON.stringify(<arguments>)})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
