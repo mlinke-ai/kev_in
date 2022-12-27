@@ -32,6 +32,11 @@ class UserResource(Resource):
     def get(self) -> Response:
         """
         Implementation of the HTTP GET method. Use this method to query the system for users.
+        If you pass user_id < 1, it will be ignored. If you pass multiple arguments, you query
+        the system with multiple arguments. It is possible that the system returns up to
+        config.MAX_ITEMS_RETURNED items. If your query would select more items, only the first
+        20 items will be returned.
+        
 
         Returns:
             Response: A HTTP response with all elements selected by the query in JSON or an error message.
@@ -60,7 +65,10 @@ class UserResource(Resource):
         # compose a query to select the requested element
         query = db_engine.select(user_table).select_from(user_table)
         if args["user_id"]:
-            query = query.where(user_table.c.user_id == args["user_id"])
+            if args["user_id"] < 1: #primary key is somehow always > 0
+                pass
+            else:
+                query = query.where(user_table.c.user_id == args["user_id"])
         if args["user_name"]:
             query = query.where(user_table.c.user_name == args["user_name"])
         if args["user_mail"]:
@@ -75,6 +83,10 @@ class UserResource(Resource):
         result = dict()
         for row in selection.fetchall():
             result[row[0]] = dict(user_id=row[0], user_name=row[1])
+        
+        if len(result) > config.MAX_ITEMS_RETURNED:
+            result = dict(list(result.items())[0: config.MAX_ITEMS_RETURNED])
+        
         return make_response((jsonify(result)), 200)
 
     def post(self) -> Response:

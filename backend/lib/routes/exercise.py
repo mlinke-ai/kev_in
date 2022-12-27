@@ -15,14 +15,22 @@ class ExerciseResource(Resource):
     def get(self) -> Response:
         """
         Implementation of the HTTP GET method. Use this method to query the system for exercises.
-        You can get exercises by thier id. If you pass exercise_id = 0, all existing exercises will be selected.
+        You can get exercises by thier id. If you pass exercise_id < 1, it will be ignored.
+        If you pass multiple arguments, you query the system with multiple arguments. It is possible
+        that the system returns up to config.MAX_ITEMS_RETURNED items. If your query would select
+        more items, only the first 20 items will be returned
 
         Returns:
             Response: A HTTP response with all selected items in JSON.
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", location="args", required=True)
+        parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", location="args")
+        parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing", location="args")
+        parser.add_argument("exercise_description", type=str, help="Description of exercise is missing", location="args")
+        #no specified type, otherwise selecting by exercise_type is not working
+        parser.add_argument("exercise_type", help="Type of exercise is missing", location="args")
+        parser.add_argument("exercise_content", type=str, help="Content of exercise is missing", location="args")
 
         args = parser.parse_args()
 
@@ -39,7 +47,18 @@ class ExerciseResource(Resource):
         # compose a query to select the requested element
         query = db_engine.select(exercise_table).select_from(exercise_table)
         if args["exercise_id"]:
-            query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
+            if args["exercise_id"] < 1: #primary key is somehow always > 0
+                pass
+            else:
+                query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
+        if args["exercise_title"]:
+            query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
+        if args["exercise_description"]:
+            query = query.where(exercise_table.c.exercise_description == args["exercise_description"])
+        if args["exercise_type"]:
+            query = query.where(exercise_table.c.exercise_type == args["exercise_type"])
+        if args["exercise_content"]:
+            query = query.where(exercise_table.c.exercise_content == args["exercise_content"])
         result = dict()
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
@@ -52,6 +71,10 @@ class ExerciseResource(Resource):
                 exercise_type=str(row["exercise_type"]),
                 exercise_content=row["exercise_content"]
                 )
+
+        if len(result) > config.MAX_ITEMS_RETURNED:
+            result = dict(list(result.items())[0: config.MAX_ITEMS_RETURNED])
+        
         return make_response((jsonify(result)), 200)
 
     def post(self) -> Response:
