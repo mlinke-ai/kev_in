@@ -31,23 +31,28 @@ class ExecutePython:
         self.__sandbox_logs["RESULTLOG"] = dict()
         self.__compile_result = CompileResult(None, None, None, None)
 
-    def exec_untrusted_code(self, filename: str, user_func: str, *args_list) -> dict:
-        """ Executed user code in restricted env.
-        Args:
-            filename(str) - String containing filename.
-            user_func(str) - Function inside user_code to execute and return value.
-            *args_list - Nested list of arguments passed to the user function.
+    def exec_untrusted_code(self, user_code: str, user_func: str, *args_list) -> dict:
         """
-        # Generate user code as str.
-        with open(filename, "r") as f:
-            user_code = f.read()
+        Description: Executed user code in restricted environment.
+
+        Args:
+            user_code: String containing user code.
+            user_func: Function inside user_code to execute and return value.
+            *args_list: Nested list of arguments passed to the user function.
+
+        Return:
+        {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {}, 'RESULTLOG': {'0': (['arg0'], 'solution0'), ...}}
+        """
+        # # Generate user code as str.
+        # with open(filename, "r") as f:
+        #     user_code = f.read()
 
         # Adds another lines to user code that executes user function.
         for args in args_list:
             user_code += "\nresult.append({0}({1}))".format(user_func, ','.join(map(str, args)))
 
         # Compile code.
-        self.__compile_result = compile_restricted_exec(source=user_code, filename=filename)
+        self.__compile_result = compile_restricted_exec(source=user_code) # removed filename=filename
         self.__sandbox_logs["COMPILERLOG"]["ERROR"] = self.__compile_result[1]
         self.__sandbox_logs["COMPILERLOG"]["WARNINGS"] = self.__compile_result[2]
 

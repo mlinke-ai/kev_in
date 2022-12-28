@@ -25,14 +25,13 @@ class ExecuteJava:
 
     def build_java_gateway(self):
         abPathDirJavaSandbox = Path(os.path.dirname(__file__))
-        abPathSandboxJar = os.path.join(abPathDirJavaSandbox, 'javaSandbox03.jar')
 
-        ROOT_DIR = Path(__file__).resolve().parents[4]
-        abPathJarFile = os.path.join(ROOT_DIR, 'venv/share/py4j/py4j0.10.9.7.jar')
+        abPathSandboxJar = os.path.join(abPathDirJavaSandbox, 'javaSandbox03.jar')
+        abPathPy4JJar = os.path.join(abPathDirJavaSandbox, 'py4j0.10.9.7.jar')
 
         # execute java program
         self.javaEnvProcess = subprocess.Popen(
-            ['java', '-cp', '{0}:{1}:{2}'.format(abPathJarFile, abPathSandboxJar, abPathDirJavaSandbox),
+            ['java', '-cp', '{0}:{1}:{2}'.format(abPathPy4JJar, abPathSandboxJar, abPathDirJavaSandbox),
              'sandbox_env.SandboxEntryPoint'], shell=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         print(self.javaEnvProcess.stdout.readline())  # Gateway Server Started "DEBUG"
