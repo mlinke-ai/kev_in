@@ -3,3 +3,6 @@ flask_restful
 flask_sqlalchemy
 mkdocs
 PyJWT
+RestrictedPython
+py4j
+timeout_decorator

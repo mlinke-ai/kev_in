@@ -5,3 +5,4 @@ from .course import *
 from .exercise import *
 from .login import *
 from .user import *
+from .evaluator import *
