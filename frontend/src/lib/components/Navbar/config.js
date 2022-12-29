@@ -1,26 +1,42 @@
 export let navbarConfig = {
+    logo: {
+        src: "assets/logo_main.svg",
+        alt: "Kev.In"
+    },
     default: {
-        logo: "",
-        items: [
+        links: [
             {
                 label: "Lecture",
                 route: "#/lecture",
-                icon: "",
             },
             {
                 label: "Training",
                 route: "#/training",
-                icon: "",
             },
             {
                 label: "Coding",
                 route: "#/coding",
-                icon: "",
             },
+            //{
+            //    label: "MyRoute",
+            //    route: "#/my-route",
+            //},
+        ],
+        buttons: [
+            {
+                label: "Register",
+                route: "#/register",
+                variant: "outlined"
+            },
+            {
+                label: "Login",
+                route: "#/login",
+                variant: "unelevated"
+            }
         ]
     },
     admin: {
-        items: [
+        links: [
             {
                 label: "Users",
                 route: "#/users",

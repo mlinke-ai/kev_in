@@ -11,6 +11,6 @@
 
 <style>
   main {
-    padding: 5rem;
+    padding: 7rem;
   }
 </style>

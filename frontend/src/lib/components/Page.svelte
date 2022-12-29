@@ -1,3 +1,6 @@
+<!-- Skeletton component for all pages to provide 
+    unified transitions and title naming -->
+
 <script>
     import { blur } from "svelte/transition";
 

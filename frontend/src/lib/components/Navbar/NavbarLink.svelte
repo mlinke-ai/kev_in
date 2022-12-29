@@ -1,20 +1,30 @@
 <script>
-    import { Icon } from "@smui/button"
-    import Ripple from "@smui/ripple"
+    import Ripple from "@smui/ripple";
+    import { onMount } from "svelte";
+    import { blur } from "svelte/transition";
 
-    export let label = ""
-    export let route = "/"
-    export let icon = ""
+    export let label = "";
+    export let route = "/";
+    export let id = 0;
+    let ready = false
+
+    onMount(() => {
+        ready = true
+    })
 </script>
 
-<li class="navbar-item">
+{#if ready}
+<li class="navbar-item" in:blur="{{ duration: 250, delay: (id + 1) * 250 }}">
     <a href={route}>
-        <div class="navbar-link" use:Ripple={{ surface: true, color: "primary"}}>
-            <!--<Icon class="material-icons">{icon}</Icon>-->
+        <div
+            class="navbar-link"
+            use:Ripple={{ surface: true, color: "primary" }}
+        >
             {label}
         </div>
     </a>
 </li>
+{/if}
 
 <style>
     .navbar-item {
@@ -23,7 +33,7 @@
         display: flex;
         align-items: center;
         text-transform: uppercase;
-        position:relative;
+        position: relative;
         margin: 0;
         height: 100%;
     }
@@ -31,7 +41,7 @@
     .navbar-item:hover::after {
         content: "_";
         position: absolute;
-        right: .5rem;
+        right: 0.5rem;
         animation: blink 1s linear infinite;
     }
 

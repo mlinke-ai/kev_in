@@ -77,12 +77,12 @@
     text-align: center;
   }
   * :global(.card-media-square-java) {
-    background-image: url("./src/assets/java.svg");
+    background-image: url("java.svg");
     background-size: 70%;
     background-position-y: 20%;
   }
   * :global(.card-media-square-python) {
-    background-image: url("./src/assets/python.svg");
+    background-image: url("python.svg");
     background-size: 110%;
     background-position-y: 70%;
   }
