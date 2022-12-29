@@ -12,7 +12,7 @@ Short setup guide to get started.
 
 - hash-based single page routing for maximum performance
 
-- ~~Support for SASS~~ (TODO)
+- Support for SASS
 
 ## Get started
 

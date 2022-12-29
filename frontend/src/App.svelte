@@ -6,5 +6,3 @@
 
 <Navbar />
 <Router {routes} />
-
-

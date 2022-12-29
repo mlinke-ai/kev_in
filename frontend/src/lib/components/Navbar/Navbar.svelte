@@ -50,7 +50,7 @@ onMount(() => {
 </nav>
 {/if}
 
-<style>
+<style lang="scss">
     .navbar-container {
         position: fixed;
         margin: auto;
