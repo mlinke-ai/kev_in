@@ -25,3 +25,9 @@
         <slot />
     </div>
 {/if}
+
+<style>
+    .page {
+      padding: 7rem;
+    }
+  </style>
