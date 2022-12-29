@@ -60,7 +60,7 @@ onMount(() => {
         width: 100vw;
         display: flex;
         align-items: center;
-        background-color: none;
+        background-color:rgba(0, 0, 0, 0.2);
         font-family: "Roboto";
         z-index: 999;
         padding-left: 1rem;

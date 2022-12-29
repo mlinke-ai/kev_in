@@ -3,6 +3,7 @@
   import { PythonSvg, JavaSvg } from "../lib/components/AnimatedSVG/";
   import Page from "../lib/components/Page.svelte";
   import LanguageCard from "../lib/components/LanguageCard.svelte";
+  import { blur } from "svelte/transition";
 </script>
 
 <Page title="Home">
@@ -24,20 +25,24 @@
   </header>
   <main>
     <div class="language-cards-area">
-      <LanguageCard
-        title="Python."
-        description="Worldwide beloved and broadly used high-level programming
+      <div in:blur={{ duration: 500 }}>
+        <LanguageCard
+          title="Python."
+          description="Worldwide beloved and broadly used high-level programming
     language."
-      >
-        <PythonSvg />
-      </LanguageCard>
-      <LanguageCard
-        title="Java."
-        description="Oracle Java is the #1 programming language and development
+        >
+          <PythonSvg />
+        </LanguageCard>
+      </div>
+      <div in:blur={{ delay:500, duration: 500 }}>
+        <LanguageCard
+          title="Java."
+          description="Oracle Java is the #1 programming language and development
       platform."
-      >
-        <JavaSvg />
-      </LanguageCard>
+        >
+          <JavaSvg delayAnimation={750}/>
+        </LanguageCard>
+      </div>
     </div>
   </main>
 </Page>
