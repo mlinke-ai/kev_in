@@ -53,10 +53,10 @@ Replace `<token>` with the JWT.
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `exercise_id` | `int` | optional | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
-| `exercise_title` | `string` | required | `My Exercise` | The display title of the exercise. |
-| `exercise_description` | `string` | required | `This is a good Test example!` | The description of the exercise
-| `exercise_type` | `string` | required | `SyntaxExercise` | The type of the exercise as defined in the database model. |
-| `exercise_content` | `string` | required | `1+1=` | The content of the exercise. |
+| `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
+| `exercise_description` | `string` | optional | `This is a good Test example!` | The description of the exercise
+| `exercise_type` | `string` | optional | `SyntaxExercise` | The type of the exercise as defined in the database model. |
+| `exercise_content` | `string` | optional | `1+1=` | The content of the exercise. |
 
 Arguments are constructed as dictionaries or JSON objects.
 
