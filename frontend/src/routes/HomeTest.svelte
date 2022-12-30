@@ -8,12 +8,12 @@
 
 <Page title="Home">
   <header>
-    <h1 class="headline">Your best choice to learn how to code.</h1>
+    <h3 class="headline">Your best choice to learn how to code.</h3>
     <hr />
-    <h2 class="headline">
+    <h5 class="headline">
       Exercises designed by experts with practical experience. Join our
       community today!
-    </h2>
+    </h5>
 
     <div align="center">
       <a href="#/login">
@@ -34,20 +34,20 @@
           <PythonSvg />
         </LanguageCard>
       </div>
-      <div in:blur={{ delay:500, duration: 500 }}>
+      <div in:blur={{ delay: 500, duration: 500 }}>
         <LanguageCard
           title="Java."
           description="Oracle Java is the #1 programming language and development
       platform."
         >
-          <JavaSvg delayAnimation={750}/>
+          <JavaSvg delayAnimation={750} />
         </LanguageCard>
       </div>
     </div>
   </main>
 </Page>
 
-<style global>
+<style lang="scss">
   .headline {
     text-align: center;
   }

@@ -30,12 +30,10 @@
     </Media>
     {#if showText}
       <div class="language-card-title" transition:fade>
-        <h2 class="mdc-typography--headline6" style="margin: 0;">{title}</h2>
+        <h5 style="margin: 0;">{title}</h5>
       </div>
       <div class="language-card-description" transition:fade>
-        <h3 class="mdc-typography--subtitle2" style="margin: 0;">
-          {description}
-        </h3>
+        <h6 style="margin: 0;">{description}</h6>
       </div>
     {/if}
   </Card>

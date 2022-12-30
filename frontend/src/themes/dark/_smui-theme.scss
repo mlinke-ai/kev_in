@@ -11,6 +11,8 @@
   $error: color-palette.$red-700
 );
 
+@use "@material/typography/index" as typography;
+
 html,
 body {
   background: rgb(0,57,49);
@@ -22,4 +24,16 @@ body {
 a {
   color: #dddddd;
   text-decoration: none;
+}
+
+h3 {
+  @include typography.typography("headline3");
+}
+
+h5 {
+  @include typography.typography("headline5");
+}
+
+h6 {
+  @include typography.typography("headline6");
 }
