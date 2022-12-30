@@ -64,6 +64,8 @@ Arguments are constructed as dictionaries or JSON objects.
 
 The response is a dictionary or JSON object, Together with HTTP status 200. The exercise ID is mapped to all exercise attributes. If you pass `exercise_id = 0` then all existing exercises will be returned.
 
+Note: If the response contains multiple items and the number of returned items is higer than a certain value then only the first few selected items will be return until reaching that value. The value is defined in `config.MAX_ITEMS_RETURNED`.
+
 ```JSON
 {
     "1": {
