@@ -1,8 +1,10 @@
 <script>
   import Navbar from "./lib/components/Navbar/Navbar.svelte";
-  import Router from "svelte-spa-router";
+  import Router, { replace as replaceRoute } from "svelte-spa-router";
   import routes from "./routes/";
   import { userLoggedIn, startPage } from "./stores";
+
+  let ready = false;
 
   function isAuthenticated() {
     return true;
@@ -13,10 +15,14 @@
   on:load={() => {
     if (isAuthenticated()) {
       $userLoggedIn = true;
-      $startPage = "#/profile"
+      $startPage = "#/profile";
     }
+    replaceRoute($startPage);
+    ready = true
   }}
 />
 
-<Navbar />
-<Router {routes} />
+{#if ready}
+  <Navbar />
+  <Router {routes} />
+{/if}

@@ -23,6 +23,10 @@ export let navbarConfig = {
             }
         ]
     },
+    authenticated: {
+        links: [],
+        buttons: []
+    },
     admin: {
         links: [
             {
