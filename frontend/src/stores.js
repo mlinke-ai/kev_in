@@ -5,3 +5,5 @@ export const userLoggedIn = writable(false)
 export const userName = writable("");
 export const userIsAdmin = writable(false);
 export const userLevel = writable(0);
+
+export const startPage = writable("#/")
