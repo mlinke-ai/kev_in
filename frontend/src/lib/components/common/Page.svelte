@@ -3,12 +3,12 @@
 -->
 <script>
     import { blur } from "svelte/transition";
-    import { accessLevel } from "../../stores";
-    import { accessLevels } from "../types";
+    import { accessLevel } from "../../../stores";
+    import { accessLevels } from "../../types";
     import { replace as replaceRoute } from "svelte-spa-router";
 
     export let transition = true;
-    export let title = ""; // Page title
+    export let title = "";
     export let requiredAccessLevel = accessLevels.default;
 
     if ($accessLevel < requiredAccessLevel) {

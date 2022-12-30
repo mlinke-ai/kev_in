@@ -3,7 +3,8 @@
     import NavbarButton from "./NavbarButton.svelte";
     import { link } from "svelte-spa-router";
     import { navbarConfig } from "./config";
-    import { userLoggedIn, userIsAdmin, startPage } from "../../../stores";
+    import { startPage, accessLevel} from "../../../stores";
+    import { accessLevels } from "../../types";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
 
@@ -28,7 +29,7 @@
                     id={linkCount + index}
                 />
             {/each}
-            {#if $userIsAdmin}
+            {#if $accessLevel == accessLevels.admin}
                 {#each navbarConfig.admin.links as item, index}
                     <NavbarLink
                         label={item.label}
@@ -36,7 +37,7 @@
                         id={index}
                     />
                 {/each}
-            {:else if $userLoggedIn}
+            {:else if $accessLevel >= accessLevels.user}
                 {#each navbarConfig.authenticated.links as item, index}
                     <NavbarLink
                         label={item.label}
@@ -47,8 +48,8 @@
             {/if}
         </ul>
         <div class="navbar-buttons">
-            {#if $userLoggedIn}
-                {#each navbarConfig.authenticated.buttons as button, index}
+            {#if $accessLevel >= accessLevels.user}
+                {#each navbarConfig.authenticated.buttons as button}
                     <NavbarButton
                         label={button.label}
                         route={button.route}
@@ -56,7 +57,7 @@
                     />
                 {/each}
             {:else}
-                {#each navbarConfig.default.buttons as button, index}
+                {#each navbarConfig.default.buttons as button}
                     <NavbarButton
                         label={button.label}
                         route={button.route}

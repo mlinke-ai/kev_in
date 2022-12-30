@@ -6,8 +6,10 @@
   import Tab, { Label as TLabel } from "@smui/tab";
   import TabBar from "@smui/tab-bar";
   import Select, { Option } from "@smui/select";
-  import { accessLevel, userName, userLevel } from "../../../stores";
+  import { accessLevel, userName, userLevel, startPage } from "../../../stores";
   import { accessLevels } from "../../types";
+  import { setupUserSettings } from "../../functions/user";
+  import { replace as replaceRoute } from "svelte-spa-router";
 
   let email = "";
   let password = "";
@@ -33,9 +35,10 @@
 
           // Save user info in local storage
           $accessLevel = accessLevels.admin;
+          setupUserSettings($accessLevel);
           $userName = email;
           $userLevel = 9000;
-          window.location.replace("..#/profile");
+          replaceRoute($startPage);
         });
       } else if (response.status == 401) {
         wrongCredentials = true;
@@ -66,11 +69,7 @@
         </Select>
       </div>
     {:else}
-      <form
-        class="login-form"
-        on:submit|preventDefault={login}
-        hidden
-      >
+      <form class="login-form" on:submit|preventDefault={login} hidden>
         <div class="input-email">
           <Textfield
             invalid={wrongCredentials}

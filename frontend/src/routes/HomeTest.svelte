@@ -1,8 +1,8 @@
 <script>
   import Button, { Label } from "@smui/button";
   import { PythonSvg, JavaSvg } from "../lib/components/AnimatedSVG/";
-  import Page from "../lib/components/Page.svelte";
-  import LanguageCard from "../lib/components/LanguageCard.svelte";
+  import Page from "../lib/components/common/Page.svelte";
+  import LanguageCard from "../lib/components/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
 </script>
 

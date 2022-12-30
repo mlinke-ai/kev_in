@@ -1,5 +1,5 @@
 <script>
-  import Page from "../lib/components/Page.svelte";
+  import Page from "../lib/components/common/Page.svelte";
   import { draw } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import { onMount } from "svelte";
