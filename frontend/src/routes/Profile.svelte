@@ -1,10 +1,11 @@
 <script>
-  import { blur } from "svelte/transition";
   import Page from "../lib/components/Page.svelte";
   import { draw } from "svelte/transition";
   import { quintOut } from "svelte/easing";
   import { onMount } from "svelte";
+  import { accessLevels } from "../lib/types";
 
+  const requiredAccessLevel = accessLevels.user
   let ready = false;
 
   onMount(() => {
@@ -12,7 +13,7 @@
   });
 </script>
 
-<Page>
+<Page {requiredAccessLevel}>
   <svg
     width="500px"
     height="500px"

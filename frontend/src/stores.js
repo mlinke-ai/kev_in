@@ -1,4 +1,7 @@
 import { writable } from "svelte/store";
+import { accessLevels } from "./lib/types";
+
+export const accessLevel = writable(accessLevels.default)
 
 // User Storage
 export const userLoggedIn = writable(false)

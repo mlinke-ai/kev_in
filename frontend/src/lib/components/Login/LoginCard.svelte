@@ -2,17 +2,12 @@
   import Button from "@smui/button";
   import Card from "@smui/card/";
   import Textfield from "@smui/textfield";
-  import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
   import Tab, { Label as TLabel } from "@smui/tab";
   import TabBar from "@smui/tab-bar";
   import Select, { Option } from "@smui/select";
-  import {
-    userLoggedIn,
-    userName,
-    userIsAdmin,
-    userLevel,
-  } from "../../../stores";
+  import { accessLevel, userName, userLevel } from "../../../stores";
+  import { accessLevels } from "../../types";
 
   let email = "";
   let password = "";
@@ -37,16 +32,15 @@
           // TODO: Save Cookie with jwt token
 
           // Save user info in local storage
-          $userLoggedIn = true;
+          $accessLevel = accessLevels.admin;
           $userName = email;
-          $userIsAdmin = true;
           $userLevel = 9000;
           window.location.replace("..#/profile");
         });
       } else if (response.status == 401) {
         wrongCredentials = true;
-        console.log("Login failed")
-        document.getElementById("email-input").focus()
+        console.log("Login failed");
+        document.getElementById("email-input").focus();
       } else {
         // TODO: Handle exceptions
       }
@@ -72,7 +66,11 @@
         </Select>
       </div>
     {:else}
-      <form class="login-form" on:submit|preventDefault={login} type="submit" hidden>
+      <form
+        class="login-form"
+        on:submit|preventDefault={login}
+        hidden
+      >
         <div class="input-email">
           <Textfield
             invalid={wrongCredentials}
@@ -81,8 +79,7 @@
             bind:value={email}
             label="Email"
             variant="outlined"
-          >
-          </Textfield>
+          />
         </div>
         <div class="input-password">
           <PasswordInput bind:password wrongPassword={wrongCredentials} />

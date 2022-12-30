@@ -1,11 +1,19 @@
 <!-- Skeletton component for all pages to provide 
-    unified transitions and title naming -->
-
+    unified transitions, title naming and basic access control 
+-->
 <script>
     import { blur } from "svelte/transition";
+    import { accessLevel } from "../../stores";
+    import { accessLevels } from "../types";
+    import { replace as replaceRoute } from "svelte-spa-router";
 
     export let transition = true;
-    export let title = "";
+    export let title = ""; // Page title
+    export let requiredAccessLevel = accessLevels.default;
+
+    if ($accessLevel < requiredAccessLevel) {
+        replaceRoute("/access-denied");
+    }
 </script>
 
 <svelte:head>
@@ -17,7 +25,7 @@
 </svelte:head>
 
 {#if transition}
-    <div class="page" in:blur="{{ duration: 250 }}">
+    <div class="page" in:blur={{ duration: 250 }}>
         <slot />
     </div>
 {:else}
@@ -28,6 +36,6 @@
 
 <style>
     .page {
-      padding: 7rem;
+        padding: 7rem;
     }
-  </style>
+</style>
