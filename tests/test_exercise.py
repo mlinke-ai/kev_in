@@ -67,6 +67,34 @@ class ExerciseTest(unittest.TestCase):
         )
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json(), {})
+
+    def test_post_success(self) -> None:
+
+        r = requests.request(
+            "POST", "http://127.0.0.1:5000/exercise",
+            json={"exercise_title": "MyExercise", "exercise_description" : "TestTestTest", "exercise_type": 1, "exercise_content":"1+1="},
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.cookie}"}
+        )
+        self.assertEqual(r.status_code, 201)
+        print(r.json()["message"])
+
+        try:
+            exercise = r.json()
+        except KeyError:
+            self.fail("An exercise should be returned")
+
+        #returned exercise should have these attributes
+        self.assertIn("exercise_id", exercise)
+        self.assertIn("exercise_title", exercise)
+        self.assertEqual("The exercise was created successfully", exercise["message"])
+
+        id = exercise["exercise_id"]
+
+        requests.request(
+            "DELETE", "http://127.0.0.1:5000/exercise",
+            json={"exercise_id": id },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.cookie}"}
+        )
         
 if __name__ == "__main__":
     unittest.main()
