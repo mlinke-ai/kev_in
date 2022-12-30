@@ -8,7 +8,7 @@ Short setup guide to get started.
 
 - Vite for instant preview in the browser
 
-- Integration of SMUI for prebuilt components, styles and theming
+- Integration of SMUI for prebuilt components, styles, fonts and theming
 
 - hash-based single page routing for maximum performance
 
@@ -46,7 +46,7 @@ npm install
 npm run dev -- --open
 ```
 
-> To open VS Code in the current directory, run `code .` 
+> To open VS Code in the current directory, run `code .`
 
 
 
@@ -54,22 +54,26 @@ npm run dev -- --open
 
 #### Folder Structure
 
-1. Create new pages like this: **src/routes/PageName.svelte**
-   
-   To add new pages to the routing system:
-   
-   1. Add your page definitions to `src/routes/routes/index.js`
-   2. Copy Example page template from `src/routes/Example.svelte`
-   3. Change `<Page Title>` to desired title
-   4. Place all html content inside the `Page` component, no body tag required
-   5. To add a page to navigation bar add it to `src/lib/components/Navbar/config.js`
-      
-      in the json data under `default -> links` 
-      
-      or for admin only pages `admin -> links`
-   
-   
+##### `src/lib/components`
 
-2. Create additional components like this: **src/lib/components/ComponentName.svelte**
-   
-   
+Here is where to move new svelte components. If you have multiple components that depend on each other, consider creating a new folder for them inside this directory.
+
+> Components should start with a capital letter in CamelCase style
+
+
+
+##### `src/lib/functions`
+
+If you have any piece of code that looks to big for a component or is used by many components, create a JavaScript file here.
+
+
+
+##### `src/routes`
+
+To create new pages for the website, use the `Example.svelte` file as a template.
+
+To add your pages to the routing system, you have to add it to `index.js` inside of the routes directory.
+
+If you need to add pages to the navigation bar, add them to `src/lib/components/Navbar/config.js`
+
+> Every page has to be inside a  `<Page />` component. It provides smooth transitions when switching pages, enables you to set a title in the browser and protect pages from unauthorized access.
