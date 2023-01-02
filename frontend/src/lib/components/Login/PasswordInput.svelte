@@ -22,10 +22,13 @@
 
     export let password = ""
     export let wrongPassword = false
+    export let wrongRepition = false
+    export let label = "Password"
+    export let style = ""
 
 </script>
 
-<Textfield id="password-input" on:keyup={(e) => checkCapsLock(e)} invalid={wrongPassword} style="width: 20rem; display: flex; align-items: center;" type={displayType} bind:value={password} label="Password" variant="outlined">
+<Textfield id="password-input" on:keyup={(e) => checkCapsLock(e)} invalid={wrongPassword} style={"display: flex; align-items: center; ".concat(style)} type={displayType} bind:value={password} label={label} variant="outlined">
     <IconButton tabindex={-1} type="button" slot="trailingIcon" toggle bind:pressed={visible} on:click={toggleVisibility}>
         <Icon class="material-icons">visibility</Icon>
         <Icon class="material-icons" on>visibility_off</Icon>
@@ -33,7 +36,7 @@
     <HelperText slot="helper">
         {#if capsLockActive}
             CAPS LOCK is active!
-        {:else if wrongPassword}
+        {:else if wrongPassword && !(wrongRepition)}
             <a href="/forgot-password">Forgot Password?</a>
         {/if}
     </HelperText>
