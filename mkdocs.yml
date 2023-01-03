@@ -2,6 +2,8 @@ site_name: Kev.in
 repo_url: https://github.com/mlinke-ai/kev.in
 theme:
   name: material
+  logo: assets/logo.png
+  favicon: assets/favicon.ico
 nav:
   - Home: "index.md"
   - Installation: "installation.md"
