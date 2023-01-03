@@ -47,10 +47,7 @@ class ExerciseResource(Resource):
         # compose a query to select the requested element
         query = db_engine.select(exercise_table).select_from(exercise_table)
         if args["exercise_id"]:
-            if args["exercise_id"] < 1: #primary key is somehow always > 0
-                pass
-            else:
-                query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
+            query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
         if args["exercise_title"]:
             query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
         if args["exercise_description"]:
@@ -164,8 +161,8 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", required=True)
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
         parser.add_argument("exercise_description", type=str, help="Description of exercise is missing")
-        parser.add_argument("exercise_type", type=str, help="Type of exercise is missing")
-        parser.add_argument("exercise_content", type=ExerciseType, help="Content of exercise is missing")
+        parser.add_argument("exercise_type", type=ExerciseType, help="Type of exercise is missing")
+        parser.add_argument("exercise_content", type=str, help="Content of exercise is missing")
 
         args = parser.parse_args()
 
