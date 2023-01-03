@@ -22,6 +22,10 @@ import requests
 
 
 class ExerciseTest(unittest.TestCase):
+    """
+    This test class tests the HTTP req. types of the Exercise endpoint, with a logged in
+    sadmin account and an existing exercise in the database. (see setUpClass)
+    """
     
     @classmethod
     def setUpClass(cls) -> None:
