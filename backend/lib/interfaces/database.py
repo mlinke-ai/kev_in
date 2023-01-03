@@ -48,7 +48,3 @@ class SolutionModel(db_engine.Model):
     solution_correct = db_engine.Column(db_engine.Boolean)
     user_relation = db_engine.relationship(UserModel, foreign_keys="SolutionModel.solution_user")
     exercise_relation = db_engine.relationship(ExerciseModel, foreign_keys="SolutionModel.solution_exercise")
-
-
-# class CourseModel(db_engine.Model):
-#     pass
