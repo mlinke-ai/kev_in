@@ -1,4 +1,4 @@
-import Home from "./HomeTest.svelte"
+import Home from "./Home.svelte"
 import Login from "./Login.svelte"
 import Profile from "./Profile.svelte"
 import Error from "./Error.svelte"
