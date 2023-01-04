@@ -40,7 +40,7 @@ fetch("http://<address>:<port>/user?<arguments>", {method: "GET", headers: {"Con
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with with key value pairs in the form `key=value` (key is the argument, example values are listed in the table below). If you want to pass multiple arguments you can pass them like this `<argument1>&<argument2>`.
+Replace `<arguments>` with key value pairs in the form `key=value` (key is the argument, example values are listed in the table below). If you want to pass multiple arguments you can pass them like this `<argument1>&<argument2>`.
 
 ### Arguments
 
