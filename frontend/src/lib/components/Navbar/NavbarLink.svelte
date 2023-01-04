@@ -26,7 +26,7 @@
 </li>
 {/if}
 
-<style>
+<style lang="scss">
     .navbar-item {
         list-style-type: none;
         background-color: none;

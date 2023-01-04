@@ -5,12 +5,4 @@
 </script>
 
 <Navbar />
-<main>
-    <Router {routes} />
-</main>
-
-<style>
-  main {
-    padding: 7rem;
-  }
-</style>
+<Router {routes} />

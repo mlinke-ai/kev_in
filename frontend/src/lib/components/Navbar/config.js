@@ -5,18 +5,6 @@ export let navbarConfig = {
     },
     default: {
         links: [
-            {
-                label: "Lecture",
-                route: "#/lecture",
-            },
-            {
-                label: "Training",
-                route: "#/training",
-            },
-            {
-                label: "Coding",
-                route: "#/coding",
-            },
             //{
             //    label: "MyRoute",
             //    route: "#/my-route",
@@ -49,5 +37,4 @@ export let navbarConfig = {
             },
         ]
     }
-    
 }
