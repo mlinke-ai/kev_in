@@ -212,7 +212,7 @@ class UserResource(Resource):
             result = dict(message=f"User with user_id {args['user_id']} does not exist")
             return make_response((jsonify(result)), 404)
 
-        result = dict(message=f"Successfully chanaged user with user_id {args['user_id']}")
+        result = dict(message=f"Successfully changed user with user_id {args['user_id']}")
         return make_response((jsonify(result)), 200)
 
     def delete(self) -> dict:
