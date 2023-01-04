@@ -217,10 +217,10 @@ class UserResource(Resource):
 
     def delete(self) -> dict:
         """
-        Implementation of the HTTP DELETE method. Use this method to delete a user.
+        Implementation of the HTTP DELETE method. Use this method to delete an user.
 
         Returns:
-            Response: A HTTP response with the new element or an error message in JSON.
+            Response: A HTTP response with the confirmation or an error message in JSON.
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
@@ -267,6 +267,7 @@ class UserResource(Resource):
             bool: True, if access is granted, otherwise False.
         """
 
+        # TODO: rewrite this function as utility
         # decode JWT to dict
         try:
             user_data = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
