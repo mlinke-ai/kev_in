@@ -32,43 +32,47 @@ class UserResource(Resource):
     def get(self) -> Response:
         """
         Implementation of the HTTP GET method. Use this method to query the system for users.
-        If you pass user_id < 1, it will be ignored. If you pass multiple arguments, you query
-        the system with multiple arguments. It is possible that the system returns up to
-        config.MAX_ITEMS_RETURNED items. If your query would select more items, only the first
-        20 items will be returned.
-        
 
         Returns:
             Response: A HTTP response with all elements selected by the query in JSON or an error message.
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        #in get requests the location of the data is in the arguments
-        parser.add_argument("user_id", type=int, help="ID of the user is missing", location="args")
-        parser.add_argument("user_name", type=str, help="Name of the user is missing", location="args")
-        parser.add_argument("user_mail", type=str, help="Mail of the user is missing", location="args")
-        parser.add_argument("user_admin", type=bool, help="Admin status is missing", location="args")
-        parser.add_argument("user_sadmin", type=bool, help="SAdmin status is missing", location="args")
+        parser.add_argument("user_id", type=int, default=0, help="ID of the user is missing", location="args")
+        parser.add_argument("user_name", type=str, default="", help="Name of the user is missing", location="args")
+        parser.add_argument("user_mail", type=str, default="", help="Mail of the user is missing", location="args")
+        parser.add_argument("user_admin", type=bool, default=False, help="Admin status is missing", location="args")
+        parser.add_argument("user_sadmin", type=bool, default=False, help="SAdmin status is missing", location="args")
+        parser.add_argument("user_offset", type=int, default=0, help="Start index is missing", location="args")
+        parser.add_argument(
+            "user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="Page size is missing", location="args"
+        )
 
         args = parser.parse_args()
 
-        #check if token cookie was sent
-        cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if page limit is in range
+        if args["user_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
+            return make_response(
+                jsonify(dict(message="Page limit too big", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
+            )
+
+        # check if token cookie was sent
+        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
         if not "token" in cookies:
-            return make_response((jsonify(dict(message="Login required"))), 401)
-        #check if the client has access
+            return make_response(jsonify(dict(message="Login required")), 401)
+        # check if the client has access
         if not self._authorize(cookies["token"], args["user_id"]):
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return make_response(jsonify(dict(message="No Access")), 403)
 
         # load the user table
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = db_engine.select(user_table).select_from(user_table)
         if args["user_id"]:
-            if args["user_id"] < 1: #primary key is somehow always > 0
-                pass
-            else:
-                query = query.where(user_table.c.user_id == args["user_id"])
+            query = query.where(user_table.c.user_id == args["user_id"])
+        else:
+            query = query.where(user_table.c.user_id >= args["user_offset"])
+            query = query.limit(args["user_limit"])
         if args["user_name"]:
             query = query.where(user_table.c.user_name == args["user_name"])
         if args["user_mail"]:
@@ -77,16 +81,20 @@ class UserResource(Resource):
             query = query.where(user_table.c.user_admin == args["user_admin"])
         if args["user_sadmin"]:
             query = query.where(user_table.c.user_id == args["user_sadmin"])
+        print(query)
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
         result = dict()
         for row in selection.fetchall():
-            result[row[0]] = dict(user_id=row[0], user_name=row[1])
-        
-        if len(result) > config.MAX_ITEMS_RETURNED:
-            result = dict(list(result.items())[0: config.MAX_ITEMS_RETURNED])
-        
+            result[int(row[0])] = dict(
+                user_id=int(row[0]),
+                user_name=str(row[1]),
+                user_mail=str(row[3]),
+                user_admin=bool(row[4]),
+                user_sadmin=bool(row[5]),
+            )
+
         return make_response((jsonify(result)), 200)
 
     def post(self) -> Response:
@@ -106,12 +114,13 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        if args["user_admin"]: #somebody wants to create an admin account
-            #check if token cookie was sent
-            cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if token cookie was sent
+        if args["user_admin"]:  # somebody wants to create an admin account
+            # check if token cookie was sent
+            cookies = request.cookies.to_dict(True)  # we only use the first value from each key
             if not "token" in cookies:
                 return make_response((jsonify(dict(message="Login required"))), 401)
-            #check if the client has access
+            # check if the client has access
             if not self._authorize(cookies["token"], change_admin=True):
                 return make_response((jsonify(dict(message="No Access"))), 403)
 
@@ -134,17 +143,14 @@ class UserResource(Resource):
                 user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
                 user_mail=args["user_mail"],
                 user_admin=args["user_admin"],
-                user_sadmin=False
-                )
+                user_sadmin=False,
+            )
             # add the new element
             db_engine.session.add(user)
             db_engine.session.commit()
             # compose a query to check wether the new element was added successfully
-            # TODO: query for last created element not based on given parameters
             query = (
-                db_engine.select([user_table.c.user_name, user_table.c.user_id])
-                .select_from(user_table)
-                .where(user_table.c.user_name == args["user_name"])
+                db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == args["user_name"])
             )
             # execute the query and store the result
             selection = db_engine.session.execute(query)
@@ -156,13 +162,14 @@ class UserResource(Resource):
                 result = dict(message="An error occurred while creating the user")
                 return make_response((jsonify(result)), 500)
             else:
-                result = dict(message="The user was created successfully", user_name=row.user_name, user_id=row.user_id)
+                result = dict(
+                    message="The user was created successfully", user_id=row[0], user_name=row[1], user_mail=row[3]
+                )
                 return make_response((jsonify(result)), 201)
         else:
-            # if the selection contains an element we can't create a new one as would create a duplicate
+            # if the selection contains an element we can't create a new one as it would create a duplicate
             result = dict(message="A user with this name already exists")
             return make_response((jsonify(result)), 409)
-        # return the new element (importend for the ID) or an error message
 
     def put(self) -> Response:
         """
@@ -181,11 +188,11 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        #check if token cookie was sent
-        cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if token cookie was sent
+        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
         if not "token" in cookies:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        #check if the client has access
+        # check if the client has access
         if not self._authorize(cookies["token"], args["user_id"], args["user_admin"]):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
@@ -200,7 +207,7 @@ class UserResource(Resource):
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
 
-        #if no element was updated, the rowcount is 0
+        # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"User with user_id {args['user_id']} does not exist")
             return make_response((jsonify(result)), 404)
@@ -221,11 +228,11 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        #check if token cookie was sent
-        cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if token cookie was sent
+        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
         if not "token" in cookies:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        #check if the client has access
+        # check if the client has access
         if not self._authorize(cookies["token"], args["user_id"]):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
@@ -236,8 +243,8 @@ class UserResource(Resource):
         # execute the query
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
-        
-        #if no element was updated, the rowcount is 0
+
+        # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"User with user_id {args['user_id']} does not exist")
             return make_response((jsonify(result)), 404)
@@ -251,23 +258,22 @@ class UserResource(Resource):
         HTTP request. Therefore the JWT is decoded. Returns True if access is granted and False when access is denied.
         This method grants access to all admins and to users, if they want to access or change their own data.
 
-        Params:
-            `token`:    the JWT, the client sends with it's request
-            `user_id`:  the user_id of the user acocunt about which the client wants to access or change data
-            `change_admin`: True, if the client wants to change the admin status of an account to True or wants to
-                            create an admin account
+        Args:
+            token (str): The JWT token the client sends with the request.
+            user_id (int, optional): The ID of the user account which the client wants to access. Defaults to None.
+            change_admin (bool, optional): True, if the client wants to change the admin status of a user or wants to create an admin account. Defaults to False.
 
         Returns:
-            `True` if access is granted, otherwise `False`
+            bool: True, if access is granted, otherwise False.
         """
-        
-        #decode JWT to dict
+
+        # decode JWT to dict
         try:
             user_data = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
         except jwt.exceptions.DecodeError:
             return False
- 
-        #now check in database if the user exists
+
+        # now check in database if the user exists
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == user_data["user_id"])
         selection = db_engine.session.execute(query)
@@ -276,10 +282,10 @@ class UserResource(Resource):
         except sqlalchemy.exc.NoResultFound:
             return False
         else:
-            if row["user_admin"]: #our client is an admin
+            if row["user_admin"]:  # our client is an admin
                 return True
-            elif user_id == None: #in POST when somebody wants to create an admin account but is no admin
-                return False 
-            else: #our client is no admin and wants to access/change data from a certain account
-                #if client can access/change data from own account, but can't change admin status
-                return (user_id == row["user_id"]) and (not change_admin) 
+            elif user_id == None:  # in POST when somebody wants to create an admin account but is no admin
+                return False
+            else:  # our client is no admin and wants to access/change data from a certain account
+                # if client can access/change data from own account, but can't change admin status
+                return (user_id == row["user_id"]) and (not change_admin)
