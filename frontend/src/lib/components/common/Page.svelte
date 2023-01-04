@@ -35,7 +35,16 @@
     </div>
 {/if}
 
+{#if fullwidth}
 <style>
     .page {
+        margin: 7rem 0 7rem 0;
     }
 </style>
+{:else}
+<style>
+    .page {
+        margin: 7rem 5rem 7rem 5rem;
+    }
+</style>
+{/if}

@@ -1,38 +1,73 @@
 <script>
-    import Page from "../lib/components/common/Page.svelte";
-    import { AceEditor } from "svelte-ace";
-    import "brace/mode/python";
-    import "brace/theme/dracula";
-    import "brace/theme/github";
-    import Card from "@smui/card";
-    import Button from "@smui/button";
-    import Select, { Option } from "@smui/select";
-    let text = "";
-    let themes = ["dracula", "github"];
-    let selectedTheme = "dracula";
-    let languages = ["python", "java"]
-    let selectedLanguage = "python";
+  import Page from "../lib/components/common/Page.svelte";
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
-    <Card class="coding-area">
-        <Select class="shaped-filled" variant="filled" bind:selectedLanguage label="Language">
-            {#each languages as language}
-                <Option value={language}>{language}</Option>
-            {/each}
-        </Select>
-        <Select class="shaped-filled" variant="filled" bind:selectedTheme label="Theme">
-            {#each themes as theme}
-                <Option value={theme}>{theme}</Option>
-            {/each}
-        </Select>
-        <AceEditor
-            width="100%"
-            height="100px"
-            lang={selectedLanguage}
-            theme="dracula"
-            value={text}
-        />
-        <Button>Compile</Button>
-    </Card>
+  <div class="sandbox-container">
+    <div class="navbar-container">Hello<br>
+      World
+    </div>
+    <div class="task-area"></div>
+    <div class="code-area"></div>
+    <div class="output-area"></div>
+  </div>
 </Page>
+
+<!--
+import CodeBox from "../lib/components/common/CodeBox.svelte";
+</script>
+
+<Page title="Coding Sandbox" fullwidth={true}>
+  <div class="coding-sandbox">
+    <main>
+      <CodeBox />
+    </main>
+    <aside>
+      <div class="console-output" />
+    </aside>
+  </div>
+</Page>
+
+<style>
+  .coding-sandbox {
+    display: grid;
+  }
+  aside {
+    position: absolute;
+    right: 0;
+    background-color: black;
+  }
+  
+</style>
+-->
+
+<style lang="scss">
+  .navbar-container {
+    grid-area: nav;
+    background-color: green;
+    height: 100vh;
+  }
+  .task-area {
+    grid-area: task;
+    background-color: red;
+  }
+  .code-area {
+    grid-area: code;
+    background-color: black;
+  }
+  .output-area {
+    grid-area: out;
+    background-color: blue;
+  }
+
+  .sandbox-container {
+    display: grid;
+    grid-template-columns: 5% 25% 70%;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "nav task code"
+      "nav task code"
+      "nav task code"
+      "nav task out";
+  }
+</style>
