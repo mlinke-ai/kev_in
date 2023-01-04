@@ -10,6 +10,7 @@
     export let transition = true;
     export let title = "";
     export let requiredAccessLevel = accessLevels.default;
+    export let fullwidth = false
 
     if ($accessLevel < requiredAccessLevel) {
         replaceRoute("/access-denied");
@@ -36,6 +37,5 @@
 
 <style>
     .page {
-        padding: 7rem;
     }
 </style>

@@ -4,6 +4,7 @@
   import Page from "../lib/components/common/Page.svelte";
   import LanguageCard from "../lib/components/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
+    import LogoSvg from "../lib/components/AnimatedSVG/LogoSVG.svelte";
 </script>
 
 <Page title="Home">
@@ -52,8 +53,9 @@
     text-align: center;
   }
   .language-cards-area {
-    display: flex;
+    display: grid;
     margin-top: 5%;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 400px));
     align-items: center;
     justify-content: center;
     gap: 100px;
