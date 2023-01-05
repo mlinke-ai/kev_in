@@ -2,7 +2,7 @@
   import Button, { Label } from "@smui/button";
   import Card from "@smui/card";
   import { Media } from "@smui/card";
-  import Page from "../lib/components/Page.svelte";
+  import Page from "../lib/components/common/Page.svelte";
 </script>
 
 <Page title="Home">

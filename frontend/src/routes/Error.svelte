@@ -3,7 +3,9 @@
   import Card from "@smui/card";
   import Button from "@smui/button";
   import { Label } from "@smui/button";
-  import Page from "../lib/components/Page.svelte";
+  import Page from "../lib/components/common/Page.svelte";
+
+  export const params=""
 </script>
 
 <Page title="Page not found">

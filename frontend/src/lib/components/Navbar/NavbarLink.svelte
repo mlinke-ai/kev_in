@@ -1,6 +1,7 @@
 <script>
     import Ripple from "@smui/ripple";
     import { onMount } from "svelte";
+    import { link } from "svelte-spa-router";
     import { blur } from "svelte/transition";
 
     export let label = "";
@@ -15,7 +16,7 @@
 
 {#if ready}
 <li class="navbar-item" in:blur="{{ duration: 250, delay: (id + 1) * 250 }}">
-    <a href={route}>
+    <a href={route} use:link>
         <div
             class="navbar-link"
             use:Ripple={{ surface: true, color: "primary" }}
@@ -26,7 +27,7 @@
 </li>
 {/if}
 
-<style>
+<style lang="scss">
     .navbar-item {
         list-style-type: none;
         background-color: none;
