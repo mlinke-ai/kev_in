@@ -59,8 +59,12 @@ class ExerciseTest(unittest.TestCase):
         cls.cookie = ""
 
     def test_get_existing(self) -> None:
+        """
+        Query the System for an existing exercise with a HTTP-GET request by id.
+        The system should return HTTP-status 200 and the attributes of the exercise in JSON format.
+        """
 
-        id = str(ExerciseTest.exercise_id) #this exercise has to exist in the database for this test to work
+        id = str(ExerciseTest.exercise_id)
 
         r = requests.request(
             "GET", f"http://127.0.0.1:5000/exercise?exercise_id={id}",
@@ -81,6 +85,10 @@ class ExerciseTest(unittest.TestCase):
         self.assertIn("exercise_type", exercise)
         
     def test_get_non_existing(self) -> None:
+        """
+        Query the System for a non existing exercise with a HTTP-GET request by id.
+        The system should return HTTP-status 200 and an empty JSON string.
+        """
         r = requests.request(
             "GET", "http://127.0.0.1:5000/exercise?exercise_id=-2",
             headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.cookie}"}
@@ -90,6 +98,11 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json(), {})
 
     def test_post_success(self) -> None:
+        """
+        Create an exercise in the system with HTTP-POST method.
+        The system should return HTTP-status 201, the created exercise in JSON and a
+        success message.
+        """
 
         r = requests.request(
             "POST", "http://127.0.0.1:5000/exercise",
@@ -118,8 +131,12 @@ class ExerciseTest(unittest.TestCase):
         )
 
     def test_put_existing(self) -> None:
+        """
+        Change all attributes of an existing exercise with HTTP-PUT method.
+        The system should return HTTP-status 200 and a success message.
+        """
 
-        id = str(ExerciseTest.exercise_id) #this exercise has to exist in the database for this test to work
+        id = str(ExerciseTest.exercise_id)
         #test changing all attribues
         r = requests.request(
             "PUT", "http://127.0.0.1:5000/exercise",
@@ -136,6 +153,10 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
 
     def test_put_without_req_arg(self) -> None:
+        """
+        Change all attributes of an existing exercise with HTTP-PUT method but without the required argument (exercise_id).
+        The system should return HTTP-status 400 and an error message containing the missing argument.
+        """
 
         r = requests.request(
             "PUT", "http://127.0.0.1:5000/exercise",
@@ -159,6 +180,10 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(errors["exercise_id"], "ID of the exercise is missing")
 
     def test_put_non_existing(self) -> None:
+        """
+        Change all attributes of a non existing exercise with HTTP-PUT method.
+        The system should return HTTP-status 404 and an error message.
+        """
 
         id = -2 #exercise_id of a clearly not existing exercise
         r = requests.request(
