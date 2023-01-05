@@ -1,20 +1,26 @@
 <script>
   import Page from "../lib/components/common/Page.svelte";
+  import AceEditor from "../lib/components/CodeSandbox/AceEditor.svelte";
+  import OutputConsole from "../lib/components/CodeSandbox/OutputConsole.svelte";
+  import TaskCard from "../lib/components/CodeSandbox/TaskCard.svelte";
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
   <div class="sandbox-container">
-    <div class="navbar-container">Hello<br>
-      World
+    <div class="task-area">
+      <TaskCard />
     </div>
-    <div class="task-area"></div>
-    <div class="code-area"></div>
-    <div class="output-area"></div>
+    <div class="code-area">
+      <AceEditor />
+    </div>
+    <div class="output-area">
+      <OutputConsole />
+    </div>
   </div>
 </Page>
 
 <!--
-import CodeBox from "../lib/components/common/CodeBox.svelte";
+
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
@@ -40,34 +46,38 @@ import CodeBox from "../lib/components/common/CodeBox.svelte";
   
 </style>
 -->
-
 <style lang="scss">
-  .navbar-container {
-    grid-area: nav;
-    background-color: green;
-    height: 100vh;
+  * {
+    box-sizing: border-box;
+  }
+  .sandbox-container {
+    display: grid;
+    grid-template-columns: 5fr 14fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "task code"
+      "task code"
+      "task code"
+      "task out";
+    gap: 1%;
+    padding: 1rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: black;
+    margin-left: 3%;
   }
   .task-area {
     grid-area: task;
-    background-color: red;
   }
   .code-area {
     grid-area: code;
-    background-color: black;
+    display: flex;
   }
   .output-area {
     grid-area: out;
-    background-color: blue;
-  }
-
-  .sandbox-container {
-    display: grid;
-    grid-template-columns: 5% 25% 70%;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "nav task code"
-      "nav task code"
-      "nav task code"
-      "nav task out";
+    background-color: black;
   }
 </style>

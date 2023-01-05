@@ -1,7 +1,7 @@
 <script>
   import Button from "@smui/button";
   import Select, { Option } from "@smui/select";
-  import { AceEditor } from "svelte-ace";
+  import AceEditor from "../AceEditor/AceEditor.svelte";
   import "brace/mode/python";
   import "brace/theme/twilight";
   let text = "";
@@ -12,57 +12,29 @@
 </script>
 
 <div class="codebox">
-  <div class="codebox-header">
-    <div class="codebox-title">Example task</div>
-    <div class="codebox-settings-area">
-      <Select
-        class="shaped-filled"
-        variant="filled"
-        bind:selectedLanguage
-        label="Language"
-      >
-        {#each languages as language}
-          <Option value={language}>{language}</Option>
-        {/each}
-      </Select>
-      <Select
-        class="shaped-filled"
-        variant="filled"
-        bind:selectedTheme
-        label="Theme"
-      >
-        {#each themes as theme}
-          <Option value={theme}>{theme}</Option>
-        {/each}
-      </Select>
-    </div>
-  </div>
   <div class="coding-area">
-    <AceEditor
-      width="100%"
-      height="400px"
-      lang={selectedLanguage}
-      theme="twilight"
-      value={text}
-      options={{fontSize: 30}}
-    />
-    <Button>Compile</Button>
+    <AceEditor />
   </div>
 </div>
 
 <style lang="scss">
-  .codebox {
-    width: 80%;
-    box-sizing: border-box;
-    bottom: 0;
-    position: absolute;
-  }
-  .codebox-header {
-    display: flex;
-    padding: 0 1rem 0 1rem;
-    align-items: center;
-    :last-child {
-      margin-left: auto;
+  * {
+        box-sizing: border-box;
     }
+  .codebox {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-items: stretch;
   }
+  .coding-area {
+    position: relative;
+  }
+  #editor {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
 </style>

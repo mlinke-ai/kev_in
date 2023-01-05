@@ -37,8 +37,12 @@
 
 {#if fullwidth}
 <style>
+    body {
+        margin: 0;
+    }
     .page {
-        margin: 7rem 0 7rem 0;
+        margin: 0;
+        padding: 0;
     }
 </style>
 {:else}

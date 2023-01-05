@@ -196,7 +196,7 @@
 
         .navbar-container {
             top: 0;
-            width: 5rem;
+            width: 3%;
             height: 100vh;
             overflow-x: hidden;
             overflow-y: auto;
