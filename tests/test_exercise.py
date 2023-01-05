@@ -24,7 +24,8 @@ import requests
 class ExerciseTest(unittest.TestCase):
     """
     This test class tests the HTTP req. types of the Exercise endpoint, with a logged in
-    sadmin account and an existing exercise in the database. (see setUpClass)
+    sadmin account and an existing exercise in the database. (see setUpClass method)
+    The documentation of the API can be found [here](https://mlinke-ai.github.io/kev_in/api/exercise/).
     """
     
     @classmethod
