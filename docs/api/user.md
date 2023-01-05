@@ -15,7 +15,7 @@ The endpoint can be accessed at `<address>:<port>/user`.
 
 ## GET
 
-The GET method is used to retrieve user data based on attributes. This method supports paging. Paging prevents overwhelming the API by reducing the number of returned elements. When a request is expected to return a huge number of elements, one can reduce the number of elements with the `user_offset` and `user_limit` arguments. `user_offset` defines the lowest `user_id` while `user_limit` defines the number of elements in the page. The default value for `user_limit` is defined in `config.MAX_ITEMS_RETURNED`. To get all values, simply execute multiple requests with adjusted values for `user_offset`.
+The GET method is used to retrieve user data based on attributes. This method supports paging. Paging prevents overwhelming the API by reducing the number of returned elements. When a request is expected to return a huge number of elements, one can reduce the number of elements with the `user_offset` and `user_limit` arguments. `user_offset` defines the lowest `user_id` while `user_limit` defines the number of elements in the page. The default value for `user_limit` is defined in `config.MAX_ITEMS_RETURNED`. To get all values, simply execute multiple requests with adjusted values for `user_offset`. If `user_id` is provided `user_offset` and `user_limit` get ignored.
 
 ### Access
 
@@ -60,11 +60,11 @@ The response is a dictionary or JSON object. The user ID is mapped to all user a
 
 ```JSON
 {
-  "1": {
-    "user_id": 1,
-    "user_name": "John Doe",
-    "user_mail": "john.doe@example.com"
-  }
+    "1": {
+        "user_id": 1,
+        "user_name": "John Doe",
+        "user_mail": "john.doe@example.com"
+    }
 }
 ```
 
