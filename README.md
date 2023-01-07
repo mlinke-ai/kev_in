@@ -2,4 +2,4 @@
 
 ## Documentation
 
-The documentation can be found [here](https://mlinke-ai.github.io/kev.in).
+The documentation can be found [here](https://mlinke-ai.github.io/kev_in).
