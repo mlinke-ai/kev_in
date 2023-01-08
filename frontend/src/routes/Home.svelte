@@ -2,7 +2,7 @@
   import Button, { Label } from "@smui/button";
   import Card from "@smui/card";
   import { Media } from "@smui/card";
-  import Page from "../lib/components/Page.svelte";
+  import Page from "../lib/components/common/Page.svelte";
 </script>
 
 <Page title="Home">
@@ -77,12 +77,12 @@
     text-align: center;
   }
   * :global(.card-media-square-java) {
-    background-image: url("./src/assets/java.svg");
+    background-image: url("java.svg");
     background-size: 70%;
     background-position-y: 20%;
   }
   * :global(.card-media-square-python) {
-    background-image: url("./src/assets/python.svg");
+    background-image: url("python.svg");
     background-size: 110%;
     background-position-y: 70%;
   }

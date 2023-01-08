@@ -4,13 +4,15 @@ Short setup guide to get started.
 
 ## Features
 
-- Svelte for fast and easy multi-page development
+- Svelte for fast and easy development
 
 - Vite for instant preview in the browser
 
-- Integration of SMUI for prebuilt components, styles and theming
+- Integration of SMUI for prebuilt components, styles, fonts and theming
 
-- ~~Support for SASS~~ (TODO)
+- hash-based single page routing for maximum performance
+
+- Support for SASS
 
 ## Get started
 
@@ -44,20 +46,34 @@ npm install
 npm run dev -- --open
 ```
 
-> To open VS Code in the current directory, run `code .` 
+> To open VS Code in the current directory, run `code .`
 
- 
 
-## Development
+
+## Development Guidelines
 
 #### Folder Structure
 
-1. Create new pages in **src/routes**
-   
-   The pages are svelte components that can be imported to `App.svelte` to be included in the website.
+##### `src/lib/components`
 
-2. Create additional components in **src/lib/components**
-   
-   Components should be named like this: `ComponentName.svelte`
+Here is where to move new svelte components. If you have multiple components that depend on each other, consider creating a new folder for them inside this directory.
+
+> Components should start with a capital letter in CamelCase style
 
 
+
+##### `src/lib/functions`
+
+If you have any piece of code that looks to big for a component or is used by many components, create a JavaScript file here.
+
+
+
+##### `src/routes`
+
+To create new pages for the website, use the `Example.svelte` file as a template.
+
+To add your pages to the routing system, you have to add it to `index.js` inside of the routes directory.
+
+If you need to add pages to the navigation bar, add them to `src/lib/components/Navbar/config.js`
+
+> Every page has to be inside a  `<Page />` component. It provides smooth transitions when switching pages, enables you to set a title in the browser and protect pages from unauthorized access.

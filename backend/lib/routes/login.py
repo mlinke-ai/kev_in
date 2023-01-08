@@ -34,7 +34,7 @@ class LoginResource(Resource):
             user_pass: account passwort (required)
 
         Returns:
-            HTTP-Response as JSON with an JWT token. (on success) -> status 200
+            HTTP-Response as JSON with a success message and the token in a cookie. (on success) -> status 200
             HTTP-Response as JSON with an error message. (on fail) -> status 401
         """
 
@@ -64,6 +64,8 @@ class LoginResource(Resource):
             return make_response(jsonify(result), 401)
         else:
             token = jwt.encode({"user_id": user[0]}, config.JWT_SECRET)
-            result = dict(token=token)
+            result = dict(message=f"Welcome {user[1]}!")
 
-        return make_response(jsonify(result), 200)
+        response = make_response(jsonify(result), 200)
+        response.set_cookie("token", token, max_age=3600, httponly=True)
+        return response

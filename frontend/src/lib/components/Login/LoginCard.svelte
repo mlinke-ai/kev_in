@@ -2,18 +2,19 @@
   import Button from "@smui/button";
   import Card from "@smui/card/";
   import Textfield from "@smui/textfield";
-  import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
   import Tab, { Label as TLabel } from "@smui/tab";
   import TabBar from "@smui/tab-bar";
   import Select, { Option } from "@smui/select";
-  import { userName, userIsAdmin, userLevel } from "../../../stores"
+  import { accessLevel, userName, userLevel, startPage } from "../../../stores";
+  import { accessLevels } from "../../types";
+  import { setupUserSettings } from "../../functions/user";
+  import { replace as replaceRoute } from "svelte-spa-router";
 
-  let username = "";
+  let email = "";
   let password = "";
 
-  let userNotFound = false;
-  let wrongPassword = false;
+  let wrongCredentials = false;
 
   let active = "Kev.In Account";
   let idProviders = ["TU Chemnitz", "WH Zwickau"];
@@ -24,40 +25,36 @@
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user_name: "sadmin",
-        user_pass: "sadmin"//"9f5ba68f21489544d985797d58847b65e9a22c4981aeccafc96b351e84df254c",
+        user_name: email,
+        user_pass: password,
       }),
-    })
-    .then((response) => {
+    }).then((response) => {
       if (response.status == 200) {
         response.json().then((data) => {
-          if (data.token) {
-            console.log(data.token)
-            
-            // TODO: Save Cookie with jwt token
+          // TODO: Save Cookie with jwt token
 
-            // Save user info in local storage
-            $userName = username
-            $userIsAdmin = true
-            $userLevel = 9000
-          } else {
-            console.log(data.message)
-            wrongPassword = true
-            userNotFound = true
-          }
-        })
-      } else if (response.status == 401){
-        // TODO: Shift wrong creds code here
+          // Save user info in local storage
+          $accessLevel = accessLevels.admin;
+          setupUserSettings($accessLevel);
+          $userName = email;
+          $userLevel = 9000;
+          replaceRoute($startPage);
+        });
+      } else if (response.status == 401) {
+        wrongCredentials = true;
+        console.log("Login failed");
+        document.getElementById("email-input").focus();
       } else {
         // TODO: Handle exceptions
       }
-      })
-  }
+    });
+  };
 </script>
 
 <div class="login-card-container">
   <Card variant="outlined">
-    <TabBar tabs={["Kev.In Account Login"]} let:tab bind:active> <!--"University Login"--> 
+    <TabBar tabs={["Kev.In Account Login"]} let:tab bind:active>
+      <!--"University Login"-->
       <Tab style={"cursor: default"} disabled {tab}>
         <TLabel>{tab}</TLabel>
       </Tab>
@@ -72,25 +69,19 @@
         </Select>
       </div>
     {:else}
-      <form class="login-form" on:submit|preventDefault={login}>
-        <div class="input-username">
+      <form class="login-form" on:submit|preventDefault={login} hidden>
+        <div class="input-email">
           <Textfield
-            invalid={userNotFound}
-            id="username-input"
+            invalid={wrongCredentials}
+            id="email-input"
             style="width: 20rem"
-            bind:value={username}
+            bind:value={email}
             label="Email"
             variant="outlined"
-          >
-            <HelperText slot="helper"
-              >{#if userNotFound}User not found. <a href="/register"
-                  >Create Account?</a
-                >{/if}</HelperText
-            >
-          </Textfield>
+          />
         </div>
         <div class="input-password">
-          <PasswordInput bind:password {wrongPassword} />
+          <PasswordInput bind:password wrongPassword={wrongCredentials} />
         </div>
       </form>
     {/if}
@@ -111,7 +102,7 @@
     align-items: center;
     padding: 1rem;
   }
-  .input-username {
+  .input-email {
     padding: 0.2rem;
   }
   .input-password {

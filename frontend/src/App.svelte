@@ -1,16 +1,28 @@
 <script>
   import Navbar from "./lib/components/Navbar/Navbar.svelte";
-  import Router from "svelte-spa-router";
+  import Router, { replace as replaceRoute } from "svelte-spa-router";
   import routes from "./routes/";
+  import { setupUserSettings, getAccessLevel } from "./lib/functions/user";
+  import { startPage } from "./stores";
+
+  let ready = false;
+
+  function prepareApp() {
+    setupUserSettings(getAccessLevel())
+    replaceRoute($startPage);
+    ready = true;
+  }
 </script>
 
-<Navbar />
-<main>
-    <Router {routes} />
-</main>
+<svelte:window
+  on:load={() => {
+    prepareApp();
+  }}
+/>
 
-<style>
-  main {
-    padding: 5rem;
-  }
-</style>
+{#if ready}
+  <Navbar />
+  <Router {routes} />
+{:else}
+  preparing...
+{/if}
