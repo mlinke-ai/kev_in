@@ -24,7 +24,7 @@ from flask_sqlalchemy.query import sqlalchemy
 import hashlib
 import jwt
 
-from backend.lib.interfaces.database import UserModel, db_engine
+from backend.lib.interfaces.database import UserModel, db_engine, UserRole
 from backend.lib.core import config
 
 
@@ -41,8 +41,9 @@ class UserResource(Resource):
         parser.add_argument("user_id", type=int, default=0, help="ID of the user is missing", location="args")
         parser.add_argument("user_name", type=str, default="", help="Name of the user is missing", location="args")
         parser.add_argument("user_mail", type=str, default="", help="Mail of the user is missing", location="args")
-        parser.add_argument("user_admin", type=bool, default=False, help="Admin status is missing", location="args")
-        parser.add_argument("user_sadmin", type=bool, default=False, help="SAdmin status is missing", location="args")
+        parser.add_argument(
+            "user_role", type=int, default=3, choices=[1, 2, 3], help="User role is missing", location="args"
+        )
         parser.add_argument("user_offset", type=int, default=0, help="Start index is missing", location="args")
         parser.add_argument(
             "user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="Page size is missing", location="args"
@@ -77,11 +78,8 @@ class UserResource(Resource):
             query = query.where(user_table.c.user_name == args["user_name"])
         if args["user_mail"]:
             query = query.where(user_table.c.user_mail == args["user_mail"])
-        if args["user_admin"]:
-            query = query.where(user_table.c.user_admin == args["user_admin"])
-        if args["user_sadmin"]:
-            query = query.where(user_table.c.user_id == args["user_sadmin"])
-        print(query)
+        if args["user_role"]:
+            query = query.where(user_table.c.user_role == args["user_role"])
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
@@ -91,8 +89,7 @@ class UserResource(Resource):
                 user_id=int(row[0]),
                 user_name=str(row[1]),
                 user_mail=str(row[3]),
-                user_admin=bool(row[4]),
-                user_sadmin=bool(row[5]),
+                user_role=int(row[4]),
             )
 
         return make_response((jsonify(result)), 200)
@@ -110,12 +107,14 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing", required=True)
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing", required=True)
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing", required=True)
-        parser.add_argument("user_admin", type=bool, help="Admin status is missing", required=True)
+        parser.add_argument("user_role", type=int, help="User role is missing", required=True)
 
         args = parser.parse_args()
 
         # check if token cookie was sent
-        if args["user_admin"]:  # somebody wants to create an admin account
+        if (
+            args["user_role"] == UserRole.SAdmin or args["user_role"] == UserRole.Admin
+        ):  # somebody wants to create an admin account
             # check if token cookie was sent
             cookies = request.cookies.to_dict(True)  # we only use the first value from each key
             if not "token" in cookies:
@@ -142,8 +141,7 @@ class UserResource(Resource):
                 user_name=args["user_name"],
                 user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
                 user_mail=args["user_mail"],
-                user_admin=args["user_admin"],
-                user_sadmin=False,
+                user_role=args["user_role"],
             )
             # add the new element
             db_engine.session.add(user)
@@ -184,7 +182,7 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing")
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing")
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing")
-        parser.add_argument("user_admin", type=bool, help="Admin status is missing")
+        parser.add_argument("user_role", type=int, help="User role is missing")
 
         args = parser.parse_args()
 
@@ -283,7 +281,7 @@ class UserResource(Resource):
         except sqlalchemy.exc.NoResultFound:
             return False
         else:
-            if row["user_admin"]:  # our client is an admin
+            if row["user_role"] == UserRole.SAdmin or row["user_role"] == UserRole.Admin:  # our client is an admin
                 return True
             elif user_id == None:  # in POST when somebody wants to create an admin account but is no admin
                 return False

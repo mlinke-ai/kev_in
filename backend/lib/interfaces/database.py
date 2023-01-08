@@ -9,14 +9,19 @@ from backend.lib.core import errors, config
 db_engine = flask_sqlalchemy.SQLAlchemy()
 
 
+class UserRole(enum.Enum):
+    SAdmin = 1
+    Admin = 2
+    User = 3
+
+
 class UserModel(db_engine.Model):
     __tablename__ = config.USER_TABLE
     user_id = db_engine.Column(db_engine.Integer, primary_key=True)
     user_name = db_engine.Column(db_engine.String)
     user_pass = db_engine.Column(db_engine.String(64))
     user_mail = db_engine.Column(db_engine.String)
-    user_admin = db_engine.Column(db_engine.Boolean)
-    user_sadmin = db_engine.Column(db_engine.Boolean)
+    user_role = db_engine.Column(db_engine.Enum(UserRole))
 
 
 class ExerciseType(enum.Enum):
