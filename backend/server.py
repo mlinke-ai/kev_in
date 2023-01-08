@@ -29,7 +29,6 @@ class Server:
         self.api.add_resource(ExerciseResource, "/exercise")
         self.api.add_resource(LoginResource, "/login")
         self.api.add_resource(UserResource, "/user")
-        self.api.add_resource(EvaluatorResource, "/evaluator")
 
     def _base(self) -> Response:
         return send_from_directory("../frontend/dist", "index.html")
