@@ -7,46 +7,47 @@ from py4j.java_gateway import JavaGateway, GatewayParameters, GatewayClient
 __all__ = ["ExecuteJava"]
 
 class ExecuteJava:
+    pass
 
-    def __init__(self):
-        self.javaEnvProcess = None
-
-    def kill_subprocess(self):
-        # if self.javaEnvProcess is not None:
-        #     self.javaEnvProcess.kill()
-        # return
-
-        try:
-            self.javaEnvProcess.communicate(timeout=5)
-        except:
-            print("kill process")
-            self.javaEnvProcess.kill()
-        # print(self.javaEnvProcess.communicate()) # Get output buffer (stdout, stderr)
-
-    def build_java_gateway(self):
-        abPathDirJavaSandbox = Path(os.path.dirname(__file__))
-
-        abPathSandboxJar = os.path.join(abPathDirJavaSandbox, 'javaSandbox03.jar')
-        abPathPy4JJar = os.path.join(abPathDirJavaSandbox, 'py4j0.10.9.7.jar')
-
-        # execute java program
-        self.javaEnvProcess = subprocess.Popen(
-            ['java', '-cp', '{0}:{1}:{2}'.format(abPathPy4JJar, abPathSandboxJar, abPathDirJavaSandbox),
-             'sandbox_env.SandboxEntryPoint'], shell=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        print(self.javaEnvProcess.stdout.readline())  # Gateway Server Started "DEBUG"
-
-    def do_stack_operation(self):
-        gateway = JavaGateway()
-        mySandbox = gateway.entry_point.getSandbox()
-        print(mySandbox)
-        print(gateway.entry_point.getNumber())
-        try:
-            print(mySandbox.run())
-        except Exception:
-            gateway.shutdown()
-            self.kill_subprocess()
-        gateway.shutdown()
+    # def __init__(self):
+    #     self.javaEnvProcess = None
+    #
+    # def kill_subprocess(self):
+    #     # if self.javaEnvProcess is not None:
+    #     #     self.javaEnvProcess.kill()
+    #     # return
+    #
+    #     try:
+    #         self.javaEnvProcess.communicate(timeout=5)
+    #     except:
+    #         print("kill process")
+    #         self.javaEnvProcess.kill()
+    #     # print(self.javaEnvProcess.communicate()) # Get output buffer (stdout, stderr)
+    #
+    # def build_java_gateway(self):
+    #     abPathDirJavaSandbox = Path(os.path.dirname(__file__))
+    #
+    #     abPathSandboxJar = os.path.join(abPathDirJavaSandbox, 'javaSandbox03.jar')
+    #     abPathPy4JJar = os.path.join(abPathDirJavaSandbox, 'py4j0.10.9.7.jar')
+    #
+    #     # execute java program
+    #     self.javaEnvProcess = subprocess.Popen(
+    #         ['java', '-cp', '{0}:{1}:{2}'.format(abPathPy4JJar, abPathSandboxJar, abPathDirJavaSandbox),
+    #          'sandbox_env.SandboxEntryPoint'], shell=False, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #
+    #     print(self.javaEnvProcess.stdout.readline())  # Gateway Server Started "DEBUG"
+    #
+    # def do_stack_operation(self):
+    #     gateway = JavaGateway()
+    #     mySandbox = gateway.entry_point.getSandbox()
+    #     print(mySandbox)
+    #     print(gateway.entry_point.getNumber())
+    #     try:
+    #         print(mySandbox.run())
+    #     except Exception:
+    #         gateway.shutdown()
+    #         self.kill_subprocess()
+    #     gateway.shutdown()
 
         # input() # wait
 

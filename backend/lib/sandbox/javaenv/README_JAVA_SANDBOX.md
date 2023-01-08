@@ -2,7 +2,7 @@
 So far only tested on linux. 
 
 TODO:
-- Test on Windows (subprocess)
+- Test java sandbox in Windows (subprocess)
 - Implement untrusted code execution
 
 DONE:

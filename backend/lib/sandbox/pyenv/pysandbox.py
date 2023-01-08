@@ -24,7 +24,6 @@ def _safe_import(*name: tuple):
 class ExecutePython:
 
     def __init__(self):
-        self.__sandbox_logs = None
         self.__sandbox_logs = dict()
         self.__sandbox_logs["COMPILERLOG"] = dict()
         self.__sandbox_logs["EXECUTELOG"] = dict()
@@ -43,9 +42,6 @@ class ExecutePython:
         Return:
         {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {}, 'RESULTLOG': {'0': (['arg0'], 'solution0'), ...}}
         """
-        # # Generate user code as str.
-        # with open(filename, "r") as f:
-        #     user_code = f.read()
 
         # Adds another lines to user code that executes user function.
         for args in args_list:
@@ -85,14 +81,6 @@ class ExecutePython:
             "result": list(),
         }
         return self.__exec_byte_code(restricted_globals, restricted_locals, *args_list)
-
-        # except:
-        #     # catch *all* exceptions
-        #     import traceback
-        #     type_, value_, traceback_ = sys.exc_info()
-        #
-        #     self.__sandbox_logs["COMPILERLOG"]["ERROR"] = value_
-        #     return self.__sandbox_logs
 
     @timeout_decorator.timeout(5.0, timeout_exception=TimeoutError)  # seconds
     def __exec_byte_code(self, restricted_globals: dict, restricted_locals: dict, *args_list: list) -> dict:
