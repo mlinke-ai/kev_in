@@ -2,4 +2,4 @@
 # -*- coding: utf-8 -*-
 
 from .sandboxes.pyenv.pysandbox import *
-from sandboxes.javaenv.javasandbox import *
+from .sandboxes.javaenv.javasandbox import *
