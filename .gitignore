@@ -7,3 +7,4 @@ instance/
 .vscode/
 node_modules/
 tex/
+.idea/
