@@ -29,6 +29,11 @@ class ExerciseType(enum.Enum):
     ProgrammingExercise = 7
 
 
+class ExerciseLanguage(enum.Enum):
+    Python = 1
+    Java = 2
+
+
 class ExerciseModel(db_engine.Model):
     __tablename__ = config.EXERCISE_TABLE
     exercise_id = db_engine.Column(db_engine.Integer, primary_key=True)
@@ -36,6 +41,7 @@ class ExerciseModel(db_engine.Model):
     exercise_description = db_engine.Column(db_engine.String)
     exercise_type = db_engine.Column(db_engine.Enum(ExerciseType))
     exercise_content = db_engine.Column(db_engine.Text)
+    exercise_language = db_engine.Column(db_engine.Enum(ExerciseLanguage))
 
 
 class SolutionModel(db_engine.Model):
