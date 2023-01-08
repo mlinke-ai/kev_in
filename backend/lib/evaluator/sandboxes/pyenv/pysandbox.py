@@ -1,4 +1,5 @@
 import importlib.util
+import os
 import sys
 
 from RestrictedPython import compile_restricted_exec
@@ -9,7 +10,6 @@ from RestrictedPython import CompileResult
 import timeout_decorator
 
 __all__ = ["ExecutePython"]
-_SAFE_MODULES = frozenset(("math",))  # allowed modules to use
 _FORBIDDEN_MODULES = frozenset(("os", "sys",))  # forbidden modules
 
 
@@ -28,6 +28,7 @@ class ExecutePython:
         self.__sandbox_logs["COMPILERLOG"] = dict()
         self.__sandbox_logs["EXECUTELOG"] = dict()
         self.__sandbox_logs["RESULTLOG"] = dict()
+        self.__sandbox_logs["EXECUTELOG"]["ERROR"] = tuple()
         self.__compile_result = CompileResult(None, None, None, None)
 
     def exec_untrusted_code(self, user_code: str, user_func: str, *args_list) -> dict:
@@ -40,15 +41,19 @@ class ExecutePython:
             *args_list: Nested list of arguments passed to the user function.
 
         Return:
-        {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {}, 'RESULTLOG': {'0': (['arg0'], 'solution0'), ...}}
+        {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()}, 'RESULTLOG': {'0': (['arg0'], ['solution0']), ...}}
         """
+        # Create usercode.py where user code is stored.
+        f = open("usercode.py", "w")
+        f.write(user_code)
+        f.close()
 
         # Adds another lines to user code that executes user function.
         for args in args_list:
             user_code += "\nresult.append({0}({1}))".format(user_func, ','.join(map(str, args)))
 
         # Compile code.
-        self.__compile_result = compile_restricted_exec(source=user_code) # removed filename=filename
+        self.__compile_result = compile_restricted_exec(source=user_code)
         self.__sandbox_logs["COMPILERLOG"]["ERROR"] = self.__compile_result[1]
         self.__sandbox_logs["COMPILERLOG"]["WARNINGS"] = self.__compile_result[2]
 
@@ -57,11 +62,14 @@ class ExecutePython:
             return self.__sandbox_logs
 
         # Import module "usercode.py" as it is now safe to import.
-        spec = importlib.util.spec_from_file_location("usercode", "./backend/lib/userCodeExecution/usercode.py")
+        spec = importlib.util.spec_from_file_location("usercode", "./usercode.py")
         user_mod = importlib.util.module_from_spec(spec)
         sys.modules["usercode"] = user_mod
         spec.loader.exec_module(user_mod)
         user_defined_func = dict(getmembers(user_mod, isfunction))
+
+        if os.path.exists("usercode.py"):
+            os.remove("usercode.py")
 
         # If you want the user to be able to use some of your functions inside his code.
         # You should add this function to this dictionary.
@@ -69,7 +77,7 @@ class ExecutePython:
             "__builtins__": {
                 # **safe_builtins,
                 **utility_builtins,
-                **user_defined_func,  # allow all user-defined function? Or only the one we specify e.g. "fib"
+                **user_defined_func,  # allow all user-defined functions
                 "__import__": _safe_import,
             },
             "_getiter_": iter,
@@ -82,7 +90,7 @@ class ExecutePython:
         }
         return self.__exec_byte_code(restricted_globals, restricted_locals, *args_list)
 
-    @timeout_decorator.timeout(5.0, timeout_exception=TimeoutError)  # seconds
+    @timeout_decorator.timeout(3.0, timeout_exception=TimeoutError)  # seconds
     def __exec_byte_code(self, restricted_globals: dict, restricted_locals: dict, *args_list: list) -> dict:
 
         if self.__compile_result.code is None:  # in case it's 'None', but should never become true.
@@ -94,10 +102,8 @@ class ExecutePython:
 
         except TimeoutError:
             # code execution took too long
-            import traceback
-
             self.__sandbox_logs["EXECUTELOG"]["ERROR"] = \
-                f'TimeoutError: Code execution has been interrupted. Maximum execution time has been reached!'
+                ('TimeoutError: Code execution has been interrupted. Maximum execution time has been reached!',)
             return self.__sandbox_logs
 
         except:
@@ -105,7 +111,7 @@ class ExecutePython:
             import traceback
             type_, value_, traceback_ = sys.exc_info()
 
-            self.__sandbox_logs["EXECUTELOG"]["ERROR"] = value_
+            self.__sandbox_logs["EXECUTELOG"]["ERROR"] = (value_,)
             return self.__sandbox_logs
 
         else:

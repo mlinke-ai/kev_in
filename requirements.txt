@@ -6,3 +6,4 @@ PyJWT
 RestrictedPython
 py4j
 timeout_decorator
+parameterized
