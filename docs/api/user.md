@@ -49,8 +49,7 @@ Replace `<arguments>` with key value pairs in the form `key=value` (key is the a
 | `user_id` | `int` | optional | `1` | The ID of the user. Normally obtained after creating a new user. |
 | `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is not guaranteed. |
 | `user_mail` | `string` | optional | `john.doe@example.com` | The e-mail address of the user. |
-| `user_admin` | `bool` | optional | `true` | A flag whether the user is an admin or not. |
-| `user_sadmin` | `bool` | optional | `false` | A flag whether the user is the super admin or not. |
+| `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
 | `user_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
 | `user_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 
