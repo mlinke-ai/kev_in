@@ -3,3 +3,5 @@ export const accessLevels = {
     user: 1,
     admin: 2
 };
+
+export const passwordLength = 8;

@@ -12,8 +12,8 @@ export let navbarConfig = {
         ],
         buttons: [
             {
-                label: "Register",
-                route: "/register",
+                label: "Signup",
+                route: "/signup",
                 variant: "outlined"
             },
             {

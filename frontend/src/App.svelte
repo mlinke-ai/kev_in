@@ -4,6 +4,7 @@
   import routes from "./routes/";
   import { setupUserSettings, getAccessLevel } from "./lib/functions/user";
   import { startPage } from "./stores";
+    import Footer from "./lib/components/Footer/Footer.svelte";
 
   let ready = false;
 
@@ -23,6 +24,7 @@
 {#if ready}
   <Navbar />
   <Router {routes} />
+  <Footer />
 {:else}
   preparing...
 {/if}

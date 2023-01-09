@@ -6,7 +6,7 @@
   import Tab, { Label as TLabel } from "@smui/tab";
   import TabBar from "@smui/tab-bar";
   import Select, { Option } from "@smui/select";
-  import { accessLevel, userName, userLevel, startPage } from "../../../stores";
+  import { accessLevel, userName, startPage } from "../../../stores";
   import { accessLevels } from "../../types";
   import { setupUserSettings } from "../../functions/user";
   import { replace as replaceRoute } from "svelte-spa-router";
@@ -37,7 +37,7 @@
           $accessLevel = accessLevels.admin;
           setupUserSettings($accessLevel);
           $userName = email;
-          $userLevel = 9000;
+          $accessLevel = accessLevels.admin;
           replaceRoute($startPage);
         });
       } else if (response.status == 401) {

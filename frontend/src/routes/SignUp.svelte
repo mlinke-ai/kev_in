@@ -4,8 +4,11 @@
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "../lib/components/Login/PasswordInput.svelte"
-  import { userName, userIsAdmin, userLevel, userLoggedIn } from "../stores"
-  import Page from "../lib/components/Page.svelte";
+  import { userName, userMail, accessLevel } from "../stores"
+  import Page from "../lib/components/common/Page.svelte";
+  import { push } from "svelte-spa-router";
+  import { accessLevels, passwordLength } from "../lib/types"
+
   
   let email = "";
   let emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;  
@@ -14,20 +17,9 @@
   let passwordRepetition = "";
 
   let userExists = false;
-  
-  // fetch("http://127.0.0.1:5000/user", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify({
-      //       user_name: "consti",
-      //       user_mail: "hallo.ciao@234.de",
-  //       user_pass: "passwort",
-  //       user_admin: false,
-  //     }),
-  // })
-  
+   
   function checkData(){
-    if (password.length < 8){
+    if (password.length < passwordLength){
       return false
     }
     else if(password != passwordRepetition){
@@ -48,23 +40,14 @@
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user_name: email,
+        user_name: username,
         user_pass: password,
         user_mail: email,
         user_admin: false
       }),
     }).then((response) => {
-      if (response.status == 200) {
-        response.json().then((data) => {
-          // TODO: Save Cookie with jwt token
-          
-          // Save user info in local storage
-          $userLoggedIn = true;
-          $userName = email;
-          $userIsAdmin = true;
-          $userLevel = 9000;
-          window.location.replace("..#/profile");
-        });
+      if (response.status == 201) {
+        window.location.replace("..#/login");
       } else if (response.status == 401) {
         document.getElementById("email-input").focus()
         alert("Sign Up failed")
@@ -102,22 +85,6 @@
     }
   }
   
-  // const checkUserExistence = async () => {
-    //   fetch("http://127.0.0.1:5000/user?user_name="+username, {
-      //     method: "GET",
-      //     headers: { "Content-Type": "application/json" },
-      //   }).then(response => {
-        //     if (response.status == 200){
-          //       console.log("user exists")
-          //       return true
-          //     }
-          //     else{
-            //       console.log("user doesnt exist yet -> username available")
-            //       return false
-  //     }
-  //   })
-  // }
-  
   let passwordTooShort = false;
   function checkPWlength(){
     if (password.length < 8){
@@ -145,7 +112,7 @@
                 variant="outlined"
                 
             >
-                <HelperText slot="helper">
+                <HelperText slot="helper" persistent>
                   {#if wrongMailFlag}
                     Please enter a valid E Mail address.
                   {/if}
