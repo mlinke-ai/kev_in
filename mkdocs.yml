@@ -33,6 +33,7 @@ nav:
       - Exercise: "api/exercise.md"
       - Login: "api/login.md"
       - Solution: "api/solution.md"
+      - Config: "api/config.md"
   - License: "license.md"
 plugins:
   - search
