@@ -25,18 +25,16 @@ class ExerciseResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", location="args")
-        parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing", location="args")
-        parser.add_argument(
-            "exercise_description", type=str, help="Description of exercise is missing", location="args"
-        )
+        parser.add_argument("exercise_id", type=int, help="{error_msg}")
+        parser.add_argument("exercise_title", type=str, help="{error_msg}")
+        parser.add_argument("exercise_description", type=str, help="{error_msg}")
         parser.add_argument(
             "exercise_type",
             type=lambda x: config.ExerciseType(int(x)),
-            help="Type of exercise is missing",
+            help="{error_msg}",
             location="args",
         )
-        parser.add_argument("exercise_content", type=str, help="Content of exercise is missing", location="args")
+        parser.add_argument("exercise_content", type=str, help="{error_msg}")
 
         args = parser.parse_args()
 
@@ -92,15 +90,15 @@ class ExerciseResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing", required=True)
-        parser.add_argument("exercise_description", type=str, help="Description of exercise is missing", required=True)
+        parser.add_argument("exercise_title", type=str, help="{error_msg}", required=True)
+        parser.add_argument("exercise_description", type=str, help="{error_msg}", required=True)
         parser.add_argument(
             "exercise_type",
             type=lambda x: config.ExerciseType(int(x)),
-            help="Type of exercise is missing",
+            help="{error_msg}",
             required=True,
         )
-        parser.add_argument("exercise_content", type=str, help="Content of exercise is missing", required=True)
+        parser.add_argument("exercise_content", type=str, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
@@ -172,13 +170,11 @@ class ExerciseResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", required=True)
-        parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
-        parser.add_argument("exercise_description", type=str, help="Description of exercise is missing")
-        parser.add_argument(
-            "exercise_type", type=lambda x: config.ExerciseType(int(x)), help="Type of exercise is missing"
-        )
-        parser.add_argument("exercise_content", type=str, help="Content of exercise is missing")
+        parser.add_argument("exercise_id", type=int, help="{error_msg}", required=True)
+        parser.add_argument("exercise_title", type=str, help="{error_msg}")
+        parser.add_argument("exercise_description", type=str, help="{error_msg}")
+        parser.add_argument("exercise_type", type=lambda x: config.ExerciseType(int(x)), help="{error_msg}")
+        parser.add_argument("exercise_content", type=str, help="{error_msg}")
 
         args = parser.parse_args()
 
@@ -219,7 +215,7 @@ class ExerciseResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", required=True)
+        parser.add_argument("exercise_id", type=int, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 

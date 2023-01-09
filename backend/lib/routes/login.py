@@ -40,10 +40,10 @@ class LoginResource(Resource):
 
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_name", type=str, help="Name of the user is missing.", required=True)
-        parser.add_argument("user_pass", type=str, help="Credentials of the user are missing.", required=True)
+        parser.add_argument("user_name", type=str, help="{error_msg}", required=True)
+        parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         args = parser.parse_args()
-        #hash the password with sha-256
+        # hash the password with sha-256
         args["user_pass"] = hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest()
         # load the user table
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)

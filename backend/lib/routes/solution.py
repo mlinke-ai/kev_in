@@ -41,16 +41,16 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         # define arguments
-        parser.add_argument("solution_id", type=int, help="ID of the solution is missing", location="args")
-        parser.add_argument("solution_user", type=int, help="ID of the user is missing", location="args")
-        parser.add_argument("solution_exercise", type=int, help="ID of the exercise is missing", location="args")
+        parser.add_argument("solution_id", type=int, help="{error_msg}")
+        parser.add_argument("solution_user", type=int, help="{error_msg}")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
         # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="Start time of the solution is missing", location="args")
+        parser.add_argument("solution_date", type=int, help="{error_msg}")
         # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="Duration of the solution is missing", location="args")
-        parser.add_argument("solution_correct", type=bool, help="Correctness of solution is missing", location="args")
-        parser.add_argument("solution_offset", type=int, default=0, help="Start index is missing")
-        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="Page size is missing")
+        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_correct", type=bool, help="{error_msg}")
+        parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}")
+        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}")
 
         args = parser.parse_args()
 
@@ -112,16 +112,10 @@ class SolutionResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("solution_user", type=int, help="ID of the user is missing", required=True, location="args")
-        parser.add_argument(
-            "solution_exercise", type=int, help="ID of the exercise is missing", required=True, location="args"
-        )
-        parser.add_argument(
-            "solution_date", type=int, help="Date of the solution is missing", required=True, location="args"
-        )
-        parser.add_argument(
-            "solution_duration", type=int, help="Duration of the solution is missing", required=True, location="args"
-        )
+        parser.add_argument("solution_user", type=int, help="{error_msg}")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
+        parser.add_argument("solution_date", type=int, help="{error_msg}")
+        parser.add_argument("solution_duration", type=int, help="{error_msg}")
 
         args = parser.parse_args()
 
@@ -175,14 +169,14 @@ class SolutionResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("solution_id", type=int, help="ID of the solution is missing", required=True)
-        parser.add_argument("solution_user", type=int, help="ID of the user is missing")
-        parser.add_argument("solution_exercise", type=int, help="ID of the exercise is missing")
+        parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_user", type=int, help="{error_msg}")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
         # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="Start time of the solution is missing")
+        parser.add_argument("solution_date", type=int, help="{error_msg}")
         # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="Duration of the solution is missing")
-        parser.add_argument("solution_correct", type=bool, help="Correctness of solution is missing")
+        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_correct", type=bool, help="{error_msg}")
 
         args = parser.parse_args()
 
@@ -226,7 +220,7 @@ class SolutionResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("solution_id", type=int, help="ID of the solution is missing", required=True)
+        parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 

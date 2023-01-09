@@ -38,19 +38,19 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, default=0, help="ID of the user is missing", location="args")
-        parser.add_argument("user_name", type=str, default="", help="Name of the user is missing", location="args")
-        parser.add_argument("user_mail", type=str, default="", help="Mail of the user is missing", location="args")
+        parser.add_argument("user_id", type=int, default=0, help="{error_msg}")
+        parser.add_argument("user_name", type=str, default="", help="{error_msg}")
+        parser.add_argument("user_mail", type=str, default="", help="{error_msg}")
         parser.add_argument(
             "user_role",
             type=lambda x: config.UserRole(int(x)),
             default=config.UserRole.User,
-            help="User Role is missing",
+            help="{error_msg}",
             location="args",
         )
-        parser.add_argument("user_offset", type=int, default=0, help="Start index is missing", location="args")
+        parser.add_argument("user_offset", type=int, default=0, help="{error_msg}")
         parser.add_argument(
-            "user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="Page size is missing", location="args"
+            "user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}"
         )
 
         args = parser.parse_args()
@@ -108,11 +108,11 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_name", type=str, help="Name of the user is missing", required=True)
-        parser.add_argument("user_pass", type=str, help="Credentials of the user are missing", required=True)
-        parser.add_argument("user_mail", type=str, help="Mail of the user is missing", required=True)
+        parser.add_argument("user_name", type=str, help="{error_msg}", required=True)
+        parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
+        parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
         parser.add_argument(
-            "user_role", type=lambda x: config.UserRole(int(x)), help="User role is missing", required=True
+            "user_role", type=lambda x: config.UserRole(int(x)), help="{error_msg}", required=True
         )
 
         args = parser.parse_args()
@@ -184,11 +184,11 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, help="ID of the user is missing", required=True)
-        parser.add_argument("user_name", type=str, help="Name of the user is missing")
-        parser.add_argument("user_pass", type=str, help="Credentials of the user are missing")
-        parser.add_argument("user_mail", type=str, help="Mail of the user is missing")
-        parser.add_argument("user_role", type=lambda x: config.UserRole(int(x)), help="User role is missing")
+        parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
+        parser.add_argument("user_name", type=str, help="{error_msg}")
+        parser.add_argument("user_pass", type=str, help="{error_msg}")
+        parser.add_argument("user_mail", type=str, help="{error_msg}")
+        parser.add_argument("user_role", type=lambda x: config.UserRole(int(x)), help="{error_msg}")
 
         args = parser.parse_args()
 
@@ -228,7 +228,7 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, help="ID of the user is missing", required=True)
+        parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
