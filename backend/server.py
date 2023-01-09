@@ -9,7 +9,7 @@ from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config, errors
-from backend.lib.interfaces import db_engine, UserModel, UserRole
+from backend.lib.interfaces import db_engine, UserModel
 from backend.lib.routes import ExerciseResource, LoginResource, UserResource, SolutionResource
 
 
@@ -48,7 +48,7 @@ class Server:
                 user_name=config.SADMIN_NAME,
                 user_pass=hashlib.sha256(bytes(config.SADMIN_PASS, encoding="utf-8")).hexdigest(),
                 user_mail=config.SADMIN_MAIL,
-                user_role=UserRole.SAdmin,
+                user_role=config.UserRole.SAdmin,
             )
             db_engine.session.add(sadmin)
             db_engine.session.commit()
