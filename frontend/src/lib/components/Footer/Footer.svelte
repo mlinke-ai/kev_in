@@ -1,5 +1,4 @@
 <script lang="js">
-  import BottomAppBar, { Section } from "@smui-extra/bottom-app-bar";
   import Button from "@smui/button";
 
   function toTop() {
