@@ -37,6 +37,7 @@
     "@smui/textfield": "^7.0.0-beta.0",
     "@smui/top-app-bar": "^7.0.0-beta.0",
     "brace": "^0.11.1",
+    "nodejs": "0.0.0",
     "smui-theme": "^7.0.0-beta.0",
     "svelte-markdown": "^0.2.3",
     "svelte-spa-router": "^3.3.0",

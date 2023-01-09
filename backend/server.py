@@ -9,8 +9,8 @@ from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config, errors
-from backend.lib.interfaces import db_engine, UserModel
-from backend.lib.routes import CourseResource, ExerciseResource, LoginResource, UserResource
+from backend.lib.interfaces import db_engine, UserModel, UserRole
+from backend.lib.routes import ExerciseResource, LoginResource, UserResource, SolutionResource
 
 
 class Server:
@@ -25,10 +25,10 @@ class Server:
             db_engine.create_all()
             self._sadmin_check()
         self.api = Api(self.app)
-        self.api.add_resource(CourseResource, "/course")
         self.api.add_resource(ExerciseResource, "/exercise")
         self.api.add_resource(LoginResource, "/login")
         self.api.add_resource(UserResource, "/user")
+        self.api.add_resource(SolutionResource, "/solution")
 
     def _base(self) -> Response:
         return send_from_directory("../frontend/dist", "index.html")
@@ -38,7 +38,7 @@ class Server:
 
     def _sadmin_check(self) -> None:
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == config.SADMIN_NAME)
+        query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_role == UserRole.SAdmin)
         selection = db_engine.session.execute(query)
         try:
             row = selection.scalar_one()
@@ -48,8 +48,7 @@ class Server:
                 user_name=config.SADMIN_NAME,
                 user_pass=hashlib.sha256(bytes(config.SADMIN_PASS, encoding="utf-8")).hexdigest(),
                 user_mail=config.SADMIN_MAIL,
-                user_admin=True,
-                user_sadmin=True,
+                user_role=UserRole.SAdmin,
             )
             db_engine.session.add(sadmin)
             db_engine.session.commit()

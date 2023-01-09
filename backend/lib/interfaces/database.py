@@ -9,14 +9,19 @@ from backend.lib.core import errors, config
 db_engine = flask_sqlalchemy.SQLAlchemy()
 
 
+class UserRole(enum.Enum):
+    SAdmin = 1
+    Admin = 2
+    User = 3
+
+
 class UserModel(db_engine.Model):
     __tablename__ = config.USER_TABLE
     user_id = db_engine.Column(db_engine.Integer, primary_key=True)
     user_name = db_engine.Column(db_engine.String)
     user_pass = db_engine.Column(db_engine.String(64))
     user_mail = db_engine.Column(db_engine.String)
-    user_admin = db_engine.Column(db_engine.Boolean)
-    user_sadmin = db_engine.Column(db_engine.Boolean)
+    user_role = db_engine.Column(db_engine.Enum(UserRole))
 
 
 class ExerciseType(enum.Enum):
@@ -29,6 +34,11 @@ class ExerciseType(enum.Enum):
     ProgrammingExercise = 7
 
 
+class ExerciseLanguage(enum.Enum):
+    Python = 1
+    Java = 2
+
+
 class ExerciseModel(db_engine.Model):
     __tablename__ = config.EXERCISE_TABLE
     exercise_id = db_engine.Column(db_engine.Integer, primary_key=True)
@@ -36,6 +46,7 @@ class ExerciseModel(db_engine.Model):
     exercise_description = db_engine.Column(db_engine.String)
     exercise_type = db_engine.Column(db_engine.Enum(ExerciseType))
     exercise_content = db_engine.Column(db_engine.Text)
+    exercise_language = db_engine.Column(db_engine.Enum(ExerciseLanguage))
 
 
 class SolutionModel(db_engine.Model):
@@ -48,7 +59,3 @@ class SolutionModel(db_engine.Model):
     solution_correct = db_engine.Column(db_engine.Boolean)
     user_relation = db_engine.relationship(UserModel, foreign_keys="SolutionModel.solution_user")
     exercise_relation = db_engine.relationship(ExerciseModel, foreign_keys="SolutionModel.solution_exercise")
-
-
-# class CourseModel(db_engine.Model):
-#     pass
