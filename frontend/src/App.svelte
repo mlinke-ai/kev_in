@@ -10,7 +10,7 @@
 
   function prepareApp() {
     setupUserSettings(getAccessLevel())
-    replaceRoute($startPage);
+    // replaceRoute($startPage);
     ready = true;
   }
 </script>
@@ -22,7 +22,7 @@
 />
 
 {#if ready}
-  <Navbar />
+  <!--<Navbar />-->
   <Router {routes} />
   <Footer />
 {:else}
