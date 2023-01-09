@@ -35,8 +35,16 @@ class ExerciseResource(Resource):
             location="args",
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}")
+        parser.add_argument("exercise_offset", type=int, default=0, help="{error_msg}")
+        parser.add_argument("exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}")
 
         args = parser.parse_args()
+
+        # check if page limit is in range
+        if args["exercise_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
+            return make_response(
+                jsonify(dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED))
+            )
 
         # check if token cookie was sent
         cookies = request.cookies.to_dict(True)  # we only use the first value from each key
@@ -51,10 +59,10 @@ class ExerciseResource(Resource):
         # compose a query to select the requested element
         query = db_engine.select(exercise_table).select_from(exercise_table)
         if args["exercise_id"]:
-            if args["exercise_id"] < 1:  # primary key is somehow always > 0
-                pass
-            else:
-                query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
+            query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
+        else:
+            query = query.where(exercise_table.c.exercise_id >= args["exercise_id"])
+            query = query.limit(args["exercise_limit"])
         if args["exercise_title"]:
             query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
         if args["exercise_description"]:
@@ -69,15 +77,12 @@ class ExerciseResource(Resource):
         # load the selection into the response data
         for row in selection.fetchall():
             result[int(row["exercise_id"])] = dict(
-                exercise_id=row["exercise_id"],
-                exercise_title=row["exercise_title"],
-                exercise_description=row["exercise_description"],
+                exercise_id=int(row["exercise_id"]),
+                exercise_title=str(row["exercise_title"]),
+                exercise_description=str(row["exercise_description"]),
                 exercise_type=row["exercise_type"].name,
-                exercise_content=row["exercise_content"],
+                exercise_content=str(row["exercise_content"]),
             )
-
-        if len(result) > config.MAX_ITEMS_RETURNED:
-            result = dict(list(result.items())[0 : config.MAX_ITEMS_RETURNED])
 
         return make_response((jsonify(result)), 200)
 
