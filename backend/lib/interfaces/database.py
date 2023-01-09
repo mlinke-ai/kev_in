@@ -9,34 +9,13 @@ from backend.lib.core import errors, config
 db_engine = flask_sqlalchemy.SQLAlchemy()
 
 
-class UserRole(enum.IntEnum):
-    SAdmin = 1
-    Admin = 2
-    User = 3
-
-
 class UserModel(db_engine.Model):
     __tablename__ = config.USER_TABLE
     user_id = db_engine.Column(db_engine.Integer, primary_key=True)
     user_name = db_engine.Column(db_engine.String)
     user_pass = db_engine.Column(db_engine.String(64))
     user_mail = db_engine.Column(db_engine.String)
-    user_role = db_engine.Column(db_engine.Enum(UserRole))
-
-
-class ExerciseType(enum.IntEnum):
-    GapTextExercise = 1
-    SyntaxExercise = 2
-    ParsonsPuzzleExercise = 3
-    FindTheBugExercise = 4
-    DocumentationExercise = 5
-    OutputExercise = 6
-    ProgrammingExercise = 7
-
-
-class ExerciseLanguage(enum.Enum):
-    Python = 1
-    Java = 2
+    user_role = db_engine.Column(db_engine.Enum(config.UserRole))
 
 
 class ExerciseModel(db_engine.Model):
@@ -44,9 +23,9 @@ class ExerciseModel(db_engine.Model):
     exercise_id = db_engine.Column(db_engine.Integer, primary_key=True)
     exercise_title = db_engine.Column(db_engine.String)
     exercise_description = db_engine.Column(db_engine.String)
-    exercise_type = db_engine.Column(db_engine.Enum(ExerciseType))
+    exercise_type = db_engine.Column(db_engine.Enum(config.ExerciseType))
     exercise_content = db_engine.Column(db_engine.Text)
-    exercise_language = db_engine.Column(db_engine.Enum(ExerciseLanguage))
+    exercise_language = db_engine.Column(db_engine.Enum(config.ExerciseLanguage))
 
 
 class SolutionModel(db_engine.Model):

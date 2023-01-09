@@ -24,7 +24,7 @@ from flask_sqlalchemy.query import sqlalchemy
 import hashlib
 import jwt
 
-from backend.lib.interfaces.database import UserModel, db_engine, UserRole
+from backend.lib.interfaces.database import UserModel, db_engine
 from backend.lib.core import config
 
 
@@ -43,8 +43,8 @@ class UserResource(Resource):
         parser.add_argument("user_mail", type=str, default="", help="Mail of the user is missing", location="args")
         parser.add_argument(
             "user_role",
-            type=lambda x: UserRole(int(x)),
-            default=UserRole.User,
+            type=lambda x: config.UserRole(int(x)),
+            default=config.UserRole.User,
             help="User Role is missing",
             location="args",
         )
@@ -111,13 +111,15 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing", required=True)
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing", required=True)
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing", required=True)
-        parser.add_argument("user_role", type=lambda x: UserRole(int(x)), help="User role is missing", required=True)
+        parser.add_argument(
+            "user_role", type=lambda x: config.UserRole(int(x)), help="User role is missing", required=True
+        )
 
         args = parser.parse_args()
 
         # check if token cookie was sent
         if (
-            args["user_role"] == UserRole.SAdmin or args["user_role"] == UserRole.Admin
+            args["user_role"] == config.UserRole.SAdmin or args["user_role"] == config.UserRole.Admin
         ):  # somebody wants to create an admin account
             # check if token cookie was sent
             cookies = request.cookies.to_dict(True)  # we only use the first value from each key
@@ -186,7 +188,7 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing")
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing")
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing")
-        parser.add_argument("user_role", type=lambda x: UserRole(int(x)), help="User role is missing")
+        parser.add_argument("user_role", type=lambda x: config.UserRole(int(x)), help="User role is missing")
 
         args = parser.parse_args()
 
@@ -285,7 +287,9 @@ class UserResource(Resource):
         except sqlalchemy.exc.NoResultFound:
             return False
         else:
-            if row["user_role"] == UserRole.SAdmin or row["user_role"] == UserRole.Admin:  # our client is an admin
+            if (
+                row["user_role"] == config.UserRole.SAdmin or row["user_role"] == config.UserRole.Admin
+            ):  # our client is an admin
                 return True
             elif user_id == None:  # in POST when somebody wants to create an admin account but is no admin
                 return False

@@ -7,7 +7,7 @@ from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
-from backend.lib.interfaces.database import ExerciseModel, db_engine, ExerciseType
+from backend.lib.interfaces.database import ExerciseModel, db_engine
 from backend.lib.core import config
 
 
@@ -31,7 +31,10 @@ class ExerciseResource(Resource):
             "exercise_description", type=str, help="Description of exercise is missing", location="args"
         )
         parser.add_argument(
-            "exercise_type", type=lambda x: ExerciseType(int(x)), help="Type of exercise is missing", location="args"
+            "exercise_type",
+            type=lambda x: config.ExerciseType(int(x)),
+            help="Type of exercise is missing",
+            location="args",
         )
         parser.add_argument("exercise_content", type=str, help="Content of exercise is missing", location="args")
 
@@ -92,7 +95,10 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing", required=True)
         parser.add_argument("exercise_description", type=str, help="Description of exercise is missing", required=True)
         parser.add_argument(
-            "exercise_type", type=lambda x: ExerciseType(int(x)), help="Type of exercise is missing", required=True
+            "exercise_type",
+            type=lambda x: config.ExerciseType(int(x)),
+            help="Type of exercise is missing",
+            required=True,
         )
         parser.add_argument("exercise_content", type=str, help="Content of exercise is missing", required=True)
 
@@ -169,8 +175,10 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", required=True)
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
         parser.add_argument("exercise_description", type=str, help="Description of exercise is missing")
-        parser.add_argument("exercise_type", type=lambda x: ExerciseType(int(x)), help="Type of exercise is missing")
-        parser.add_argument("exercise_content", type=ExerciseType, help="Content of exercise is missing")
+        parser.add_argument(
+            "exercise_type", type=lambda x: config.ExerciseType(int(x)), help="Type of exercise is missing"
+        )
+        parser.add_argument("exercise_content", type=str, help="Content of exercise is missing")
 
         args = parser.parse_args()
 
