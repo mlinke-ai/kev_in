@@ -42,7 +42,11 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, default="", help="Name of the user is missing", location="args")
         parser.add_argument("user_mail", type=str, default="", help="Mail of the user is missing", location="args")
         parser.add_argument(
-            "user_role", type=int, default=3, choices=[1, 2, 3], help="User role is missing", location="args"
+            "user_role",
+            type=lambda x: UserRole(int(x)),
+            default=UserRole.User,
+            help="User Role is missing",
+            location="args",
         )
         parser.add_argument("user_offset", type=int, default=0, help="Start index is missing", location="args")
         parser.add_argument(
@@ -85,11 +89,11 @@ class UserResource(Resource):
         # load the selection into the response data
         result = dict()
         for row in selection.fetchall():
-            result[int(row[0])] = dict(
-                user_id=int(row[0]),
-                user_name=str(row[1]),
-                user_mail=str(row[3]),
-                user_role=int(row[4]),
+            result[int(row["user_id"])] = dict(
+                user_id=int(row["user_id"]),
+                user_name=str(row["user_name"]),
+                user_mail=str(row["user_mail"]),
+                user_role=row["user_role"].name,
             )
 
         return make_response((jsonify(result)), 200)
@@ -107,7 +111,7 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing", required=True)
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing", required=True)
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing", required=True)
-        parser.add_argument("user_role", type=int, help="User role is missing", required=True)
+        parser.add_argument("user_role", type=lambda x: UserRole(int(x)), help="User role is missing", required=True)
 
         args = parser.parse_args()
 
@@ -182,7 +186,7 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="Name of the user is missing")
         parser.add_argument("user_pass", type=str, help="Credentials of the user are missing")
         parser.add_argument("user_mail", type=str, help="Mail of the user is missing")
-        parser.add_argument("user_role", type=int, help="User role is missing")
+        parser.add_argument("user_role", type=lambda x: UserRole(int(x)), help="User role is missing")
 
         args = parser.parse_args()
 

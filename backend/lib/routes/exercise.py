@@ -15,7 +15,7 @@ class ExerciseResource(Resource):
     def get(self) -> Response:
         """
         Implementation of the HTTP GET method. Use this method to query the system for exercises.
-        You can get exercises by thier id. If you pass exercise_id < 1, it will be ignored.
+        You can get exercises by their id. If you pass exercise_id < 1, it will be ignored.
         If you pass multiple arguments, you query the system with multiple arguments. It is possible
         that the system returns up to config.MAX_ITEMS_RETURNED items. If your query would select
         more items, only the first 20 items will be returned
@@ -27,27 +27,30 @@ class ExerciseResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", location="args")
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing", location="args")
-        parser.add_argument("exercise_description", type=str, help="Description of exercise is missing", location="args")
-        #no specified type, otherwise selecting by exercise_type is not working
-        parser.add_argument("exercise_type", help="Type of exercise is missing", location="args")
+        parser.add_argument(
+            "exercise_description", type=str, help="Description of exercise is missing", location="args"
+        )
+        parser.add_argument(
+            "exercise_type", type=lambda x: ExerciseType(int(x)), help="Type of exercise is missing", location="args"
+        )
         parser.add_argument("exercise_content", type=str, help="Content of exercise is missing", location="args")
 
         args = parser.parse_args()
 
-        #check if token cookie was sent
-        cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if token cookie was sent
+        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
         if not "token" in cookies:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        #check if the client has access
+        # check if the client has access
         if not self._authorize(cookies["token"], True):
             return make_response((jsonify(dict(message="No Access"))), 403)
-        
+
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = db_engine.select(exercise_table).select_from(exercise_table)
         if args["exercise_id"]:
-            if args["exercise_id"] < 1: #primary key is somehow always > 0
+            if args["exercise_id"] < 1:  # primary key is somehow always > 0
                 pass
             else:
                 query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
@@ -64,17 +67,17 @@ class ExerciseResource(Resource):
         selection = db_engine.session.execute(query)
         # load the selection into the response data
         for row in selection.fetchall():
-            result[row["exercise_id"]] = dict(
+            result[int(row["exercise_id"])] = dict(
                 exercise_id=row["exercise_id"],
                 exercise_title=row["exercise_title"],
                 exercise_description=row["exercise_description"],
-                exercise_type=str(row["exercise_type"]),
-                exercise_content=row["exercise_content"]
-                )
+                exercise_type=row["exercise_type"].name,
+                exercise_content=row["exercise_content"],
+            )
 
         if len(result) > config.MAX_ITEMS_RETURNED:
-            result = dict(list(result.items())[0: config.MAX_ITEMS_RETURNED])
-        
+            result = dict(list(result.items())[0 : config.MAX_ITEMS_RETURNED])
+
         return make_response((jsonify(result)), 200)
 
     def post(self) -> Response:
@@ -88,16 +91,18 @@ class ExerciseResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing", required=True)
         parser.add_argument("exercise_description", type=str, help="Description of exercise is missing", required=True)
-        parser.add_argument("exercise_type", type=ExerciseType, help="Type of exercise is missing", required=True)
+        parser.add_argument(
+            "exercise_type", type=lambda x: ExerciseType(int(x)), help="Type of exercise is missing", required=True
+        )
         parser.add_argument("exercise_content", type=str, help="Content of exercise is missing", required=True)
 
         args = parser.parse_args()
 
-        #check if token cookie was sent
-        cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if token cookie was sent
+        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
         if not "token" in cookies:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        #check if the client has access
+        # check if the client has access
         if not self._authorize(cookies["token"], False):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
@@ -117,8 +122,8 @@ class ExerciseResource(Resource):
                 exercise_title=args["exercise_title"],
                 exercise_description=args["exercise_description"],
                 exercise_type=args["exercise_type"],
-                exercise_content=args["exercise_content"]
-                )
+                exercise_content=args["exercise_content"],
+            )
             # add the new element
             db_engine.session.add(exercise)
             db_engine.session.commit()
@@ -164,16 +169,16 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_id", type=int, help="ID of the exercise is missing", required=True)
         parser.add_argument("exercise_title", type=str, help="Title of the exercise is missing")
         parser.add_argument("exercise_description", type=str, help="Description of exercise is missing")
-        parser.add_argument("exercise_type", type=str, help="Type of exercise is missing")
+        parser.add_argument("exercise_type", type=lambda x: ExerciseType(int(x)), help="Type of exercise is missing")
         parser.add_argument("exercise_content", type=ExerciseType, help="Content of exercise is missing")
 
         args = parser.parse_args()
 
-        #check if token cookie was sent
-        cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if token cookie was sent
+        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
         if not "token" in cookies:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        #check if the client has access
+        # check if the client has access
         if not self._authorize(cookies["token"], False):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
@@ -189,7 +194,7 @@ class ExerciseResource(Resource):
         # execute the query
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
-        #if no element was updated, the rowcount is 0
+        # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
             return make_response((jsonify(result)), 404)
@@ -210,11 +215,11 @@ class ExerciseResource(Resource):
 
         args = parser.parse_args()
 
-        #check if token cookie was sent
-        cookies = request.cookies.to_dict(True) #we only use the first value from each key
+        # check if token cookie was sent
+        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
         if not "token" in cookies:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        #check if the client has access
+        # check if the client has access
         if not self._authorize(cookies["token"], False):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
@@ -222,11 +227,11 @@ class ExerciseResource(Resource):
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         # compose the query to delete the requested element
         query = db_engine.delete(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"])
-        
+
         # execute the query
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
-        #if no element was updated, the rowcount is 0
+        # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
             return make_response((jsonify(result)), 404)
@@ -240,14 +245,14 @@ class ExerciseResource(Resource):
         HTTP request. Therefore the JWT is decoded. Returns True if access is granted and False when access is denied.
         If you want to check for write access, set readOnly to False.
         """
-        
-        #decode JWT to dict
+
+        # decode JWT to dict
         try:
             user_data = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
         except jwt.exceptions.DecodeError:
             return False
- 
-        #now check in database if the user exists
+
+        # now check in database if the user exists
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == user_data["user_id"])
         selection = db_engine.session.execute(query)
@@ -256,7 +261,7 @@ class ExerciseResource(Resource):
         except sqlalchemy.exc.NoResultFound:
             return False
         else:
-            if readOnly: #write access not needed
+            if readOnly:  # write access not needed
                 return True
-            else: #write access needed
+            else:  # write access needed
                 return row["user_admin"]

@@ -9,7 +9,7 @@ from backend.lib.core import errors, config
 db_engine = flask_sqlalchemy.SQLAlchemy()
 
 
-class UserRole(enum.Enum):
+class UserRole(enum.IntEnum):
     SAdmin = 1
     Admin = 2
     User = 3
@@ -24,7 +24,7 @@ class UserModel(db_engine.Model):
     user_role = db_engine.Column(db_engine.Enum(UserRole))
 
 
-class ExerciseType(enum.Enum):
+class ExerciseType(enum.IntEnum):
     GapTextExercise = 1
     SyntaxExercise = 2
     ParsonsPuzzleExercise = 3
