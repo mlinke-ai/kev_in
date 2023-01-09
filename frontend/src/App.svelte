@@ -1,5 +1,5 @@
 <script>
-  import Navbar from "./lib/components/Navbar_new/Navbar.svelte";
+  import Navbar from "./lib/components/Navbar/Navbar.svelte";
   import Router, { replace as replaceRoute } from "svelte-spa-router";
   import routes from "./routes/";
   import { setupUserSettings, getAccessLevel } from "./lib/functions/user";
@@ -21,7 +21,7 @@
 />
 
 {#if ready}
-  <Navbar />
+  <!--<Navbar />-->
   <Router {routes} />
 {:else}
   preparing...

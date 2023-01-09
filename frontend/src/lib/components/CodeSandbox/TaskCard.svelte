@@ -1,6 +1,7 @@
 <script>
     import Button, { Icon, Label } from "@smui/button";
     import Card from "@smui/card";
+    import IconButton from "@smui/icon-button/src/IconButton.svelte";
 </script>
 
 <div class="task-container">
@@ -10,14 +11,27 @@
                 <Icon class="material-icons">school</Icon>
                 <b>Task</b>
             </div>
+
+            <div class="action-buttons">
+                <IconButton>
+                    <Icon class="material-icons md-icon">help</Icon>
+                </IconButton>
+            </div>
         </div>
         <div class="task-area">
-            <div class="task-iframe">
-                <p>Welcome to your first test excercise!</p>
-                To solve it you have to write a python script that prints out "Hello World".
-                <p>To print content in python you can use the <b>print()</b> function.</p>
-                Put the text to print between the parantheses in quotation marks.
-            </div>
+            <h1>Welcome to your first test excercise!</h1>
+            <p>
+                To solve it you have to write a python script that prints out
+                "Hello World".
+            </p>
+            <br />
+            <hr />
+            <br />
+            Hints:
+            <ul>
+                <li>use the print() function</li>
+                <li>strings have to be in quotation marks</li>
+            </ul>
         </div>
     </Card>
 </div>
@@ -41,24 +55,32 @@
         padding: 0.7rem 1rem 0.7rem 1rem;
         display: flex;
         align-items: center;
+        :last-child {
+            margin-left: auto;
+        }
     }
     .task-title {
         display: flex;
         align-items: center;
         gap: 0.25rem;
     }
+    * :global(.md-icon) {
+        padding: 0;
+        margin: 0;
+        color: #005f50;
+    }
     .task-area {
         height: 100%;
         margin: 0 0.5rem 0.5rem 0.5rem;
-    }
-    .task-iframe {
-        height: 100%;
-        width: 100%;
         border-radius: 0.5rem;
         background-color: black;
         border: none;
-        color: #7CFC00;
+        color: #7cfc00;
         padding: 1rem;
         font-family: "Roboto Mono";
+        overflow: scroll;
+        hr {
+            color: #7cfc00;
+        }
     }
 </style>

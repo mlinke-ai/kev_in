@@ -11,7 +11,9 @@
                 <b>Output</b>
             </div>
         </div>
-        <div class="output-area" />
+        <div class="output-area">
+            Server>>
+        </div>
     </Card>
 </div>
 
@@ -42,5 +44,9 @@
         margin: 0 0.5rem 0.5rem 0.5rem;
         border-radius: 0.5rem;
         background-color: black;
+        border: none;
+        color: #7cfc00;
+        padding: 1rem;
+        font-family: "Roboto Mono";
     }
 </style>
