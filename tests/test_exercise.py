@@ -48,6 +48,7 @@ class ExerciseTest(unittest.TestCase):
             headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
         )
         cls.exercise_id = r.json()["exercise_id"]
+        cls.exercise_title = r.json()["exercise_title"]   
 
         #create a test user which we can use later
         r = requests.request(
@@ -181,11 +182,12 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "POST", "http://127.0.0.1:5000/exercise",
-            json={"exercise_title": "MyExercise", "exercise_description" : "TestTestTest", "exercise_type": 1, "exercise_content":"1+1="},
+            json={"exercise_title": "My Exercise",
+            "exercise_description" : "This is a good Test example!",
+            "exercise_type": 1, "exercise_content":"1+1="},
             headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
         )
         self.assertEqual(r.status_code, 201)
-        print(r.json()["message"])
 
         try:
             exercise = r.json()
@@ -204,6 +206,88 @@ class ExerciseTest(unittest.TestCase):
             json={"exercise_id": id },
             headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
         )
+
+    def test_post_no_access(self) -> None:
+        """
+        Create an exercise in the system with HTTP-POST method without logging in or with a user account.
+        The system should return HTTP-status 401 or 403
+        """
+
+        r = requests.request(
+            "POST", "http://127.0.0.1:5000/exercise",
+            json={"exercise_title": "My Exercise",
+            "exercise_description" : "This is a good Test example!",
+            "exercise_type": 1, "exercise_content":"1+1="},
+            headers={"Content-Type": "application/json", "Cookie": "key=value;"}
+        )
+        self.assertDictEqual(r.json(), {"message": "Login required"})
+        self.assertEqual(r.status_code, 401)
+
+        r = requests.request(
+            "POST", "http://127.0.0.1:5000/exercise",
+            json={"exercise_title": "My Exercise",
+            "exercise_description" : "This is a good Test example!",
+            "exercise_type": 1, "exercise_content":"1+1="},
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"}
+        )
+        self.assertDictEqual(r.json(), {"message": "No Access"})
+        self.assertEqual(r.status_code, 403)
+
+    
+    def test_post_existing(self) -> None:
+        """
+        Attempting to create/overwrite an already existing exercise with the HTTP-POST method.
+        Overwriting exercises should not be possible even with admin privileges
+        This test should return HTTP-status 400 and an error message stating the issue.
+        """
+        
+        title = f"{ExerciseTest.exercise_title}" 
+
+        r = requests.request(
+            "POST", "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_title": title,
+                "exercise_description" : "This is a good Test example!",
+                "exercise_type": 1,
+                "exercise_content":"1+1="
+                },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+        )
+        
+        try:
+            exercise = r.json()
+        except KeyError:
+            self.fail("An exercise should be returned")
+
+        self.assertEqual(r.status_code,409)
+
+        #Response should include a fail message
+        self.assertEqual("An exercise with this title already exists", exercise["message"])
+
+    def test_post_without_req_arg(self) -> None:
+        """
+        Create a new exercise with HTTP-POST method but without one required argument (exercise_content).
+        The system should return HTTP-status 400 and an error message containing the missing argument.
+        """
+
+        r = requests.request(
+            "POST", "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_title": "My Exercise",
+                "exercise_description" : "This is a good Test example!",
+                "exercise_type": 1
+                },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+        )
+
+        self.assertEqual(r.status_code, 400)
+        try:
+            errors = r.json()["message"]
+        except KeyError:
+            self.fail("An error message should be returned")
+
+        self.assertEqual(errors["exercise_content"], "Content of exercise is missing")
+
 
     def test_put_existing(self) -> None:
         """
@@ -320,6 +404,91 @@ class ExerciseTest(unittest.TestCase):
         self.assertIn("message", r.json())
         self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
         self.assertEqual(r.status_code, 404)
+
+
+    def test_delete_existing(self) -> None:
+        """
+        Attempting deleting an existing task in the Database using its ID with the HTTP-DELETE method.
+        First using user access then admin privileges
+        This system should return HTTP-status 403 then 200 and its success message should include the correct id
+        NOTE: It is necessary to first successfully create a task to delete. Deleting the main task interferes with other tests.
+        """
+
+        r = requests.request(
+            "POST", "http://127.0.0.1:5000/exercise",
+            json={"exercise_title": "To Be Deleted",
+            "exercise_description" : "This is a good Test example!",
+            "exercise_type": 1, "exercise_content":"1+1="},
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 201)
+
+        try:
+            exercise = r.json()
+        except KeyError:
+            self.fail("An exercise should be returned")
+
+        id = exercise["exercise_id"]
+
+        #Fail Case #1:
+
+        r = requests.request(
+            "DELETE", "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_id": id,
+                },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"}
+        )
+
+        self.assertEqual(r.status_code, 403)
+        self.assertDictEqual(r.json(), {"message": "No Access"})
+
+        #Fail Case #2:
+
+        r = requests.request(
+            "DELETE", "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_id": id,
+                },
+            headers={"Content-Type": "application/json", "Cookie": "key=value;"}
+        )
+
+        self.assertEqual(r.status_code, 401)
+        self.assertDictEqual(r.json(), {"message": "Login required"})
+
+        #Success Case:
+
+        r = requests.request(
+            "DELETE", "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_id": id,
+                },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+        )
+
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("message", r.json())
+        self.assertEqual(r.json()["message"], f"Successfully deleted exercise with exercise_id {id}")
+        
+    def test_delete_non_existing(self) -> None:
+        """
+        Delete a non-existing task in the database using id = -2 with the HTTP-DELETE method with admin privileges
+        This system should return HTTP-status 404 stating exercise id does not exist
+        """
+
+        id = -2 #exercise_id of a clearly not existing exercise
+
+        r = requests.request(
+            "DELETE", "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_id": id,
+                },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+        )
+
+        self.assertEqual(r.status_code, 404)
+        self.assertIn("message", r.json())
+        self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
 
 if __name__ == "__main__":
     unittest.main()
