@@ -1,14 +1,14 @@
 @use 'sass:color';
 
-@use '@material/theme/color-palette';
+@use "../_variables.scss" as vars;
 
 // Svelte Colors!
 @use '@material/theme/index' as theme with (
-  $primary: #005f50,
-  $secondary: #D79922,
-  $surface: #eee,
-  $background: #fff,
-  $error: color-palette.$red-900
+  $primary: vars.$primaryLight,
+  $secondary: vars.$secondaryLight,
+  $surface: vars.$surfaceLight,
+  $background: vars.$backgroundLight,
+  $error: vars.$errorLight
 );
 
 @use "@material/typography/index" as typography;
