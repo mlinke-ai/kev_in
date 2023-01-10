@@ -58,16 +58,11 @@ Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
-The response is a dictionary or JSON object, together with the HTTP status 200.
-The user ID is mapped to all user attributes.
-If you pass `user_id` < 1, it will be ignored. If you pass multiple arguments, you query the system with multiple arguments.
-If no argument is passed the system returns the user-data of the loggend in user.
-
 NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` items.
 
 === "200"
 
-	The response is a dictionary of JSON object. The user ID is mapped to all solution attributes.
+	The response is a dictionary of JSON object. The user ID is mapped to all user attributes.
 
 	```JSON
 	{
