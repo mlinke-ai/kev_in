@@ -21,7 +21,7 @@ The GET method is used to retrieve user data based on attributes. This method su
 Python `requests`:  
 
 ```python
-requests.request("GET", "http://<address>:<port>/user?<arguments>", json=<arguments>, headers={"Content-Type": "application/json"})
+requests.request("GET", "http://<address>:<port>/user", json=<arguments>, headers={"Content-Type": "application/json"})
 ```
 
 Unix `curl`:
