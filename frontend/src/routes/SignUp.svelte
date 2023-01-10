@@ -43,7 +43,7 @@
         user_name: username,
         user_pass: password,
         user_mail: email,
-        user_admin: false
+        user_role: 3
       }),
     }).then((response) => {
       if (response.status == 201) {

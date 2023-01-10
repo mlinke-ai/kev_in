@@ -14,7 +14,12 @@
     function submit(){
         console.log(itemsRight)
     }
-    let peter
+
+    const getExercise = async () =>{
+        fetch("/exercise?exercise_id=1", {method: "GET", headers: {"Content-Type": "application/json", "Cookie": "token=<token>"}})
+
+    }
+
 </script>
 
 

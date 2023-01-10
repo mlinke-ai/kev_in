@@ -51,7 +51,12 @@
   {@html `<style> .hljs{background:none}</style>`}
 </svelte:head>
 
-<section style={"height: "+height + "px"} use:dndzone={{items, flipDurationMs}} on:consider={handleDndConsider} on:finalize={handleDndFinalize}>
+<section 
+    style={"height: "+height + "px"} 
+    use:dndzone={{items: items, flipDurationMs: flipDurationMs, dropTargetStyle: {outline: "#D79922 solid 3px "}}} 
+    on:consider={handleDndConsider} 
+    on:finalize={handleDndFinalize}
+>
 	{#each items as item(item.id)}
 		<div animate:flip="{{duration: flipDurationMs}}" class="itembox">
 			<div style="border-right: 1px solid #ffffff;">
@@ -63,4 +68,4 @@
         </div>
 	{/each}
 </section>
-{items}
+
