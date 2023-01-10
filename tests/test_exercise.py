@@ -26,7 +26,9 @@ class ExerciseTest(unittest.TestCase):
     This test class tests the HTTP-request types of the Exercise endpoint. Therefor the class creates
     a test exercise and a test user and loggs into an admin account and a user account (see setUpClass method).
     The documentation of the API can be found [here](https://mlinke-ai.github.io/kev_in/api/exercise/).
+    Note: all tests Use the IP 127.0.0.1 and Port 5000, so the server which provides the endpoint should be hosted there.
     """
+    
     user_name = "G:ff#Test"
     user_pass = "hji'$4y33F?"
     
@@ -91,6 +93,8 @@ class ExerciseTest(unittest.TestCase):
 
         #log out of admin account
         cls.adminCookie = None
+
+#------------------------------HTTP-GET-----------------------------
 
     def test_get_existing(self) -> None:
         """
@@ -172,6 +176,8 @@ class ExerciseTest(unittest.TestCase):
 
         self.assertEqual(r.status_code, 401)
         self.assertDictEqual(r.json(), {"message": "Login required"})
+
+#------------------------------HTTP-POST-----------------------------
 
     def test_post_success(self) -> None:
         """
@@ -288,6 +294,7 @@ class ExerciseTest(unittest.TestCase):
 
         self.assertEqual(errors["exercise_content"], "Content of exercise is missing")
 
+#------------------------------HTTP-PUT-----------------------------
 
     def test_put_existing(self) -> None:
         """
@@ -405,6 +412,7 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
         self.assertEqual(r.status_code, 404)
 
+#------------------------------HTTP-DELETE-----------------------------
 
     def test_delete_existing(self) -> None:
         """
