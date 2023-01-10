@@ -32,9 +32,11 @@ requests.request("GET", "http://<address>:<port>/exercise", json=<arguments>, he
 Unix `curl`:
 
 ```
-curl --location --request GET 'http://<address>:<port>/exercise?<arguments>' \
+curl --location --request GET 'http://<address>:<port>/exercise' \
 --header 'Content-Type: application/json' \
---data-raw ''
+--data-raw '{
+    <arguments>
+    }'
 ```
 
 JavaScript `fetch`:

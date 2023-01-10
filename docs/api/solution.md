@@ -31,7 +31,8 @@ Unix `curl`:
 curl --location --request GET 'http://<address>:<port>/solution' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    <arguments>'
+    <arguments>
+    }'
 ```
 
 JavaScript `fetch`:
