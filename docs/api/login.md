@@ -57,12 +57,22 @@ The response is a dictionary or JSON object. If authentication process succeeds 
 
 ```JSON
 {
-    "token": "Welcome John Doe!"
+    "message": "Welcome John Doe!"
 }
 ```
 `HTTP status 200`
 
 ### Fails
+
+- if a required argument was not send:
+    ```JSON
+    {
+        "message": {
+            "argument": "Error Text"
+        }
+    }
+    ```
+    `HTTP status 400`
 
 - if password or username are incorrect
     ```JSON
