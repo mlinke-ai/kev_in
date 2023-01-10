@@ -2,8 +2,8 @@
 title: Kev.in
 summary: A learning platform for programming beginners.
 authors:
-	- Max Linke
-	- and others
+    - Max Linke
+    - and others
 date: 2022-01-10
 ---
 
@@ -66,10 +66,10 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 ```JSON
 {
-  "1": {
-    "user_id": 1,
-    "user_name": "John Doe"
-  }
+	"1": {
+	"user_id": 1,
+	"user_name": "John Doe"
+	}
 }
 ```
 `HTTP status 200`
