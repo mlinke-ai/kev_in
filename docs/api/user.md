@@ -2,17 +2,15 @@
 title: Kev.in
 summary: A learning platform for programming beginners.
 authors:
-    - Max Linke
-    - and others
-date: 2022-11-26
+	- Max Linke
+	- and others
+date: 2022-01-10
 ---
 
 # User API
   
 The user route is the endpoint to perform all different kinds of operations on the user database.
 The endpoint can be accessed at `<address>:<port>/user`.
-!!! danger "Authentication!"
-    Currently there is no request authentication!
 
 ## GET
 
@@ -74,25 +72,25 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
   }
 }
 ```
-	`HTTP status 200`
+`HTTP status 200`
 
 ### Fails
 
 - If no session cookie was provided:
-    ```JSON
-    {
-        "message": "Login required"
-    }
-    ```
-   `HTTP status 401`
+	```JSON
+	{
+	"message": "Login required"
+	}
+	```
+	`HTTP status 401`
 
 - If an unauthorized client sends a request:
-    ```JSON
-    {
-        "message": "No Access"
-    }
-    ```
-    `HTTP status 403`
+	```JSON
+	{
+		"message": "No Access"
+	}
+	```
+	`HTTP status 403`
 
 ## POST
 
@@ -150,41 +148,41 @@ The response is a dictionary or JSON object, Together with HTTP status 201. New 
 	"user_id": 1
 }
 ```
-	`HTTP status 201`
+`HTTP status 201`
 
 ### Fails
 
 - If no session cookie was provided:
-    ```JSON
-    {
-        "message": "Login required"
-    }
-    ```
-   `HTTP status 401`
+	```JSON
+	{
+	"message": "Login required"
+	}
+	```
+	`HTTP status 401`
 
 - If an unauthorized client sends a request:
-    ```JSON
-    {
-        "message": "No Access"
-    }
-    ```
-    `HTTP status 403`
+	```JSON
+	{
+		"message": "No Access"
+	}
+	```
+	`HTTP status 403`
 
 - If the request contains already existing user name or email:
-    ```JSON
-    {
-        "message": "A user with this name already exists"
-    }
-    ```
-    `HTTP status 409`
+	```JSON
+	{
+		"message": "A user with this name already exists"
+	}
+	```
+	`HTTP status 409`
 
 - If the user could not be added to the database for some reason:
-    ```JSON
-    {
-        "message": "An error occurred while creating the user"
-    }
-    ```
-    `HTTP status 500`
+	```JSON
+	{
+		"message": "An error occurred while creating the user"
+	}
+	```
+	`HTTP status 500`
 
 ## PUT
 
