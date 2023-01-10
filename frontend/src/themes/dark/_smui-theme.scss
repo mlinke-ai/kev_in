@@ -1,15 +1,17 @@
 @use 'sass:color';
 
-@use '@material/theme/color-palette';
+@use "../../_variables.scss" as vars;
 
 // Svelte Colors! (Dark Theme)
 @use '@material/theme/index' as theme with (
-  $primary: #005f50,
-  $secondary: #D79922,
-  $surface: #001a16,
-  $background: #000,
-  $error: color-palette.$red-700
+  $primary: vars.$primaryDark,
+  $secondary: vars.$secondaryDark,
+  $surface: vars.$surfaceDark,
+  $background: vars.$backgroundDark,
+  $error: vars.$errorDark
 );
+
+@use "@material/typography/index" as typography;
 
 html,
 body {
@@ -22,4 +24,16 @@ body {
 a {
   color: #dddddd;
   text-decoration: none;
+}
+
+h3 {
+  @include typography.typography("headline3");
+}
+
+h5 {
+  @include typography.typography("headline5");
+}
+
+h6 {
+  @include typography.typography("headline6");
 }

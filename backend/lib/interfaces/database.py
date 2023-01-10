@@ -15,18 +15,7 @@ class UserModel(db_engine.Model):
     user_name = db_engine.Column(db_engine.String)
     user_pass = db_engine.Column(db_engine.String(64))
     user_mail = db_engine.Column(db_engine.String)
-    user_admin = db_engine.Column(db_engine.Boolean)
-    user_sadmin = db_engine.Column(db_engine.Boolean)
-
-
-class ExerciseType(enum.Enum):
-    GapTextExercise = 1
-    SyntaxExercise = 2
-    ParsonsPuzzleExercise = 3
-    FindTheBugExercise = 4
-    DocumentationExercise = 5
-    OutputExercise = 6
-    ProgrammingExercise = 7
+    user_role = db_engine.Column(db_engine.Enum(config.UserRole))
 
 
 class ExerciseModel(db_engine.Model):
@@ -34,8 +23,9 @@ class ExerciseModel(db_engine.Model):
     exercise_id = db_engine.Column(db_engine.Integer, primary_key=True)
     exercise_title = db_engine.Column(db_engine.String)
     exercise_description = db_engine.Column(db_engine.String)
-    exercise_type = db_engine.Column(db_engine.Enum(ExerciseType))
+    exercise_type = db_engine.Column(db_engine.Enum(config.ExerciseType))
     exercise_content = db_engine.Column(db_engine.Text)
+    exercise_language = db_engine.Column(db_engine.Enum(config.ExerciseLanguage))
 
 
 class SolutionModel(db_engine.Model):
@@ -48,7 +38,3 @@ class SolutionModel(db_engine.Model):
     solution_correct = db_engine.Column(db_engine.Boolean)
     user_relation = db_engine.relationship(UserModel, foreign_keys="SolutionModel.solution_user")
     exercise_relation = db_engine.relationship(ExerciseModel, foreign_keys="SolutionModel.solution_exercise")
-
-
-# class CourseModel(db_engine.Model):
-#     pass

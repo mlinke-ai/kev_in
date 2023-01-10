@@ -5,49 +5,40 @@ export let navbarConfig = {
     },
     default: {
         links: [
-            {
-                label: "Lecture",
-                route: "#/lecture",
-            },
-            {
-                label: "Training",
-                route: "#/training",
-            },
-            {
-                label: "Coding",
-                route: "#/coding",
-            },
             //{
             //    label: "MyRoute",
-            //    route: "#/my-route",
+            //    route: "/my-route",
             //},
         ],
         buttons: [
             {
-                label: "Register",
-                route: "#/register",
+                label: "Signup",
+                route: "/signup",
                 variant: "outlined"
             },
             {
                 label: "Login",
-                route: "#/login",
+                route: "/login",
                 variant: "unelevated"
             }
         ]
+    },
+    authenticated: {
+        links: [],
+        buttons: []
     },
     admin: {
         links: [
             {
                 label: "Users",
-                route: "#/users",
+                route: "/users",
                 icon: "",
             },
             {
                 label: "Stats",
-                route: "#/stats",
+                route: "/stats",
                 icon: "",
             },
         ]
     }
-    
 }
