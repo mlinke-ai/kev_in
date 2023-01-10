@@ -44,7 +44,7 @@ fetch("http://<address>:<port>/exercise", {method: "GET", headers: {"Content-Typ
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with with key value pairs in the form `key=value` (key is the argument, example values are listed in the table below). If you want to pass multiple arguments you can pass them like this `<argument1>&<argument2>`.
+Replace `<arguments>` with with key value pairs in the form `key=value` (key is the argument, example values are listed in the table below).
 
 ### Arguments
 
