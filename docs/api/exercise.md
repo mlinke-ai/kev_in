@@ -216,11 +216,11 @@ Arguments are constructed as dictionaries or JSON objects.
 
 === "500"
 
-The element could not be added to the database for some reason.
+    The element could not be added to the database for some reason.
 
     ```JSON
     {
-    "message": "An error occurred while creating the exercise"
+        "message": "An error occurred while creating the exercise"
     }
     ```
 
@@ -305,7 +305,7 @@ Arguments are constructed as dictionaries or JSON objects.
 
 === "403"
 
-An unauthorized client sent a request.
+    An unauthorized client sent a request.
 
     ```JSON
     {
@@ -315,7 +315,7 @@ An unauthorized client sent a request.
 
 === "404"
 
-No exercise with the given `exercise_id` exists.
+    No exercise with the given `exercise_id` exists.
 
     ```JSON
     {
@@ -378,7 +378,7 @@ Arguments are constructed as dictionaries or JSON objects.
 
 === "400"
 
-A required argument was not sent.
+    A required argument was not sent.
 
     ```JSON
     {
@@ -390,7 +390,7 @@ A required argument was not sent.
 
 === "401"
 
-No session cookie was provided.
+    No session cookie was provided.
 
     ```JSON
     {
@@ -400,7 +400,7 @@ No session cookie was provided.
 
 === "403"
 
-An unauthorized client senT a request.
+    An unauthorized client senT a request.
 
     ```JSON
     {
@@ -410,7 +410,7 @@ An unauthorized client senT a request.
 
 === "400"
 
-No exercise with the given `exercise_id` exists.
+    No exercise with the given `exercise_id` exists.
 
     ```JSON
     {
