@@ -38,7 +38,7 @@ class Server:
 
     def _sadmin_check(self) -> None:
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_role == UserRole.SAdmin)
+        query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_role == config.UserRole.SAdmin)
         selection = db_engine.session.execute(query)
         try:
             row = selection.scalar_one()

@@ -43,7 +43,7 @@ class ExerciseResource(Resource):
         # check if page limit is in range
         if args["exercise_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
             return make_response(
-                jsonify(dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED))
+                jsonify(dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED), 400)
             )
 
         # check if token cookie was sent
@@ -273,4 +273,4 @@ class ExerciseResource(Resource):
             if readOnly:  # write access not needed
                 return True
             else:  # write access needed
-                return row["user_admin"]
+                return row["user_role"] == config.UserRole.SAdmin or row["user_role"] == config.UserRole.Admin

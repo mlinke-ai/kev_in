@@ -45,8 +45,7 @@ class UserResource(Resource):
             "user_role",
             type=lambda x: config.UserRole(int(x)),
             default=config.UserRole.User,
-            help="{error_msg}",
-            location="args",
+            help="{error_msg}"
         )
         parser.add_argument("user_offset", type=int, default=0, help="{error_msg}")
         parser.add_argument(

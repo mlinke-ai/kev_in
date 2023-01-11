@@ -31,7 +31,8 @@ Unix `curl`:
 curl --location --request GET 'http://<address>:<port>/solution' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    <arguments>'
+    <arguments>
+    }'
 ```
 
 JavaScript `fetch`:
@@ -58,6 +59,8 @@ Replace `<arguments>` with key value pairs in the form `key=value` (key is the a
 
 ### Response
 
+NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` items.
+
 === "200"
 
     The response is a dictionary of JSON object. The solution ID is mapped to all solution attributes.
@@ -76,14 +79,14 @@ Replace `<arguments>` with key value pairs in the form `key=value` (key is the a
 
 === "400"
 
-    A required argument was not send or the page size parameter is out of range.
-    ```JSON
-    {
-        "message": {
-            "argument": "Error Text"
-        }
-    }
-    ```
+	The `user_limit` is out of ragne, e.g. grater then `config.MAX_ITEMS_RETURNED`.
+	```JSON
+	{
+		"message": "Page limit not in range",
+		"min_limit": "<min_value>",
+		"max_limit": "<max_value>"
+	}
+	```
 
 === "401"
 

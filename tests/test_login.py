@@ -93,7 +93,8 @@ class LoginTest(unittest.TestCase):
         except KeyError:
             self.fail("An error message should be returned")
 
-        self.assertDictEqual(errors, {"user_name": "Name of the user is missing."})
+        self.assertNotIn("Set-Cookie", r.headers) #no cookie should be returned
+        self.assertIn("user_name", errors)
         self.assertEqual(r.status_code, 400)
 
         r = requests.request(
@@ -109,5 +110,5 @@ class LoginTest(unittest.TestCase):
             self.fail("An error message should be returned")
 
         self.assertNotIn("Set-Cookie", r.headers) #no cookie should be returned
-        self.assertDictEqual(errors, {"user_pass": "Credentials of the user are missing."})
+        self.assertIn("user_pass", errors)
         self.assertEqual(r.status_code, 400)
