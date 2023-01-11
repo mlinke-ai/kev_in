@@ -105,7 +105,8 @@ class ExerciseTest(unittest.TestCase):
         id = str(ExerciseTest.exercise_id)
 
         r = requests.request(
-            "GET", f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            "GET", f"http://127.0.0.1:5000/exercise",
+            json={"exercise_id": id},
             headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
             )
         #server should return HTTP status 200
@@ -128,9 +129,10 @@ class ExerciseTest(unittest.TestCase):
         The system should return HTTP-status 200 and an empty JSON string.
         """
         r = requests.request(
-            "GET", "http://127.0.0.1:5000/exercise?exercise_id=-2",
+            "GET", f"http://127.0.0.1:5000/exercise",
+            json={"exercise_id": -2},
             headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
-        )
+            )
         #HTTP stauts 200 and empty JSON
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json(), {})
@@ -144,8 +146,9 @@ class ExerciseTest(unittest.TestCase):
         id = str(ExerciseTest.exercise_id)
 
         r = requests.request(
-            "GET", f"http://127.0.0.1:5000/exercise?exercise_id={id}",
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"}
+            "GET", f"http://127.0.0.1:5000/exercise",
+            json={"exercise_id": id},
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
             )
         #server should return HTTP status 200
         self.assertEqual(r.status_code, 200)
@@ -170,8 +173,9 @@ class ExerciseTest(unittest.TestCase):
         id = str(ExerciseTest.exercise_id)
 
         r = requests.request(
-            "GET", f"http://127.0.0.1:5000/exercise?exercise_id={id}",
-            headers={"Content-Type": "application/json", "Cookie": "key=value;"}
+            "GET", f"http://127.0.0.1:5000/exercise",
+            json={"exercise_id": id},
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
             )
 
         self.assertEqual(r.status_code, 401)
