@@ -70,7 +70,7 @@
       </div>
     {:else}
       <form class="login-form" on:submit|preventDefault={login} hidden>
-        <div class="input-email">
+        <div class="input">
           <Textfield
             invalid={wrongCredentials}
             id="email-input"
@@ -80,8 +80,8 @@
             variant="outlined"
           />
         </div>
-        <div class="input-password">
-          <PasswordInput bind:password wrongPassword={wrongCredentials} />
+        <div class="input" style="margin-top: 1rem;">
+          <PasswordInput bind:password wrongPassword={wrongCredentials} style="width: 20rem"/>
         </div>
       </form>
     {/if}
@@ -102,10 +102,7 @@
     align-items: center;
     padding: 1rem;
   }
-  .input-email {
-    padding: 0.2rem;
-  }
-  .input-password {
+  .input {
     padding: 0.2rem;
   }
 
