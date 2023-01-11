@@ -1,20 +1,18 @@
 <script>
   import Page from "../lib/components/common/Page.svelte";
-  import AceEditor from "../lib/components/CodeSandbox/AceEditor.svelte";
-  import OutputConsole from "../lib/components/CodeSandbox/OutputConsole.svelte";
-  import TaskCard from "../lib/components/CodeSandbox/TaskCard.svelte";
   import TestCard from "../lib/components/CodeSandbox/TestCard.svelte";
   import { Icon } from "@smui/common";
-    import CodingCard from "../lib/components/CodeSandbox/CodingCard.svelte";
-    import OutputCard from "../lib/components/CodeSandbox/OutputCard.svelte";
+  import CodingCard from "../lib/components/CodeSandbox/CodingCard.svelte";
+  import OutputCard from "../lib/components/CodeSandbox/OutputCard.svelte";
 
-  async function validate_code() {
-
-  }
-</script>
+  async function validate_code() {}
+</script> 
 
 <Page title="Coding Sandbox" fullwidth={true}>
   <div class="sandbox-container">
+    <div class="header-area">
+      <h3>Coding Sandbox</h3>
+    </div>
     <div class="task-area">
       <TestCard />
     </div>
@@ -35,14 +33,17 @@
 </Page>
 
 <style lang="scss">
+  @use "../variables" as vars;
+
   * {
     box-sizing: border-box;
   }
   .sandbox-container {
     display: grid;
     grid-template-columns: 3fr 9fr;
-    grid-template-rows: 8fr 3.5fr 0.5fr;
+    grid-template-rows: 1.5fr 8fr 2fr 0.5fr;
     grid-template-areas:
+      "head head"
       "task code"
       "task out"
       "status status";
@@ -56,6 +57,12 @@
     background-color: black;
     // margin-left: 3%;
   }
+  .header-area {
+    grid-area: head;
+    h3 {
+      color: vars.$primaryDark;
+    }
+  }
   .task-area {
     grid-area: task;
   }
@@ -65,11 +72,11 @@
   }
   .output-area {
     grid-area: out;
-    background-color: black;
+    background-color: vars.$consoleBackground;
   }
   .status-bar {
     grid-area: status;
-    color: #7cfc00;
+    color: vars.$consoleColor;
     font-family: "Roboto Mono";
     display: flex;
     align-items: center;

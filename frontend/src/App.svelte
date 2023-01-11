@@ -3,14 +3,12 @@
   import Router, { replace as replaceRoute } from "svelte-spa-router";
   import routes from "./routes/";
   import { setupUserSettings, getAccessLevel } from "./lib/functions/user";
-  import { startPage } from "./stores";
-    import Footer from "./lib/components/Footer/Footer.svelte";
+  import Footer from "./lib/components/Footer/Footer.svelte";
 
   let ready = false;
 
   function prepareApp() {
-    setupUserSettings(getAccessLevel())
-    // replaceRoute($startPage);
+    setupUserSettings(getAccessLevel());
     ready = true;
   }
 </script>
@@ -22,9 +20,9 @@
 />
 
 {#if ready}
-  <!--<Navbar />-->
+  <Navbar />
   <Router {routes} />
-  <Footer />
+  <!--<Footer />-->
 {:else}
   preparing...
 {/if}
