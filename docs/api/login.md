@@ -53,18 +53,20 @@ Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
-The response is a dictionary or JSON object. If authentication process succeeds a success message with a seesion cookie is returned with HTTP status 200.
+=== "200"
 
-```JSON
-{
-    "message": "Welcome John Doe!"
-}
-```
-`HTTP status 200`
+    The response is a dictionary or JSON object. If authentication process succeeds a success message with a seesion cookie is returned with HTTP status 200.
 
-### Fails
+    ```JSON
+    {
+        "message": "Welcome John Doe!"
+    }
+    ```
 
-- if a required argument was not send:
+=== "400"
+
+    A required argument was not sent.
+
     ```JSON
     {
         "message": {
@@ -72,12 +74,13 @@ The response is a dictionary or JSON object. If authentication process succeeds 
         }
     }
     ```
-    `HTTP status 400`
 
-- if password or username are incorrect
+=== "401"
+
+    Password or username is incorrect.
+
     ```JSON
     {
         "message": "Incorrect user name or password"
     }
     ```
-    `HTTP status 401`
