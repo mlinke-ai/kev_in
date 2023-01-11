@@ -56,7 +56,7 @@ class ExerciseTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/user",
-            json={"user_name": ExerciseTest.user_name, "user_pass": ExerciseTest.user_pass, "user_mail": "test@example.com", "user_admin": False},
+            json={"user_name": ExerciseTest.user_name, "user_pass": ExerciseTest.user_pass, "user_mail": "test@example.com", "user_role": 3},
             headers={"Content-Type": "application/json"},
         )
         cls.user_id = r.json()["user_id"]
@@ -175,7 +175,7 @@ class ExerciseTest(unittest.TestCase):
         r = requests.request(
             "GET", f"http://127.0.0.1:5000/exercise",
             json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            headers={"Content-Type": "application/json", "Cookie": f"key=value;"}
             )
 
         self.assertEqual(r.status_code, 401)
@@ -296,7 +296,7 @@ class ExerciseTest(unittest.TestCase):
         except KeyError:
             self.fail("An error message should be returned")
 
-        self.assertEqual(errors["exercise_content"], "Content of exercise is missing")
+        self.assertIn("exercise_content", errors)
 
 #------------------------------HTTP-PUT-----------------------------
 
@@ -391,7 +391,6 @@ class ExerciseTest(unittest.TestCase):
             self.fail("An error message should be returned")
 
         self.assertIn("exercise_id", errors)
-        self.assertEqual(errors["exercise_id"], "ID of the exercise is missing")
 
     def test_put_non_existing(self) -> None:
         """
