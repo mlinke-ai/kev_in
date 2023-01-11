@@ -273,4 +273,4 @@ class ExerciseResource(Resource):
             if readOnly:  # write access not needed
                 return True
             else:  # write access needed
-                return row["user_admin"]
+                return row["user_role"] == config.UserRole.SAdmin or row["user_role"] == config.UserRole.Admin
