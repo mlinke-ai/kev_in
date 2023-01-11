@@ -50,7 +50,7 @@ Arguments are constructed as dictionaries or JSON objects.
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `user_id` | `int` | optional | `1` | The ID of the user. Normally obtained after creating a new user. |
-| `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is not guaranteed. |
+| `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is guaranteed. |
 | `user_mail` | `string` | optional | `john.doe@example.com` | The e-mail address of the user. |
 | `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
 | `user_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
@@ -144,10 +144,10 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `user_id` | `int` | optional | `1` | The ID of the user. Normally obtained after creating a new user. |
-| `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is not guaranteed. |
-| `user_mail` | `string` | optional | `john.doe@example.com` | The e-mail address of the user. |
-| `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
+| `user_name` | `string` | required | `John Doe` | The name of the user. Uniqueness is guaranteed. |
+| `user_pass` | `int` | required | `testPW` | The password of the new user. |
+| `user_mail` | `string` | required | `john.doe@example.com` | The e-mail address of the user. |
+| `user_role` | `int` | required  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
 
 ### Response
 
@@ -172,7 +172,7 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 	"message": "Login required"
 	}
 	```
-=== "403
+=== "403"
 
 	An unauthorized client sends a request.
 
