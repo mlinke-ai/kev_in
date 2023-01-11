@@ -22,9 +22,8 @@
 />
 
 {#if ready}
-  <!--<Navbar />-->
+  <Navbar />
   <Router {routes} />
-  <Footer />
 {:else}
   preparing...
 {/if}

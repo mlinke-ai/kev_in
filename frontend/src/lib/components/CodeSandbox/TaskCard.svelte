@@ -37,6 +37,8 @@
 </div>
 
 <style lang="scss">
+    @use "../../../variables" as vars;
+
     * {
         box-sizing: border-box;
     }
@@ -67,20 +69,20 @@
     * :global(.md-icon) {
         padding: 0;
         margin: 0;
-        color: #005f50;
+        color: vars.$primaryDark;
     }
     .task-area {
         height: 100%;
         margin: 0 0.5rem 0.5rem 0.5rem;
         border-radius: 0.5rem;
-        background-color: black;
+        background-color: vars.$consoleBackground;
         border: none;
-        color: #7cfc00;
+        color: vars.$consoleColor;
         padding: 1rem;
         font-family: "Roboto Mono";
         overflow: scroll;
         hr {
-            color: #7cfc00;
+            color: vars.$consoleColor;
         }
     }
 </style>
