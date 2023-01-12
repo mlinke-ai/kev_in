@@ -1,0 +1,26 @@
+[data-md-color-scheme="kev_in"] {
+    /*header bar color*/
+    --md-primary-fg-color: #fff;
+    /*unknown*/
+    --md-primary-fg-color--light: #fff;
+    /*unknown*/
+    --md-primary-fg-color--dark: #fff;
+    /*header text color*/
+    --md-primary-bg-color: #fff;
+    /*header dim text color*/
+    --md-primary-bg-color--light: #fff;
+    /*unknown*/
+    --md-accent-fg-color: #fff;
+    /*unknown*/
+    --md-accent-fg-color--transparent: #fff;
+    /*unknown*/
+    --md-accent-bg-color: #fff;
+    /*unknown*/
+    --md-accent-bg-color--light: #fff;
+    /*background color*/
+    --md-default-bg-color: red;
+}
+
+[data-md-color-scheme="slate"] {
+    --md-hue: 210;
+}
