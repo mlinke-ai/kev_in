@@ -17,4 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-pass
+from .test_evaluator import *
+from .test_exercise import *
+from .test_javasandbox import *
+from .test_login import *
+from .test_pysandbox import *
+from .test_user import *

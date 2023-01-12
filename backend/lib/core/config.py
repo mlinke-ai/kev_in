@@ -7,6 +7,14 @@ SADMIN_NAME = "sadmin"
 SADMIN_PASS = "sadmin"
 SADMIN_MAIL = "sadmin@example.com"
 
+TUSER_NAME = "tuser"
+TUSER_PASS = "tuser"
+TUSER_MAIL = "tuser@example.com"
+
+# dialect://username:password@host:port/database
+DATABASE_URI = ""
+TESTING_DATABASE_URI = "sqlite:///testing.db"
+
 USER_TABLE = "users"
 EXERCISE_TABLE = "exercises"
 SOLUTION_TABLE = "solutions"

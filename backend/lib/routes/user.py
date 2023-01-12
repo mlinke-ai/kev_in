@@ -45,12 +45,10 @@ class UserResource(Resource):
             "user_role",
             type=lambda x: config.UserRole(int(x)),
             default=config.UserRole.User,
-            help="{error_msg}"
+            help="{error_msg}",
         )
         parser.add_argument("user_offset", type=int, default=0, help="{error_msg}")
-        parser.add_argument(
-            "user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}"
-        )
+        parser.add_argument("user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}")
 
         args = parser.parse_args()
 
@@ -111,10 +109,20 @@ class UserResource(Resource):
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
         parser.add_argument(
-            "user_role", type=lambda x: config.UserRole(int(x)), help="{error_msg}", required=True
+            "user_role",
+            type=lambda x: config.UserRole(int(x)),
+            default=config.UserRole.User,
+            help="{error_msg}",
         )
 
         args = parser.parse_args()
+
+        if args["user_name"] == "":
+            return make_response(jsonify(dict(message="user_name must not be empty")), 400)
+        if args["user_pass"] == "":
+            return make_response(jsonify(dict(message="user_pass must not be empty")), 400)
+        if args["user_mail"] == "":
+            return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
 
         # check if token cookie was sent
         if (
@@ -128,51 +136,80 @@ class UserResource(Resource):
             if not self._authorize(cookies["token"], change_admin=True):
                 return make_response((jsonify(dict(message="No Access"))), 403)
 
-        # load the user table
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        # compose the query
-        query = (
-            db_engine.select([sqlalchemy.func.count()])
-            .select_from(user_table)
-            .where(user_table.c.user_name == args["user_name"])
+        # create a new element
+        user = UserModel(
+            user_name=args["user_name"],
+            user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
+            user_mail=args["user_mail"],
+            user_role=args["user_role"],
         )
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
-        # check wether the selection contains an element
-        if selection.scalar() == 0:
-            # if the selection contains no elements it means we can safely create the new element
-            # create a new element
-            user = UserModel(
-                user_name=args["user_name"],
-                user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
-                user_mail=args["user_mail"],
-                user_role=args["user_role"],
-            )
-            # add the new element
-            db_engine.session.add(user)
+        db_engine.session.add(user)
+        try:
             db_engine.session.commit()
-            # compose a query to check wether the new element was added successfully
-            query = (
-                db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == args["user_name"])
-            )
-            # execute the query and store the result
-            selection = db_engine.session.execute(query)
-            try:
-                # get the only element from the selection
-                row = selection.fetchone()
-            except sqlalchemy.exc.NoResultFound:
-                # if there is no element the element could not be added
-                result = dict(message="An error occurred while creating the user")
-                return make_response((jsonify(result)), 500)
-            else:
-                result = dict(
-                    message="The user was created successfully", user_id=row[0], user_name=row[1], user_mail=row[3]
-                )
-                return make_response((jsonify(result)), 201)
+        except sqlalchemy.exc.IntegrityError:
+            # TODO: should we do a rollback at this point?
+            # db_engine.session.rollback()
+            return make_response(jsonify(dict(message="A user with this mail already exists")), 409)
         else:
-            # if the selection contains an element we can't create a new one as it would create a duplicate
-            result = dict(message="A user with this name already exists")
-            return make_response((jsonify(result)), 409)
+            return make_response(
+                jsonify(
+                    dict(
+                        message="The user was created successfully",
+                        user_id=user.user_id,
+                        user_name=user.user_name,
+                        user_mail=user.user_mail,
+                        user_role=user.user_role,
+                    )
+                ),
+                201,
+            )
+
+        # TODO: the method above is way more elegant; we should remove the lower part
+        # # load the user table
+        # user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
+        # # compose the query
+        # query = (
+        #     db_engine.select([sqlalchemy.func.count()])
+        #     .select_from(user_table)
+        #     .where(user_table.c.user_name == args["user_name"])
+        # )
+        # # execute the query and store the selection
+        # selection = db_engine.session.execute(query)
+        # # check wether the selection contains an element
+        # if selection.scalar() == 0:
+        #     # if the selection contains no elements it means we can safely create the new element
+        #     # create a new element
+        #     user = UserModel(
+        #         user_name=args["user_name"],
+        #         user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
+        #         user_mail=args["user_mail"],
+        #         user_role=args["user_role"],
+        #     )
+        #     # add the new element
+        #     db_engine.session.add(user)
+        #     db_engine.session.commit()
+        #     # compose a query to check wether the new element was added successfully
+        #     query = (
+        #         db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == args["user_name"])
+        #     )
+        #     # execute the query and store the result
+        #     selection = db_engine.session.execute(query)
+        #     try:
+        #         # get the only element from the selection
+        #         row = selection.fetchone()
+        #     except sqlalchemy.exc.NoResultFound:
+        #         # if there is no element the element could not be added
+        #         result = dict(message="An error occurred while creating the user")
+        #         return make_response((jsonify(result)), 500)
+        #     else:
+        #         result = dict(
+        #             message="The user was created successfully", user_id=row[0], user_name=row[1], user_mail=row[3]
+        #         )
+        #         return make_response((jsonify(result)), 201)
+        # else:
+        #     # if the selection contains an element we can't create a new one as it would create a duplicate
+        #     result = dict(message="A user with this name already exists")
+        #     return make_response((jsonify(result)), 409)
 
     def put(self) -> Response:
         """
@@ -191,32 +228,57 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response((jsonify(dict(message="Login required"))), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"], args["user_admin"]):
-            return make_response((jsonify(dict(message="No Access"))), 403)
+        if args["user_name"] == "":
+            return make_response(jsonify(dict(message="user_name must not be empty")), 400)
+        if args["user_pass"] == "":
+            return make_response(jsonify(dict(message="user_pass must not be empty")), 400)
+        if args["user_mail"] == "":
+            return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
 
-        # load the user table
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        # drop the ID as we don't want to update it
-        values = args.copy()
-        del values["user_id"]
-        # compose the query to update the requested element
-        query = db_engine.update(user_table).where(user_table.c.user_id == args["user_id"]).values(values)
-        # execute the query
-        selection = db_engine.session.execute(query)
-        db_engine.session.commit()
+        # TODO: _authorize needs a complete rework
+        # # check if token cookie was sent
+        # cookies = request.cookies.to_dict(True)  # we only use the first value from each key
+        # if not "token" in cookies:
+        #     return make_response((jsonify(dict(message="Login required"))), 401)
+        # # check if the client has access
+        # if not self._authorize(cookies["token"], args["user_id"], args["user_admin"]):
+        #     return make_response((jsonify(dict(message="No Access"))), 403)
 
-        # if no element was updated, the rowcount is 0
-        if selection.rowcount == 0:
-            result = dict(message=f"User with user_id {args['user_id']} does not exist")
-            return make_response((jsonify(result)), 404)
+        user = UserModel.query.filter_by(user_id=args["user_id"]).first_or_404()
+        if args["user_name"]:
+            user.user_name = args["user_name"]
+        if args["user_mail"]:
+            user.user_mail = args["user_mail"]
+        if args["user_pass"]:
+            user.user_pass = args["user_pass"]
+        try:
+            db_engine.session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            # TODO: should we do a rollback at this point?
+            # db_engine.session.rollback()
+            return make_response(jsonify(dict(message="A user with this mail already exists")), 409)
+        else:
+            return make_response(jsonify(dict(message="Changed properties successfully")), 200)
 
-        result = dict(message=f"Successfully changed user with user_id {args['user_id']}")
-        return make_response((jsonify(result)), 200)
+        # TODO: the method above is way more elegant; we should remove the lower part
+        # # load the user table
+        # user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
+        # # drop the ID as we don't want to update it
+        # values = args.copy()
+        # del values["user_id"]
+        # # compose the query to update the requested element
+        # query = db_engine.update(user_table).where(user_table.c.user_id == args["user_id"]).values(values)
+        # # execute the query
+        # selection = db_engine.session.execute(query)
+        # db_engine.session.commit()
+
+        # # if no element was updated, the rowcount is 0
+        # if selection.rowcount == 0:
+        #     result = dict(message=f"User with user_id {args['user_id']} does not exist")
+        #     return make_response((jsonify(result)), 404)
+
+        # result = dict(message=f"Successfully changed user with user_id {args['user_id']}")
+        # return make_response((jsonify(result)), 200)
 
     def delete(self) -> dict:
         """

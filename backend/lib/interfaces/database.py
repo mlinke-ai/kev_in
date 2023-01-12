@@ -14,7 +14,7 @@ class UserModel(db_engine.Model):
     user_id = db_engine.Column(db_engine.Integer, primary_key=True)
     user_name = db_engine.Column(db_engine.String)
     user_pass = db_engine.Column(db_engine.String(64))
-    user_mail = db_engine.Column(db_engine.String)
+    user_mail = db_engine.Column(db_engine.String, unique=True)
     user_role = db_engine.Column(db_engine.Enum(config.UserRole))
 
 

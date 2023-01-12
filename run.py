@@ -3,8 +3,10 @@
 
 import argparse
 import shutil
+import os
 
 from backend.server import Server
+from backend.lib.core import config
 
 
 def main():
@@ -16,14 +18,21 @@ def main():
         "-c", "--clean", action="store_true", help="Remove local database files before starting flask server"
     )
     parser.add_argument(
+        "-t", "--testing", action="store_true", help="Starts the server in test mode. Overrules environment variables."
+    )
+    parser.add_argument(
         "--host", action="store_true", help="Bind the flask server to the machines Ip address not 'localhost'"
     )
     args = parser.parse_args()
 
     if args.clean:
-        shutil.rmtree("instance")
+        shutil.rmtree("instance", ignore_errors=True)
+    if args.testing:
+        database_uri = config.TESTING_DATABASE_URI
+    else:
+        database_uri = config.DATABASE_URI
 
-    server = Server()
+    server = Server(database_uri)
     server.run(args.debug, args.host)
 
 

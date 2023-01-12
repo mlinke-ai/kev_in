@@ -147,7 +147,7 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 | `user_name` | `string` | required | `John Doe` | The name of the user. Uniqueness is guaranteed. |
 | `user_pass` | `int` | required | `testPW` | The password of the new user. |
 | `user_mail` | `string` | required | `john.doe@example.com` | The e-mail address of the user. |
-| `user_role` | `int` | required  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
+| `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. Defaults to `3`. |
 
 ### Response
 
