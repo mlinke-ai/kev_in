@@ -51,8 +51,26 @@ fibonacci_java_wrong = {
 
 
 class EvaluatorTest(unittest.TestCase):
+    def test_evaluate_gap_text(self) -> None:
+        pass
+
+    def test_evaluate_syntax(self) -> None:
+        pass
+
+    def test_evaluate_parsons_puzzle(self) -> None:
+        pass
+
+    def test_evaluate_find_the_bug(self) -> None:
+        pass
+
+    def test_evaluate_documentation(self) -> None:
+        pass
+
+    def test_evaluate_output(self) -> None:
+        pass
+
     @parameterized.expand([[fibonacci_py], [fibonacci_py_wrong], [fibonacci_java], [fibonacci_java_wrong]])
-    def test_evaluate_user_code(self, input_data) -> None:
+    def test_evaluate_programming(self, input_data) -> None:
         """"" 
         Test checks if evaluation of the user code is handled in correct way.
         Example of "input_data" are given at the beginning of the file (e.g. 
