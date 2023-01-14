@@ -53,7 +53,7 @@ fibonacci_java_wrong = {
 class EvaluatorTest(unittest.TestCase):
 
     @parameterized.expand([[fibonacci_py], [fibonacci_py_wrong], [fibonacci_java], [fibonacci_java_wrong]])
-    def test_evaluate_python_sandbox(self, input_data) -> None:
+    def test_evaluate_user_code(self, input_data) -> None:
         """"" 
         Test checks if evaluation of the user code is handled in correct way.
         Example of "input_data" are given at the beginning of the file (e.g. 
