@@ -73,7 +73,6 @@ class UserTest(unittest.TestCase):
                 requests.request(
                     "DELETE", "http://127.0.0.1:5000/user", json={"user_id": user_id}, headers=cls.sadmin_header
                 )
-        pass
 
     # --- GET ---
 
