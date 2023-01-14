@@ -52,35 +52,41 @@ fibonacci_java_wrong = {
 
 class EvaluatorTest(unittest.TestCase):
     def test_evaluate_gap_text(self) -> None:
+        """Tests whether solutions for gap text exercises get correctly evaluated"""
         pass
 
     def test_evaluate_syntax(self) -> None:
+        """Tests whether solutions for syntax error exercises get correctly evaluated"""
         pass
 
     def test_evaluate_parsons_puzzle(self) -> None:
+        """Tests whether solutions for parsons puzzle exercises get correctly evaluated"""
         pass
 
     def test_evaluate_find_the_bug(self) -> None:
+        """Tests whether solutions for find the bug exercises get correctly evaluated"""
         pass
 
     def test_evaluate_documentation(self) -> None:
+        """Tests whether solutions for documentation exercises get correctly evaluated"""
         pass
 
     def test_evaluate_output(self) -> None:
+        """Tests whether solutions for output exercises get correctly evaluated"""
         pass
 
     @parameterized.expand([[fibonacci_py], [fibonacci_py_wrong], [fibonacci_java], [fibonacci_java_wrong]])
     def test_evaluate_programming(self, input_data) -> None:
-        """"" 
+        """
         Test checks if evaluation of the user code is handled in correct way.
-        Example of "input_data" are given at the beginning of the file (e.g. 
-        fibonacci_py). "parameterized" allows us to run the test for 
+        Example of "input_data" are given at the beginning of the file (e.g.
+        fibonacci_py). "parameterized" allows us to run the test for
         multiple "input_data".
         For more information see @https://github.com/wolever/parameterized
         The inputs are various user code implementations in Java or Python.
-        It is checked if the evaluator treats incorrect user code as "incorrect" 
+        It is checked if the evaluator treats incorrect user code as "incorrect"
         and correct user code as "correct".
-        """ ""
+        """
         user_code = input_data["user_code"]
         user_func = input_data["user_func"]
         language = input_data["language"]
