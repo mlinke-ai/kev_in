@@ -25,20 +25,21 @@ class ExerciseResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_id", type=int, help="{error_msg}")
-        parser.add_argument("exercise_title", type=str, help="{error_msg}")
-        parser.add_argument("exercise_description", type=str, help="{error_msg}")
+        parser.add_argument("exercise_id", type=int, help="{error_msg}", location="args")
+        parser.add_argument("exercise_title", type=str, help="{error_msg}", location="args")
+        parser.add_argument("exercise_description", type=str, help="{error_msg}", location="args")
         parser.add_argument(
             "exercise_type",
             type=lambda x: config.ExerciseType(int(x)),
             help="{error_msg}",
-            location="args",
+            location="args"
         )
-        parser.add_argument("exercise_content", type=str, help="{error_msg}")
-        parser.add_argument("exercise_offset", type=int, default=0, help="{error_msg}")
-        parser.add_argument("exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}")
+        parser.add_argument("exercise_content", type=str, help="{error_msg}", location="args")
+        parser.add_argument("exercise_offset", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
 
         args = parser.parse_args()
+        print(args)
 
         # check if page limit is in range
         if args["exercise_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
@@ -61,7 +62,7 @@ class ExerciseResource(Resource):
         if args["exercise_id"]:
             query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
         else:
-            query = query.where(exercise_table.c.exercise_id >= args["exercise_id"])
+            query = query.where(exercise_table.c.exercise_id >= args["exercise_offset"])
             query = query.limit(args["exercise_limit"])
         if args["exercise_title"]:
             query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
@@ -101,7 +102,7 @@ class ExerciseResource(Resource):
             "exercise_type",
             type=lambda x: config.ExerciseType(int(x)),
             help="{error_msg}",
-            required=True,
+            required=True
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}", required=True)
 
