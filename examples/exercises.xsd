@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="kev.in:exercises" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="kev.in:exercises"
+    elementFormDefault="qualified">
+    <!-- a gab is an element with only a `correct` attribute-->
+    <xs:element name="gap">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="xs:string" name="correct" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <!-- an error is an element which points out a bug and the correct code-->
+    <xs:element name="error">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute type="xs:string" name="value" />
+                    <xs:attribute type="xs:string" name="correct" />
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <!-- text is just a string-->
+    <xs:element name="text" type="xs:string" />
+    <!-- a line consists of text and gaps-->
+    <xs:element name="line">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="1">
+                <xs:element ref="text" />
+                <xs:element ref="gap" />
+                <xs:element ref="error" />
+            </xs:choice>
+            <xs:attribute name="indentation" type="xs:nonNegativeInteger" default="0" />
+            <xs:attribute name="comment" type="xs:boolean" default="false" />
+        </xs:complexType>
+    </xs:element>
+    <!-- line breaks are empty elements-->
+    <xs:element name="line-break" type="xs:string" />
+    <!-- a code block consists of lines and line breaks-->
+    <xs:element name="code-block">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded" minOccurs="0">
+                <xs:element ref="line" />
+                <xs:element ref="line-break" />
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <!-- puzzle pieces are the building blocks for parsons puzzles-->
+    <xs:element name="puzzle-piece">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="code-block" />
+            </xs:sequence>
+            <xs:attribute type="xs:nonNegativeInteger" name="order" />
+        </xs:complexType>
+        <xs:unique name="unique-order">
+            <xs:selector xpath="puzzle-piece" />
+            <xs:field xpath="@order" />
+        </xs:unique>
+    </xs:element>
+    <!-- there are seven possible exercise types-->
+    <xs:simpleType name="exercise-type">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="syntax" />
+            <xs:enumeration value="parsons-puzzle" />
+            <xs:enumeration value="find-the-bug" />
+            <xs:enumeration value="gap-text" />
+            <xs:enumeration value="documentation" />
+            <xs:enumeration value="output" />
+            <xs:enumeration value="programming" />
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- there are two possible langauges-->
+    <xs:simpleType name="language">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="python" />
+            <xs:enumeration value="java" />
+        </xs:restriction>
+    </xs:simpleType>
+    <!-- an exercise consists of one or more code blocks, a solution and test cases-->
+    <xs:element name="exercise">
+        <xs:complexType>
+            <xs:choice>
+                <xs:choice>
+                    <xs:element ref="code-block" />
+                </xs:choice>
+                <xs:choice minOccurs="1" maxOccurs="unbounded">
+                    <xs:element ref="puzzle-piece" />
+                </xs:choice>
+            </xs:choice>
+            <xs:attribute type="exercise-type" name="type" />
+            <xs:attribute type="language" name="language" />
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

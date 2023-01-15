@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercise xmlns="kev.in:exercises" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="kev.in:exercises exercises.xsd"
+    type="programming" language="python">
+    <code-block>
+        <line>
+            <text>def adjacent_element_product(array):</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>return # max product</text>
+        </line>
+        <line-break />
+    </code-block>
+</exercise>

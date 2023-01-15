@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercise xmlns="kev.in:exercises" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="kev.in:exercises exercises.xsd"
+    type="syntax" language="python">
+    <code-block>
+        <line>
+            <text>a = 3</text>
+        </line>
+        <line-break />
+        <line>
+            <text>print(a)</text>
+        </line>
+        <line-break />
+    </code-block>
+</exercise>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercise xmlns="kev.in:exercises" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="kev.in:exercises exercises.xsd"
+    type="parsons-puzzle" language="python">
+    <puzzle-piece order="0">
+        <code-block>
+            <line comment="true">
+                <text># initialize the variables</text>
+            </line>
+            <line>
+                <text>rain = [0,5,1,0,-1,6,7,-2,0]</text>
+            </line>
+            <line-break />
+            <line>
+                <text>sumRain = 0</text>
+            </line>
+            <line-break />
+            <line>
+                <text>count = 0</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+    <puzzle-piece order="1">
+        <code-block>
+            <line comment="true">
+                <text># loop through the values in the list</text>
+            </line>
+            <line>
+                <text>for day in rain:</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+    <puzzle-piece order="2">
+        <code-block>
+            <line indentation="1" comment="true">
+                <text># if the value of the day is positive</text>
+            </line>
+            <line indentation="1">
+                <text>if day >= 0:</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+    <puzzle-piece order="3">
+        <code-block>
+            <line indentation="2" comment="true">
+                <text># add day to the sum</text>
+            </line>
+            <line-break />
+            <line indentation="2" comment="true">
+                <text># also add one to count</text>
+            </line>
+            <line-break />
+            <line indentation="2">
+                <text>sumRain = sumRain + day</text>
+            </line>
+            <line-break />
+            <line indentation="2">
+                <text>count = count + 1.0</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+    <puzzle-piece order="4">
+        <code-block>
+            <line indentation="1" comment="true">
+                <text># otherwise</text>
+            </line>
+            <line-break />
+            <line indentation="1" comment="true">
+                <text>else:</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+    <puzzle-piece order="5">
+        <code-block>
+            <line indentation="2" comment="true">
+                <text># print no rain</text>
+            </line>
+            <line-break />
+            <line indentation="2">
+                <text>print("No rain")</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+    <puzzle-piece order="6">
+        <code-block>
+            <line comment="true">
+                <text># if count is positive</text>
+            </line>
+            <line-break />
+            <line>
+                <text>if count > 0:</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+    <puzzle-piece order="7">
+        <code-block>
+            <line indentation="1" comment="true">
+                <text># calculate and print the average</text>
+            </line>
+            <line-break />
+            <line indentation="1">
+                <text>ave = sumRain / count</text>
+            </line>
+            <line-break />
+            <line indentation="1">
+                <text>print("Average",ave)</text>
+            </line>
+            <line-break />
+        </code-block>
+    </puzzle-piece>
+</exercise>

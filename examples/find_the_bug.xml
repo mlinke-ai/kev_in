@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercise xmlns="kev.in:exercises" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="kev.in:exercises exercises.xsd"
+    type="find-the-bug" language="python">
+    <code-block>
+        <line>
+            <text>x = 0</text>
+        </line>
+        <line-break />
+        <line>
+            <text>total = 0</text>
+        </line>
+        <line-break />
+        <line>
+            <text>while x &lt; 100:</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>total += x</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>x </text>
+            <error value="=" correct="+=" />
+            <text> 1</text>
+        </line>
+    </code-block>
+</exercise>

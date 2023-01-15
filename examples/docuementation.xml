@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercise xmlns="kev.in:exercises" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="kev.in:exercises exercises.xsd"
+    type="documentation" language="python">
+    <code-block>
+        <line>
+            <text>import math</text>
+        </line>
+        <line-break />
+        <line>
+            <text>class Circle():</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>def __init__(self, radius):</text>
+        </line>
+        <line-break />
+        <line indentation="2">
+            <text>self.radius = radius</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>def get_circumference(self):</text>
+        </line>
+        <line-break />
+        <line indentation="2">
+            <text>return 2 * math.pi * self.radius</text>
+        </line>
+        <line-break />
+    </code-block>
+</exercise>

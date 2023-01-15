@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercise xmlns="kev.in:exercises" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="kev.in:exercises exercises.xsd"
+    type="gap-text" language="python">
+    <code-block>
+        <line>
+            <text>num1 = 10</text>
+        </line>
+        <line-break />
+        <line>
+            <text>num2 = 100</text>
+        </line>
+        <line-break />
+        <line>
+            <text>total = </text>
+            <gap correct="num1 + num2" />
+        </line>
+        <line-break />
+        <line>
+            <text>print(num1, "+", num2, "=", total)</text>
+        </line>
+    </code-block>
+</exercise>

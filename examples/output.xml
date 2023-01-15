@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exercise xmlns="kev.in:exercises" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="kev.in:exercises exercises.xsd"
+    type="output" language="python">
+    <code-block>
+        <line>
+            <text>def convert_celsius_to_fahrenheit(temperature):</text>
+        </line>
+        <line-break />
+        <line indentation="1" comment="true">
+            <text># Temperature time 9/5, plus 32</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>fahren = temperature * (9/5)</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>fahren += 32</text>
+        </line>
+        <line-break />
+        <line indentation="1">
+            <text>return fahren</text>
+        </line>
+        <line-break />
+        <line>
+            <text>temp = 33</text>
+        </line>
+        <line-break />
+        <line>
+            <text>fahren = convert_celsius_to_fahrenheit(temp)</text>
+        </line>
+        <line-break />
+        <line>
+            <text>print(temp, "degrees C is", fahren, "degrees F")</text>
+        </line>
+        <line-break />
+    </code-block>
+</exercise>
