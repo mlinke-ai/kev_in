@@ -16,31 +16,32 @@
         items = e.detail.items;
 	}
 
-    export let height = "";
+  export let height = "";
 
 </script>
 
 <style lang="scss">
     @use "../../variables" as theme;
     
-    section {
+    .hListStyling {
         padding: 0.3em;
         overflow: auto;
+        min-height: 50px;
     }
     @media (prefers-color-scheme: dark) {
-        section{border: 1px solid theme.$primaryDark;}
+        .hListStyling{border: 1px solid theme.$primaryDark;}
     }
     @media (prefers-color-scheme: light) {
-        section{border: 1px solid theme.$primaryLight;}
+        .hListStyling{border: 1px solid theme.$primaryLight;}
     }
 
 
 	.itembox {
 		padding: 0.2em;
 		margin: 0.15em 0;
-        display: flex;
-        flex-direction: row;
-        border: 1px solid white;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid white;
 	}
 
 </style>
@@ -51,8 +52,9 @@
   {@html `<style> .hljs{background:none}</style>`}
 </svelte:head>
 
-<section 
-    style={"height: "+height + "px"} 
+<div 
+    class="hListStyling"
+    style={"height: " + height + "px;"}
     use:dndzone={{items: items, flipDurationMs: flipDurationMs, dropTargetStyle: {outline: "#D79922 solid 3px "}}} 
     on:consider={handleDndConsider} 
     on:finalize={handleDndFinalize}
@@ -67,5 +69,5 @@
             </div>
         </div>
 	{/each}
-</section>
+      </div>
 
