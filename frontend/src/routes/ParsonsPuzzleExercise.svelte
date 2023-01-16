@@ -15,7 +15,7 @@
 
   const getExercise = async () =>{
     fetch(
-      "http://127.0.0.1:5000/exercise?exercise_id=1", 
+      "/exercise?exercise_id=1&exercise_limit=19", 
       {
         method: "GET",
         headers: {"Content-Type": "application/json"},
@@ -51,7 +51,38 @@
     itemsRight = [];
   }
 
+  let startTime = 0;
+  let elapsedTime = 0;
+  let intervallID;
+  const startTimer = () => {
+    startTime = Date.now();
+    intervallID = setInterval(() => {
+      const endTime = Date.now();
+      elapsedTime = endTime - startTime;
+    })
+  }
 
+  const resetTimer = () => {
+    elapsedTime = 0;
+    clearInterval(intervallID);
+  }
+  
+  let maxTimeReached = false;
+  const format = (min, sec) => {
+    // format to 2 digits and if maximum of 59 minutes and 59 seconds is reached, stop it
+    if (maxTimeReached || min >= 59 && sec >= 59){
+      maxTimeReached = true;
+      return "59:59";
+    }
+    else {
+      return ("00"+min.toString()).slice(-2) + ":" + ("00"+sec.toString()).slice(-2);
+    }
+  }
+  $: seconds = (Math.floor(elapsedTime / 1000) % 60);
+  $: minutes = (Math.floor(elapsedTime / 1000 / 60) % 60);
+  $: formattedTime = format(minutes, seconds);
+  startTimer()
+  
 </script>
 
 <Page title="Parsons Puzzle Exercise" fullwidth={true}>
@@ -72,7 +103,7 @@
         <Button variant="raised" on:click={getExercise}>Submit</Button>
       </div>
       <div class="clock-widget">
-        00:00
+        {formattedTime}
         <Icon class="material-icons">access_time</Icon>
       </div>
     </div>
