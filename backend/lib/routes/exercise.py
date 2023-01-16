@@ -39,7 +39,6 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
 
         args = parser.parse_args()
-        print(args)
 
         # check if page limit is in range
         if args["exercise_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):

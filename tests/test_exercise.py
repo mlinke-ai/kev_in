@@ -119,9 +119,8 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
         # server should return HTTP status 200
         self.assertEqual(r.status_code, 200)
@@ -144,9 +143,8 @@ class ExerciseTest(unittest.TestCase):
         """
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": -2},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            f"http://127.0.0.1:5000/exercise?exercise_id=-2",
+            headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
         # HTTP stauts 200 and empty JSON
         self.assertEqual(r.status_code, 200)
@@ -162,9 +160,8 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            headers={"Cookie": f"{ExerciseTest.userCookie}"},
         )
         # server should return HTTP status 200
         self.assertEqual(r.status_code, 200)
@@ -190,9 +187,8 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"key=value;"},
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            headers={"Cookie": f"key=value"},
         )
 
         self.assertEqual(r.status_code, 401)

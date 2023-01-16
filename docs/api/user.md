@@ -21,27 +21,23 @@ The GET method is used to retrieve user data based on attributes. This method su
 Python `requests`:  
 
 ```python
-requests.request("GET", "http://<address>:<port>/user", json=<arguments>, headers={"Content-Type": "application/json"})
+requests.request("GET", "http://<address>:<port>/user?<URLarguments>")
 ```
 
 Unix `curl`:
 
 ```
-curl --location --request GET 'http://<adress>:<port>/user' \
---header 'Content-Type: application/json' \
---data-raw '{
-	<arguments>
-}'
+curl --location --request GET 'http://<address>:<port>/user?<URLarguments>'
 ```
 
 JavaScript `fetch`:
 
 ```javascript
-fetch("http://<address>:<port>/user", {method: "GET", headers: {"Content-Type": "application/json"}, body: JSON.stringify(<arguments>)})
+fetch("http://<address>:<port>/user?<URLarguments>", {method: "GET"})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with key value pairs in the form `key=value` (key is the argument, example values are listed in the table below).
+Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are seperated with `&`.
 
 ### Arguments
 
