@@ -17,36 +17,30 @@ This endpoint is only accessable if the client is logged in as a existing user (
 
 ## GET
 
-The GET method is used to get exercise data based on attributes.
+The GET method is used to retrieve exercise data based on attributes. This method supports paging. Paging prevents overwhelming the API by reducing the number of returned elements. When a request is expected to return a huge number of elements, one can reduce the number of elements with the `exercise_offset` and `exercise_limit` arguments. `exercise_offset` defines the lowest `exercise_id` while `exercise_limit` defines the number of elements in the page. The default value for `exercise_limit` is defined in `config.MAX_ITEMS_RETURNED`. To get all values, simply execute multiple requests with adjusted values for `exercise_offset`. If `exercise_id` is provided `exercise_offset` and `exercise_limit` get ignored.
 
 ### Access
 
-This method is usable for all users.
-
-Python `requests`:
+Python `requests`:  
 
 ```python
-requests.request("GET", "http://<address>:<port>/exercise", json=<arguments>, headers={"Content-Type": "application/json"})
+requests.request("GET", "http://<address>:<port>/exercise?<URLarguments>")
 ```
 
 Unix `curl`:
 
 ```
-curl --location --request GET 'http://<address>:<port>/exercise' \
---header 'Content-Type: application/json' \
---data-raw '{
-    <arguments>
-    }'
+curl --location --request GET 'http://<address>:<port>/exercise?<URLarguments>'
 ```
 
 JavaScript `fetch`:
 
 ```javascript
-fetch("http://<address>:<port>/exercise", {method: "GET", headers: {"Content-Type": "application/json"} body: JSON.stringify(<arguments>)})
+fetch("http://<address>:<port>/exercise?<URLarguments>", {method: "GET"})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<arguments>` with with key value pairs in the form `key=value` (key is the argument, example values are listed in the table below).
+Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are seperated with `&`.
 
 ### Arguments
 

@@ -1,4 +1,4 @@
 pushd frontend
 npm run build
 popd
-./run.py --host --testing
+./run.py --host --testing --clean
