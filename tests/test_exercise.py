@@ -28,13 +28,13 @@ class ExerciseTest(unittest.TestCase):
     The documentation of the API can be found [here](https://mlinke-ai.github.io/kev_in/api/exercise/).
     Note: all tests Use the IP 127.0.0.1 and Port 5000, so the server which provides the endpoint should be hosted there.
     """
-    
+
     user_name = "G:ff#Test"
     user_pass = "hji'$4y33F?"
-    
+
     @classmethod
     def setUpClass(cls) -> None:
-        #log into sadmin
+        # log into sadmin
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
@@ -43,25 +43,36 @@ class ExerciseTest(unittest.TestCase):
         )
         cls.adminCookie = r.headers["Set-Cookie"]
 
-        #create an exercise which we can later edit or access
+        # create an exercise which we can later edit or access
         r = requests.request(
-            "POST", "http://127.0.0.1:5000/exercise",
-            json={"exercise_title": "Dummy", "exercise_description" : "Test", "exercise_type": 1, "exercise_content":"1+1="},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            "POST",
+            "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_title": "Dummy",
+                "exercise_description": "Test",
+                "exercise_type": 1,
+                "exercise_content": "1+1=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
         cls.exercise_id = r.json()["exercise_id"]
-        cls.exercise_title = r.json()["exercise_title"]   
+        cls.exercise_title = r.json()["exercise_title"]
 
-        #create a test user which we can use later
+        # create a test user which we can use later
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/user",
-            json={"user_name": ExerciseTest.user_name, "user_pass": ExerciseTest.user_pass, "user_mail": "test@example.com", "user_role": 3},
+            json={
+                "user_name": ExerciseTest.user_name,
+                "user_pass": ExerciseTest.user_pass,
+                "user_mail": "test@example.com",
+                "user_role": 3,
+            },
             headers={"Content-Type": "application/json"},
         )
         cls.user_id = r.json()["user_id"]
 
-        #log into the created test user
+        # log into the created test user
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
@@ -71,30 +82,32 @@ class ExerciseTest(unittest.TestCase):
         cls.userCookie = r.headers["Set-Cookie"]
 
     @classmethod
-    def tearDownClass(cls) -> None: 
-        #delete the created exercise
+    def tearDownClass(cls) -> None:
+        # delete the created exercise
         requests.request(
-            "DELETE", "http://127.0.0.1:5000/exercise",
+            "DELETE",
+            "http://127.0.0.1:5000/exercise",
             json={"exercise_id": ExerciseTest.exercise_id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
         cls.exercise_id = None
 
-        #log out of the user account
+        # log out of the user account
         cls.userCookie = None
 
-        #delete the created user
+        # delete the created user
         requests.request(
-            "DELETE", "http://127.0.0.1:5000/user",
+            "DELETE",
+            "http://127.0.0.1:5000/user",
             json={"user_id": ExerciseTest.user_id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
         cls.user_id = None
 
-        #log out of admin account
+        # log out of admin account
         cls.adminCookie = None
 
-#------------------------------HTTP-GET-----------------------------
+    # ------------------------------HTTP-GET-----------------------------
 
     def test_get_existing(self) -> None:
         """
@@ -105,35 +118,35 @@ class ExerciseTest(unittest.TestCase):
         id = str(ExerciseTest.exercise_id)
 
         r = requests.request(
-            "GET", f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
-            )
-        #server should return HTTP status 200
+            "GET",
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            headers={"Cookie": f"{ExerciseTest.adminCookie}"},
+        )
+        # server should return HTTP status 200
         self.assertEqual(r.status_code, 200)
         try:
             exercise = r.json()[id]
         except KeyError:
             self.fail("An exercise should be returned")
-        
-        #returned exercise should have these attributes
+
+        # returned exercise should have these attributes
         self.assertIn("exercise_content", exercise)
         self.assertIn("exercise_description", exercise)
         self.assertIn("exercise_id", exercise)
         self.assertIn("exercise_title", exercise)
         self.assertIn("exercise_type", exercise)
-        
+
     def test_get_non_existing(self) -> None:
         """
         Query the System for a non existing exercise with a HTTP-GET request by id with admin account.
         The system should return HTTP-status 200 and an empty JSON string.
         """
         r = requests.request(
-            "GET", f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": -2},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
-            )
-        #HTTP stauts 200 and empty JSON
+            "GET",
+            f"http://127.0.0.1:5000/exercise?exercise_id=-2",
+            headers={"Cookie": f"{ExerciseTest.adminCookie}"},
+        )
+        # HTTP stauts 200 and empty JSON
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json(), {})
 
@@ -146,18 +159,18 @@ class ExerciseTest(unittest.TestCase):
         id = str(ExerciseTest.exercise_id)
 
         r = requests.request(
-            "GET", f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
-            )
-        #server should return HTTP status 200
+            "GET",
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            headers={"Cookie": f"{ExerciseTest.userCookie}"},
+        )
+        # server should return HTTP status 200
         self.assertEqual(r.status_code, 200)
         try:
             exercise = r.json()[id]
         except KeyError:
             self.fail("An exercise should be returned")
-        
-        #returned exercise should have these attributes
+
+        # returned exercise should have these attributes
         self.assertIn("exercise_content", exercise)
         self.assertIn("exercise_description", exercise)
         self.assertIn("exercise_id", exercise)
@@ -173,15 +186,15 @@ class ExerciseTest(unittest.TestCase):
         id = str(ExerciseTest.exercise_id)
 
         r = requests.request(
-            "GET", f"http://127.0.0.1:5000/exercise",
-            json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"key=value;"}
-            )
+            "GET",
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            headers={"Cookie": f"key=value"},
+        )
 
         self.assertEqual(r.status_code, 401)
         self.assertDictEqual(r.json(), {"message": "Login required"})
 
-#------------------------------HTTP-POST-----------------------------
+    # ------------------------------HTTP-POST-----------------------------
 
     def test_post_success(self) -> None:
         """
@@ -191,11 +204,15 @@ class ExerciseTest(unittest.TestCase):
         """
 
         r = requests.request(
-            "POST", "http://127.0.0.1:5000/exercise",
-            json={"exercise_title": "My Exercise",
-            "exercise_description" : "This is a good Test example!",
-            "exercise_type": 1, "exercise_content":"1+1="},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            "POST",
+            "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_title": "My Exercise",
+                "exercise_description": "This is a good Test example!",
+                "exercise_type": 1,
+                "exercise_content": "1+1=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
         self.assertEqual(r.status_code, 201)
 
@@ -204,7 +221,7 @@ class ExerciseTest(unittest.TestCase):
         except KeyError:
             self.fail("An exercise should be returned")
 
-        #returned exercise should have these attributes
+        # returned exercise should have these attributes
         self.assertIn("exercise_id", exercise)
         self.assertIn("exercise_title", exercise)
         self.assertEqual("The exercise was created successfully", exercise["message"])
@@ -212,9 +229,10 @@ class ExerciseTest(unittest.TestCase):
         id = exercise["exercise_id"]
 
         requests.request(
-            "DELETE", "http://127.0.0.1:5000/exercise",
-            json={"exercise_id": id },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            "DELETE",
+            "http://127.0.0.1:5000/exercise",
+            json={"exercise_id": id},
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
 
     def test_post_no_access(self) -> None:
@@ -224,54 +242,62 @@ class ExerciseTest(unittest.TestCase):
         """
 
         r = requests.request(
-            "POST", "http://127.0.0.1:5000/exercise",
-            json={"exercise_title": "My Exercise",
-            "exercise_description" : "This is a good Test example!",
-            "exercise_type": 1, "exercise_content":"1+1="},
-            headers={"Content-Type": "application/json", "Cookie": "key=value;"}
+            "POST",
+            "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_title": "My Exercise",
+                "exercise_description": "This is a good Test example!",
+                "exercise_type": 1,
+                "exercise_content": "1+1=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": "key=value;"},
         )
         self.assertDictEqual(r.json(), {"message": "Login required"})
         self.assertEqual(r.status_code, 401)
 
         r = requests.request(
-            "POST", "http://127.0.0.1:5000/exercise",
-            json={"exercise_title": "My Exercise",
-            "exercise_description" : "This is a good Test example!",
-            "exercise_type": 1, "exercise_content":"1+1="},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"}
+            "POST",
+            "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_title": "My Exercise",
+                "exercise_description": "This is a good Test example!",
+                "exercise_type": 1,
+                "exercise_content": "1+1=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"},
         )
         self.assertDictEqual(r.json(), {"message": "No Access"})
         self.assertEqual(r.status_code, 403)
 
-    
     def test_post_existing(self) -> None:
         """
         Attempting to create/overwrite an already existing exercise with the HTTP-POST method.
         Overwriting exercises should not be possible even with admin privileges
         This test should return HTTP-status 400 and an error message stating the issue.
         """
-        
-        title = f"{ExerciseTest.exercise_title}" 
+
+        title = f"{ExerciseTest.exercise_title}"
 
         r = requests.request(
-            "POST", "http://127.0.0.1:5000/exercise",
+            "POST",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_title": title,
-                "exercise_description" : "This is a good Test example!",
+                "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
-                "exercise_content":"1+1="
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+                "exercise_content": "1+1=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
-        
+
         try:
             exercise = r.json()
         except KeyError:
             self.fail("An exercise should be returned")
 
-        self.assertEqual(r.status_code,409)
+        self.assertEqual(r.status_code, 409)
 
-        #Response should include a fail message
+        # Response should include a fail message
         self.assertEqual("An exercise with this title already exists", exercise["message"])
 
     def test_post_without_req_arg(self) -> None:
@@ -281,13 +307,14 @@ class ExerciseTest(unittest.TestCase):
         """
 
         r = requests.request(
-            "POST", "http://127.0.0.1:5000/exercise",
+            "POST",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_title": "My Exercise",
-                "exercise_description" : "This is a good Test example!",
-                "exercise_type": 1
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+                "exercise_description": "This is a good Test example!",
+                "exercise_type": 1,
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
 
         self.assertEqual(r.status_code, 400)
@@ -298,7 +325,7 @@ class ExerciseTest(unittest.TestCase):
 
         self.assertIn("exercise_content", errors)
 
-#------------------------------HTTP-PUT-----------------------------
+    # ------------------------------HTTP-PUT-----------------------------
 
     def test_put_existing(self) -> None:
         """
@@ -307,17 +334,18 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        #test changing all attribues
+        # test changing all attribues
         r = requests.request(
-            "PUT", "http://127.0.0.1:5000/exercise",
+            "PUT",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_title": "CoolExercise",
                 "exercise_id": id,
                 "exercise_description": "This is an Exercise",
                 "exercise_type": 1,
-                "exercise_content": "2+4="
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+                "exercise_content": "2+4=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
         self.assertDictEqual(r.json(), {"message": f"Successfully chanaged exercise with exercise_id {id}"})
         self.assertEqual(r.status_code, 200)
@@ -329,17 +357,18 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        #test changing all attribues
+        # test changing all attribues
         r = requests.request(
-            "PUT", "http://127.0.0.1:5000/exercise",
+            "PUT",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_title": "CoolExercise",
                 "exercise_id": id,
                 "exercise_description": "This is an Exercise",
                 "exercise_type": 1,
-                "exercise_content": "2+4="
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"}
+                "exercise_content": "2+4=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"},
         )
         self.assertDictEqual(r.json(), {"message": "No Access"})
         self.assertEqual(r.status_code, 403)
@@ -351,17 +380,18 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        #test changing all attribues
+        # test changing all attribues
         r = requests.request(
-            "PUT", "http://127.0.0.1:5000/exercise",
+            "PUT",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_title": "CoolExercise",
                 "exercise_id": id,
                 "exercise_description": "This is an Exercise",
                 "exercise_type": 1,
-                "exercise_content": "2+4="
-                },
-            headers={"Content-Type": "application/json", "Cookie": "key=value;"}
+                "exercise_content": "2+4=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": "key=value;"},
         )
         self.assertDictEqual(r.json(), {"message": "Login required"})
         self.assertEqual(r.status_code, 401)
@@ -373,17 +403,18 @@ class ExerciseTest(unittest.TestCase):
         """
 
         r = requests.request(
-            "PUT", "http://127.0.0.1:5000/exercise",
+            "PUT",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_title": "CoolExercise",
                 "exercise_description": "This is an Exercise",
                 "exercise_type": 1,
-                "exercise_content": "2+4="
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+                "exercise_content": "2+4=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
 
-        #server should return HTTP status 400
+        # server should return HTTP status 400
         self.assertEqual(r.status_code, 400)
         try:
             errors = r.json()["message"]
@@ -398,24 +429,25 @@ class ExerciseTest(unittest.TestCase):
         The system should return HTTP-status 404 and an error message.
         """
 
-        id = -2 #exercise_id of a clearly not existing exercise
+        id = -2  # exercise_id of a clearly not existing exercise
         r = requests.request(
-            "PUT", "http://127.0.0.1:5000/exercise",
+            "PUT",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_id": id,
                 "exercise_title": "CoolExercise",
                 "exercise_description": "This is an Exercise",
                 "exercise_type": 1,
-                "exercise_content": "2+4="
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+                "exercise_content": "2+4=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
-        
+
         self.assertIn("message", r.json())
         self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
         self.assertEqual(r.status_code, 404)
 
-#------------------------------HTTP-DELETE-----------------------------
+    # ------------------------------HTTP-DELETE-----------------------------
 
     def test_delete_existing(self) -> None:
         """
@@ -426,11 +458,15 @@ class ExerciseTest(unittest.TestCase):
         """
 
         r = requests.request(
-            "POST", "http://127.0.0.1:5000/exercise",
-            json={"exercise_title": "To Be Deleted",
-            "exercise_description" : "This is a good Test example!",
-            "exercise_type": 1, "exercise_content":"1+1="},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            "POST",
+            "http://127.0.0.1:5000/exercise",
+            json={
+                "exercise_title": "To Be Deleted",
+                "exercise_description": "This is a good Test example!",
+                "exercise_type": 1,
+                "exercise_content": "1+1=",
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
         self.assertEqual(r.status_code, 201)
 
@@ -441,65 +477,70 @@ class ExerciseTest(unittest.TestCase):
 
         id = exercise["exercise_id"]
 
-        #Fail Case #1:
+        # Fail Case #1:
 
         r = requests.request(
-            "DELETE", "http://127.0.0.1:5000/exercise",
+            "DELETE",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_id": id,
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"}
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"},
         )
 
         self.assertEqual(r.status_code, 403)
         self.assertDictEqual(r.json(), {"message": "No Access"})
 
-        #Fail Case #2:
+        # Fail Case #2:
 
         r = requests.request(
-            "DELETE", "http://127.0.0.1:5000/exercise",
+            "DELETE",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_id": id,
-                },
-            headers={"Content-Type": "application/json", "Cookie": "key=value;"}
+            },
+            headers={"Content-Type": "application/json", "Cookie": "key=value;"},
         )
 
         self.assertEqual(r.status_code, 401)
         self.assertDictEqual(r.json(), {"message": "Login required"})
 
-        #Success Case:
+        # Success Case:
 
         r = requests.request(
-            "DELETE", "http://127.0.0.1:5000/exercise",
+            "DELETE",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_id": id,
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
 
         self.assertEqual(r.status_code, 200)
         self.assertIn("message", r.json())
         self.assertEqual(r.json()["message"], f"Successfully deleted exercise with exercise_id {id}")
-        
+
     def test_delete_non_existing(self) -> None:
         """
         Delete a non-existing task in the database using id = -2 with the HTTP-DELETE method with admin privileges
         This system should return HTTP-status 404 stating exercise id does not exist
         """
 
-        id = -2 #exercise_id of a clearly not existing exercise
+        id = -2  # exercise_id of a clearly not existing exercise
 
         r = requests.request(
-            "DELETE", "http://127.0.0.1:5000/exercise",
+            "DELETE",
+            "http://127.0.0.1:5000/exercise",
             json={
                 "exercise_id": id,
-                },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"}
+            },
+            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
         )
 
         self.assertEqual(r.status_code, 404)
         self.assertIn("message", r.json())
         self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -41,16 +41,16 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         # define arguments
-        parser.add_argument("solution_id", type=int, help="{error_msg}")
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
-        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
+        parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
         # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
+        parser.add_argument("solution_date", type=int, help="{error_msg}", location="args")
         # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
-        parser.add_argument("solution_correct", type=bool, help="{error_msg}")
-        parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}")
-        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}")
+        parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
 
         args = parser.parse_args()
 

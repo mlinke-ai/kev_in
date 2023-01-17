@@ -13,13 +13,13 @@ Kev.in is a learning platform for programming beginners. It is released under th
 
 The source code of Kev.in can be downloaded at:
 
-[GitHub](https://github.com/mlinke-ai/kev.in)
+[GitHub](https://github.com/mlinke-ai/kev_in)
 
 The documentation can be found online at:
 
-[GitHub Pages](https://mlinke.github.io/kev.in)
+[GitHub Pages](https://mlinke-ai.github.io/kev_in/)
 
-Bug reports should be done through the [Issue Tracker](https://github.com/mlinke-ai/kev.in/issues) of Kev.in on GitHub.
+Bug reports should be done through the [Issue Tracker](https://github.com/mlinke-ai/kev_in/issues) of Kev.in on GitHub.
 
 # Testing
 

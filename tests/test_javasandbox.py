@@ -51,7 +51,7 @@ class JavaSandboxTest(unittest.TestCase):
         """Tests correct initialization of an instance of the ExecuteJava class."""
         pass
 
-    def test_jvm_convection(self) -> None:
+    def test_jvm_connection(self) -> None:
         """Test whether JVM connection is present."""
         pass
 

@@ -16,7 +16,7 @@ Basically Kev.in can run on any system. It relies mostly on Python, some Python 
 The source code of Kev.in can be downloaded from GitHub:
 
 ```
-git clone https://github.com/mlinke-ai/kev.in.git
+git clone https://github.com/mlinke-ai/kev_in.git
 ```
 
 # Installation

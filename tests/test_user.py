@@ -73,15 +73,13 @@ class UserTest(unittest.TestCase):
                 requests.request(
                     "DELETE", "http://127.0.0.1:5000/user", json={"user_id": user_id}, headers=cls.sadmin_header
                 )
-        pass
 
     # --- GET ---
 
     def test_get_existing_by_id(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_id": 2},
+            "http://127.0.0.1:5000/user?user_id=2",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -90,8 +88,7 @@ class UserTest(unittest.TestCase):
     def test_get_existing_by_name(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_name": "tuser"},
+            "http://127.0.0.1:5000/user?user_name=tuser",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -100,8 +97,7 @@ class UserTest(unittest.TestCase):
     def test_get_existing_by_mail(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_mail": "tuser@example.com"},
+            "http://127.0.0.1:5000/user?user_mail=tuser@example.com",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -110,8 +106,7 @@ class UserTest(unittest.TestCase):
     def test_get_existing_by_role(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_role": 3},
+            "http://127.0.0.1:5000/user?user_role=3",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -120,8 +115,7 @@ class UserTest(unittest.TestCase):
     def test_get_non_existing_by_id(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_id": 25},
+            "http://127.0.0.1:5000/user?user_id=25",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -130,8 +124,7 @@ class UserTest(unittest.TestCase):
     def test_get_non_existing_by_name(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_name": "nuser"},
+            "http://127.0.0.1:5000/user?user_name=nuser",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -140,8 +133,7 @@ class UserTest(unittest.TestCase):
     def test_get_non_existing_by_mail(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_mail": "nuser@example.com"},
+            "http://127.0.0.1:5000/user?user_mail=nuser@example.com",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -150,8 +142,7 @@ class UserTest(unittest.TestCase):
     def test_get_non_existing_by_role(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_role": 4},
+            "http://127.0.0.1:5000/user?user_role=4",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 400)
@@ -160,8 +151,7 @@ class UserTest(unittest.TestCase):
     def test_get_restrict_page_size(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user",
-            json={"user_limit": 5},
+            "http://127.0.0.1:5000/user?user_limit=5",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)

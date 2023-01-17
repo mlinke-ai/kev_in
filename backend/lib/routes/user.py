@@ -38,17 +38,18 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, default=0, help="{error_msg}")
-        parser.add_argument("user_name", type=str, default="", help="{error_msg}")
-        parser.add_argument("user_mail", type=str, default="", help="{error_msg}")
+        parser.add_argument("user_id", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("user_name", type=str, default="", help="{error_msg}", location="args")
+        parser.add_argument("user_mail", type=str, default="", help="{error_msg}", location="args")
         parser.add_argument(
             "user_role",
             type=lambda x: config.UserRole(int(x)),
             default=config.UserRole.User,
             help="{error_msg}",
+            location="args"
         )
-        parser.add_argument("user_offset", type=int, default=0, help="{error_msg}")
-        parser.add_argument("user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}")
+        parser.add_argument("user_offset", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
 
         args = parser.parse_args()
 
