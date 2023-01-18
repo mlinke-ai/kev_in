@@ -1,13 +1,15 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-import jwt
-
-from werkzeug.datastructures import ImmutableMultiDict
 from typing import Any
-from flask_sqlalchemy.query import sqlalchemy
 
-from backend.lib.core.config import JWT_SECRET, UserRole, USER_TABLE, SOLUTION_TABLE
+import jwt
+from flask_sqlalchemy.query import sqlalchemy
+from werkzeug.datastructures import ImmutableMultiDict
+
+from backend.lib.core.config import (JWT_SECRET, SOLUTION_TABLE, USER_TABLE,
+                                     UserRole)
 from backend.lib.interfaces.database import db_engine
+
 
 def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceId: int = None, changeToAdmin: bool = None) -> tuple[bool, bool | None]:
     """

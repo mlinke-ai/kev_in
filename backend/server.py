@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import hashlib
 
 from flask import Flask, Response, send_from_directory
 from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
-from backend.lib.core import config, errors
-from backend.lib.interfaces import db_engine, UserModel
-from backend.lib.routes import ExerciseResource, LoginResource, UserResource, SolutionResource
+from backend.lib.core import config
+from backend.lib.interfaces import UserModel, db_engine
+from backend.lib.routes import (ExerciseResource, LoginResource,
+                                SolutionResource, UserResource)
 
 
 class Server:

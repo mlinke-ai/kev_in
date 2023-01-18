@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import flask_sqlalchemy
-import enum
 
-from backend.lib.core import errors, config
+import flask_sqlalchemy
+
+from backend.lib.core import config
 
 db_engine = flask_sqlalchemy.SQLAlchemy()
 

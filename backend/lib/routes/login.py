@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import hashlib
+
+import jwt
 from flask import Response, jsonify, make_response
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
-import jwt
-import hashlib
 
-from backend.lib.interfaces.database import db_engine
 from backend.lib.core import config
+from backend.lib.interfaces.database import db_engine
 
 
 class LoginResource(Resource):

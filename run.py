@@ -3,10 +3,9 @@
 
 import argparse
 import shutil
-import os
 
-from backend.server import Server
 from backend.lib.core import config
+from backend.server import Server
 
 
 def main():

@@ -5,8 +5,8 @@ from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
-from backend.lib.interfaces.database import ExerciseModel, db_engine
 from backend.lib.core import config, utils
+from backend.lib.interfaces.database import ExerciseModel, db_engine
 
 
 class ExerciseResource(Resource):

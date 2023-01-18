@@ -3,5 +3,5 @@
 
 from .exercise import *
 from .login import *
-from .user import *
 from .solution import *
+from .user import *

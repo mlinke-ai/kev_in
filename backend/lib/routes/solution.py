@@ -17,16 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import datetime
+
 from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
-import hashlib
-import jwt
-import datetime
-
-from backend.lib.interfaces.database import SolutionModel, db_engine
 from backend.lib.core import config, utils
+from backend.lib.interfaces.database import SolutionModel, db_engine
 
 
 class SolutionResource(Resource):

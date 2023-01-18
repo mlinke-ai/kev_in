@@ -17,14 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import hashlib
+
 from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
-import hashlib
-
-from backend.lib.interfaces.database import UserModel, db_engine
 from backend.lib.core import config, utils
+from backend.lib.interfaces.database import UserModel, db_engine
 
 
 class UserResource(Resource):

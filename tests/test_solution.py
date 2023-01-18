@@ -18,9 +18,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
-import requests
-
-from parameterized import parameterized
 
 
 class SolutionTest(unittest.TestCase):

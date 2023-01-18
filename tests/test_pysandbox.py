@@ -18,8 +18,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
-from backend.lib.evaluator.sandboxes.pyenv.pysandbox import ExecutePython
+
 from parameterized import parameterized
+
+from backend.lib.evaluator.sandboxes.pyenv.pysandbox import ExecutePython
 
 """ Test input parameter """
 
