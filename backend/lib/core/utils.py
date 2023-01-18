@@ -18,11 +18,11 @@ def authorize(
     changeToAdmin: bool = None,
 ) -> tuple[bool, bool | None]:
     """
-    The authorize funciton which determines, if a user has rights to access certain data or not.
+    The authorize function which determines, if a user has rights to access certain data or not.
 
     Args:
         cookies: :class:`ImmutableMultiDict`
-            All cookies, the client sents with his request. You can pass `request.cookies`.
+            All cookies, the client sends with his request. You can pass `request.cookies`.
         method: :class:`str`
             The HTTP method this function should authenticate. Should be one of the following:
             (GET, POST, PUT, DELETE)
@@ -31,9 +31,9 @@ def authorize(
             (exercise, user, solution)
         reqResourceId: :class:`int`
             The id of the resource, the client requested, only needed when `method=='GET', 'PUT' or 'DELETE'`,
-            exept for the exercise endpoint.
+            except for the exercise endpoint.
         changeToAdmin: :class:`bool`
-            Only needs to be set, on user PUT mehtod.
+            Only needs to be set, on user PUT method.
     Returns:
         A tuple of Type :class:`tuple[bool, bool | None]` (is_admin, has_access)
         is_admin can be True or False (Depending on wether the client is an admin or not)
@@ -41,28 +41,16 @@ def authorize(
     """
 
     if method not in ["GET", "POST", "PUT", "DELETE"]:
-        raise ValueError(
-            "Argument 'method' should contain one of the following: 'GET', 'POST', 'PUT', 'DELETE'"
-        )
+        raise ValueError("Argument 'method' should contain one of the following: 'GET', 'POST', 'PUT', 'DELETE'")
 
     if endpoint not in ["exercise", "user", "solution"]:
-        raise ValueError(
-            "Argument 'endpoint' should contain one of the following: 'exercise', 'user', 'solution'"
-        )
+        raise ValueError("Argument 'endpoint' should contain one of the following: 'exercise', 'user', 'solution'")
 
-    if (
-        method in ["GET", "PUT", "DELETE"]
-        and resourceId == None
-        and endpoint != "exercise"
-    ):
-        raise ValueError(
-            f"'method' is {method}, 'endpoint' is {endpoint} and no 'recourceId' was provided"
-        )
+    if method in ["GET", "PUT", "DELETE"] and resourceId == None and endpoint != "exercise":
+        raise ValueError(f"'method' is {method}, 'endpoint' is {endpoint} and no 'recourseId' was provided")
 
     if method == "PUT" and endpoint == "user" and changeToAdmin == False:
-        raise ValueError(
-            f"'method' is {method}, 'endpoint' is {endpoint} and no 'changeToAdmin' was provided"
-        )
+        raise ValueError(f"'method' is {method}, 'endpoint' is {endpoint} and no 'changeToAdmin' was provided")
 
     user_data = _extractUserData(cookies)
 
@@ -81,9 +69,7 @@ def authorize(
             role, method, int(user_data["user_id"]), resourceId, changeToAdmin
         )
     elif endpoint == "solution":
-        return not (role == UserRole.User), _authSolution(
-            role, method, int(user_data["user_id"]), resourceId
-        )
+        return not (role == UserRole.User), _authSolution(role, method, int(user_data["user_id"]), resourceId)
 
 
 def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:
@@ -114,11 +100,7 @@ def _getUserRole(user_id: int) -> UserRole | None:
     """
 
     user_table = sqlalchemy.Table(USER_TABLE, db_engine.metadata, autoload=True)
-    query = (
-        db_engine.select(user_table)
-        .select_from(user_table)
-        .where(user_table.c.user_id == user_id)
-    )
+    query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == user_id)
     selection = db_engine.session.execute(query)
     try:
         row = selection.fetchone()
@@ -131,7 +113,7 @@ def _getUserRole(user_id: int) -> UserRole | None:
 
 def _authExercise(role: UserRole, method: str) -> bool:
     """
-    Access determiation for exercise endpoint.
+    Access determination for exercise endpoint.
     """
 
     if method == "GET":
@@ -144,22 +126,16 @@ def _authExercise(role: UserRole, method: str) -> bool:
         return not (role == UserRole.User)
 
 
-def _authUser(
-    role: UserRole, method: str, userId: int, resourceId: int, changeToAdmin: bool
-) -> bool:
+def _authUser(role: UserRole, method: str, userId: int, resourceId: int, changeToAdmin: bool) -> bool:
     """
-    Access determiation for user endpoint.
+    Access determination for user endpoint.
     """
 
     if method == "GET" or method == "DELETE":
         if role == UserRole.User:
             # check if client want's to access its own data
             user_table = sqlalchemy.Table(USER_TABLE, db_engine.metadata, autoload=True)
-            query = (
-                db_engine.select(user_table)
-                .select_from(user_table)
-                .where(user_table.c.user_id == resourceId)
-            )
+            query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == resourceId)
             selection = db_engine.session.execute(query)
             try:
                 row = selection.fetchone()
@@ -170,9 +146,7 @@ def _authUser(
             return True
 
     elif method == "POST":
-        return (
-            True  # this is never reached because user POST does not need authorization
-        )
+        return True  # this is never reached because user POST does not need authorization
 
     elif method == "PUT":
         if role == UserRole.User and changeToAdmin:
@@ -180,11 +154,7 @@ def _authUser(
         elif role == UserRole.User:
             # check if client want's to access its own data
             user_table = sqlalchemy.Table(USER_TABLE, db_engine.metadata, autoload=True)
-            query = (
-                db_engine.select(user_table)
-                .select_from(user_table)
-                .where(user_table.c.user_id == resourceId)
-            )
+            query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == resourceId)
             selection = db_engine.session.execute(query)
             try:
                 row = selection.fetchone()
@@ -197,15 +167,13 @@ def _authUser(
 
 def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> bool:
     """
-    Access determiation for solution endpoint.
+    Access determination for solution endpoint.
     """
 
     if method == "GET" or method == "PUT" or method == "DELETE":
         if role == UserRole.User:
             # check if client want's to access its own data
-            solution_table = sqlalchemy.Table(
-                SOLUTION_TABLE, db_engine.metadata, autoload=True
-            )
+            solution_table = sqlalchemy.Table(SOLUTION_TABLE, db_engine.metadata, autoload=True)
             query = (
                 db_engine.select(solution_table)
                 .select_from(solution_table)

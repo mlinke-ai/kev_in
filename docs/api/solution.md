@@ -38,7 +38,7 @@ fetch("http://<address>:<port>/solution?<URLarguments>", {method: "GET"})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are seperated with `&`.
+Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are separated with `&`.
 
 ### Arguments
 

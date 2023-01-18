@@ -37,7 +37,7 @@ fetch("http://<address>:<port>/user?<URLarguments>", {method: "GET"})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are seperated with `&`.
+Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are separated with `&`.
 
 ### Arguments
 
@@ -72,7 +72,7 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 === "400"
 
-	The `user_limit` is out of ragne, e.g. grater then `config.MAX_ITEMS_RETURNED`.
+	The `user_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.
 
 	```JSON
 	{
@@ -109,7 +109,7 @@ This method prevents duplication. This method can be invoked without sending a c
 
 ### Access
 
-No Authorizazion is needed, except for creating an admin account.
+No authorization is needed, except for creating an admin account.
 
 Python `requests`:  
 

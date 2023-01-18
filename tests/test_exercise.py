@@ -25,7 +25,7 @@ import requests
 class ExerciseTest(unittest.TestCase):
     """
     This test class tests the HTTP-request types of the Exercise endpoint. Therefor the class creates
-    a test exercise and a test user and loggs into an admin account and a user account (see setUpClass method).
+    a test exercise and a test user and logs into an admin account and a user account (see setUpClass method).
     The documentation of the API can be found [here](https://mlinke-ai.github.io/kev_in/api/exercise/).
     Note: all tests Use the IP 127.0.0.1 and Port 5000, so the server which provides the endpoint should be hosted there.
     """
@@ -159,7 +159,7 @@ class ExerciseTest(unittest.TestCase):
             f"http://127.0.0.1:5000/exercise?exercise_id=-2",
             headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
-        # HTTP stauts 200 and empty JSON
+        # HTTP status 200 and empty JSON
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json(), {})
 
@@ -323,9 +323,7 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.status_code, 409)
 
         # Response should include a fail message
-        self.assertEqual(
-            "An exercise with this title already exists", exercise["message"]
-        )
+        self.assertEqual("An exercise with this title already exists", exercise["message"])
 
     def test_post_without_req_arg(self) -> None:
         """
@@ -364,7 +362,7 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        # test changing all attribues
+        # test changing all attributes
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/exercise",
@@ -382,7 +380,7 @@ class ExerciseTest(unittest.TestCase):
         )
         self.assertDictEqual(
             r.json(),
-            {"message": f"Successfully chanaged exercise with exercise_id {id}"},
+            {"message": f"Successfully changed exercise with exercise_id {id}"},
         )
         self.assertEqual(r.status_code, 200)
 
@@ -393,7 +391,7 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        # test changing all attribues
+        # test changing all attributes
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/exercise",
@@ -419,7 +417,7 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        # test changing all attribues
+        # test changing all attributes
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/exercise",
@@ -489,9 +487,7 @@ class ExerciseTest(unittest.TestCase):
         )
 
         self.assertIn("message", r.json())
-        self.assertEqual(
-            r.json()["message"], f"Exercise with exercise_id {id} does not exist"
-        )
+        self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
         self.assertEqual(r.status_code, 404)
 
     # ------------------------------HTTP-DELETE-----------------------------
@@ -574,9 +570,7 @@ class ExerciseTest(unittest.TestCase):
 
         self.assertEqual(r.status_code, 200)
         self.assertIn("message", r.json())
-        self.assertEqual(
-            r.json()["message"], f"Successfully deleted exercise with exercise_id {id}"
-        )
+        self.assertEqual(r.json()["message"], f"Successfully deleted exercise with exercise_id {id}")
 
     def test_delete_non_existing(self) -> None:
         """
@@ -600,9 +594,7 @@ class ExerciseTest(unittest.TestCase):
 
         self.assertEqual(r.status_code, 404)
         self.assertIn("message", r.json())
-        self.assertEqual(
-            r.json()["message"], f"Exercise with exercise_id {id} does not exist"
-        )
+        self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
 
 
 if __name__ == "__main__":

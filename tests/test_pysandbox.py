@@ -57,7 +57,7 @@ reverse_string = {
     },
 }
 
-# Mulitplication with three input parameter.
+# Multiplication with three input parameter.
 multiplication = {
     "user_code": "def mult(a, b, c):\r\n    return a*b*c",
     "user_func": "mult",
@@ -105,10 +105,7 @@ infinite_loop = {
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {
-            "ERROR": (
-                "TimeoutError: Code execution has been interrupted. Maximum execution time "
-                "has been reached!",
-            )
+            "ERROR": ("TimeoutError: Code execution has been interrupted. Maximum execution time " "has been reached!",)
         },
         "RESULTLOG": {},
     },
@@ -152,9 +149,7 @@ class TestPySandbox(unittest.TestCase):
         test_args = test_input["test_args"]
         expected = test_input["expected"]
         self.assertEqual(
-            self.pysandbox_instance.exec_untrusted_code(
-                user_code, user_func, *test_args
-            ),
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
             expected,
         )
 
@@ -167,9 +162,7 @@ class TestPySandbox(unittest.TestCase):
         test_args = test_input["test_args"]
         not_expected = test_input["not_expected"]
         self.assertNotEqual(
-            self.pysandbox_instance.exec_untrusted_code(
-                user_code, user_func, *test_args
-            ),
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
             not_expected,
         )
 
@@ -182,9 +175,7 @@ class TestPySandbox(unittest.TestCase):
         test_args = test_input["test_args"]
         expected = test_input["expected"]
         self.assertEqual(
-            self.pysandbox_instance.exec_untrusted_code(
-                user_code, user_func, *test_args
-            ),
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
             expected,
         )
 
@@ -195,9 +186,7 @@ class TestPySandbox(unittest.TestCase):
         user_code = test_input["user_code"]
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
-        result = self.pysandbox_instance.exec_untrusted_code(
-            user_code, user_func, *test_args
-        )
+        result = self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args)
         self.assertIsNot(len(result["COMPILERLOG"]["ERROR"]), 0)
 
     # Test input
@@ -207,9 +196,7 @@ class TestPySandbox(unittest.TestCase):
         user_code = test_input["user_code"]
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
-        result = self.pysandbox_instance.exec_untrusted_code(
-            user_code, user_func, *test_args
-        )
+        result = self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args)
         self.assertIsNot(len(result["EXECUTELOG"]["ERROR"]), 0)
 
 

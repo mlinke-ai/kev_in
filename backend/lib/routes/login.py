@@ -16,7 +16,7 @@ class LoginResource(Resource):
     def post(self) -> Response:
         """
         Implementation of HTTP POST method. Use this method to log in to an existing Account.
-        The Post request needs two arguments: user_namme, user_pass.
+        The Post request needs two arguments: user_name, user_pass.
         It is important to set 'Content-Type = application/json' in the header of the Request.
 
         Example Post Request (with default and passwort-hash):
@@ -45,13 +45,9 @@ class LoginResource(Resource):
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         args = parser.parse_args()
         # hash the password with sha-256
-        args["user_pass"] = hashlib.sha256(
-            bytes(args["user_pass"], encoding="utf-8")
-        ).hexdigest()
+        args["user_pass"] = hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest()
         # load the user table
-        user_table = sqlalchemy.Table(
-            config.USER_TABLE, db_engine.metadata, autoload=True
-        )
+        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = (
             db_engine.select(user_table)

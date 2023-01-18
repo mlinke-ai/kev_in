@@ -9,7 +9,7 @@ date: 2022-12-23
 
 # Login API
 
-The login route is the enpoint to perform the login authentication process. After the login is performed the client gets a session Cookie.
+The login route is the endpoint to perform the login authentication process. After the login is performed the client gets a session Cookie.
 
 After the login Process is done the client has to send the session cookie with every HTTP request until logging out. (the cookie expires after one hour)
 
@@ -55,7 +55,7 @@ Arguments are constructed as dictionaries or JSON objects.
 
 === "200"
 
-    The response is a dictionary or JSON object. If authentication process succeeds a success message with a seesion cookie is returned with HTTP status 200.
+    The response is a dictionary or JSON object. If authentication process succeeds a success message with a session cookie is returned with HTTP status 200.
 
     ```JSON
     {

@@ -57,7 +57,7 @@ class LoginTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "unkownUser", "user_pass": LoginTest.user_pass},
+            json={"user_name": "unknownUser", "user_pass": LoginTest.user_pass},
             headers={"Content-Type": "application/json"},
         )
 
