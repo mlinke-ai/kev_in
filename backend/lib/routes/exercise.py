@@ -40,6 +40,7 @@ class ExerciseResource(Resource):
         parser.add_argument(
             "exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args"
         )
+        parser.add_argument("exercise_details", type=bool, default=False, help="{error_msg}", location="args")
 
         args = parser.parse_args()
 
@@ -83,15 +84,23 @@ class ExerciseResource(Resource):
         selection = db_engine.session.execute(query)
         # load the selection into the response data
         for row in selection.fetchall():
-            result[int(row["exercise_id"])] = dict(
-                exercise_id=int(row["exercise_id"]),
-                exercise_title=str(row["exercise_title"]),
-                exercise_description=str(row["exercise_description"]),
-                exercise_type=row["exercise_type"].name,
-                exercise_content=str(row["exercise_content"]),
-                exercise_solution=str(row["exercise_solution"]),
-                exercise_language=row["exercise_language"].name,
-            )
+            if args["exercise_details"]:
+                result[int(row["exercise_id"])] = dict(
+                    exercise_id=int(row["exercise_id"]),
+                    exercise_title=str(row["exercise_title"]),
+                    exercise_description=str(row["exercise_description"]),
+                    exercise_type=row["exercise_type"].name,
+                    exercise_content=str(row["exercise_content"]),
+                    exercise_solution=str(row["exercise_solution"]),
+                    exercise_language=row["exercise_language"].name,
+                )
+            else:
+                result[int(row["exercise_id"])] = dict(
+                    exercise_id=int(row["exercise_id"]),
+                    exercise_title=str(row["exercise_title"]),
+                    exercise_type=row["exercise_type"].name,
+                    exercise_language=row["exercise_language"].name,
+                )
 
         return make_response((jsonify(result)), 200)
 
