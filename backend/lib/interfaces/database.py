@@ -21,7 +21,7 @@ class UserModel(db_engine.Model):
 class ExerciseModel(db_engine.Model):
     __tablename__ = config.EXERCISE_TABLE
     exercise_id = db_engine.Column(db_engine.Integer, primary_key=True)
-    exercise_title = db_engine.Column(db_engine.String)
+    exercise_title = db_engine.Column(db_engine.String, unique=True)
     exercise_description = db_engine.Column(db_engine.String)
     exercise_type = db_engine.Column(db_engine.Enum(config.ExerciseType))
     exercise_content = db_engine.Column(db_engine.Text)

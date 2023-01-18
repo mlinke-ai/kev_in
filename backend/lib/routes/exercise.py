@@ -29,14 +29,13 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_title", type=str, help="{error_msg}", location="args")
         parser.add_argument("exercise_description", type=str, help="{error_msg}", location="args")
         parser.add_argument(
-            "exercise_type",
-            type=lambda x: config.ExerciseType(int(x)),
-            help="{error_msg}",
-            location="args"
+            "exercise_type", type=lambda x: config.ExerciseType(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}", location="args")
         parser.add_argument("exercise_offset", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
+        parser.add_argument(
+            "exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args"
+        )
 
         args = parser.parse_args()
 
@@ -98,10 +97,7 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_title", type=str, help="{error_msg}", required=True)
         parser.add_argument("exercise_description", type=str, help="{error_msg}", required=True)
         parser.add_argument(
-            "exercise_type",
-            type=lambda x: config.ExerciseType(int(x)),
-            help="{error_msg}",
-            required=True
+            "exercise_type", type=lambda x: config.ExerciseType(int(x)), help="{error_msg}", required=True
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}", required=True)
 
@@ -115,55 +111,84 @@ class ExerciseResource(Resource):
         if not self._authorize(cookies["token"], False):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
-        # load the exercise table
-        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
-        # compose the query
-        query = db_engine.select([sqlalchemy.func.count()]).select_from(exercise_table)
-        if args["exercise_title"]:
-            query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
-        # check wether the selection contains an element
-        if selection.scalar() == 0:
-            # if the selection contains no elements it means we can safely create the new element
-            # create a new element
-            exercise = ExerciseModel(
-                exercise_title=args["exercise_title"],
-                exercise_description=args["exercise_description"],
-                exercise_type=args["exercise_type"],
-                exercise_content=args["exercise_content"],
-            )
-            # add the new element
-            db_engine.session.add(exercise)
+        # create a new element
+        exercise = ExerciseModel(
+            exercise_title=args["exercise_title"],
+            exercise_description=args["exercise_description"],
+            exercise_type=args["exercise_type"],
+            exercise_content=args["exercise_content"],
+        )
+        db_engine.session.add(exercise)
+        try:
             db_engine.session.commit()
-            # compose a query to check wether the new element was added successfully
-            # TODO: query for last created element not based on given parameters
-            query = (
-                db_engine.select([exercise_table.c.exercise_title, exercise_table.c.exercise_id])
-                .select_from(exercise_table)
-                .where(exercise_table.c.exercise_title == args["exercise_title"])
-            )
-            # execute the query and store the result
-            selection = db_engine.session.execute(query)
-            try:
-                # get the only element from the selection
-                row = selection.fetchone()
-            except sqlalchemy.exc.NoResultFound:
-                # if there is no element the element could not be added
-                result = dict(message="An error occurred while creating the exercise")
-                return make_response((jsonify(result)), 500)
-            else:
-                result = dict(
-                    message="The exercise was created successfully",
-                    exercise_title=row.exercise_title,
-                    exercise_id=row.exercise_id,
-                )
-                return make_response((jsonify(result)), 201)
+        except sqlalchemy.exc.IntegrityError:
+            # TODO: should we do a rollback at this point?
+            # db_engine.session.rollback()
+            return make_response(jsonify(dict(message="An exercise with this title already exists")), 409)
         else:
-            # if the selection contains an element we can't create a new one as we would create a duplicate
-            result = dict(message="An exercise with this title already exists")
-            return make_response((jsonify(result)), 409)
-        # return the new element (importend for the ID) or an error message
+            return make_response(
+                jsonify(
+                    dict(
+                        message="The exercise was created successfully",
+                        exercise_id=exercise.exercise_id,
+                        exercise_title=exercise.exercise_title,
+                        exercise_description=exercise.exercise_description,
+                        exercise_content=exercise.exercise_content,
+                    )
+                ),
+                201,
+            )
+
+        # TODO: the method above is way more elegant; we should remove the lower part
+        # # load the exercise table
+        # exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
+        # # compose the query
+        # query = db_engine.select([sqlalchemy.func.count()]).select_from(exercise_table)
+        # if args["exercise_title"]:
+        #     query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
+        # # execute the query and store the selection
+        # selection = db_engine.session.execute(query)
+        # # check wether the selection contains an element
+        # if selection.scalar() == 0:
+        #     # if the selection contains no elements it means we can safely create the new element
+        #     # create a new element
+        #     exercise = ExerciseModel(
+        #         exercise_title=args["exercise_title"],
+        #         exercise_description=args["exercise_description"],
+        #         exercise_type=args["exercise_type"],
+        #         exercise_content=args["exercise_content"],
+        #     )
+        #     # add the new element
+        #     db_engine.session.add(exercise)
+        #     db_engine.session.commit()
+        #     # compose a query to check wether the new element was added successfully
+        #     # TODO: query for last created element not based on given parameters
+        #     query = (
+        #         db_engine.select([exercise_table.c.exercise_title, exercise_table.c.exercise_id])
+        #         .select_from(exercise_table)
+        #         .where(exercise_table.c.exercise_title == args["exercise_title"])
+        #     )
+        #     # execute the query and store the result
+        #     selection = db_engine.session.execute(query)
+        #     try:
+        #         # get the only element from the selection
+        #         row = selection.fetchone()
+        #     except sqlalchemy.exc.NoResultFound:
+        #         # if there is no element the element could not be added
+        #         result = dict(message="An error occurred while creating the exercise")
+        #         return make_response((jsonify(result)), 500)
+        #     else:
+        #         result = dict(
+        #             message="The exercise was created successfully",
+        #             exercise_title=row.exercise_title,
+        #             exercise_id=row.exercise_id,
+        #         )
+        #         return make_response((jsonify(result)), 201)
+        # else:
+        #     # if the selection contains an element we can't create a new one as we would create a duplicate
+        #     result = dict(message="An exercise with this title already exists")
+        #     return make_response((jsonify(result)), 409)
+        # # return the new element (importend for the ID) or an error message
 
     def put(self) -> Response:
         """
