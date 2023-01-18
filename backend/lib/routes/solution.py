@@ -26,7 +26,7 @@ import jwt
 import datetime
 
 from backend.lib.interfaces.database import SolutionModel, db_engine
-from backend.lib.core import config
+from backend.lib.core import config, utils
 
 
 class SolutionResource(Resource):
@@ -63,14 +63,6 @@ class SolutionResource(Resource):
                 jsonify(dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
             )
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"]):
-            return make_response(jsonify(dict(message="No access")), 403)
-
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
@@ -103,6 +95,16 @@ class SolutionResource(Resource):
         # load the selection into the response data
         result = dict()
         for row in selection.fetchall():
+
+            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            is_admin, auth = utils.authorize(
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
+            )
+            if auth == None:
+                return make_response((jsonify(dict(message="Login required"))), 401)
+            elif not auth:
+                return make_response((jsonify(dict(message="No Access"))), 403)
+
             result[row[0]] = dict(
                 solution_id=row[0],
                 solution_user=row[1],
@@ -133,13 +135,12 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"]):
-            return make_response(jsonify(dict(message="No access")), 403)
+        # check for access
+        is_admin, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="solution")
+        if auth == None:
+            return make_response((jsonify(dict(message="Login required"))), 401)
+        elif not auth:
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
         correct, pending = True, False
@@ -198,14 +199,14 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        # check if the token cookie was sent
-        # TODO: this should be admins only
-        cookies = request.cookie.to_dict(True)  # we only use the value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorized(cookies["token"]):
-            return make_response(jsonify(dict(message="No Access")), 403)
+        # check for access
+        is_admin, auth = utils.authorize(
+            cookies=request.cookies, method="PUT", endpoint="solution", resourceId=args["solution_id"]
+        )
+        if auth == None:
+            return make_response((jsonify(dict(message="Login required"))), 401)
+        elif not auth:
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -242,14 +243,14 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        # TODO: this should be admins only
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["solution_id"]):
-            return make_response(jsonify(dict(message="No access")), 403)
+        # check for access
+        is_admin, auth = utils.authorize(
+            cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
+        )
+        if auth == None:
+            return make_response((jsonify(dict(message="Login required"))), 401)
+        elif not auth:
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -266,21 +267,3 @@ class SolutionResource(Resource):
 
         result = dict(message=f"Successfully deleted solution with solution_id {args['solution_id']}")
         return make_response(jsonify(result), 200)
-
-    def _authorize(self, toke: str, solution_id: int = None, change_admin: bool = False) -> bool:
-        """
-        This method is used to determine if a certain client has the right to change or access data, based on the
-        HTTP request. Therefore the JWT is decoded. Returns True if access is granted and False when access is denied.
-        TODO: grand access only for admins
-
-        Args:
-            toke (str): The JWT token the client sends with the request.
-            solution_id (int, optional): The ID of the solution which the client wants to access. Defaults to None.
-            change_admin (bool, optional): True, if the client wants to change the admin status of a user or wants to create an admins account. TODO: do we need this flag?. Defaults to False.
-
-        Returns:
-            bool: True, if access is granted, otherwise False.
-        """
-
-        # TODO: rewrite the function as utility
-        return True
