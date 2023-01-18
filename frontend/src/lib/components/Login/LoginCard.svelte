@@ -11,21 +11,20 @@
   import { setupUserSettings } from "../../functions/user";
   import { replace as replaceRoute } from "svelte-spa-router";
 
-  let email = "";
+  let username = "";
   let password = "";
 
   let wrongCredentials = false;
 
-  let active = "Kev.In Account";
-  let idProviders = ["TU Chemnitz", "WH Zwickau"];
-  let value = "TU Chemnitz";
+  let active = "Login";
+  let value = "Login";
 
   const login = async () => {
     await fetch("http://127.0.0.1:5000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user_name: email,
+        user_name: username,
         user_pass: password,
       }),
     }).then((response) => {
@@ -36,7 +35,7 @@
           // Save user info in local storage
           $accessLevel = accessLevels.admin;
           setupUserSettings($accessLevel);
-          $userName = email;
+          $userName = username;
           $accessLevel = accessLevels.admin;
           replaceRoute($startPage);
         });
@@ -53,30 +52,23 @@
 
 <div class="login-card-container">
   <Card variant="outlined">
-    <TabBar tabs={["Kev.In Account Login"]} let:tab bind:active>
-      <!--"University Login"-->
+    <TabBar tabs={["Login", "Sign Up"]} let:tab bind:active>
       <Tab style={"cursor: default"} disabled {tab}>
         <TLabel>{tab}</TLabel>
       </Tab>
     </TabBar>
 
-    {#if active == "University Login"}
-      <div class="idp-select-menu">
-        <Select style="width: 90%" bind:value label="Select ID Provider">
-          {#each idProviders as idps}
-            <Option value={idps}>{idps}</Option>
-          {/each}
-        </Select>
-      </div>
+    {#if active == "Sign Up"}
+      <div class="sign-up-form"></div>
     {:else}
       <form class="login-form" on:submit|preventDefault={login} hidden>
         <div class="input">
           <Textfield
             invalid={wrongCredentials}
-            id="email-input"
+            id="username-input"
             style="width: 20rem"
-            bind:value={email}
-            label="Email"
+            bind:value={username}
+            label="Username"
             variant="outlined"
           />
         </div>
@@ -109,11 +101,5 @@
   .login-card-container {
     width: 25rem;
     margin: auto;
-  }
-
-  .idp-select-menu {
-    position: relative;
-    margin: 1rem 1rem 7.7rem 1rem;
-    width: 100%;
   }
 </style>
