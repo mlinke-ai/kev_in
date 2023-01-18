@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import jwt
-
 from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.interfaces.database import ExerciseModel, db_engine
-from backend.lib.core import config
+from backend.lib.core import config, utils
 
 
 class ExerciseResource(Resource):
@@ -46,12 +44,15 @@ class ExerciseResource(Resource):
                 jsonify(dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED), 400)
             )
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
+        #check for access
+        auth = utils.authorize(
+            cookies= request.cookies,
+            method= "GET",
+            endpoint= "exercise"
+            )
+        if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], True):
+        elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the exercise table
@@ -76,6 +77,7 @@ class ExerciseResource(Resource):
         selection = db_engine.session.execute(query)
         # load the selection into the response data
         for row in selection.fetchall():
+
             result[int(row["exercise_id"])] = dict(
                 exercise_id=int(row["exercise_id"]),
                 exercise_title=str(row["exercise_title"]),
@@ -107,12 +109,15 @@ class ExerciseResource(Resource):
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
+        #check for access
+        auth = utils.authorize(
+            cookies= request.cookies,
+            method= "POST",
+            endpoint= "exercise"
+            )
+        if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], False):
+        elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the exercise table
@@ -183,12 +188,15 @@ class ExerciseResource(Resource):
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
+        #check for access
+        auth = utils.authorize(
+            cookies= request.cookies,
+            method= "PUT",
+            endpoint= "exercise"
+            )
+        if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], False):
+        elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the exercise table
@@ -224,12 +232,15 @@ class ExerciseResource(Resource):
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
+        #check for access
+        auth = utils.authorize(
+            cookies= request.cookies,
+            method= "DELETE",
+            endpoint= "exercise"
+            )
+        if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], False):
+        elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the exercise table
@@ -248,29 +259,3 @@ class ExerciseResource(Resource):
         result = dict(message=f"Successfully deleted exercise with exercise_id {args['exercise_id']}")
         return make_response((jsonify(result)), 200)
 
-    def _authorize(self, token: str, readOnly: bool) -> bool:
-        """
-        This method is used to determine if a certain client has the right to change or access data, based on the
-        HTTP request. Therefore the JWT is decoded. Returns True if access is granted and False when access is denied.
-        If you want to check for write access, set readOnly to False.
-        """
-
-        # decode JWT to dict
-        try:
-            user_data = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
-        except jwt.exceptions.DecodeError:
-            return False
-
-        # now check in database if the user exists
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == user_data["user_id"])
-        selection = db_engine.session.execute(query)
-        try:
-            row = selection.fetchone()
-        except sqlalchemy.exc.NoResultFound:
-            return False
-        else:
-            if readOnly:  # write access not needed
-                return True
-            else:  # write access needed
-                return row["user_role"] == config.UserRole.SAdmin or row["user_role"] == config.UserRole.Admin

@@ -222,12 +222,16 @@ class UserResource(Resource):
         if args["user_mail"] == "":
             return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
 
+        if args["user_role"] == config.UserRole.SAdmin: #prevent creating super admin
+            return make_response((jsonify(dict(message="No Access"))), 403)
+
         #check for access
         auth = utils.authorize(
             cookies= request.cookies,
             method= "PUT",
             endpoint= "user",
-            resourceId= args["user_id"]
+            resourceId= args["user_id"],
+            changeToAdmin=(not args["user_role"]==config.UserRole.User)
             )
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
@@ -287,7 +291,8 @@ class UserResource(Resource):
         auth = utils.authorize(
             cookies= request.cookies,
             method= "DELETE",
-            endpoint= "user"
+            endpoint= "user",
+            resourceId= args["user_id"]
             )
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)

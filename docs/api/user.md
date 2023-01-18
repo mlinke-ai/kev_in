@@ -105,7 +105,7 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 ## POST
 
 The POST method is used to create a new user. 
-This method prevents duplication.
+This method prevents duplication. This method can be invoked without sending a cookie and has no authorization.
 
 ### Access
 
@@ -155,16 +155,6 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 		"message": "The user was created successfully",
 		"user_name": "John Doe",
 		"user_id": 1
-	}
-	```
-
-=== "403"
-
-	An unauthorized client sends a request.
-
-	```JSON
-	{
-		"message": "No Access"
 	}
 	```
 
