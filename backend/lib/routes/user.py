@@ -37,29 +37,52 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("user_name", type=str, default="", help="{error_msg}", location="args")
-        parser.add_argument("user_mail", type=str, default="", help="{error_msg}", location="args")
+        parser.add_argument(
+            "user_id", type=int, default=0, help="{error_msg}", location="args"
+        )
+        parser.add_argument(
+            "user_name", type=str, default="", help="{error_msg}", location="args"
+        )
+        parser.add_argument(
+            "user_mail", type=str, default="", help="{error_msg}", location="args"
+        )
         parser.add_argument(
             "user_role",
             type=lambda x: config.UserRole(int(x)),
             default=config.UserRole.User,
             help="{error_msg}",
-            location="args"
+            location="args",
         )
-        parser.add_argument("user_offset", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
+        parser.add_argument(
+            "user_offset", type=int, default=0, help="{error_msg}", location="args"
+        )
+        parser.add_argument(
+            "user_limit",
+            type=int,
+            default=config.MAX_ITEMS_RETURNED,
+            help="{error_msg}",
+            location="args",
+        )
 
         args = parser.parse_args()
 
         # check if page limit is in range
         if args["user_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
             return make_response(
-                jsonify(dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
+                jsonify(
+                    dict(
+                        message="Page limit not in range",
+                        min_limit=0,
+                        max_limit=config.MAX_ITEMS_RETURNED,
+                    )
+                ),
+                400,
             )
 
         # load the user table
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(
+            config.USER_TABLE, db_engine.metadata, autoload=True
+        )
         # compose a query to select the requested element
         query = db_engine.select(user_table).select_from(user_table)
         if args["user_id"]:
@@ -79,12 +102,12 @@ class UserResource(Resource):
         result = dict()
         for row in selection.fetchall():
 
-            #check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
             is_admin, auth = utils.authorize(
-                cookies= request.cookies,
-                method= "GET",
-                endpoint= "user",
-                resourceId= int(row["user_id"])
+                cookies=request.cookies,
+                method="GET",
+                endpoint="user",
+                resourceId=int(row["user_id"]),
             )
             if auth == None:
                 return make_response((jsonify(dict(message="Login required"))), 401)
@@ -117,16 +140,24 @@ class UserResource(Resource):
         args = parser.parse_args()
 
         if args["user_name"] == "":
-            return make_response(jsonify(dict(message="user_name must not be empty")), 400)
+            return make_response(
+                jsonify(dict(message="user_name must not be empty")), 400
+            )
         if args["user_pass"] == "":
-            return make_response(jsonify(dict(message="user_pass must not be empty")), 400)
+            return make_response(
+                jsonify(dict(message="user_pass must not be empty")), 400
+            )
         if args["user_mail"] == "":
-            return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
+            return make_response(
+                jsonify(dict(message="user_mail must not be empty")), 400
+            )
 
         # create a new element
         user = UserModel(
             user_name=args["user_name"],
-            user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
+            user_pass=hashlib.sha256(
+                bytes(args["user_pass"], encoding="utf-8")
+            ).hexdigest(),
             user_mail=args["user_mail"],
             user_role=config.UserRole.User,
         )
@@ -136,7 +167,9 @@ class UserResource(Resource):
         except sqlalchemy.exc.IntegrityError:
             # TODO: should we do a rollback at this point?
             # db_engine.session.rollback()
-            return make_response(jsonify(dict(message="A user with this mail already exists")), 409)
+            return make_response(
+                jsonify(dict(message="A user with this mail already exists")), 409
+            )
         else:
             return make_response(
                 jsonify(
@@ -211,28 +244,36 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="{error_msg}")
         parser.add_argument("user_pass", type=str, help="{error_msg}")
         parser.add_argument("user_mail", type=str, help="{error_msg}")
-        parser.add_argument("user_role", type=lambda x: config.UserRole(int(x)), help="{error_msg}")
+        parser.add_argument(
+            "user_role", type=lambda x: config.UserRole(int(x)), help="{error_msg}"
+        )
 
         args = parser.parse_args()
 
         if args["user_name"] == "":
-            return make_response(jsonify(dict(message="user_name must not be empty")), 400)
+            return make_response(
+                jsonify(dict(message="user_name must not be empty")), 400
+            )
         if args["user_pass"] == "":
-            return make_response(jsonify(dict(message="user_pass must not be empty")), 400)
+            return make_response(
+                jsonify(dict(message="user_pass must not be empty")), 400
+            )
         if args["user_mail"] == "":
-            return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
+            return make_response(
+                jsonify(dict(message="user_mail must not be empty")), 400
+            )
 
-        if args["user_role"] == config.UserRole.SAdmin: #prevent creating super admin
+        if args["user_role"] == config.UserRole.SAdmin:  # prevent creating super admin
             return make_response((jsonify(dict(message="No Access"))), 403)
 
-        #check for access
+        # check for access
         is_admin, auth = utils.authorize(
-            cookies= request.cookies,
-            method= "PUT",
-            endpoint= "user",
-            resourceId= args["user_id"],
-            changeToAdmin=(not args["user_role"]==config.UserRole.User)
-            )
+            cookies=request.cookies,
+            method="PUT",
+            endpoint="user",
+            resourceId=args["user_id"],
+            changeToAdmin=(not args["user_role"] == config.UserRole.User),
+        )
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -250,9 +291,13 @@ class UserResource(Resource):
         except sqlalchemy.exc.IntegrityError:
             # TODO: should we do a rollback at this point?
             # db_engine.session.rollback()
-            return make_response(jsonify(dict(message="A user with this mail already exists")), 409)
+            return make_response(
+                jsonify(dict(message="A user with this mail already exists")), 409
+            )
         else:
-            return make_response(jsonify(dict(message="Changed properties successfully")), 200)
+            return make_response(
+                jsonify(dict(message="Changed properties successfully")), 200
+            )
 
         # TODO: the method above is way more elegant; we should remove the lower part
         # # load the user table
@@ -287,22 +332,26 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        #check for access
+        # check for access
         is_admin, auth = utils.authorize(
-            cookies= request.cookies,
-            method= "DELETE",
-            endpoint= "user",
-            resourceId= args["user_id"]
-            )
+            cookies=request.cookies,
+            method="DELETE",
+            endpoint="user",
+            resourceId=args["user_id"],
+        )
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the user table
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(
+            config.USER_TABLE, db_engine.metadata, autoload=True
+        )
         # compose the query to delete the requested element
-        query = db_engine.delete(user_table).where(user_table.c.user_id == args["user_id"])
+        query = db_engine.delete(user_table).where(
+            user_table.c.user_id == args["user_id"]
+        )
         # execute the query
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
@@ -312,5 +361,7 @@ class UserResource(Resource):
             result = dict(message=f"User with user_id {args['user_id']} does not exist")
             return make_response((jsonify(result)), 404)
 
-        result = dict(message=f"Successfully deleted user with user_id {args['user_id']}")
+        result = dict(
+            message=f"Successfully deleted user with user_id {args['user_id']}"
+        )
         return make_response((jsonify(result)), 200)

@@ -32,12 +32,20 @@ class ExerciseModel(db_engine.Model):
 class SolutionModel(db_engine.Model):
     __tablename__ = config.SOLUTION_TABLE
     solution_id = db_engine.Column(db_engine.Integer, primary_key=True)
-    solution_user = db_engine.Column(db_engine.Integer, db_engine.ForeignKey(UserModel.user_id))
-    solution_exercise = db_engine.Column(db_engine.Integer, db_engine.ForeignKey(ExerciseModel.exercise_id))
+    solution_user = db_engine.Column(
+        db_engine.Integer, db_engine.ForeignKey(UserModel.user_id)
+    )
+    solution_exercise = db_engine.Column(
+        db_engine.Integer, db_engine.ForeignKey(ExerciseModel.exercise_id)
+    )
     solution_date = db_engine.Column(db_engine.DateTime)
     solution_duration = db_engine.Column(db_engine.Interval)
     solution_correct = db_engine.Column(db_engine.Boolean)
     solution_pending = db_engine.Column(db_engine.Boolean)
     solution_content = db_engine.Column(db_engine.Text)
-    user_relation = db_engine.relationship(UserModel, foreign_keys="SolutionModel.solution_user")
-    exercise_relation = db_engine.relationship(ExerciseModel, foreign_keys="SolutionModel.solution_exercise")
+    user_relation = db_engine.relationship(
+        UserModel, foreign_keys="SolutionModel.solution_user"
+    )
+    exercise_relation = db_engine.relationship(
+        ExerciseModel, foreign_keys="SolutionModel.solution_exercise"
+    )

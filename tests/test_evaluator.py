@@ -77,7 +77,9 @@ class EvaluatorTest(unittest.TestCase):
         """Tests whether solutions for output exercises get correctly evaluated"""
         pass
 
-    @parameterized.expand([[fibonacci_py], [fibonacci_py_wrong], [fibonacci_java], [fibonacci_java_wrong]])
+    @parameterized.expand(
+        [[fibonacci_py], [fibonacci_py_wrong], [fibonacci_java], [fibonacci_java_wrong]]
+    )
     def test_evaluate_programming(self, input_data) -> None:
         """
         Test checks if evaluation of the user code is handled in correct way.
@@ -96,7 +98,9 @@ class EvaluatorTest(unittest.TestCase):
         expected = input_data["expected"]
 
         result = dict()
-        result = Evaluator.evaluate_user_code(user_code, user_func, language, **args_result)
+        result = Evaluator.evaluate_user_code(
+            user_code, user_func, language, **args_result
+        )
         self.assertIsNot(result, None)
         self.assertEqual(list(result.keys())[0], expected)
 

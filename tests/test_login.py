@@ -27,6 +27,7 @@ class LoginTest(unittest.TestCase):
     This test class tests everything related to the login process over HTTP.
     The documentation of the API can be found [here](https://mlinke-ai.github.io/kev_in/api/login/).
     """
+
     user_name = "sadmin"
     user_pass = "sadmin"
 
@@ -43,7 +44,7 @@ class LoginTest(unittest.TestCase):
             headers={"Content-Type": "application/json"},
         )
 
-        self.assertIn("Set-Cookie", r.headers) #cookie with JWT should be returned
+        self.assertIn("Set-Cookie", r.headers)  # cookie with JWT should be returned
         self.assertDictEqual({"message": f"Welcome {LoginTest.user_name}!"}, r.json())
         self.assertEqual(200, r.status_code)
 
@@ -60,7 +61,7 @@ class LoginTest(unittest.TestCase):
             headers={"Content-Type": "application/json"},
         )
 
-        self.assertNotIn("Set-Cookie", r.headers) #no cookie should be returned
+        self.assertNotIn("Set-Cookie", r.headers)  # no cookie should be returned
         self.assertDictEqual({"message": "Incorrect user name or password"}, r.json())
         self.assertEqual(r.status_code, 401)
 
@@ -69,9 +70,9 @@ class LoginTest(unittest.TestCase):
             "http://127.0.0.1:5000/login",
             json={"user_name": LoginTest.user_name, "user_pass": "trashPW"},
             headers={"Content-Type": "application/json"},
-        ) 
+        )
 
-        self.assertNotIn("Set-Cookie", r.headers) #no cookie should be returned
+        self.assertNotIn("Set-Cookie", r.headers)  # no cookie should be returned
         self.assertDictEqual({"message": "Incorrect user name or password"}, r.json())
         self.assertEqual(r.status_code, 401)
 
@@ -94,7 +95,7 @@ class LoginTest(unittest.TestCase):
         except KeyError:
             self.fail("An error message should be returned")
 
-        self.assertNotIn("Set-Cookie", r.headers) #no cookie should be returned
+        self.assertNotIn("Set-Cookie", r.headers)  # no cookie should be returned
         self.assertIn("user_name", errors)
         self.assertEqual(r.status_code, 400)
 
@@ -110,6 +111,6 @@ class LoginTest(unittest.TestCase):
         except KeyError:
             self.fail("An error message should be returned")
 
-        self.assertNotIn("Set-Cookie", r.headers) #no cookie should be returned
+        self.assertNotIn("Set-Cookie", r.headers)  # no cookie should be returned
         self.assertIn("user_pass", errors)
         self.assertEqual(r.status_code, 400)

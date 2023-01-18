@@ -9,8 +9,12 @@ from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config
 from backend.lib.interfaces import UserModel, db_engine
-from backend.lib.routes import (ExerciseResource, LoginResource,
-                                SolutionResource, UserResource)
+from backend.lib.routes import (
+    ExerciseResource,
+    LoginResource,
+    SolutionResource,
+    UserResource,
+)
 
 
 class Server:
@@ -37,9 +41,13 @@ class Server:
         return send_from_directory("../frontend/dist", path)
 
     def _sadmin_check(self) -> None:
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
+        user_table = sqlalchemy.Table(
+            config.USER_TABLE, db_engine.metadata, autoload=True
+        )
         query = (
-            db_engine.select(user_table).select_from(user_table).where(user_table.c.user_role == config.UserRole.SAdmin)
+            db_engine.select(user_table)
+            .select_from(user_table)
+            .where(user_table.c.user_role == config.UserRole.SAdmin)
         )
         selection = db_engine.session.execute(query)
         try:
@@ -48,7 +56,9 @@ class Server:
             print("create sadmin")
             sadmin = UserModel(
                 user_name=config.SADMIN_NAME,
-                user_pass=hashlib.sha256(bytes(config.SADMIN_PASS, encoding="utf-8")).hexdigest(),
+                user_pass=hashlib.sha256(
+                    bytes(config.SADMIN_PASS, encoding="utf-8")
+                ).hexdigest(),
                 user_mail=config.SADMIN_MAIL,
                 user_role=config.UserRole.SAdmin,
             )
@@ -60,8 +70,14 @@ class Server:
             print("exactly one sadmin")
 
     def _tuser_check(self) -> None:
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == config.TUSER_NAME)
+        user_table = sqlalchemy.Table(
+            config.USER_TABLE, db_engine.metadata, autoload=True
+        )
+        query = (
+            db_engine.select(user_table)
+            .select_from(user_table)
+            .where(user_table.c.user_name == config.TUSER_NAME)
+        )
         selection = db_engine.session.execute(query)
         try:
             row = selection.scalar_one()
@@ -69,7 +85,9 @@ class Server:
             print("create tuser")
             tuser = UserModel(
                 user_name=config.TUSER_NAME,
-                user_pass=hashlib.sha256(bytes(config.TUSER_PASS, encoding="utf-8")).hexdigest(),
+                user_pass=hashlib.sha256(
+                    bytes(config.TUSER_PASS, encoding="utf-8")
+                ).hexdigest(),
                 user_mail=config.TUSER_MAIL,
                 user_role=config.UserRole.User,
             )
@@ -85,4 +103,6 @@ class Server:
 
 
 if __name__ == "__main__":
-    raise RuntimeError("The server is mend to be run from a run script. Do not run in standalone.")
+    raise RuntimeError(
+        "The server is mend to be run from a run script. Do not run in standalone."
+    )
