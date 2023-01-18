@@ -44,13 +44,15 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
         parser.add_argument("solution_date", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
         parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_content", type=str, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args"
+        )
 
         args = parser.parse_args()
 
@@ -87,6 +89,10 @@ class SolutionResource(Resource):
             query = query.where(solution_table.c.solution_duration == args["solution_duration"])
         if args["solution_correct"]:
             query = query.where(solution_table.c.solution_correct == args["solution_correct"])
+        if args["solution_pending"]:
+            query = query.where(solution_table.c.solution_correct == args["solution_pending"])
+        if args["solution_content"]:
+            query = query.where(solution_table.c.solution_content == args["solution_content"])
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
@@ -99,6 +105,8 @@ class SolutionResource(Resource):
                 solution_date=row[3],
                 solution_duration=row[4],
                 solution_correct=row[5],
+                solution_pending=row[6],
+                solution_text=row[7],
             )
 
         return make_response(jsonify(result), 200)
@@ -112,10 +120,11 @@ class SolutionResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
-        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_user", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_date", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_duration", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_content", type=str, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
@@ -128,7 +137,7 @@ class SolutionResource(Resource):
             return make_response(jsonify(dict(message="No access")), 403)
 
         # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
-        correct = True
+        correct, pending = True, False
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -139,6 +148,8 @@ class SolutionResource(Resource):
             solution_date=args["solution_args"],
             solution_duration=args["solution_duration"],
             solution_correct=correct,
+            solution_pending=pending,
+            solution_text=args["solution_text"],
         )
         # add the new element
         db_engine.session.add(solution)
@@ -157,6 +168,8 @@ class SolutionResource(Resource):
             solution_date=row[3],
             solution_duration=row[4],
             solution_correct=row[5],
+            solution_pending=row[6],
+            solution_content=row[7],
         )
         return make_response(jsonify(result), 200)
 
@@ -172,11 +185,11 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
         parser.add_argument("solution_user", type=int, help="{error_msg}")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        # TODO: lookup correct type
         parser.add_argument("solution_date", type=int, help="{error_msg}")
-        # TODO: lookup correct type
         parser.add_argument("solution_duration", type=int, help="{error_msg}")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
+        parser.add_argument("solution_pending", type=bool, help="{error_msg}")
+        parser.add_argument("solution_content", type=str, help="{error_msg}")
 
         args = parser.parse_args()
 

@@ -36,5 +36,7 @@ class SolutionModel(db_engine.Model):
     solution_date = db_engine.Column(db_engine.DateTime)
     solution_duration = db_engine.Column(db_engine.Interval)
     solution_correct = db_engine.Column(db_engine.Boolean)
+    solution_pending = db_engine.Column(db_engine.Boolean)
+    solution_content = db_engine.Column(db_engine.Text)
     user_relation = db_engine.relationship(UserModel, foreign_keys="SolutionModel.solution_user")
     exercise_relation = db_engine.relationship(ExerciseModel, foreign_keys="SolutionModel.solution_exercise")
