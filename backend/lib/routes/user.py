@@ -80,7 +80,7 @@ class UserResource(Resource):
         for row in selection.fetchall():
 
             #check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
-            auth = utils.authorize(
+            is_admin, auth = utils.authorize(
                 cookies= request.cookies,
                 method= "GET",
                 endpoint= "user",
@@ -226,7 +226,7 @@ class UserResource(Resource):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         #check for access
-        auth = utils.authorize(
+        is_admin, auth = utils.authorize(
             cookies= request.cookies,
             method= "PUT",
             endpoint= "user",
@@ -288,7 +288,7 @@ class UserResource(Resource):
         args = parser.parse_args()
 
         #check for access
-        auth = utils.authorize(
+        is_admin, auth = utils.authorize(
             cookies= request.cookies,
             method= "DELETE",
             endpoint= "user",

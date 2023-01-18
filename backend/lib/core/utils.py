@@ -9,7 +9,7 @@ from flask_sqlalchemy.query import sqlalchemy
 from backend.lib.core.config import JWT_SECRET, UserRole, USER_TABLE, SOLUTION_TABLE
 from backend.lib.interfaces.database import db_engine
 
-def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceId: int = None, changeToAdmin: bool = None) -> bool | None:
+def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceId: int = None, changeToAdmin: bool = None) -> tuple[bool, bool | None]:
     """
     The authorize funciton which determines, if a user has rights to access certain data or not.
 
@@ -28,9 +28,9 @@ def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceI
         changeToAdmin: :class:`bool`
             Only needs to be set, on user PUT mehtod.
     Returns:
-        `True` if access is granted,
-        `False`if access is denied,
-        `None` if no valid JWT were in the cookies
+        A tuple of Type :class:`tuple[bool, bool | None]` (is_admin, has_access)
+        is_admin can be True or False (Depending on wether the client is an admin or not)
+        has_access can be True, False or None (None if no valid JWT was sent)
     """
     
     if method not in ['GET', 'POST', 'PUT', 'DELETE']:
@@ -48,22 +48,21 @@ def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceI
     user_data = _extractUserData(cookies)
 
     if user_data == None:
-        return None
+        return False, None
 
     role = _getUserRole(user_data["user_id"])
 
     if role == None:
-        return None #non existing user tries to access data
+        return False, None #non existing user tries to access data
 
     if endpoint == 'exercise':
-        return _authExercise(role, method)
+        return not(role == UserRole.User) ,_authExercise(role, method)
     elif endpoint == 'user':
-        return _authUser(role, method, int(user_data["user_id"]), resourceId, changeToAdmin)
+        return not(role == UserRole.User) ,_authUser(role, method, int(user_data["user_id"]), resourceId, changeToAdmin)
     elif endpoint == 'solution':
-        return _authSolution(role, method, int(user_data["user_id"]), resourceId)
+        return not(role == UserRole.User) ,_authSolution(role, method, int(user_data["user_id"]), resourceId)
     
         
-
 def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:
     """
     Extracts the user data from cookies. The user data is everything, what is stored in the JWT.

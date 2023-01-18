@@ -45,7 +45,7 @@ class ExerciseResource(Resource):
             )
 
         #check for access
-        auth = utils.authorize(
+        is_admin, auth = utils.authorize(
             cookies= request.cookies,
             method= "GET",
             endpoint= "exercise"
@@ -110,7 +110,7 @@ class ExerciseResource(Resource):
         args = parser.parse_args()
 
         #check for access
-        auth = utils.authorize(
+        is_admin, auth = utils.authorize(
             cookies= request.cookies,
             method= "POST",
             endpoint= "exercise"
@@ -189,7 +189,7 @@ class ExerciseResource(Resource):
         args = parser.parse_args()
 
         #check for access
-        auth = utils.authorize(
+        is_admin, auth = utils.authorize(
             cookies= request.cookies,
             method= "PUT",
             endpoint= "exercise"
@@ -233,7 +233,7 @@ class ExerciseResource(Resource):
         args = parser.parse_args()
 
         #check for access
-        auth = utils.authorize(
+        is_admin, auth = utils.authorize(
             cookies= request.cookies,
             method= "DELETE",
             endpoint= "exercise"
