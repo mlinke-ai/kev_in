@@ -152,9 +152,7 @@ class UserTest(unittest.TestCase):
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 400)
-        self.assertEqual(
-            r.json(), {"message": {"user_role": "4 is not a valid UserRole"}}
-        )
+        self.assertEqual(r.json(), {"message": {"user_role": "4 is not a valid UserRole"}})
 
     def test_get_restrict_page_size(self) -> None:
         r = requests.request(
@@ -515,9 +513,7 @@ class UserTest(unittest.TestCase):
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(
-            r.json()["message"], f"Successfully deleted user with user_id {user_id}"
-        )
+        self.assertEqual(r.json()["message"], f"Successfully deleted user with user_id {user_id}")
 
     def test_delete_non_existing(self) -> None:
         user_id = 5000
@@ -528,9 +524,7 @@ class UserTest(unittest.TestCase):
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 404)
-        self.assertEqual(
-            r.json()["message"], f"User with user_id {user_id} does not exist"
-        )
+        self.assertEqual(r.json()["message"], f"User with user_id {user_id} does not exist")
 
     def test_delete_self_as_admin(self) -> None:
         r = requests.request(
@@ -563,9 +557,7 @@ class UserTest(unittest.TestCase):
             headers=admin_header,
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(
-            r.json()["message"], f"Successfully deleted user with user_id {admin_id}"
-        )
+        self.assertEqual(r.json()["message"], f"Successfully deleted user with user_id {admin_id}")
 
     def test_delete_self_as_user(self) -> None:
         r = requests.request(
@@ -597,9 +589,7 @@ class UserTest(unittest.TestCase):
             headers=user_header,
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(
-            r.json()["message"], f"Successfully deleted user with user_id {user_id}"
-        )
+        self.assertEqual(r.json()["message"], f"Successfully deleted user with user_id {user_id}")
 
     def test_delete_other_as_admin(self) -> None:
         r = requests.request(
@@ -623,9 +613,7 @@ class UserTest(unittest.TestCase):
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(
-            r.json()["message"], f"Successfully deleted user with user_id {user_id}"
-        )
+        self.assertEqual(r.json()["message"], f"Successfully deleted user with user_id {user_id}")
 
     def test_delete_other_as_user(self) -> None:
         r = requests.request(

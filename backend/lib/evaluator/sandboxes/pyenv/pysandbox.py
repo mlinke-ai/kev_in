@@ -51,9 +51,7 @@ class ExecutePython:
 
         # Adds another lines to user code that executes user function.
         for args in args_list:
-            user_code += "\nresult.append({0}({1}))".format(
-                user_func, ",".join(map(str, args))
-            )
+            user_code += "\nresult.append({0}({1}))".format(user_func, ",".join(map(str, args)))
 
         # Compile code.
         self.__compile_result = compile_restricted_exec(source=user_code)
@@ -94,13 +92,9 @@ class ExecutePython:
         return self.__exec_byte_code(restricted_globals, restricted_locals, *args_list)
 
     @timeout_decorator.timeout(3.0, timeout_exception=TimeoutError)  # seconds
-    def __exec_byte_code(
-        self, restricted_globals: dict, restricted_locals: dict, *args_list: list
-    ) -> dict:
+    def __exec_byte_code(self, restricted_globals: dict, restricted_locals: dict, *args_list: list) -> dict:
 
-        if (
-            self.__compile_result.code is None
-        ):  # in case it's 'None', but should never become true.
+        if self.__compile_result.code is None:  # in case it's 'None', but should never become true.
             return self.__sandbox_logs
 
         try:

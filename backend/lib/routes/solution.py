@@ -40,33 +40,15 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         # define arguments
-        parser.add_argument(
-            "solution_id", type=int, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_user", type=int, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_exercise", type=int, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_date", type=int, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_duration", type=int, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_correct", type=bool, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_pending", type=bool, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_content", type=str, help="{error_msg}", location="args"
-        )
-        parser.add_argument(
-            "solution_offset", type=int, default=0, help="{error_msg}", location="args"
-        )
+        parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_date", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_content", type=str, help="{error_msg}", location="args")
+        parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
         parser.add_argument(
             "solution_limit",
             type=int,
@@ -91,9 +73,7 @@ class SolutionResource(Resource):
             )
 
         # load the solution table
-        solution_table = sqlalchemy.Table(
-            config.SOLUTION_TABLE, db_engine.metadata, autoload=True
-        )
+        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = db_engine.select(solution_table).select_from(solution_table)
         if args["solution_id"]:
@@ -104,33 +84,21 @@ class SolutionResource(Resource):
         if args["solution_user"]:
             query = query.where(solution_table.c.solution_user == args["solution_user"])
         if args["solution_exercise"]:
-            query = query.where(
-                solution_table.c.solution_exercise == args["solution_exercise"]
-            )
+            query = query.where(solution_table.c.solution_exercise == args["solution_exercise"])
         if args["solution_date"]:
             lower = datetime.datetime.fromtimestamp(args["solution_date"]).replace(
                 hour=0, minute=0, second=0, microsecond=0
             )
             upper = lower + datetime.timedelta(days=1)
-            query = query.where(
-                sqlalchemy.between(solution_table.c.solution_date, lower, upper)
-            )
+            query = query.where(sqlalchemy.between(solution_table.c.solution_date, lower, upper))
         if args["solution_duration"]:
-            query = query.where(
-                solution_table.c.solution_duration == args["solution_duration"]
-            )
+            query = query.where(solution_table.c.solution_duration == args["solution_duration"])
         if args["solution_correct"]:
-            query = query.where(
-                solution_table.c.solution_correct == args["solution_correct"]
-            )
+            query = query.where(solution_table.c.solution_correct == args["solution_correct"])
         if args["solution_pending"]:
-            query = query.where(
-                solution_table.c.solution_correct == args["solution_pending"]
-            )
+            query = query.where(solution_table.c.solution_correct == args["solution_pending"])
         if args["solution_content"]:
-            query = query.where(
-                solution_table.c.solution_content == args["solution_content"]
-            )
+            query = query.where(solution_table.c.solution_content == args["solution_content"])
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
@@ -171,28 +139,16 @@ class SolutionResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument(
-            "solution_user", type=int, help="{error_msg}", required=True
-        )
-        parser.add_argument(
-            "solution_exercise", type=int, help="{error_msg}", required=True
-        )
-        parser.add_argument(
-            "solution_date", type=int, help="{error_msg}", required=True
-        )
-        parser.add_argument(
-            "solution_duration", type=int, help="{error_msg}", required=True
-        )
-        parser.add_argument(
-            "solution_content", type=str, help="{error_msg}", required=True
-        )
+        parser.add_argument("solution_user", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_date", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_duration", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_content", type=str, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
         # check for access
-        is_admin, auth = utils.authorize(
-            cookies=request.cookies, method="POST", endpoint="solution"
-        )
+        is_admin, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="solution")
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -202,9 +158,7 @@ class SolutionResource(Resource):
         correct, pending = True, False
 
         # load the solution table
-        solution_table = sqlalchemy.Table(
-            config.SOLUTION_TABLE, db_engine.metadata, autoload=True
-        )
+        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
         solution = SolutionModel(
             solution_user=args["solution_user"],
@@ -219,9 +173,7 @@ class SolutionResource(Resource):
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        query = db_engine.select(
-            [sqlalchemy.func.max(solution_table.c.solution_id)]
-        ).select_from(solution_table)
+        query = db_engine.select([sqlalchemy.func.max(solution_table.c.solution_id)]).select_from(solution_table)
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
@@ -272,17 +224,13 @@ class SolutionResource(Resource):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the solution table
-        solution_table = sqlalchemy.Table(
-            config.SOLUTION_TABLE, db_engine.metadata, autoload=True
-        )
+        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # drop the ID as we don#t want to update it
         values = args.copy()
         del values["solution_id"]
         # compose the query to update the requested element
         query = (
-            db_engine.update(solution_table)
-            .where(solution_table.c.solution_id == args["solution_id"])
-            .values(values)
+            db_engine.update(solution_table).where(solution_table.c.solution_id == args["solution_id"]).values(values)
         )
         # execute the query
         selection = db_engine.session.execute(query)
@@ -291,14 +239,10 @@ class SolutionResource(Resource):
         # if no element was updated, the rowcount is 0
 
         if selection.rowcount == 0:
-            result = dict(
-                message=f"Solution with solution_id {args['solution_id']} does not exist"
-            )
+            result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
             return make_response(jsonify(result), 404)
 
-        result = dict(
-            message=f"The solution with solution_id {args['solution_id']} was changed successfully"
-        )
+        result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
         return make_response(jsonify(result), 200)
 
     def delete(self) -> Response:
@@ -327,25 +271,17 @@ class SolutionResource(Resource):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the solution table
-        solution_table = sqlalchemy.Table(
-            config.SOLUTION_TABLE, db_engine.metadata, autoload=True
-        )
+        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # compose the query to delete the requested element
-        query = db_engine.delete(solution_table).where(
-            solution_table.c.solution_id == args["solution_id"]
-        )
+        query = db_engine.delete(solution_table).where(solution_table.c.solution_id == args["solution_id"])
         # execute the query
         selection = db_engine.session.execute(query)
         db_engine.session.commit()
 
         # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
-            result = dict(
-                message=f"Solution with solution_id {args['solution_id']} does not exist"
-            )
+            result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
             return make_response(jsonify(result), 404)
 
-        result = dict(
-            message=f"Successfully deleted solution with solution_id {args['solution_id']}"
-        )
+        result = dict(message=f"Successfully deleted solution with solution_id {args['solution_id']}")
         return make_response(jsonify(result), 200)
