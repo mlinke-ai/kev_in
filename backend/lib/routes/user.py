@@ -22,10 +22,9 @@ from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 import hashlib
-import jwt
 
 from backend.lib.interfaces.database import UserModel, db_engine
-from backend.lib.core import config
+from backend.lib.core import config, utils
 
 
 class UserResource(Resource):
@@ -59,14 +58,6 @@ class UserResource(Resource):
                 jsonify(dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
             )
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"]):
-            return make_response(jsonify(dict(message="No Access")), 403)
-
         # load the user table
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
@@ -87,6 +78,19 @@ class UserResource(Resource):
         # load the selection into the response data
         result = dict()
         for row in selection.fetchall():
+
+            #check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            auth = utils.authorize(
+                cookies= request.cookies,
+                method= "GET",
+                endpoint= "user",
+                resourceId= int(row["user_id"])
+            )
+            if auth == None:
+                return make_response((jsonify(dict(message="Login required"))), 401)
+            elif not auth:
+                return make_response((jsonify(dict(message="No Access"))), 403)
+
             result[int(row["user_id"])] = dict(
                 user_id=int(row["user_id"]),
                 user_name=str(row["user_name"]),
@@ -109,12 +113,6 @@ class UserResource(Resource):
         parser.add_argument("user_name", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
-        parser.add_argument(
-            "user_role",
-            type=lambda x: config.UserRole(int(x)),
-            default=config.UserRole.User,
-            help="{error_msg}",
-        )
 
         args = parser.parse_args()
 
@@ -125,24 +123,12 @@ class UserResource(Resource):
         if args["user_mail"] == "":
             return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
 
-        # check if token cookie was sent
-        if (
-            args["user_role"] == config.UserRole.SAdmin or args["user_role"] == config.UserRole.Admin
-        ):  # somebody wants to create an admin account
-            # check if token cookie was sent
-            cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-            if not "token" in cookies:
-                return make_response((jsonify(dict(message="Login required"))), 401)
-            # check if the client has access
-            if not self._authorize(cookies["token"], change_admin=True):
-                return make_response((jsonify(dict(message="No Access"))), 403)
-
         # create a new element
         user = UserModel(
             user_name=args["user_name"],
             user_pass=hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest(),
             user_mail=args["user_mail"],
-            user_role=args["user_role"],
+            user_role=config.UserRole.User,
         )
         db_engine.session.add(user)
         try:
@@ -236,14 +222,17 @@ class UserResource(Resource):
         if args["user_mail"] == "":
             return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
 
-        # TODO: _authorize needs a complete rework
-        # # check if token cookie was sent
-        # cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        # if not "token" in cookies:
-        #     return make_response((jsonify(dict(message="Login required"))), 401)
-        # # check if the client has access
-        # if not self._authorize(cookies["token"], args["user_id"], args["user_admin"]):
-        #     return make_response((jsonify(dict(message="No Access"))), 403)
+        #check for access
+        auth = utils.authorize(
+            cookies= request.cookies,
+            method= "PUT",
+            endpoint= "user",
+            resourceId= args["user_id"]
+            )
+        if auth == None:
+            return make_response((jsonify(dict(message="Login required"))), 401)
+        elif not auth:
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         user = UserModel.query.filter_by(user_id=args["user_id"]).first_or_404()
         if args["user_name"]:
@@ -294,12 +283,15 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
+        #check for access
+        auth = utils.authorize(
+            cookies= request.cookies,
+            method= "DELETE",
+            endpoint= "user"
+            )
+        if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"]):
+        elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # load the user table
@@ -317,44 +309,3 @@ class UserResource(Resource):
 
         result = dict(message=f"Successfully deleted user with user_id {args['user_id']}")
         return make_response((jsonify(result)), 200)
-
-    def _authorize(self, token: str, user_id: int = None, change_admin: bool = False) -> bool:
-        """
-        This method is used to determine if a certain client has the right to change or access data, based on the
-        HTTP request. Therefore the JWT is decoded. Returns True if access is granted and False when access is denied.
-        This method grants access to all admins and to users, if they want to access or change their own data.
-
-        Args:
-            token (str): The JWT token the client sends with the request.
-            user_id (int, optional): The ID of the user account which the client wants to access. Defaults to None.
-            change_admin (bool, optional): True, if the client wants to change the admin status of a user or wants to create an admin account. Defaults to False.
-
-        Returns:
-            bool: True, if access is granted, otherwise False.
-        """
-
-        # TODO: rewrite this function as utility
-        # decode JWT to dict
-        try:
-            user_data = jwt.decode(token, config.JWT_SECRET, algorithms=["HS256"])
-        except jwt.exceptions.DecodeError:
-            return False
-
-        # now check in database if the user exists
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == user_data["user_id"])
-        selection = db_engine.session.execute(query)
-        try:
-            row = selection.fetchone()
-        except sqlalchemy.exc.NoResultFound:
-            return False
-        else:
-            if (
-                row["user_role"] == config.UserRole.SAdmin or row["user_role"] == config.UserRole.Admin
-            ):  # our client is an admin
-                return True
-            elif user_id == None:  # in POST when somebody wants to create an admin account but is no admin
-                return False
-            else:  # our client is no admin and wants to access/change data from a certain account
-                # if client can access/change data from own account, but can't change admin status
-                return (user_id == row["user_id"]) and (not change_admin)
