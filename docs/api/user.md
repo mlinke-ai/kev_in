@@ -46,7 +46,7 @@ Arguments are constructed as dictionaries or JSON objects.
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `user_id` | `int` | optional | `1` | The ID of the user. Normally obtained after creating a new user. |
-| `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is guaranteed. |
+| `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is not guaranteed. |
 | `user_mail` | `string` | optional | `john.doe@example.com` | The e-mail address of the user. |
 | `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
 | `user_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
@@ -105,7 +105,7 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 ## POST
 
 The POST method is used to create a new user. 
-This method prevents duplication.
+This method prevents duplication. This method can be invoked without sending a cookie and has no authorization.
 
 ### Access
 
@@ -143,7 +143,6 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 | `user_name` | `string` | required | `John Doe` | The name of the user. Uniqueness is guaranteed. |
 | `user_pass` | `int` | required | `testPW` | The password of the new user. |
 | `user_mail` | `string` | required | `john.doe@example.com` | The e-mail address of the user. |
-| `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. Defaults to `3`. |
 
 ### Response
 
@@ -156,25 +155,6 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 		"message": "The user was created successfully",
 		"user_name": "John Doe",
 		"user_id": 1
-	}
-	```
-
-=== "401"
-
-	No session cookie was provided.
-
-	```JSON
-	{
-	"message": "Login required"
-	}
-	```
-=== "403"
-
-	An unauthorized client sends a request.
-
-	```JSON
-	{
-		"message": "No Access"
 	}
 	```
 
