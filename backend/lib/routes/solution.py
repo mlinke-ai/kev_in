@@ -23,6 +23,7 @@ from flask_sqlalchemy.query import sqlalchemy
 
 import hashlib
 import jwt
+import datetime
 
 from backend.lib.interfaces.database import SolutionModel, db_engine
 from backend.lib.core import config
@@ -84,7 +85,11 @@ class SolutionResource(Resource):
         if args["solution_exercise"]:
             query = query.where(solution_table.c.solution_exercise == args["solution_exercise"])
         if args["solution_date"]:
-            query = query.where(solution_table.c.solution_date == args["solution_date"])
+            lower = datetime.datetime.fromtimestamp(args["solution_date"]).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
+            upper = lower + datetime.timedelta(days=1)
+            query = query.where(sqlalchemy.between(solution_table.c.solution_date, lower, upper))
         if args["solution_duration"]:
             query = query.where(solution_table.c.solution_duration == args["solution_duration"])
         if args["solution_correct"]:

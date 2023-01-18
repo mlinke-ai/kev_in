@@ -47,7 +47,7 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 | `solution_id` | `int` | optional | `1` | The ID of the solution. Normally obtained after creating a new solution. |
 | `solution_user` | `int` | optional | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | optional | `1` | The ID of the exercise which the solution was provided for. |
-| `solution_date` | `int` | optional | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
+| `solution_date` | `int` | optional | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. As querring for a specific timestamp, the system queries for all solutions which have the same year, month and date `solution_date`. |
 | `solution_duration` | `int` | optional | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
 | `solution_correct` | `bool` | optional | `true` | Whether the solution solves the exercise correctly or not. |
 | `solution_pending` | `bool` | optional | `false` | Whether the solution is in pending state. Pending state means an admin needs to evaluate the solution. |
