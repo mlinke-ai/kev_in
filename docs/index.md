@@ -23,4 +23,8 @@ Bug reports should be done through the [Issue Tracker](https://github.com/mlinke
 
 # Testing
 
-To perform test, start the server in testing mode with `python3 run.py --debug --clean --testing` and run `python3 -m unittest discover` in the root of the project.
+To perform tests, start the server in testing mode with `python3 run.py --debug --clean --testing` and run `python3 -m unittest discover` in the root of the project.
+
+# Coverage
+
+The test coverage can be tested with `python3 -m coverage run -m unittest` and `python3 -m coverage report -i`.
