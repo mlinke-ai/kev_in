@@ -25,6 +25,7 @@ class ExerciseModel(db_engine.Model):
     exercise_description = db_engine.Column(db_engine.String)
     exercise_type = db_engine.Column(db_engine.Enum(config.ExerciseType))
     exercise_content = db_engine.Column(db_engine.Text)
+    exercise_solution = db_engine.Column(db_engine.Text)
     exercise_language = db_engine.Column(db_engine.Enum(config.ExerciseLanguage))
 
 

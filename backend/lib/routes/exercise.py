@@ -32,6 +32,10 @@ class ExerciseResource(Resource):
             "exercise_type", type=lambda x: config.ExerciseType(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}", location="args")
+        parser.add_argument("exercise_solution", type=str, help="{error_msg}", location="args")
+        parser.add_argument(
+            "exercise_language", type=lambda x: config.ExerciseLanguage(int(x)), help="{error_msg}", location="args"
+        )
         parser.add_argument("exercise_offset", type=int, default=0, help="{error_msg}", location="args")
         parser.add_argument(
             "exercise_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args"
@@ -70,6 +74,10 @@ class ExerciseResource(Resource):
             query = query.where(exercise_table.c.exercise_type == args["exercise_type"])
         if args["exercise_content"]:
             query = query.where(exercise_table.c.exercise_content == args["exercise_content"])
+        if args["exercise_solution"]:
+            query = query.where(exercise_table.c.exercise_solution == args["exercise_content"])
+        if args["exercise_language"]:
+            query = query.where(exercise_table.c.exercise_language == args["exercise_language"])
         result = dict()
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
@@ -81,6 +89,8 @@ class ExerciseResource(Resource):
                 exercise_description=str(row["exercise_description"]),
                 exercise_type=row["exercise_type"].name,
                 exercise_content=str(row["exercise_content"]),
+                exercise_solution=str(row["exercise_solution"]),
+                exercise_language=row["exercise_language"].name,
             )
 
         return make_response((jsonify(result)), 200)
@@ -100,6 +110,10 @@ class ExerciseResource(Resource):
             "exercise_type", type=lambda x: config.ExerciseType(int(x)), help="{error_msg}", required=True
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}", required=True)
+        parser.add_argument("exercise_solution", type=str, help="{error_msg}", required=True)
+        parser.add_argument(
+            "exercise_language", type=lambda x: config.ExerciseLanguage(int(x)), help="{error_msg}", required=True
+        )
 
         args = parser.parse_args()
 
@@ -117,6 +131,8 @@ class ExerciseResource(Resource):
             exercise_description=args["exercise_description"],
             exercise_type=args["exercise_type"],
             exercise_content=args["exercise_content"],
+            exercise_solution=args["exercise_solution"],
+            exercise_language=args["exercise_language"],
         )
         db_engine.session.add(exercise)
         try:
@@ -205,6 +221,8 @@ class ExerciseResource(Resource):
         parser.add_argument("exercise_description", type=str, help="{error_msg}")
         parser.add_argument("exercise_type", type=lambda x: config.ExerciseType(int(x)), help="{error_msg}")
         parser.add_argument("exercise_content", type=str, help="{error_msg}")
+        parser.add_argument("exercise_solution", type=str, help="{error_msg}")
+        parser.add_argument("exercise_language", type=lambda x: config.ExerciseLanguage(int(x)), help="{error_msg}")
 
         args = parser.parse_args()
 
