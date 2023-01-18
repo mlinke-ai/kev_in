@@ -2,12 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from .sandboxes.pyenv.pysandbox import ExecutePython
+
+
 # from .sandboxes.javaenv.javasandbox import ExecuteJava
-
-if '__name__' == '__main__':
-    def nothing():
-        pass
-
 
 class Evaluator:
 
@@ -21,7 +18,7 @@ class Evaluator:
             user_code: String containing user code.
             user_func: Function inside user_code to execute e.g. "fibonacci" or "multiplication" or "reverseString".
             language: "python" or "java"
-            *args_result_dict: Dictionary {'1': ([Arg1, Arg2,.., Argsn], [Result]), \
+            **args_result_dict: Dictionary {'1': ([Arg1, Arg2,.., Argsn], [Result]), \
                                             '2': ([Args], [Result]), ..}
                                             e.g. {"0": ([2, 2, 2], [8])}
                                             Dictionary with input args and expected result.
@@ -29,7 +26,6 @@ class Evaluator:
             Dictonary as a result log:
             {'Correct': ""} or if false
             {'Incorrect': "E.g. some errors, exceptions, or wrong result information"}
-        {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()}, 'RESULTLOG': {'0': (['arg0'], ['solution0']), ...}}
         """
         if language == "python":
             pySandbox = ExecutePython()
@@ -46,8 +42,13 @@ class Evaluator:
                     return {'Incorrect': "Expected results do not equal results."}
 
             # Errors, Exceptions when executing user code
-            # TODO implement Error Log
-            pass
+            else:
+                if len(result_log['COMPILERLOG']['ERROR']) != 0:
+                    # interpreter error
+                    return {'False': result_log['COMPILERLOG']['ERROR']}
+                else:
+                    # execution error
+                    return {'False': result_log['EXECUTELOG']['ERROR']}
 
         elif language == "java":
             return {'Incorrect': "Not implemented yet"}

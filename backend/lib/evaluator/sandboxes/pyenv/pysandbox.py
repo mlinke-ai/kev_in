@@ -101,12 +101,18 @@ class ExecutePython:
             exec(self.__compile_result.code, restricted_globals, restricted_locals)
 
         except TimeoutError:
+            if os.path.exists("usercode.py"):
+                os.remove("usercode.py")
+
             # code execution took too long
             self.__sandbox_logs["EXECUTELOG"]["ERROR"] = \
                 ('TimeoutError: Code execution has been interrupted. Maximum execution time has been reached!',)
             return self.__sandbox_logs
 
         except:
+            if os.path.exists("usercode.py"):
+                os.remove("usercode.py")
+
             # The code did something that is not allowed. Runtime error in code.
             import traceback
             type_, value_, traceback_ = sys.exc_info()
