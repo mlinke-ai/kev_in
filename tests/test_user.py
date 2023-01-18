@@ -166,6 +166,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Josslin Aloj", "user_mail": "Josslin.Aloj@example.com", "user_pass": "ian80"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
 
@@ -181,6 +182,7 @@ class UserTest(unittest.TestCase):
             },
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
 
@@ -191,6 +193,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Kon Archy", "user_mail": "Kon.Archy@example.com", "user_pass": "Fip5k"},
             headers=UserTest.content_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
 
@@ -231,6 +234,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Geoffrey Tretan", "user_mail": "Geoffrey.Tretan@example.com", "user_pass": "Abeo0"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         r = requests.request(
@@ -296,6 +300,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": long_name, "user_mail": "long.mail@example.com", "user_pass": "Eiph9"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         self.assertEqual(r.json()["user_name"], long_name)
@@ -308,6 +313,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": strange_name, "user_mail": "strange.mail@example.com", "user_pass": "ai2Ou"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         self.assertEqual(r.json()["user_name"], strange_name)
@@ -321,6 +327,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Aurick Kyland", "user_mail": "double.mail@example.com", "user_pass": "Hua4e"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         r = requests.request(
@@ -329,6 +336,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Bogohardt Fredrik", "user_mail": "unique.mail@example.com", "user_pass": "Tae0U"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = r.json()["user_id"]
@@ -348,6 +356,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Amell Hernando", "user_mail": "Amell.Hernando@example.com", "user_pass": "iHoh6"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = r.json()["user_id"]
@@ -367,6 +376,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Heinie Barnie", "user_mail": "Heinie.Barnie@example.com", "user_pass": "Lief9"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = r.json()["user_id"]
@@ -386,6 +396,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Alfonso Hamlen", "user_mail": "Alfonso.Hamlen@example.com", "user_pass": "ahS7e"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = r.json()["user_id"]
@@ -427,6 +438,7 @@ class UserTest(unittest.TestCase):
             },
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = r.json()["user_id"]
@@ -456,6 +468,7 @@ class UserTest(unittest.TestCase):
             },
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         admin_id = r.json()["user_id"]
@@ -478,6 +491,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Freddie Selig", "user_mail": "Freddie.Selig@example.com", "user_pass": "Ufe0o"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = r.json()["user_id"]
@@ -500,6 +514,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Hamblin Adie", "user_mail": "Hamblin.Adie@example.com", "user_pass": "zis4X"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = r.json()["user_id"]
@@ -516,6 +531,7 @@ class UserTest(unittest.TestCase):
             json={"user_name": "Dusty Eberle", "user_mail": "Dusty.Eberle@example.com", "user_pass": "Ahg9k"},
             headers=UserTest.sadmin_header,
         )
+        UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
         user_id = 1
