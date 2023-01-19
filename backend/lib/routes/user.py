@@ -127,7 +127,7 @@ class UserResource(Resource):
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         if args["user_name"] == "":
             return make_response(jsonify(dict(message="user_name must not be empty")), 400)
@@ -226,7 +226,7 @@ class UserResource(Resource):
         parser.add_argument("user_mail", type=str, help="{error_msg}")
         parser.add_argument("user_role", type=lambda x: config.UserRole(int(x)), help="{error_msg}")
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         if args["user_name"] == "":
             return make_response(jsonify(dict(message="user_name must not be empty")), 400)
@@ -298,7 +298,7 @@ class UserResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth = utils.authorize(

@@ -150,7 +150,7 @@ class ExerciseResource(Resource):
             required=True,
         )
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="exercise")
@@ -266,7 +266,7 @@ class ExerciseResource(Resource):
             help="{error_msg}",
         )
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth = utils.authorize(cookies=request.cookies, method="PUT", endpoint="exercise")
@@ -306,7 +306,7 @@ class ExerciseResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("exercise_id", type=int, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth = utils.authorize(cookies=request.cookies, method="DELETE", endpoint="exercise")

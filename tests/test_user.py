@@ -121,7 +121,7 @@ class UserTest(unittest.TestCase):
     def test_get_non_existing_by_id(self) -> None:
         r = requests.request(
             "GET",
-            "http://127.0.0.1:5000/user?user_id=25",
+            "http://127.0.0.1:5000/user?user_id=-1",
             headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
@@ -192,9 +192,8 @@ class UserTest(unittest.TestCase):
             },
             headers=UserTest.sadmin_header,
         )
-        UserTest.user_ids.append(r.json()["user_id"])
-        self.assertEqual(r.status_code, 201)
-        self.assertEqual(r.json()["message"], "The user was created successfully")
+        self.assertEqual(r.status_code, 400)
+        self.assertEqual(r.json()["message"], "Unknown arguments: user_role")
 
     def test_create_user_without_token(self) -> None:
         r = requests.request(
@@ -210,36 +209,6 @@ class UserTest(unittest.TestCase):
         UserTest.user_ids.append(r.json()["user_id"])
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
-
-    def test_create_admin_without_token(self) -> None:
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/user",
-            json={
-                "user_name": "Detleff Deric",
-                "user_mail": "Detleff.Deric@example.com",
-                "user_pass": "eNg9h",
-                "user_role": 2,
-            },
-            headers=UserTest.content_header,
-        )
-        self.assertEqual(r.status_code, 401)
-        self.assertEqual(r.json()["message"], "Login required")
-
-    def test_create_admin_with_user_token(self) -> None:
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/user",
-            json={
-                "user_name": "Eldrige Ernesto",
-                "user_mail": "Eldrige.Ernesto@example.com",
-                "user_pass": "Xah8e",
-                "user_role": 2,
-            },
-            headers=UserTest.tuser_header,
-        )
-        self.assertEqual(r.status_code, 403)
-        self.assertEqual(r.json()["message"], "No Access")
 
     def test_create_duplicate_user(self) -> None:
         r = requests.request(
@@ -467,27 +436,78 @@ class UserTest(unittest.TestCase):
         self.assertEqual(r.status_code, 400)
         self.assertEqual(r.json()["message"], "user_pass must not be empty")
 
-    def test_change_admin_elevation(self) -> None:
+    def test_change_admin_elevation_as_user(self) -> None:
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/user",
             json={"user_id": 2, "user_role": 2},
             headers=UserTest.tuser_header,
         )
-        self.fail("_authorize is currently not in use")
         self.assertEqual(r.status_code, 403)
         self.assertEqual(r.json()["message"], "No Access")
 
-    def test_change_sadmin_elevation(self) -> None:
+    def test_change_sadmin_elevation_as_user(self) -> None:
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/user",
             json={"user_id": 2, "user_role": 1},
             headers=UserTest.tuser_header,
         )
-        self.fail("_authorize is currently not in use")
         self.assertEqual(r.status_code, 403)
         self.assertEqual(r.json()["message"], "No Access")
+
+    def test_change_admin_elevation_as_admin(self) -> None:
+        r = requests.request(
+            "PUT", "http://127.0.0.1:5000/user", json={"user_id": 3, "user_role": 2}, headers=UserTest.sadmin_header
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["message"], "Changed properties successfully")
+
+    def test_change_sadmin_elevation_as_admin(self) -> None:
+        r = requests.request(
+            "PUT", "http://127.0.0.1:5000/user", json={"user_id": 4, "user_role": 1}, headers=UserTest.sadmin_header
+        )
+        self.assertEqual(r.status_code, 403)
+        self.assertEqual(r.json()["message"], "No Access")
+
+    def test_change_user_demotion_as_user(self) -> None:
+        r = requests.request(
+            "PUT", "http://127.0.0.1:5000/user", json={"user_id": 1, "user_role": 3}, headers=UserTest.tuser_header
+        )
+        self.assertEqual(r.status_code, 403)
+        self.assertEqual(r.json()["message"], "No Access")
+
+    def test_change_user_demotion_as_admin(self) -> None:
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/user",
+            json={
+                "user_name": "Markos Court",
+                "user_mail": "Markos.Court@example.com",
+                "user_pass": "eij0N",
+            },
+            headers=UserTest.sadmin_header,
+        )
+        user_id = r.json()["user_id"]
+        UserTest.user_ids.append(user_id)
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["message"], "The user was created successfully")
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/user",
+            json={"user_id": user_id, "user_role": 2},
+            headers=UserTest.sadmin_header,
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["message"], "Changed properties successfully")
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/user",
+            json={"user_id": user_id, "user_role": 3},
+            headers=UserTest.sadmin_header,
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["message"], "Changed properties successfully")
 
     # --- DELETE ---
 
@@ -534,30 +554,29 @@ class UserTest(unittest.TestCase):
                 "user_name": "Allcen Mila",
                 "user_mail": "Allcen.Mila@example.com",
                 "user_pass": "yae7C",
-                "user_role": 2,
             },
             headers=UserTest.sadmin_header,
         )
-        UserTest.user_ids.append(r.json()["user_id"])
+        user_id = r.json()["user_id"]
+        UserTest.user_ids.append(user_id)
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
-        admin_id = r.json()["user_id"]
         r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/login",
-            json={"user_name": "Allcen Mila", "user_pass": "yae7C"},
-            headers=UserTest.content_header,
+            "PUT",
+            "http://127.0.0.1:5000/user",
+            json={"user_id": user_id, "user_role": 2},
+            headers=UserTest.sadmin_header,
         )
-        admin_header = UserTest.content_header.copy()
-        admin_header.update({"Cookie": r.headers["Set-Cookie"]})
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["message"], "Changed properties successfully")
         r = requests.request(
             "DELETE",
             "http://127.0.0.1:5000/user",
-            json={"user_id": admin_id},
-            headers=admin_header,
+            json={"user_id": user_id},
+            headers=UserTest.sadmin_header,
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(r.json()["message"], f"Successfully deleted user with user_id {admin_id}")
+        self.assertEqual(r.json()["message"], f"Successfully deleted user with user_id {user_id}")
 
     def test_delete_self_as_user(self) -> None:
         r = requests.request(

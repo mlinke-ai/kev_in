@@ -145,7 +145,7 @@ class SolutionResource(Resource):
         parser.add_argument("solution_duration", type=int, help="{error_msg}", required=True)
         parser.add_argument("solution_content", type=str, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="solution")
@@ -209,7 +209,7 @@ class SolutionResource(Resource):
         parser.add_argument("solution_pending", type=bool, help="{error_msg}")
         parser.add_argument("solution_content", type=str, help="{error_msg}")
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth = utils.authorize(
@@ -256,7 +256,7 @@ class SolutionResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth = utils.authorize(

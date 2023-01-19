@@ -53,6 +53,8 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "Test",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
             headers={
                 "Content-Type": "application/json",
@@ -70,7 +72,6 @@ class ExerciseTest(unittest.TestCase):
                 "user_name": ExerciseTest.user_name,
                 "user_pass": ExerciseTest.user_pass,
                 "user_mail": "test@example.com",
-                "user_role": 3,
             },
             headers={"Content-Type": "application/json"},
         )
@@ -132,7 +133,7 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}&exercise_details=true",
             headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
         # server should return HTTP status 200
@@ -173,7 +174,7 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}&exercise_details=true",
             headers={"Cookie": f"{ExerciseTest.userCookie}"},
         )
         # server should return HTTP status 200
@@ -224,6 +225,8 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
             headers={
                 "Content-Type": "application/json",
@@ -268,6 +271,8 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
             headers={"Content-Type": "application/json", "Cookie": "key=value;"},
         )
@@ -282,6 +287,8 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
             headers={
                 "Content-Type": "application/json",
@@ -308,6 +315,8 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
             headers={
                 "Content-Type": "application/json",
@@ -508,6 +517,8 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
             headers={
                 "Content-Type": "application/json",
