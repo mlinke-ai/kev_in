@@ -61,6 +61,19 @@ def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceI
         return not(role == UserRole.User) ,_authUser(role, method, int(user_data["user_id"]), resourceId, changeToAdmin)
     elif endpoint == 'solution':
         return not(role == UserRole.User) ,_authSolution(role, method, int(user_data["user_id"]), resourceId)
+
+def getUseridFromCookies(cookies: ImmutableMultiDict) -> int | None:
+    """
+    Get the user_id argument from cookies. Returns None if no valid JWT
+    is in the cookies.
+    """
+
+    user_data = _extractUserData(cookies)
+
+    if user_data == None:
+        return None
+
+    return user_data["user_id"]
     
         
 def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:
