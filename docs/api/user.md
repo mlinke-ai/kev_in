@@ -52,6 +52,8 @@ Arguments are constructed as dictionaries or JSON objects.
 | `user_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
 | `user_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 
+Note: If no argument is sent, the system returns the user data of the logged in client.
+
 ### Response
 
 NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` items.
@@ -105,11 +107,11 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 ## POST
 
 The POST method is used to create a new user. 
-This method prevents duplication. This method can be invoked without sending a cookie and has no authorization.
+This method prevents duplication.
 
 ### Access
 
-No authorization is needed, except for creating an admin account.
+No Authorizazion is needed. So this method can be accessed without sending a cookie.
 
 Python `requests`:  
 

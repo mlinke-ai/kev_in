@@ -75,6 +75,25 @@ class UserResource(Resource):
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = db_engine.select(user_table).select_from(user_table)
+
+        if len(request.url.split("?")) == 1: #a request with no arguments was sent
+            #return the user data from the logged in user
+            id = utils.getUseridFromCookies(request.cookies)
+            if id == None:
+                return make_response((jsonify(dict(message="Login required"))), 401)
+            query = query.where(user_table.c.user_id == id)
+            selection = db_engine.session.execute(query)
+            row = selection.fetchone()
+
+            result = dict()
+            result[int(row["user_id"])] = dict(
+                user_id=int(row["user_id"]),
+                user_name=str(row["user_name"]),
+                user_mail=str(row["user_mail"]),
+                user_role=row["user_role"].name
+            )
+            return make_response((jsonify(result)), 200)
+            
         if args["user_id"]:
             query = query.where(user_table.c.user_id == args["user_id"])
         else:
