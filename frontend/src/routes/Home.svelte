@@ -43,7 +43,6 @@
       </div>
     </div>
   </main>
-  <AuthDialog />
 </Page> 
 
 <style lang="scss">

@@ -1,41 +1,31 @@
 <script>
   import Button from "@smui/button";
-  import Card from "@smui/card/";
   import Textfield from "@smui/textfield";
   import PasswordInput from "./PasswordInput.svelte";
-  import Tab, { Label as TLabel } from "@smui/tab";
-  import TabBar from "@smui/tab-bar";
-  import Select, { Option } from "@smui/select";
   import { accessLevel, userName, startPage } from "../../../stores";
   import { accessLevels } from "../../types";
   import { setupUserSettings } from "../../functions/user";
   import { replace as replaceRoute } from "svelte-spa-router";
 
-  let username = "";
+  let email = "";
   let password = "";
 
   let wrongCredentials = false;
-
-  let active = "Login";
-  let value = "Login";
 
   const login = async () => {
     await fetch("http://127.0.0.1:5000/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user_name: username,
+        user_name: email,
         user_pass: password,
       }),
     }).then((response) => {
       if (response.status == 200) {
         response.json().then((data) => {
-          // TODO: Save Cookie with jwt token
-
-          // Save user info in local storage
           $accessLevel = accessLevels.admin;
           setupUserSettings($accessLevel);
-          $userName = username;
+          $userName = email;
           $accessLevel = accessLevels.admin;
           replaceRoute($startPage);
         });
@@ -54,10 +44,10 @@
   <div class="input">
     <Textfield
       invalid={wrongCredentials}
-      id="username-input"
+      id="email-input"
       style="width: 20rem"
-      bind:value={username}
-      label="Username"
+      bind:value={email}
+      label="Email"
       variant="outlined"
     />
   </div>

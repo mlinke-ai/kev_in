@@ -168,9 +168,4 @@
   .input {
     padding: 0.2rem;
   }
-
-  .signup-container {
-    width: 25rem;
-    margin: auto;
-  }
 </style>
