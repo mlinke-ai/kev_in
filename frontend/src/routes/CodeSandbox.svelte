@@ -1,12 +1,12 @@
 <script>
   import Page from "../lib/components/common/Page.svelte";
-  import TestCard from "../lib/components/CodeSandbox/TestCard.svelte";
   import { Icon } from "@smui/common";
+  import TaskCard from "../lib/components/CodeSandbox/TaskCard.svelte";
   import CodingCard from "../lib/components/CodeSandbox/CodingCard.svelte";
   import OutputCard from "../lib/components/CodeSandbox/OutputCard.svelte";
 
   async function validate_code() {}
-</script> 
+</script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
   <div class="sandbox-container">
@@ -14,7 +14,7 @@
       <h3>Coding Sandbox</h3>
     </div>
     <div class="task-area">
-      <TestCard />
+      <TaskCard />
     </div>
     <div class="code-area">
       <CodingCard />
