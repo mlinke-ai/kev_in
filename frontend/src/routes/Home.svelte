@@ -4,6 +4,7 @@
   import Page from "../lib/components/common/Page.svelte";
   import LanguageCard from "../lib/components/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
+    import AuthDialog from "../lib/components/Authentication/AuthDialog.svelte";
 </script>
 
 <Page title="Home">
@@ -42,6 +43,7 @@
       </div>
     </div>
   </main>
+  <AuthDialog />
 </Page> 
 
 <style lang="scss">

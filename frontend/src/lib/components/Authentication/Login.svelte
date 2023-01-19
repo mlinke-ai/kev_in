@@ -50,43 +50,30 @@
   };
 </script>
 
-<div class="login-card-container">
-  <Card variant="outlined">
-    <TabBar tabs={["Login", "Sign Up"]} let:tab bind:active>
-      <Tab style={"cursor: default"} disabled {tab}>
-        <TLabel>{tab}</TLabel>
-      </Tab>
-    </TabBar>
+<form class="login-form" on:submit|preventDefault={login} hidden>
+  <div class="input">
+    <Textfield
+      invalid={wrongCredentials}
+      id="username-input"
+      style="width: 20rem"
+      bind:value={username}
+      label="Username"
+      variant="outlined"
+    />
+  </div>
+  <div class="input" style="margin-top: 1rem;">
+    <PasswordInput
+      bind:password
+      wrongPassword={wrongCredentials}
+      style="width: 20rem"
+    />
+  </div>
+</form>
+<Button class="login-button" on:click={login} type="submit" variant="unelevated"
+  >Login</Button
+>
 
-    {#if active == "Sign Up"}
-      <div class="sign-up-form"></div>
-    {:else}
-      <form class="login-form" on:submit|preventDefault={login} hidden>
-        <div class="input">
-          <Textfield
-            invalid={wrongCredentials}
-            id="username-input"
-            style="width: 20rem"
-            bind:value={username}
-            label="Username"
-            variant="outlined"
-          />
-        </div>
-        <div class="input" style="margin-top: 1rem;">
-          <PasswordInput bind:password wrongPassword={wrongCredentials} style="width: 20rem"/>
-        </div>
-      </form>
-    {/if}
-    <Button
-      class="login-button"
-      on:click={login}
-      type="submit"
-      variant="unelevated">Login</Button
-    >
-  </Card>
-</div>
-
-<style lang="css">
+<style>
   .login-form {
     margin: auto;
     display: flex;
@@ -96,10 +83,5 @@
   }
   .input {
     padding: 0.2rem;
-  }
-
-  .login-card-container {
-    width: 25rem;
-    margin: auto;
   }
 </style>
