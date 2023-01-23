@@ -5,6 +5,7 @@ import jwt
 from werkzeug.datastructures import ImmutableMultiDict
 from typing import Any
 from flask_sqlalchemy.query import sqlalchemy
+from flask import Response
 
 from backend.lib.core.config import JWT_SECRET, UserRole, USER_TABLE, SOLUTION_TABLE
 from backend.lib.interfaces.database import db_engine
@@ -42,7 +43,7 @@ def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceI
     if method in ['GET','PUT', 'DELETE'] and resourceId == None and endpoint != 'exercise':
         raise ValueError(f"'method' is {method}, 'endpoint' is {endpoint} and no 'recourceId' was provided")
 
-    if method == 'PUT' and endpoint == 'user' and changeToAdmin == False:
+    if method == 'PUT' and endpoint == 'user' and changeToAdmin == None:
         raise ValueError(f"'method' is {method}, 'endpoint' is {endpoint} and no 'changeToAdmin' was provided")
 
     user_data = _extractUserData(cookies)
@@ -180,6 +181,18 @@ def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> 
                 row = selection.fetchone()
             except sqlalchemy.exc.NoResultFound:
                 return False #we're sure here that client don't want to access its own data
-            return userId == row["user_relation"]
+            return userId == row["solution_user"]
     elif method == "POST":
         return True
+
+def attachNewCookie(response: Response, oldCookies: ImmutableMultiDict) -> None:
+    """This method reads the JWT out of cookies from previous request.
+    And attaches a new cookie with the same JWT to a response."""
+    
+    token = oldCookies.getlist("token")
+    
+    if len(token) != 1:
+        return
+    
+    response.set_cookie("token", token[0], max_age=3600, httponly=True)
+    

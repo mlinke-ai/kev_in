@@ -79,7 +79,9 @@ class UserResource(Resource):
                 user_mail=str(row["user_mail"]),
                 user_role=row["user_role"].name
             )
-            return make_response((jsonify(result)), 200)
+            response = make_response(jsonify(result), 200)
+            utils.attachNewCookie(response, request.cookies)
+            return response
             
         if args["user_id"]:
             query = query.where(user_table.c.user_id == args["user_id"])
@@ -117,7 +119,9 @@ class UserResource(Resource):
                 user_role=row["user_role"].name,
             )
 
-        return make_response((jsonify(result)), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 
     def post(self) -> Response:
         """
@@ -157,7 +161,7 @@ class UserResource(Resource):
             # db_engine.session.rollback()
             return make_response(jsonify(dict(message="A user with this mail already exists")), 409)
         else:
-            return make_response(
+            response = make_response(
                 jsonify(
                     dict(
                         message="The user was created successfully",
@@ -169,6 +173,8 @@ class UserResource(Resource):
                 ),
                 201,
             )
+            utils.attachNewCookie(response, request.cookies)
+            return response
 
         # TODO: the method above is way more elegant; we should remove the lower part
         # # load the user table
@@ -271,7 +277,9 @@ class UserResource(Resource):
             # db_engine.session.rollback()
             return make_response(jsonify(dict(message="A user with this mail already exists")), 409)
         else:
-            return make_response(jsonify(dict(message="Changed properties successfully")), 200)
+            response = make_response(jsonify(dict(message="Changed properties successfully")), 200)
+            utils.attachNewCookie(response, request.cookies)
+            return response
 
         # TODO: the method above is way more elegant; we should remove the lower part
         # # load the user table
@@ -332,4 +340,6 @@ class UserResource(Resource):
             return make_response((jsonify(result)), 404)
 
         result = dict(message=f"Successfully deleted user with user_id {args['user_id']}")
-        return make_response((jsonify(result)), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response

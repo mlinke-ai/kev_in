@@ -86,7 +86,9 @@ class ExerciseResource(Resource):
                 exercise_content=str(row["exercise_content"]),
             )
 
-        return make_response((jsonify(result)), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 
     def post(self) -> Response:
         """
@@ -163,7 +165,9 @@ class ExerciseResource(Resource):
                     exercise_title=row.exercise_title,
                     exercise_id=row.exercise_id,
                 )
-                return make_response((jsonify(result)), 201)
+                response = make_response(jsonify(result), 201)
+                utils.attachNewCookie(response, request.cookies)
+                return response
         else:
             # if the selection contains an element we can't create a new one as we would create a duplicate
             result = dict(message="An exercise with this title already exists")
@@ -217,7 +221,9 @@ class ExerciseResource(Resource):
             return make_response((jsonify(result)), 404)
 
         result = dict(message=f"Successfully chanaged exercise with exercise_id {args['exercise_id']}")
-        return make_response((jsonify(result)), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 
     def delete(self) -> Response:
         """
@@ -257,5 +263,7 @@ class ExerciseResource(Resource):
             return make_response((jsonify(result)), 404)
 
         result = dict(message=f"Successfully deleted exercise with exercise_id {args['exercise_id']}")
-        return make_response((jsonify(result)), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 

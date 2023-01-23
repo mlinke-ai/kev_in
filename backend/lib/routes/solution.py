@@ -24,6 +24,7 @@ from flask_sqlalchemy.query import sqlalchemy
 from backend.lib.interfaces.database import SolutionModel, db_engine
 from backend.lib.core import config, utils
 
+import datetime
 
 class SolutionResource(Resource):
     def get(self) -> Response:
@@ -104,7 +105,9 @@ class SolutionResource(Resource):
                 solution_correct=row[5],
             )
 
-        return make_response(jsonify(result), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 
     def post(self) -> Response:
         """
@@ -115,10 +118,9 @@ class SolutionResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
-        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_date", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_duration", type=int, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
@@ -140,11 +142,11 @@ class SolutionResource(Resource):
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
         solution = SolutionModel(
-            solution_user=args["solution_user"],
-            solution_exercise=args["solution_Exercise"],
-            solution_date=args["solution_args"],
+            solution_user=utils.getUseridFromCookies(request.cookies),
+            solution_exercise=args["solution_exercise"],
+            solution_date=datetime.datetime.fromtimestamp(args["solution_date"]),
             solution_duration=args["solution_duration"],
-            solution_correct=correct,
+            solution_correct=correct
         )
         # add the new element
         db_engine.session.add(solution)
@@ -164,7 +166,9 @@ class SolutionResource(Resource):
             solution_duration=row[4],
             solution_correct=row[5],
         )
-        return make_response(jsonify(result), 200)
+        response = make_response(jsonify(result), 201)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 
     def put(self) -> Response:
         """
@@ -218,7 +222,9 @@ class SolutionResource(Resource):
             return make_response(jsonify(result), 404)
 
         result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
-        return make_response(jsonify(result), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 
     def delete(self) -> Response:
         """
@@ -259,5 +265,7 @@ class SolutionResource(Resource):
             return make_response(jsonify(result), 404)
 
         result = dict(message=f"Successfully deleted solution with solution_id {args['solution_id']}")
-        return make_response(jsonify(result), 200)
+        response = make_response(jsonify(result), 200)
+        utils.attachNewCookie(response, request.cookies)
+        return response
 
