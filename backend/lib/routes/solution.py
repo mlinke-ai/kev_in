@@ -119,7 +119,12 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
-        parser.add_argument("solution_date", type=int, help="{error_msg}", required=True)
+        parser.add_argument(
+            "solution_date",
+            type=lambda x: datetime.datetime.fromtimestamp(x),
+            help="{error_msg}",
+            required=True
+            )
         parser.add_argument("solution_duration", type=int, help="{error_msg}", required=True)
 
         args = parser.parse_args()
@@ -144,7 +149,7 @@ class SolutionResource(Resource):
         solution = SolutionModel(
             solution_user=utils.getUseridFromCookies(request.cookies),
             solution_exercise=args["solution_exercise"],
-            solution_date=datetime.datetime.fromtimestamp(args["solution_date"]),
+            solution_date=args["solution_date"],
             solution_duration=args["solution_duration"],
             solution_correct=correct
         )
