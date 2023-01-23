@@ -143,7 +143,7 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 |---|---|---|---|---|
 | `solution_user` | `int` | required | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | required | `1` | The ID of the exercise which the solution was provided for. |
-| `solution_data` | `int` | required | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
+| `solution_date` | `int` | required | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
 | `solution_duration` | `int` | required | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
 | `solution_content` | `str` | required | `"hello, world!"` | The content provided by the user. |
 
