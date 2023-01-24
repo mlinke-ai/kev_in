@@ -270,6 +270,8 @@ class UserResource(Resource):
             user.user_mail = args["user_mail"]
         if args["user_pass"]:
             user.user_pass = args["user_pass"]
+        if args["user_role"]:
+            user.user_role = args["user_role"]
         try:
             db_engine.session.commit()
         except sqlalchemy.exc.IntegrityError:
