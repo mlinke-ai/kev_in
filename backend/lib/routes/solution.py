@@ -175,6 +175,7 @@ class SolutionResource(Resource):
         result = dict()
         row = selection.fetchone()
         result = dict(
+            message="Successfully submitted solution",
             solution_id=row[0],
             solution_user=solution.solution_user,
             solution_exercise=solution.solution_exercise,

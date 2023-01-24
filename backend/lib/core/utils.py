@@ -182,6 +182,8 @@ def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> 
             except sqlalchemy.exc.NoResultFound:
                 return False #we're sure here that client don't want to access its own data
             return userId == row["solution_user"]
+        else:
+            return True
     elif method == "POST":
         return True
 
