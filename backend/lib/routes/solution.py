@@ -26,6 +26,7 @@ from backend.lib.core import config, utils
 
 import datetime
 
+
 class SolutionResource(Resource):
     def get(self) -> Response:
         """
@@ -48,7 +49,9 @@ class SolutionResource(Resource):
         parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args"
+        )
 
         args = parser.parse_args()
 
@@ -57,7 +60,6 @@ class SolutionResource(Resource):
             return make_response(
                 jsonify(dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
             )
-
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -84,12 +86,9 @@ class SolutionResource(Resource):
         result = dict()
         for row in selection.fetchall():
 
-            #check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
             is_admin, auth = utils.authorize(
-                cookies= request.cookies,
-                method= "GET",
-                endpoint= "user",
-                resourceId= int(row[0])
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
             if auth == None:
                 return make_response((jsonify(dict(message="Login required"))), 401)
@@ -124,16 +123,16 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        #check for access
-        is_admin, auth = utils.authorize(
-            cookies= request.cookies,
-            method= "POST",
-            endpoint= "solution"
-            )
-        if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
-        elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+        # check for access
+        # is_admin, auth = utils.authorize(
+        #     cookies= request.cookies,
+        #     method= "POST",
+        #     endpoint= "solution"
+        #     )
+        # if auth == None:
+        #     return make_response((jsonify(dict(message="Login required"))), 401)
+        # elif not auth:
+        #     return make_response((jsonify(dict(message="No Access"))), 403)
 
         # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
         correct = True
@@ -145,8 +144,8 @@ class SolutionResource(Resource):
             solution_user=utils.getUseridFromCookies(request.cookies),
             solution_exercise=args["solution_exercise"],
             solution_date=datetime.datetime.fromtimestamp(args["solution_date"]),
-            solution_duration=args["solution_duration"],
-            solution_correct=correct
+            solution_duration=datetime.timedelta(args["solution_duration"]),
+            solution_correct=correct,
         )
         # add the new element
         db_engine.session.add(solution)
@@ -160,11 +159,11 @@ class SolutionResource(Resource):
         row = selection.fetchone()
         result = dict(
             solution_id=row[0],
-            solution_user=row[1],
-            solution_exercise=row[2],
-            solution_date=row[3],
-            solution_duration=row[4],
-            solution_correct=row[5],
+            # solution_user=row[1],
+            # solution_exercise=row[2],
+            # solution_date=row[3],
+            # solution_duration=row[4],
+            # solution_correct=row[5],
         )
         response = make_response(jsonify(result), 201)
         utils.attachNewCookie(response, request.cookies)
@@ -190,13 +189,10 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        #check for access
+        # check for access
         is_admin, auth = utils.authorize(
-            cookies= request.cookies,
-            method= "PUT",
-            endpoint= "solution",
-            resourceId= args["solution_id"]
-            )
+            cookies=request.cookies, method="PUT", endpoint="solution", resourceId=args["solution_id"]
+        )
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -239,13 +235,10 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        #check for access
+        # check for access
         is_admin, auth = utils.authorize(
-            cookies= request.cookies,
-            method= "POST",
-            endpoint= "exercise",
-            resourceId= args["solution_id"]
-            )
+            cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
+        )
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -268,4 +261,3 @@ class SolutionResource(Resource):
         response = make_response(jsonify(result), 200)
         utils.attachNewCookie(response, request.cookies)
         return response
-
