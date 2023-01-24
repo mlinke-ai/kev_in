@@ -1,5 +1,6 @@
 # files:
 notes.md
+.coverage
 
 # directories:
 __pycache__/
