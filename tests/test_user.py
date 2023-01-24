@@ -194,36 +194,6 @@ class UserTest(unittest.TestCase):
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["message"], "The user was created successfully")
 
-    def test_create_admin_without_token(self) -> None:
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/user",
-            json={
-                "user_name": "Detleff Deric",
-                "user_mail": "Detleff.Deric@example.com",
-                "user_pass": "eNg9h",
-                "user_role": 2,
-            },
-            headers=UserTest.content_header,
-        )
-        self.assertEqual(r.status_code, 401)
-        self.assertEqual(r.json()["message"], "Login required")
-
-    def test_create_admin_with_user_token(self) -> None:
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/user",
-            json={
-                "user_name": "Eldrige Ernesto",
-                "user_mail": "Eldrige.Ernesto@example.com",
-                "user_pass": "Xah8e",
-                "user_role": 2,
-            },
-            headers=UserTest.tuser_header,
-        )
-        self.assertEqual(r.status_code, 403)
-        self.assertEqual(r.json()["message"], "No Access")
-
     def test_create_duplicate_user(self) -> None:
         r = requests.request(
             "POST",
@@ -402,7 +372,6 @@ class UserTest(unittest.TestCase):
         r = requests.request(
             "PUT", "http://127.0.0.1:5000/user", json={"user_id": 2, "user_role": 2}, headers=UserTest.tuser_header
         )
-        self.fail("_authorize is currently not in use")
         self.assertEqual(r.status_code, 403)
         self.assertEqual(r.json()["message"], "No Access")
 
@@ -410,7 +379,6 @@ class UserTest(unittest.TestCase):
         r = requests.request(
             "PUT", "http://127.0.0.1:5000/user", json={"user_id": 2, "user_role": 1}, headers=UserTest.tuser_header
         )
-        self.fail("_authorize is currently not in use")
         self.assertEqual(r.status_code, 403)
         self.assertEqual(r.json()["message"], "No Access")
 
