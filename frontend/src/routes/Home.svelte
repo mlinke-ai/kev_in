@@ -4,7 +4,10 @@
   import Page from "../lib/components/common/Page.svelte";
   import LanguageCard from "../lib/components/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
-    import AuthDialog from "../lib/components/Authentication/AuthDialog.svelte";
+  import AuthDialog from "../lib/components/Authentication/AuthDialog.svelte";
+  import Dialog, { Title, Content, Actions, InitialFocus } from "@smui/dialog";
+
+  let open = false;
 </script>
 
 <Page title="Home">
@@ -15,11 +18,15 @@
       Exercises designed by experts with practical experience. Join our
       community today!
     </h5>
-    <a href="#/login">
-      <Button variant="raised" color="primary">
-        <Label>Start now</Label>
-      </Button>
-    </a>
+    <Button
+      variant="raised"
+      color="primary"
+      on:click={() => {
+        open = true;
+      }}
+    >
+      <Label>Start now</Label>
+    </Button>
   </header>
   <main>
     <div class="language-cards-area">
@@ -43,7 +50,10 @@
       </div>
     </div>
   </main>
-</Page> 
+  <Dialog bind:open>
+    <AuthDialog />
+  </Dialog>
+</Page>
 
 <style lang="scss">
   header {

@@ -31,7 +31,7 @@
       alert("incorrect data");
       return;
     }
-    await fetch("http://127.0.0.1:5000/user", {
+    await fetch("/user", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -42,7 +42,7 @@
       }),
     }).then((response) => {
       if (response.status == 201) {
-        window.location.replace("..#/login");
+        // TODO: display success message
       } else if (response.status == 401) {
         document.getElementById("email-input").focus();
         alert("Sign Up failed");

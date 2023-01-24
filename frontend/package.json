@@ -29,6 +29,7 @@
     "@smui/button": "^7.0.0-beta.0",
     "@smui/card": "^7.0.0-beta.0",
     "@smui/common": "^7.0.0-beta.0",
+    "@smui/dialog": "^7.0.0-beta.0",
     "@smui/icon-button": "^7.0.0-beta.0",
     "@smui/ripple": "^7.0.0-beta.0",
     "@smui/select": "^7.0.0-beta.0",
