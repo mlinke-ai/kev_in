@@ -43,10 +43,18 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_date",
+            type=lambda x: datetime.datetime.fromtimestamp(x),
+            help="{error_msg}",
+            location="args"
+            )
+        parser.add_argument(
+            "solution_duration",
+            type=lambda x: datetime.timedelta(x),
+            help="{error_msg}",
+            location="args"
+            )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
         parser.add_argument(
@@ -99,8 +107,8 @@ class SolutionResource(Resource):
                 solution_id=row[0],
                 solution_user=row[1],
                 solution_exercise=row[2],
-                solution_date=row[3],
-                solution_duration=row[4],
+                solution_date=str(row[3]),
+                solution_duration=str(row[4]),
                 solution_correct=row[5],
             )
 
@@ -119,22 +127,29 @@ class SolutionResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
         parser.add_argument(
-            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", required=True
+            "solution_date",
+            type=lambda x: datetime.datetime.fromtimestamp(x),
+            help="{error_msg}",
+            required=True
         )
-        parser.add_argument("solution_duration", type=int, help="{error_msg}", required=True)
+        parser.add_argument("solution_duration",
+            type=lambda x: datetime.timedelta(x),
+            help="{error_msg}",
+            required=True
+        )
 
         args = parser.parse_args()
 
         # check for access
-        # is_admin, auth = utils.authorize(
-        #     cookies= request.cookies,
-        #     method= "POST",
-        #     endpoint= "solution"
-        #     )
-        # if auth == None:
-        #     return make_response((jsonify(dict(message="Login required"))), 401)
-        # elif not auth:
-        #     return make_response((jsonify(dict(message="No Access"))), 403)
+        is_admin, auth = utils.authorize(
+            cookies= request.cookies,
+            method= "POST",
+            endpoint= "solution"
+            )
+        if auth == None:
+            return make_response((jsonify(dict(message="Login required"))), 401)
+        elif not auth:
+            return make_response((jsonify(dict(message="No Access"))), 403)
 
         # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
         correct = True
@@ -145,9 +160,9 @@ class SolutionResource(Resource):
         solution = SolutionModel(
             solution_user=utils.getUseridFromCookies(request.cookies),
             solution_exercise=args["solution_exercise"],
-            solution_date=datetime.datetime.fromtimestamp(args["solution_date"]),
-            solution_duration=datetime.timedelta(args["solution_duration"]),
-            solution_correct=correct,
+            solution_date=args["solution_date"],
+            solution_duration=args["solution_duration"],
+            solution_correct=correct
         )
         # add the new element
         db_engine.session.add(solution)
@@ -161,11 +176,11 @@ class SolutionResource(Resource):
         row = selection.fetchone()
         result = dict(
             solution_id=row[0],
-            # solution_user=row[1],
-            # solution_exercise=row[2],
-            # solution_date=row[3],
-            # solution_duration=row[4],
-            # solution_correct=row[5],
+            solution_user=solution.solution_user,
+            solution_exercise=solution.solution_exercise,
+            solution_date=str(solution.solution_date),
+            solution_duration=str(solution.solution_duration),
+            solution_correct=solution.solution_correct
         )
         response = make_response(jsonify(result), 201)
         utils.attachNewCookie(response, request.cookies)
@@ -183,10 +198,15 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
         parser.add_argument("solution_user", type=int, help="{error_msg}")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument(
+            "solution_date",
+            type=lambda x: datetime.datetime.fromtimestamp(x),
+            help="{error_msg}"
+        )
+        parser.add_argument("solution_duration",
+            type=lambda x: datetime.timedelta(x),
+            help="{error_msg}"
+        )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
 
         args = parser.parse_args()

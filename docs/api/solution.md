@@ -148,12 +148,12 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
     The response is a dictionary or JSON object, together with the HTTP status 201. All attributes of the created exercise will be shown, together with a response message.
     ```JSON
     {
-        "solution_id": 1,
-        "solution_user": 1,
+        "solution_correct": true,
+        "solution_date": "2023-01-11 15:16:25",
+        "solution_duration": "122 days, 0:00:00",
         "solution_exercise": 1,
-        "solution_date": 1672946590,
-        "solution_duration": 524,
-        "solution_correct": true
+        "solution_id": 3,
+        "solution_user": 1
     }
     ```
 
