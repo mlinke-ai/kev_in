@@ -10,7 +10,13 @@ from flask import Response
 from backend.lib.core.config import JWT_SECRET, UserRole, USER_TABLE, SOLUTION_TABLE
 from backend.lib.interfaces.database import db_engine
 
-def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceId: int = None, changeToAdmin: bool = None) -> tuple[bool, bool | None]:
+def authorize(
+    cookies: ImmutableMultiDict,
+    method: str,
+    endpoint: str,
+    resourceId: int = None,
+    changeToAdmin: bool = None
+    )-> tuple[bool, bool | None, int | None]:
     """
     The authorize funciton which determines, if a user has rights to access certain data or not.
 
@@ -29,9 +35,10 @@ def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceI
         changeToAdmin: :class:`bool`
             Only needs to be set, on user PUT mehtod.
     Returns:
-        A tuple of Type :class:`tuple[bool, bool | None]` (is_admin, has_access)
+        A tuple of Type :class:`tuple[bool, bool | None, int]` (is_admin, has_access, user_id)
         is_admin can be True or False (Depending on wether the client is an admin or not)
         has_access can be True, False or None (None if no valid JWT was sent)
+        user_id is the user_id as defined in the UserModel
     """
     
     if method not in ['GET', 'POST', 'PUT', 'DELETE']:
@@ -49,19 +56,32 @@ def authorize(cookies: ImmutableMultiDict, method: str, endpoint: str, resourceI
     user_data = _extractUserData(cookies)
 
     if user_data == None:
-        return False, None
+        return False, None, None
 
     role = _getUserRole(user_data["user_id"])
 
     if role == None:
-        return False, None #non existing user tries to access data
+        return False, None, None #non existing user tries to access data
 
     if endpoint == 'exercise':
-        return not(role == UserRole.User) ,_authExercise(role, method)
+        print((not(role == UserRole.User),_authExercise(role, method),user_data["user_id"]))
+        return (
+            not(role == UserRole.User),
+            _authExercise(role, method),
+            user_data["user_id"]
+            )
     elif endpoint == 'user':
-        return not(role == UserRole.User) ,_authUser(role, method, int(user_data["user_id"]), resourceId, changeToAdmin)
+        return (
+            not(role == UserRole.User),
+            _authUser(role, method, user_data["user_id"], resourceId, changeToAdmin),
+            user_data["user_id"]
+            )
     elif endpoint == 'solution':
-        return not(role == UserRole.User) ,_authSolution(role, method, int(user_data["user_id"]), resourceId)
+        return (
+            not(role == UserRole.User),
+            _authSolution(role, method, user_data["user_id"], resourceId),
+            user_data["user_id"]
+            )
 
 def getUseridFromCookies(cookies: ImmutableMultiDict) -> int | None:
     """
@@ -76,7 +96,18 @@ def getUseridFromCookies(cookies: ImmutableMultiDict) -> int | None:
 
     return user_data["user_id"]
     
-        
+def attachNewCookie(response: Response, oldCookies: ImmutableMultiDict) -> None:
+    """This method reads the JWT out of cookies from previous request.
+    And attaches a new cookie with the same JWT to a response."""
+    
+    token = oldCookies.getlist("token")
+    
+    if len(token) != 1:
+        return
+    
+    response.set_cookie("token", token[0], max_age=3600, httponly=True)
+    
+
 def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:
     """
     Extracts the user data from cookies. The user data is everything, what is stored in the JWT.
@@ -186,15 +217,3 @@ def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> 
             return True
     elif method == "POST":
         return True
-
-def attachNewCookie(response: Response, oldCookies: ImmutableMultiDict) -> None:
-    """This method reads the JWT out of cookies from previous request.
-    And attaches a new cookie with the same JWT to a response."""
-    
-    token = oldCookies.getlist("token")
-    
-    if len(token) != 1:
-        return
-    
-    response.set_cookie("token", token[0], max_age=3600, httponly=True)
-    

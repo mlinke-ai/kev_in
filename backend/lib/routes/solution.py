@@ -95,7 +95,7 @@ class SolutionResource(Resource):
         for row in selection.fetchall():
 
             # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
-            is_admin, auth = utils.authorize(
+            is_admin, auth, user_id = utils.authorize(
                 cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
             if auth == None:
@@ -141,7 +141,7 @@ class SolutionResource(Resource):
         args = parser.parse_args()
 
         # check for access
-        is_admin, auth = utils.authorize(
+        is_admin, auth, user_id = utils.authorize(
             cookies= request.cookies,
             method= "POST",
             endpoint= "solution"
@@ -158,7 +158,7 @@ class SolutionResource(Resource):
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
         solution = SolutionModel(
-            solution_user=utils.getUseridFromCookies(request.cookies),
+            solution_user=user_id,
             solution_exercise=args["solution_exercise"],
             solution_date=args["solution_date"],
             solution_duration=args["solution_duration"],
@@ -213,7 +213,7 @@ class SolutionResource(Resource):
         args = parser.parse_args()
 
         # check for access
-        is_admin, auth = utils.authorize(
+        is_admin, auth, user_id = utils.authorize(
             cookies=request.cookies, method="PUT", endpoint="solution", resourceId=args["solution_id"]
         )
         if auth == None:
@@ -259,7 +259,7 @@ class SolutionResource(Resource):
         args = parser.parse_args()
 
         # check for access
-        is_admin, auth = utils.authorize(
+        is_admin, auth, user_id = utils.authorize(
             cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
         )
         if auth == None:
