@@ -1,12 +1,23 @@
-import { accessLevel, startPage } from "../../stores";
+import { userName, userMail, accessLevel, startPage } from "../../stores";
 import { accessLevels } from "../types";
 
-export function getAccessLevel() {
-    return accessLevels.default
-}
+export const getUserData = async () => {
+    await fetch("/user", { method: "GET" }).then((response) => {
+      if (response.status == 200) {
+        response.json().then((data) => {
+          userName.set(data["1"].user_name);
+          userMail.set(data["1"].user_mail);
+          accessLevel.set(accessLevels.admin);
+        });
+      }
+    });
+  };
 
-export function setupUserSettings(level) {
-    accessLevel.set(level);
+  export function setupUserSettings() {
+    let level;
+    const unsubscribe = accessLevel.subscribe(value => {
+		level = value;
+	});
     switch (level) {
       case accessLevels.default:
         break;
@@ -16,4 +27,5 @@ export function setupUserSettings(level) {
       case accessLevels.admin:
         startPage.set("/profile");
     }
-}
+    unsubscribe;
+  }

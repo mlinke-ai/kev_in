@@ -4,8 +4,7 @@
   import PasswordInput from "./PasswordInput.svelte";
   import { accessLevel, userName, startPage } from "../../../stores";
   import { accessLevels } from "../../types";
-  import { setupUserSettings } from "../../functions/user";
-  import { replace as replaceRoute } from "svelte-spa-router";
+  import { getUserData, setupUserSettings } from "../../functions/user";
 
   let email = "";
   let password = "";
@@ -23,11 +22,8 @@
     }).then((response) => {
       if (response.status == 200) {
         response.json().then((data) => {
-          $accessLevel = accessLevels.admin;
-          setupUserSettings($accessLevel);
-          $userName = email;
-          $accessLevel = accessLevels.admin;
-          replaceRoute($startPage);
+          getUserData();
+          setupUserSettings();
         });
       } else if (response.status == 401) {
         wrongCredentials = true;
