@@ -72,8 +72,7 @@ class UserResource(Resource):
             selection = db_engine.session.execute(query)
             row = selection.fetchone()
 
-            result = dict()
-            result[int(row["user_id"])] = dict(
+            result = dict(
                 user_id=int(row["user_id"]),
                 user_name=str(row["user_name"]),
                 user_mail=str(row["user_mail"]),
