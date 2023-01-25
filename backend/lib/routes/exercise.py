@@ -72,7 +72,7 @@ class ExerciseResource(Resource):
             )
 
         # check for access
-        is_admin, auth = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
+        _, auth = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -153,7 +153,7 @@ class ExerciseResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        is_admin, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="exercise")
+        _, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="exercise")
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -269,7 +269,7 @@ class ExerciseResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        is_admin, auth = utils.authorize(cookies=request.cookies, method="PUT", endpoint="exercise")
+        _, auth = utils.authorize(cookies=request.cookies, method="PUT", endpoint="exercise")
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -309,7 +309,7 @@ class ExerciseResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        is_admin, auth = utils.authorize(cookies=request.cookies, method="DELETE", endpoint="exercise")
+        _, auth = utils.authorize(cookies=request.cookies, method="DELETE", endpoint="exercise")
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:

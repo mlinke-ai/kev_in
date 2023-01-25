@@ -108,7 +108,7 @@ class SolutionResource(Resource):
         for row in selection.fetchall():
 
             # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
-            is_admin, auth = utils.authorize(
+            _, auth = utils.authorize(
                 cookies=request.cookies,
                 method="GET",
                 endpoint="user",
@@ -154,7 +154,7 @@ class SolutionResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        is_admin, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="solution")
+        _, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="solution")
         if auth == None:
             return make_response((jsonify(dict(message="Login required"))), 401)
         elif not auth:
@@ -218,7 +218,7 @@ class SolutionResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        is_admin, auth = utils.authorize(
+        _, auth = utils.authorize(
             cookies=request.cookies,
             method="PUT",
             endpoint="solution",
@@ -265,7 +265,7 @@ class SolutionResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        is_admin, auth = utils.authorize(
+        _, auth = utils.authorize(
             cookies=request.cookies,
             method="POST",
             endpoint="exercise",

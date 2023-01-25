@@ -76,8 +76,8 @@ class UserResource(Resource):
         # compose a query to select the requested element
         query = db_engine.select(user_table).select_from(user_table)
 
-        if len(request.url.split("?")) == 1: #a request with no arguments was sent
-            #return the user data from the logged in user
+        if len(request.url.split("?")) == 1:  # a request with no arguments was sent
+            # return the user data from the logged in user
             id = utils.getUseridFromCookies(request.cookies)
             if id == None:
                 return make_response((jsonify(dict(message="Login required"))), 401)
@@ -90,10 +90,10 @@ class UserResource(Resource):
                 user_id=int(row["user_id"]),
                 user_name=str(row["user_name"]),
                 user_mail=str(row["user_mail"]),
-                user_role=row["user_role"].name
+                user_role=row["user_role"].name,
             )
             return make_response((jsonify(result)), 200)
-            
+
         if args["user_id"]:
             query = query.where(user_table.c.user_id == args["user_id"])
         else:
@@ -112,7 +112,7 @@ class UserResource(Resource):
         for row in selection.fetchall():
 
             # check for access for every resource, if client has no access for a certain resource the endpoint immediately returns 401 or 403
-            is_admin, auth = utils.authorize(
+            _, auth = utils.authorize(
                 cookies=request.cookies,
                 method="GET",
                 endpoint="user",
@@ -258,7 +258,7 @@ class UserResource(Resource):
             return make_response((jsonify(dict(message="No Access"))), 403)
 
         # check for access
-        is_admin, auth = utils.authorize(
+        _, auth = utils.authorize(
             cookies=request.cookies,
             method="PUT",
             endpoint="user",
@@ -320,7 +320,7 @@ class UserResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        is_admin, auth = utils.authorize(
+        _, auth = utils.authorize(
             cookies=request.cookies,
             method="DELETE",
             endpoint="user",
