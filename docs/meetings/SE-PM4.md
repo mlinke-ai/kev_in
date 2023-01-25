@@ -2,14 +2,14 @@
 tags:
 - meeting
 - Lab
-- SoftwareEngineering 
+- SoftwareEngineering
 date: 2022-11-16
 time: 10:15
 ---
 
 **Links:**  [[SE]]
 
-*Attending:* 
+*Attending:*
 - All but Jana
 
 ---
@@ -20,19 +20,19 @@ time: 10:15
 - Workflow to build platform
 - Login system decision
 
---- 
+---
 # Notes:
 
 ### Project Setup:
 
-- Simon: *Svelte* Frontend repo => Pages as **Folders** 
-- Components in *Lib* 
+- Simon: *Svelte* Frontend repo => Pages as **Folders**
+- Components in *Lib*
 - Consti: Github repo for connecting frontend & backend "Server.py" ((Flask & Svelte))
-- COOP: Components 
+- COOP: Components
 - **2-Teams**
-- Mockup? logo? 
-- **Logging from FreeCodeCamp - Martin** 
-- shibboleth 
+- Mockup? logo?
+- **Logging from FreeCodeCamp - Martin**
+- shibboleth
 	 Possibility to distinguish between admins and users.
 
 ### Login System:
@@ -45,7 +45,7 @@ Rest (Frontend Login)
 |     | Simple                       | Secure             |
 |     | Could be done by the weekend | a little more work |
 
-### Workflow: 
+### Workflow:
 
 - Simon will setup the project in our GIT Repo.
 - Fortschrittberichte Weekly
@@ -59,15 +59,15 @@ Rest (Frontend Login)
 
 #### Backend:
 
-- Max, Sami, Louis, Martin 
+- Max, Sami, Louis, Martin
 
---- 
+---
 ## To-Do:
 
-- [ ] Snow cards adgabe📅 2022-11-20 
+- [ ] Snow cards adgabe📅 2022-11-20
 - [ ] Logo
-- [ ] Connect Front & Backend using Consti Repo⏫ 
-- [ ] Finish Zusammenfassung for Meilenstein ⏫ 
+- [ ] Connect Front & Backend using Consti Repo⏫
+- [ ] Finish Zusammenfassung for Meilenstein ⏫
 
 ---
 ## Respources:

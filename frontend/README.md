@@ -17,11 +17,11 @@ Short setup guide to get started.
 ## Get started
 
 1. Install required tools:
-   
+
    - [git](https://github.com/git-guides/install-git)
-   
+
    - [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-   
+
    - [Visual Studio Code](https://code.visualstudio.com/download) (recommended)
 
 2. Set up local repository for frontend development
@@ -31,7 +31,7 @@ Short setup guide to get started.
 git clone https://github.com/mlinke-ai/kev.in.git
 
 # cd into repo
-cd kev.in 
+cd kev.in
 
 # change to the dev-svelte-frontend branch
 git checkout remotes/origin/dev-frontend

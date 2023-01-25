@@ -9,15 +9,15 @@
   import { push } from "svelte-spa-router";
   import { accessLevels, passwordLength } from "../lib/types"
 
-  
+
   let email = "";
-  let emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;  
+  let emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   let username = "";
   let password = "";
   let passwordRepetition = "";
 
   let userExists = false;
-   
+
   function checkData(){
     if (password.length < passwordLength){
       return false
@@ -30,7 +30,7 @@
     }
     return true
   }
-  
+
   const signup = async () => {
     if (!checkData()){
       alert("incorrect data");
@@ -74,7 +74,7 @@
       return false;
     }
   }
-  
+
   let incorrectRepetition = false;
   function checkRepetition(){
     if (password == passwordRepetition){
@@ -84,7 +84,7 @@
       incorrectRepetition = true
     }
   }
-  
+
   let passwordTooShort = false;
   function checkPWlength(){
     if (password.length < 8){
@@ -110,7 +110,7 @@
                 bind:value={email}
                 label="E-Mail"
                 variant="outlined"
-                
+
             >
                 <HelperText slot="helper" persistent>
                   {#if wrongMailFlag}
@@ -137,17 +137,17 @@
             </Textfield>
 
             <PasswordInput
-                bind:password 
-                label="Enter your Password" 
-                inputHandler={checkPWlength} 
-                wrongPassword={passwordTooShort} 
+                bind:password
+                label="Enter your Password"
+                inputHandler={checkPWlength}
+                wrongPassword={passwordTooShort}
                 helperText="Password needs at least 8 characters."/>
-            <PasswordInput 
-                bind:password={passwordRepetition} 
-                label="Repeat your Password" 
-                inputHandler={checkRepetition} 
-                wrongPassword={incorrectRepetition} 
-                helperText="The Repetition does not match." 
+            <PasswordInput
+                bind:password={passwordRepetition}
+                label="Repeat your Password"
+                inputHandler={checkRepetition}
+                wrongPassword={incorrectRepetition}
+                helperText="The Repetition does not match."
                 style="width: 100%"/>
         </form>
 
@@ -160,10 +160,10 @@
         </Button>
       </Card>
     </Page>
-    
+
 </div>
 
-  
+
 <style lang="css">
     .login-form {
       display: flex;
@@ -174,13 +174,12 @@
       padding: 5%;
 
     }
-  
+
     .login-card-container {
       width: 40%;
       margin-left: auto;
       margin-right: auto;
 
     }
-  
+
   </style>
-  

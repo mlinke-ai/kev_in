@@ -2,29 +2,29 @@
 tags:
 - meeting
 - Lab
-- SoftwareEngineering 
+- SoftwareEngineering
 date: 2022-11-02
 time: 15:37
 ---
 
 **Links:**  [[SE]]
 
-*Attending:* 
-- All 
+*Attending:*
+- All
 
 ---
 ### Goals:
 - Kundengespräch updates
 - First steps to a working Web App
 
---- 
+---
 # Notes:
 
 - Programm = 20% der Note
 - Teamwork and project management / presentations = 80%
 - Web App, no nead to publish
 - No need for sick details or complex program
-- => Ziel: funktionalität 
+- => Ziel: funktionalität
 - Eine Aufgabe nach der anderen
 - Steps:
 	- Login System (Shibboleth) = The OPAL webtrust thing
@@ -33,7 +33,7 @@ time: 15:37
 - 1st Meilenstein:
 	- SnowCards abgeben, and everything else we did.
 
-#### Snowcards Groups: 
+#### Snowcards Groups:
 - Login: Andy & Jana
 - Aufgabensystem: Sami & Simon
 - Auswertungssystem: Martin & Konsti
@@ -41,7 +41,7 @@ time: 15:37
 
 **mindestens** zwei funktionale und eine nicht funktionale Anforderung pro Aufgabenteil.
 
---- 
+---
 ## To-Do:
 
 - [x] Datenbank? **SQL Alchemy** ✅ 2022-11-16
@@ -57,7 +57,7 @@ time: 15:37
 
 ## Decisions:
 
-### Roles: 
+### Roles:
 
 - Snow cards groups assigned
 - Max: Software Architect
@@ -70,8 +70,7 @@ time: 15:37
 	- etc...
 
 
-### Workflow: 
+### Workflow:
 
 - We use SCRUM
 - GIT Repo: https://github.com/mlinke-ai/kev.in
-

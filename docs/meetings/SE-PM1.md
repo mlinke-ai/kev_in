@@ -2,14 +2,14 @@
 tags:
 - meeting
 - SoftwareEngineering
-- Lab 
+- Lab
 date: 2022-10-26
 time: 15:45
 ---
 
 **Links:**  [[SE]]
 
-*Attending:* 
+*Attending:*
 - Sami, Martin, Konstatin, Max, Simon, Jana, Louis, Andy
 
 ---
@@ -19,7 +19,7 @@ time: 15:45
 - Pick regular meeting time
 - Kennenlernen Runde
 
---- 
+---
 # Notes:
 
 ## Skills and Interests:
@@ -42,7 +42,7 @@ time: 15:45
 ### Jana
 
 - Knows about hosting.
-- Java, bissle python. 
+- Java, bissle python.
 - A bit of CSS
 - Design skills
 
@@ -54,7 +54,7 @@ time: 15:45
 
 ### Konsti
 
-- Python 
+- Python
 - Java (Datenstrukturen)
 - Frontend (Design skills, Photoshop etc..)
 - PYQT
@@ -79,7 +79,7 @@ time: 15:45
 - Frontend Erfahrung (CSS, HTML)
 - Some JS
 
---- 
+---
 ## To-Do:
 
 - [x] Meeting with Kunde ✅ 2022-11-02

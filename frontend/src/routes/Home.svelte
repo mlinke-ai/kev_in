@@ -42,7 +42,7 @@
       </div>
     </div>
   </main>
-</Page> 
+</Page>
 
 <style lang="scss">
   header {

@@ -332,7 +332,9 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.status_code, 409)
 
         # Response should include a fail message
-        self.assertEqual("An exercise with this title already exists", exercise["message"])
+        self.assertEqual(
+            "An exercise with this title already exists", exercise["message"]
+        )
 
     def test_post_without_req_arg(self) -> None:
         """
@@ -496,7 +498,9 @@ class ExerciseTest(unittest.TestCase):
         )
 
         self.assertIn("message", r.json())
-        self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
+        self.assertEqual(
+            r.json()["message"], f"Exercise with exercise_id {id} does not exist"
+        )
         self.assertEqual(r.status_code, 404)
 
     # ------------------------------HTTP-DELETE-----------------------------
@@ -581,7 +585,9 @@ class ExerciseTest(unittest.TestCase):
 
         self.assertEqual(r.status_code, 200)
         self.assertIn("message", r.json())
-        self.assertEqual(r.json()["message"], f"Successfully deleted exercise with exercise_id {id}")
+        self.assertEqual(
+            r.json()["message"], f"Successfully deleted exercise with exercise_id {id}"
+        )
 
     def test_delete_non_existing(self) -> None:
         """
@@ -605,7 +611,9 @@ class ExerciseTest(unittest.TestCase):
 
         self.assertEqual(r.status_code, 404)
         self.assertIn("message", r.json())
-        self.assertEqual(r.json()["message"], f"Exercise with exercise_id {id} does not exist")
+        self.assertEqual(
+            r.json()["message"], f"Exercise with exercise_id {id} does not exist"
+        )
 
 
 if __name__ == "__main__":

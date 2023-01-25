@@ -13,7 +13,9 @@ def main():
         prog="Kev.in Management Script",
         description="The control script to manage the server.",
     )
-    parser.add_argument("-d", "--debug", action="store_true", help="Run the flask server in debug mode")
+    parser.add_argument(
+        "-d", "--debug", action="store_true", help="Run the flask server in debug mode"
+    )
     parser.add_argument(
         "-c",
         "--clean",

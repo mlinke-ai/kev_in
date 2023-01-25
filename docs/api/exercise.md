@@ -21,7 +21,7 @@ The GET method is used to retrieve exercise data based on attributes. This metho
 
 ### Access
 
-Python `requests`:  
+Python `requests`:
 
 ```python
 requests.request("GET", "http://<address>:<port>/exercise?<URLarguments>")

@@ -8,7 +8,7 @@ date: 2022-01-10
 ---
 
 # User API
-  
+
 The user route is the endpoint to perform all different kinds of operations on the user database.
 The endpoint can be accessed at `<address>:<port>/user`.
 
@@ -18,7 +18,7 @@ The GET method is used to retrieve user data based on attributes. This method su
 
 ### Access
 
-Python `requests`:  
+Python `requests`:
 
 ```python
 requests.request("GET", "http://<address>:<port>/user?<URLarguments>")
@@ -106,14 +106,14 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 ## POST
 
-The POST method is used to create a new user. 
+The POST method is used to create a new user.
 This method prevents duplication.
 
 ### Access
 
 No Authorizazion is needed. So this method can be accessed without sending a cookie.
 
-Python `requests`:  
+Python `requests`:
 
 ```python
 requests.request("POST", "http://<address>:<port>/user",json=<arguments>,headers={"Content-Type": "application/json"})

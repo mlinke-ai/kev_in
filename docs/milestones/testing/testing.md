@@ -559,7 +559,7 @@
 
 #### `test_change_to_empty_word`
 
-- tests whether the system rejects the attempt to change to an empty 
+- tests whether the system rejects the attempt to change to an empty
 - input: HTTP request with `"user_": ""`
 - expected output: `{"message": "user_ must not be empty"}` and HTTP status `400`
 

@@ -6,5 +6,5 @@
 </script>
 
 <Page title="<Page Title>" {requiredAccessLevel}>
-    <!-- Your content here, no body tag required --> 
+    <!-- Your content here, no body tag required -->
 </Page>

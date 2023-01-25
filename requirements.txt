@@ -2,8 +2,9 @@ flask
 flask_restful
 flask_sqlalchemy
 mkdocs
+parameterized
+pre-commit
+py4j
 PyJWT
 RestrictedPython
-py4j
 timeout_decorator
-parameterized

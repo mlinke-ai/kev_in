@@ -7,7 +7,7 @@
   }
 </script>
 
-<!-- 
+<!--
   The Footer is a component. Just put it on the bottom of you html body.
   It contains:
   - copyright information
