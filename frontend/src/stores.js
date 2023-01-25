@@ -7,3 +7,6 @@ export const userName = writable("");
 export const userMail = writable("");
 
 export const startPage = writable("#/")
+
+// UI
+export const renderNavbar = writable(true)

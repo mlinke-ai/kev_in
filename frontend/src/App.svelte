@@ -3,6 +3,7 @@
   import Router, { replace as replaceRoute } from "svelte-spa-router";
   import routes from "./routes/";
   import { setupUserSettings, getAccessLevel } from "./lib/functions/user";
+  import { renderNavbar } from "./stores";
   import Footer from "./lib/components/Footer/Footer.svelte";
 
   let ready = false;
@@ -20,7 +21,9 @@
 />
 
 {#if ready}
-  <Navbar />
+  {#if $renderNavbar}
+    <Navbar />
+  {/if}
   <Router {routes} />
   <!--<Footer />-->
 {:else}
