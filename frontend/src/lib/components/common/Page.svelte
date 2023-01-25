@@ -13,7 +13,7 @@
   export let fullwidth = false;
 
   if ($accessLevel < requiredAccessLevel) {
-    replaceRoute("/access-denied");
+    replaceRoute("/");
   }
 </script>
 

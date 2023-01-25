@@ -1,12 +1,12 @@
 <script>
   import {dndzone} from "svelte-dnd-action";
-  import Button from "@smui/button/src/Button.svelte";
   import Page from "../lib/components/common/Page.svelte";
-  import { Icon } from "@smui/common";
-  import PuzzleCard from "../lib/components/ParsonsPuzzleExercise/PuzzleCard.svelte";
+  import PuzzleCard from "../lib/components/Excercises/ParsonsPuzzle/PuzzleCard.svelte";
   import { userName } from "../stores";
 
   import TestCard from "../lib/components/CodeSandbox/TestCard.svelte";
+  import StatusBar from "../lib/components/Excercises/StatusBar.svelte";
+  import { accessLevels } from "../lib/types";
 
   let itemsLeft = [];
   let itemsLeftOriginal = [];
@@ -136,7 +136,7 @@
   
 </script>
 
-<Page title="Parsons Puzzle Exercise" fullwidth={true}>
+<Page title="Parsons Puzzle Exercise" fullwidth={true} requiredAccessLevel={accessLevels.user}>
   <div class="exercise-container">
     <div class="header-area">
       <h3>{exerciseTitle}</h3>
@@ -147,17 +147,7 @@
     <div class="puzzle-area">
       <PuzzleCard bind:itemsLeft bind:itemsRight />
     </div>
-    <div class="status-bar">
-      Getting Started - Attempt 1
-      <div>
-        <Button variant="outlined" on:click={reset}>Reset</Button>
-        <Button variant="raised" on:click={() => submitSolution("1")}>Submit</Button>
-      </div>
-      <div class="clock-widget">
-        {formattedTime}
-        <Icon class="material-icons">access_time</Icon>
-      </div>
-    </div>
+    <StatusBar {reset} {submitSolution}/>
   </div>
 </Page>
 
@@ -197,19 +187,5 @@
     grid-area: puzzle;
     display: flex;
     overflow: hidden;
-  }
-  .status-bar {
-    grid-area: status;
-    color: vars.$consoleColor;
-    font-family: "Roboto Mono";
-    display: flex;
-    align-items: center;
-    gap: auto;
-    justify-content: space-between;
-  }
-  .clock-widget {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
   }
 </style>
