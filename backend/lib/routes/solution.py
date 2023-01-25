@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from flask import Response, jsonify, make_response, request
+from flask import Response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -65,9 +65,11 @@ class SolutionResource(Resource):
 
         # check if page limit is in range
         if args["solution_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
-            return make_response(
-                jsonify(dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
-            )
+            return utils.makeResponseNewCookie(
+                dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
+                400,
+                request.cookies
+                )
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -99,9 +101,9 @@ class SolutionResource(Resource):
                 cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
             if auth == None:
-                return make_response((jsonify(dict(message="Login required"))), 401)
+                return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
             elif not auth:
-                return make_response((jsonify(dict(message="No Access"))), 403)
+                return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
             result[row[0]] = dict(
                 solution_id=row[0],
@@ -112,9 +114,7 @@ class SolutionResource(Resource):
                 solution_correct=row[5],
             )
 
-        response = make_response(jsonify(result), 200)
-        utils.attachNewCookie(response, request.cookies)
-        return response
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def post(self) -> Response:
         """
@@ -147,9 +147,9 @@ class SolutionResource(Resource):
             endpoint= "solution"
             )
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
         correct = True
@@ -183,9 +183,7 @@ class SolutionResource(Resource):
             solution_duration=str(solution.solution_duration),
             solution_correct=solution.solution_correct
         )
-        response = make_response(jsonify(result), 201)
-        utils.attachNewCookie(response, request.cookies)
-        return response
+        return utils.makeResponseNewCookie(result, 201, request.cookies)
 
     def put(self) -> Response:
         """
@@ -217,9 +215,9 @@ class SolutionResource(Resource):
             cookies=request.cookies, method="PUT", endpoint="solution", resourceId=args["solution_id"]
         )
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -238,12 +236,10 @@ class SolutionResource(Resource):
 
         if selection.rowcount == 0:
             result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return make_response(jsonify(result), 404)
+            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
-        response = make_response(jsonify(result), 200)
-        utils.attachNewCookie(response, request.cookies)
-        return response
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def delete(self) -> Response:
         """
@@ -263,9 +259,9 @@ class SolutionResource(Resource):
             cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
         )
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -278,9 +274,7 @@ class SolutionResource(Resource):
         # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return make_response(jsonify(result), 404)
+            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"Successfully deleted solution with solution_id {args['solution_id']}")
-        response = make_response(jsonify(result), 200)
-        utils.attachNewCookie(response, request.cookies)
-        return response
+        return utils.makeResponseNewCookie(result, 200, request.cookies)

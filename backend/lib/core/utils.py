@@ -5,7 +5,7 @@ import jwt
 from werkzeug.datastructures import ImmutableMultiDict
 from typing import Any
 from flask_sqlalchemy.query import sqlalchemy
-from flask import Response
+from flask import Response, jsonify, make_response
 
 from backend.lib.core.config import JWT_SECRET, UserRole, USER_TABLE, SOLUTION_TABLE
 from backend.lib.interfaces.database import db_engine
@@ -61,7 +61,7 @@ def authorize(
     role = _getUserRole(user_data["user_id"])
 
     if role == None:
-        return False, None, None #non existing user tries to access data
+        return False, None, user_data["user_id"] #non existing user tries to access data
 
     if endpoint == 'exercise':
         print((not(role == UserRole.User),_authExercise(role, method),user_data["user_id"]))
@@ -95,17 +95,22 @@ def getUseridFromCookies(cookies: ImmutableMultiDict) -> int | None:
         return None
 
     return user_data["user_id"]
-    
-def attachNewCookie(response: Response, oldCookies: ImmutableMultiDict) -> None:
-    """This method reads the JWT out of cookies from previous request.
-    And attaches a new cookie with the same JWT to a response."""
-    
+
+def makeResponseNewCookie(jsonData: dict, status: int, oldCookies: ImmutableMultiDict) -> Response:
+    """
+    Creates a Flask HTTP response, renews the cookie `Expires` value.
+    If a token is provided, it is just copied and sent back as a new cookie.
+    """
+
+    response = make_response(jsonify(jsonData), status)
     token = oldCookies.getlist("token")
-    
-    if len(token) != 1:
-        return
+
+    if len(token) != 1: #the token list should only contain one value
+        return response
     
     response.set_cookie("token", token[0], max_age=3600, httponly=True)
+
+    return response
     
 
 def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:
