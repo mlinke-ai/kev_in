@@ -4,7 +4,7 @@
   import PuzzleCard from "../lib/components/Excercises/ParsonsPuzzle/PuzzleCard.svelte";
   import { userName } from "../stores";
 
-  import TestCard from "../lib/components/CodeSandbox/TestCard.svelte";
+  import TaskCard from "../lib/components/Excercises/CodeSandbox/TaskCard.svelte";
   import StatusBar from "../lib/components/Excercises/StatusBar.svelte";
   import { accessLevels } from "../lib/types";
 
@@ -142,7 +142,7 @@
       <h3>{exerciseTitle}</h3>
     </div>
     <div class="task-area">
-      <TestCard />
+      <TaskCard />
     </div>
     <div class="puzzle-area">
       <PuzzleCard bind:itemsLeft bind:itemsRight />

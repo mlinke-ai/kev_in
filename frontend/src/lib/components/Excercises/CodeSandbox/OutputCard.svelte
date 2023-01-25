@@ -1,5 +1,5 @@
 <script>
-    import UiCard from "../common/UICard.svelte";
+    import UiCard from "../../common/UICard.svelte";
 </script>
 
 <UiCard icon="terminal" title="Output">

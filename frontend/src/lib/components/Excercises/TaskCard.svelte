@@ -4,19 +4,7 @@
 
 <UiCard icon="school" title="Task">
     <div class="task-container">
-        <h1>Welcome to your first test excercise!</h1>
-        <p>
-            To solve it you have to write a python script that prints out "Hello
-            World".
-        </p>
-        <br />
-        <hr />
-        <br />
-        Hints:
-        <ul>
-            <li>use the print() function</li>
-            <li>strings have to be in quotation marks</li>
-        </ul>
+        <slot />
     </div>
 </UiCard>
 

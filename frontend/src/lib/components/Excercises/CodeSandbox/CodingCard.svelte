@@ -1,5 +1,5 @@
 <script>
-    import UiCard from "../common/UICard.svelte";
+    import UiCard from "../../common/UICard.svelte";
     import * as ace from "brace";
     import "brace/mode/python";
     import "brace/mode/java";
