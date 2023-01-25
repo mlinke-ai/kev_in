@@ -11,16 +11,6 @@ export let navbarConfig = {
             //},
         ],
         buttons: [
-            {
-                label: "Signup",
-                route: "/signup",
-                variant: "outlined"
-            },
-            {
-                label: "Login",
-                route: "/login",
-                variant: "unelevated"
-            }
         ]
     },
     authenticated: {
