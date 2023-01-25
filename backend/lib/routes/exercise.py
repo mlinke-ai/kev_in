@@ -268,6 +268,9 @@ class ExerciseResource(Resource):
 
         args = parser.parse_args(strict=True)
 
+        if args["exercise_title"] == "":
+            return make_response(jsonify(dict(message="exercise_title must not be empty")), 400)
+
         # check for access
         _, auth = utils.authorize(cookies=request.cookies, method="PUT", endpoint="exercise")
         if auth == None:
@@ -275,25 +278,50 @@ class ExerciseResource(Resource):
         elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
-        # load the exercise table
-        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
-        # drop the ID as we don't want to update it
-        values = args.copy()
-        del values["exercise_id"]
-        # compose the query to update the requested element
-        query = (
-            db_engine.update(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
-        )
-        # execute the query
-        selection = db_engine.session.execute(query)
-        db_engine.session.commit()
-        # if no element was updated, the rowcount is 0
-        if selection.rowcount == 0:
-            result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
-            return make_response((jsonify(result)), 404)
+        exercise = ExerciseModel.query.filter_by(exercise_id=args["exercise_id"]).first_or_404()
+        if args["exercise_title"]:
+            exercise.exercise_title = args["exercise_title"]
+        if args["exercise_description"]:
+            exercise.exercise_description = args["exercise_description"]
+        if args["exercise_type"]:
+            exercise.exercise_type = args["exercise_type"]
+        if args["exercise_content"]:
+            exercise.exercise_content = args["exercise_content"]
+        if args["exercise-solution"]:
+            exercise.exercise_solution = args["exercise_solution"]
+        if args["exercise_language"]:
+            exercise.exercise_language = args["exercise_language"]
+        try:
+            db_engine.session.commit()
+        # TODO: write exception message into response
+        except sqlalchemy.exc.IntegrityError:
+            # TODO: is IntegrityError also a nullable=False constraint violation?
+            # TODO: should we do a rollback at this point?
+            # db_engine.session.rollback()
+            return make_response(jsonify(dict(message="")), 409)
+        else:
+            return make_response(jsonify(dict(message="Changed properties successfully")), 200)
 
-        result = dict(message=f"Successfully changed exercise with exercise_id {args['exercise_id']}")
-        return make_response((jsonify(result)), 200)
+        # TODO: the method above is way more elegant; we should remove the lower part
+        # # load the exercise table
+        # exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
+        # # drop the ID as we don't want to update it
+        # values = args.copy()
+        # del values["exercise_id"]
+        # # compose the query to update the requested element
+        # query = (
+        #     db_engine.update(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
+        # )
+        # # execute the query
+        # selection = db_engine.session.execute(query)
+        # db_engine.session.commit()
+        # # if no element was updated, the rowcount is 0
+        # if selection.rowcount == 0:
+        #     result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
+        #     return make_response((jsonify(result)), 404)
+
+        # result = dict(message=f"Successfully changed exercise with exercise_id {args['exercise_id']}")
+        # return make_response((jsonify(result)), 200)
 
     def delete(self) -> Response:
         """

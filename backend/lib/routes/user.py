@@ -279,7 +279,9 @@ class UserResource(Resource):
             user.user_pass = args["user_pass"]
         try:
             db_engine.session.commit()
+        # TODO: write exception message into response
         except sqlalchemy.exc.IntegrityError:
+            # TODO: is IntegrityError also a nullable=False constraint violation?
             # TODO: should we do a rollback at this point?
             # db_engine.session.rollback()
             return make_response(jsonify(dict(message="A user with this mail already exists")), 409)

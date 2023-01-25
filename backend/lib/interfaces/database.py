@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+# TODO: is nullable=False applicable somewhere?
 
 import flask_sqlalchemy
 

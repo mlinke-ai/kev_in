@@ -229,27 +229,54 @@ class SolutionResource(Resource):
         elif not auth:
             return make_response((jsonify(dict(message="No Access"))), 403)
 
-        # load the solution table
-        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
-        # drop the ID as we don#t want to update it
-        values = args.copy()
-        del values["solution_id"]
-        # compose the query to update the requested element
-        query = (
-            db_engine.update(solution_table).where(solution_table.c.solution_id == args["solution_id"]).values(values)
-        )
-        # execute the query
-        selection = db_engine.session.execute(query)
-        db_engine.session.commit()
+        solution = SolutionModel.query.filter_by(solution_id=args["solution_id"]).first_or_404()
+        if args["solution_user"]:
+            solution.solution_user = args["solution_user"]
+        if args["solution_exercise"]:
+            solution.solution_exercise = args["solution_exercise"]
+        if args["solution_date"]:
+            solution.solution_date = args["solution_date"]
+        if args["solution_duration"]:
+            solution.solution_duration = args["solution_duration"]
+        if args["solution_correct"]:
+            solution.solution_correct = args["solution_correct"]
+        if args["solution_pending"]:
+            solution.solution_pending = args["solution_pending"]
+        if args["solution_content"]:
+            solution.solution_content = args["solution_content"]
+        try:
+            db_engine.session.commit()
+        # TODO: write exception message into response
+        except sqlalchemy.exc.IntegrityError:
+            # TODO: is IntegrityError also a nullable=False constraint violation?
+            # TODO: should we do a rollback at this point?
+            # db_engine.session.rollback()
+            return make_response(jsonify(dict(message="")), 409)
+        else:
+            return make_response(jsonify(dict(message="Changed properties successfully")), 200)
 
-        # if no element was updated, the rowcount is 0
+        # TODO: the method above is way more elegant; we should remove the lower part
+        # # load the solution table
+        # solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
+        # # drop the ID as we don#t want to update it
+        # values = args.copy()
+        # del values["solution_id"]
+        # # compose the query to update the requested element
+        # query = (
+        #     db_engine.update(solution_table).where(solution_table.c.solution_id == args["solution_id"]).values(values)
+        # )
+        # # execute the query
+        # selection = db_engine.session.execute(query)
+        # db_engine.session.commit()
 
-        if selection.rowcount == 0:
-            result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return make_response(jsonify(result), 404)
+        # # if no element was updated, the rowcount is 0
 
-        result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
-        return make_response(jsonify(result), 200)
+        # if selection.rowcount == 0:
+        #     result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
+        #     return make_response(jsonify(result), 404)
+
+        # result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
+        # return make_response(jsonify(result), 200)
 
     def delete(self) -> Response:
         """
