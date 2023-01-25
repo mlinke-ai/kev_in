@@ -64,7 +64,6 @@ def authorize(
         return False, None, user_data["user_id"] #non existing user tries to access data
 
     if endpoint == 'exercise':
-        print((not(role == UserRole.User),_authExercise(role, method),user_data["user_id"]))
         return (
             not(role == UserRole.User),
             _authExercise(role, method),
