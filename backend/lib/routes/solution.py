@@ -43,8 +43,12 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
-        parser.add_argument("solution_date", type=int, help="{error_msg}", location="args")
-        parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", location="args"
+        )
+        parser.add_argument(
+            "solution_duration", type=lambda x: datetime.timedelta(seconds=x), help="{error_msg}", location="args"
+        )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_content", type=str, help="{error_msg}", location="args")
@@ -86,9 +90,7 @@ class SolutionResource(Resource):
         if args["solution_exercise"]:
             query = query.where(solution_table.c.solution_exercise == args["solution_exercise"])
         if args["solution_date"]:
-            lower = datetime.datetime.fromtimestamp(args["solution_date"]).replace(
-                hour=0, minute=0, second=0, microsecond=0
-            )
+            lower = args["solution_date"].replace(hour=0, minute=0, second=0, microsecond=0)
             upper = lower + datetime.timedelta(days=1)
             query = query.where(sqlalchemy.between(solution_table.c.solution_date, lower, upper))
         if args["solution_duration"]:
@@ -141,8 +143,12 @@ class SolutionResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("solution_user", type=int, help="{error_msg}", required=True)
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
-        parser.add_argument("solution_date", type=int, help="{error_msg}", required=True)
-        parser.add_argument("solution_duration", type=int, help="{error_msg}", required=True)
+        parser.add_argument(
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", required=True
+        )
+        parser.add_argument(
+            "solution_duration", type=lambda x: datetime.timedelta(seconds=x), help="{error_msg}", required=True
+        )
         parser.add_argument("solution_content", type=str, help="{error_msg}", required=True)
 
         args = parser.parse_args(strict=True)
@@ -203,8 +209,8 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
         parser.add_argument("solution_user", type=int, help="{error_msg}")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}")
+        parser.add_argument("solution_duration", type=lambda x: datetime.timedelta(seconds=x), help="{error_msg}")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}")
         parser.add_argument("solution_content", type=str, help="{error_msg}")
