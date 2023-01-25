@@ -4,6 +4,7 @@
   import Page from "../lib/components/common/Page.svelte";
   import LanguageCard from "../lib/components/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
+  //import GroupSvg from "../lib/components/AnimatedSVG/GroupSVG.svelte";
 </script>
 
 <Page title="Home">
@@ -28,7 +29,7 @@
           description="Worldwide beloved and broadly used high-level programming
     language."
         >
-          <PythonSvg />
+          <PythonSvg/>
         </LanguageCard>
       </div>
       <div in:blur={{ delay: 500, duration: 500 }}>

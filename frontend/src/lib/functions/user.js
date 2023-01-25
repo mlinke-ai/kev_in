@@ -2,7 +2,9 @@ import { accessLevel, startPage } from "../../stores";
 import { accessLevels } from "../types";
 
 export function getAccessLevel() {
-    return accessLevels.default
+    return accessLevels.admin 
+    //just for test cases
+    //change later back to .default
 }
 
 export function setupUserSettings(level) {
@@ -14,6 +16,6 @@ export function setupUserSettings(level) {
         startPage.set("/profile");
         break;
       case accessLevels.admin:
-        startPage.set("/profile");
+        startPage.set("/admin-dashboard");
     }
 }
