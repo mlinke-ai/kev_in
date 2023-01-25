@@ -52,7 +52,7 @@ class UserTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "sadmin", "user_pass": "sadmin"},
+            json={"user_mail": "sadmin@example.com", "user_pass": "sadmin"},
             headers=cls.content_header,
         )
         cls.sadmin_header = cls.content_header.copy()
@@ -60,7 +60,7 @@ class UserTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "tuser", "user_pass": "tuser"},
+            json={"user_mail": "tuser@example.com", "user_pass": "tuser"},
             headers=cls.content_header,
         )
         cls.tuser_header = cls.content_header.copy()
@@ -430,7 +430,7 @@ class UserTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "Allcen Mila", "user_pass": "yae7C"},
+            json={"user_mail": "Allcen.Mila@example.com", "user_pass": "yae7C"},
             headers=UserTest.content_header,
         )
         admin_header = UserTest.content_header.copy()
@@ -452,7 +452,7 @@ class UserTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "Freddie Selig", "user_pass": "Ufe0o"},
+            json={"user_mail": "Freddie.Selig@example.com", "user_pass": "Ufe0o"},
             headers=UserTest.content_header,
         )
         user_header = UserTest.content_header.copy()
@@ -490,7 +490,7 @@ class UserTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "Dusty Eberle", "user_pass": "Ahg9k"},
+            json={"user_mail": "Dusty.Eberle@example.com", "user_pass": "Ahg9k"},
             headers=UserTest.content_header,
         )
         user_header = UserTest.content_header.copy()
