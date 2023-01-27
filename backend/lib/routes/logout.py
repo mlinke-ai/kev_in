@@ -6,7 +6,7 @@ from flask_restful import Resource
 
 class LogoutResource(Resource):
 
-    def delete(self) -> Response:
+    def post(self) -> Response:
 
         response = redirect("/")
         response.set_cookie("token", max_age=0)
