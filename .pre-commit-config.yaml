@@ -18,6 +18,7 @@ repos:
     rev: 22.12.0
     hooks:
       - id: black
+        args: ["-l 120"]
   - repo: https://github.com/PyCQA/isort
     rev: 5.11.4
     hooks:
