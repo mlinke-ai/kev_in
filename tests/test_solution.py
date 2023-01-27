@@ -88,7 +88,7 @@ class SolutionTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "sadmin", "user_pass": "sadmin"},
+            json={"user_mail": "sadmin@example.com", "user_pass": "sadmin"},
             headers={"Content-Type": "application/json"},
         )
         c = r.headers["Set-Cookie"]
