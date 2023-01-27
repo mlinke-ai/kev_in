@@ -1,5 +1,4 @@
 <script>
-  import {flip} from "svelte/animate";
   import {dndzone} from "svelte-dnd-action";
   import Button from "@smui/button/src/Button.svelte";
   import Page from "../lib/components/common/Page.svelte";
@@ -24,7 +23,7 @@
 
   const submitSolution = async (exercise_id) =>{
     fetch(
-      "/solution?solution_exercise=" + exercise_id,
+      "/solution",
       {
         method: "POST",
         headers: {"Content-Type": "application/json"},

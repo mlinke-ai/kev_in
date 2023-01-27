@@ -35,19 +35,19 @@
     >
     {#each items as item(item.id)}
 		<div animate:flip="{{duration: flipDurationMs}}" class="itembox">
-			<div style="border-right: 1px solid #ffffff;">
+			      <div style="border-right: 1px solid #ffffff;">
                 {item.id}&nbsp;
             </div>
             <div>
                 <Highlight language={python} code={item.name}/>
             </div>
-        </div>
-	{/each}
+    </div>
+	  {/each}
 </div>
 
 
 <style lang="scss">
-    @use "../../variables" as theme;
+    @use "../../../variables" as theme;
     
     .hListStyling {
         padding: 0.3em;
