@@ -52,7 +52,7 @@ Arguments are constructed as dictionaries or JSON objects.
 | `user_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
 | `user_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 
-Note: If no argument is sent, the system returns the user data of the logged in client.
+Note: If no argument is sent, the system returns the user data of the logged in client (not as dict).
 
 ### Response
 
@@ -67,7 +67,8 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 		"1": {
 			"user_id": 1,
 			"user_name": "John Doe",
-			"user_mail": "john.doe@example.com"
+			"user_mail": "john.doe@example.com",
+			"user_role": "User"
 		}
 	}
 	```
@@ -101,6 +102,17 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 	```JSON
 	{
 		"message": "No Access"
+	}
+	```
+
+If no argument is sent the reponse is not mapped to the `user_id`:
+
+	```JSON
+	{
+		"user_id": 1,
+		"user_name": "John Doe",
+		"user_mail": "john.doe@example.com",
+		"user_role": "User"
 	}
 	```
 
