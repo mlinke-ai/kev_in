@@ -80,7 +80,7 @@ class UserResource(Resource):
                 user_mail=str(row["user_mail"]),
                 user_role=row["user_role"].name
             )
-            utils.makeResponseNewCookie(result, 200, request.cookies)
+            return utils.makeResponseNewCookie(result, 200, request.cookies)
             
         if args["user_id"]:
             query = query.where(user_table.c.user_id == args["user_id"])
