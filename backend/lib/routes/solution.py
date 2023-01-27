@@ -17,12 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from flask import Response, jsonify, make_response, request
+from flask import Response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.interfaces.database import SolutionModel, db_engine
 from backend.lib.core import config, utils
+
+import datetime
 
 
 class SolutionResource(Resource):
@@ -41,22 +43,33 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_date",
+            type=lambda x: datetime.datetime.fromtimestamp(x),
+            help="{error_msg}",
+            location="args"
+            )
+        parser.add_argument(
+            "solution_duration",
+            type=lambda x: datetime.timedelta(x),
+            help="{error_msg}",
+            location="args"
+            )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args"
+        )
 
         args = parser.parse_args()
 
         # check if page limit is in range
         if args["solution_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
-            return make_response(
-                jsonify(dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
-            )
-
+            return utils.makeResponseNewCookie(
+                dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
+                400,
+                request.cookies
+                )
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -83,28 +96,25 @@ class SolutionResource(Resource):
         result = dict()
         for row in selection.fetchall():
 
-            #check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
-            is_admin, auth = utils.authorize(
-                cookies= request.cookies,
-                method= "GET",
-                endpoint= "user",
-                resourceId= int(row[0])
+            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            is_admin, auth, user_id = utils.authorize(
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
             if auth == None:
-                return make_response((jsonify(dict(message="Login required"))), 401)
+                return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
             elif not auth:
-                return make_response((jsonify(dict(message="No Access"))), 403)
+                return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
             result[row[0]] = dict(
                 solution_id=row[0],
                 solution_user=row[1],
                 solution_exercise=row[2],
-                solution_date=row[3],
-                solution_duration=row[4],
+                solution_date=str(row[3]),
+                solution_duration=str(row[4]),
                 solution_correct=row[5],
             )
 
-        return make_response(jsonify(result), 200)
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def post(self) -> Response:
         """
@@ -115,23 +125,31 @@ class SolutionResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
-        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
+        parser.add_argument(
+            "solution_date",
+            type=lambda x: datetime.datetime.fromtimestamp(x),
+            help="{error_msg}",
+            required=True
+        )
+        parser.add_argument("solution_duration",
+            type=lambda x: datetime.timedelta(x),
+            help="{error_msg}",
+            required=True
+        )
 
         args = parser.parse_args()
 
-        #check for access
-        is_admin, auth = utils.authorize(
+        # check for access
+        is_admin, auth, user_id = utils.authorize(
             cookies= request.cookies,
             method= "POST",
             endpoint= "solution"
             )
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
         correct = True
@@ -140,11 +158,11 @@ class SolutionResource(Resource):
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
         solution = SolutionModel(
-            solution_user=args["solution_user"],
-            solution_exercise=args["solution_Exercise"],
-            solution_date=args["solution_args"],
+            solution_user=user_id,
+            solution_exercise=args["solution_exercise"],
+            solution_date=args["solution_date"],
             solution_duration=args["solution_duration"],
-            solution_correct=correct,
+            solution_correct=correct
         )
         # add the new element
         db_engine.session.add(solution)
@@ -157,14 +175,15 @@ class SolutionResource(Resource):
         result = dict()
         row = selection.fetchone()
         result = dict(
+            message="Successfully submitted solution",
             solution_id=row[0],
-            solution_user=row[1],
-            solution_exercise=row[2],
-            solution_date=row[3],
-            solution_duration=row[4],
-            solution_correct=row[5],
+            solution_user=solution.solution_user,
+            solution_exercise=solution.solution_exercise,
+            solution_date=str(solution.solution_date),
+            solution_duration=str(solution.solution_duration),
+            solution_correct=solution.solution_correct
         )
-        return make_response(jsonify(result), 200)
+        return utils.makeResponseNewCookie(result, 201, request.cookies)
 
     def put(self) -> Response:
         """
@@ -178,25 +197,27 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
         parser.add_argument("solution_user", type=int, help="{error_msg}")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument(
+            "solution_date",
+            type=lambda x: datetime.datetime.fromtimestamp(x),
+            help="{error_msg}"
+        )
+        parser.add_argument("solution_duration",
+            type=lambda x: datetime.timedelta(x),
+            help="{error_msg}"
+        )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
 
         args = parser.parse_args()
 
-        #check for access
-        is_admin, auth = utils.authorize(
-            cookies= request.cookies,
-            method= "PUT",
-            endpoint= "solution",
-            resourceId= args["solution_id"]
-            )
+        # check for access
+        is_admin, auth, user_id = utils.authorize(
+            cookies=request.cookies, method="PUT", endpoint="solution", resourceId=args["solution_id"]
+        )
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -215,10 +236,10 @@ class SolutionResource(Resource):
 
         if selection.rowcount == 0:
             result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return make_response(jsonify(result), 404)
+            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
-        return make_response(jsonify(result), 200)
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def delete(self) -> Response:
         """
@@ -233,17 +254,14 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        #check for access
-        is_admin, auth = utils.authorize(
-            cookies= request.cookies,
-            method= "POST",
-            endpoint= "exercise",
-            resourceId= args["solution_id"]
-            )
+        # check for access
+        is_admin, auth, user_id = utils.authorize(
+            cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
+        )
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -256,8 +274,7 @@ class SolutionResource(Resource):
         # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return make_response(jsonify(result), 404)
+            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"Successfully deleted solution with solution_id {args['solution_id']}")
-        return make_response(jsonify(result), 200)
-
+        return utils.makeResponseNewCookie(result, 200, request.cookies)

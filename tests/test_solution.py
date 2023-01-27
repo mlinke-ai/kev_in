@@ -85,7 +85,20 @@ class SolutionTest(unittest.TestCase):
         pass
 
     def test_create_as_admin(self) -> None:
-        pass
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/login",
+            json={"user_mail": "sadmin@example.com", "user_pass": "sadmin"},
+            headers={"Content-Type": "application/json"},
+        )
+        c = r.headers["Set-Cookie"]
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={"solution_exercise": 1, "solution_date": 1674501941, "solution_duration": 128},
+            headers={"Content-Type": "application/json", "Cookies": c},
+        )
+        print(r.json())
 
     def test_create_without_token(self) -> None:
         pass

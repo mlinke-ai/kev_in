@@ -46,7 +46,7 @@ Replace `<arguments>` with the arguments listed below.
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `user_name` | `string` | required | `John Doe` | The name of the user. |
+| `user_mail` | `string` | required | `John Doe` | The e-mail address of the user. |
 | `user_pass` | `string` | required | `testPW` | The user password as defined in the registration of the user account. |
 
 Arguments are constructed as dictionaries or JSON objects.

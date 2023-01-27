@@ -31,6 +31,7 @@ class ExerciseTest(unittest.TestCase):
 
     user_name = "G:ff#Test"
     user_pass = "hji'$4y33F?"
+    user_mail = "djfh:j@32asde.es"
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -38,7 +39,7 @@ class ExerciseTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "sadmin", "user_pass": "sadmin"},
+            json={"user_mail": "sadmin@example.com", "user_pass": "sadmin"},
             headers={"Content-Type": "application/json"},
         )
         cls.adminCookie = r.headers["Set-Cookie"]
@@ -65,7 +66,7 @@ class ExerciseTest(unittest.TestCase):
             json={
                 "user_name": ExerciseTest.user_name,
                 "user_pass": ExerciseTest.user_pass,
-                "user_mail": "test@example.com",
+                "user_mail": ExerciseTest.user_mail,
                 "user_role": 3,
             },
             headers={"Content-Type": "application/json"},
@@ -76,7 +77,7 @@ class ExerciseTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": ExerciseTest.user_name, "user_pass": ExerciseTest.user_pass},
+            json={"user_mail": ExerciseTest.user_mail, "user_pass": ExerciseTest.user_pass},
             headers={"Content-Type": "application/json"},
         )
         cls.userCookie = r.headers["Set-Cookie"]
