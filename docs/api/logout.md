@@ -13,9 +13,9 @@ The logout route is to perform a logout. The session cookie will be deleted.
 
 The endpoint can be accessed at `<address>:<port>/logout`.
 
-## DELETE
+## POST
 
-The DELETE method is used to perform the logout. It is the only request-type supported by the logout route.
+The POST method is used to perform the logout. It is the only request-type supported by the logout route.
 
 ### Access
 
