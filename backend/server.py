@@ -10,7 +10,7 @@ from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config, errors
 from backend.lib.interfaces import db_engine, UserModel
-from backend.lib.routes import ExerciseResource, LoginResource, UserResource, SolutionResource
+from backend.lib.routes import ExerciseResource, LoginResource, UserResource, SolutionResource, LogoutResource
 
 
 class Server:
@@ -29,6 +29,7 @@ class Server:
         self.api.add_resource(LoginResource, "/login")
         self.api.add_resource(UserResource, "/user")
         self.api.add_resource(SolutionResource, "/solution")
+        self.api.add_resource(LogoutResource, "/logout")
 
     def _base(self) -> Response:
         return send_from_directory("../frontend/dist", "index.html")
