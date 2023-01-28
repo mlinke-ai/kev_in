@@ -4,7 +4,7 @@ summary: A learning platform for programming beginners.
 authors:
     - Max Linke
     - and others
-date: 2022-01-10
+date: 2023-01-27
 ---
 
 # User API
@@ -72,6 +72,16 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 		}
 	}
 	```
+	If no argument is sent the reponse is not mapped to the user_id:
+
+	```JSON
+	{
+		"user_id": 1,
+		"user_name": "John Doe",
+		"user_mail": "john.doe@example.com",
+		"user_role": "User"
+	}
+	```
 
 === "400"
 
@@ -102,17 +112,6 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 	```JSON
 	{
 		"message": "No Access"
-	}
-	```
-
-If no argument is sent the reponse is not mapped to the `user_id`:
-
-	```JSON
-	{
-		"user_id": 1,
-		"user_name": "John Doe",
-		"user_mail": "john.doe@example.com",
-		"user_role": "User"
 	}
 	```
 
