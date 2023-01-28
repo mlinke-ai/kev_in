@@ -2,6 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import enum
+import string
+import secrets
+
+#generate a random 64 letter password
+alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_'
+tmp = ''.join(secrets.choice(alphabet) for i in range(64))
 
 SADMIN_NAME = "sadmin"
 SADMIN_PASS = "sadmin"
@@ -19,8 +25,7 @@ USER_TABLE = "users"
 EXERCISE_TABLE = "exercises"
 SOLUTION_TABLE = "solutions"
 
-#you should generate a very safe password for that
-JWT_SECRET = "WL2pmWo1[;|Y<9\nyva@sG0vB0W=BFhq/Pix^gVeR^-}!com_t+4G7gh&>@)e1N"
+JWT_SECRET = tmp
 
 MAX_ITEMS_RETURNED = 20
 
