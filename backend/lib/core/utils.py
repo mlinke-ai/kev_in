@@ -4,6 +4,7 @@ from typing import Any
 
 import jwt
 from flask_sqlalchemy.query import sqlalchemy
+from flask import Response, jsonify, make_response
 from werkzeug.datastructures import ImmutableMultiDict
 
 from backend.lib.core.config import JWT_SECRET, SOLUTION_TABLE, USER_TABLE, UserRole
@@ -35,9 +36,10 @@ def authorize(
         changeToAdmin: :class:`bool`
             Only needs to be set, on user PUT method.
     Returns:
-        A tuple of Type :class:`tuple[bool, bool | None]` (is_admin, has_access)
+        A tuple of Type :class:`tuple[bool, bool | None, int]` (is_admin, has_access, user_id)
         is_admin can be True or False (Depending on wether the client is an admin or not)
         has_access can be True, False or None (None if no valid JWT was sent)
+        user_id is the user_id as defined in the UserModel
     """
 
     if method not in ["GET", "POST", "PUT", "DELETE"]:
@@ -49,27 +51,64 @@ def authorize(
     if method in ["GET", "PUT", "DELETE"] and resourceId == None and endpoint != "exercise":
         raise ValueError(f"'method' is {method}, 'endpoint' is {endpoint} and no 'recourseId' was provided")
 
-    if method == "PUT" and endpoint == "user" and changeToAdmin == False:
+    if method == "PUT" and endpoint == "user" and changeToAdmin == None:
         raise ValueError(f"'method' is {method}, 'endpoint' is {endpoint} and no 'changeToAdmin' was provided")
 
     user_data = _extractUserData(cookies)
 
     if user_data == None:
-        return False, None
+        return False, None, None
 
     role = _getUserRole(user_data["user_id"])
 
     if role == None:
-        return False, None  # non existing user tries to access data
+        return False, None, user_data["user_id"]  # non existing user tries to access data
 
     if endpoint == "exercise":
-        return not (role == UserRole.User), _authExercise(role, method)
+        return (not (role == UserRole.User), _authExercise(role, method), user_data["user_id"])
     elif endpoint == "user":
-        return not (role == UserRole.User), _authUser(
-            role, method, int(user_data["user_id"]), resourceId, changeToAdmin
+        return (
+            not (role == UserRole.User),
+            _authUser(role, method, user_data["user_id"], resourceId, changeToAdmin),
+            user_data["user_id"],
         )
     elif endpoint == "solution":
-        return not (role == UserRole.User), _authSolution(role, method, int(user_data["user_id"]), resourceId)
+        return (
+            not (role == UserRole.User),
+            _authSolution(role, method, user_data["user_id"], resourceId),
+            user_data["user_id"],
+        )
+
+
+def getUseridFromCookies(cookies: ImmutableMultiDict) -> int | None:
+    """
+    Get the user_id argument from cookies. Returns None if no valid JWT
+    is in the cookies.
+    """
+
+    user_data = _extractUserData(cookies)
+
+    if user_data == None:
+        return None
+
+    return user_data["user_id"]
+
+
+def makeResponseNewCookie(jsonData: dict, status: int, oldCookies: ImmutableMultiDict) -> Response:
+    """
+    Creates a Flask HTTP response, renews the cookie `Expires` value.
+    If a token is provided, it is just copied and sent back as a new cookie.
+    """
+
+    response = make_response(jsonify(jsonData), status)
+    token = oldCookies.getlist("token")
+
+    if len(token) != 1:  # the token list should only contain one value
+        return response
+
+    response.set_cookie("token", token[0], max_age=3600, httponly=True)
+
+    return response
 
 
 def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:
@@ -184,6 +223,8 @@ def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> 
                 row = selection.fetchone()
             except sqlalchemy.exc.NoResultFound:
                 return False  # we're sure here that client don't want to access its own data
-            return userId == row["user_relation"]
+            return userId == row["solution_user"]
+        else:
+            return True
     elif method == "POST":
         return True

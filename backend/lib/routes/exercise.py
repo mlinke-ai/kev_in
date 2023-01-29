@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import Response, jsonify, make_response, request
+from flask import Response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -60,23 +60,21 @@ class ExerciseResource(Resource):
 
         # check if page limit is in range
         if args["exercise_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
-            return make_response(
-                jsonify(
-                    dict(
-                        message="Page limit not in range",
-                        min_limit=0,
-                        max_limit=config.MAX_ITEMS_RETURNED,
-                    ),
-                    400,
-                )
+            return utils.makeResponseNewCookie(
+                dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
+                400,
+                request.cookies,
             )
+
+        # check for access
+        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
 
         # check for access
         _, auth = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
@@ -122,7 +120,7 @@ class ExerciseResource(Resource):
                     exercise_language=row["exercise_language"].name,
                 )
 
-        return make_response((jsonify(result)), 200)
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def post(self) -> Response:
         """
@@ -142,22 +140,15 @@ class ExerciseResource(Resource):
             required=True,
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}", required=True)
-        parser.add_argument("exercise_solution", type=str, help="{error_msg}", required=True)
-        parser.add_argument(
-            "exercise_language",
-            type=lambda x: config.ExerciseLanguage(int(x)),
-            help="{error_msg}",
-            required=True,
-        )
 
-        args = parser.parse_args(strict=True)
+        args = parser.parse_args()
 
         # check for access
-        _, auth = utils.authorize(cookies=request.cookies, method="POST", endpoint="exercise")
+        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="POST", endpoint="exercise")
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # create a new element
         exercise = ExerciseModel(
@@ -259,69 +250,35 @@ class ExerciseResource(Resource):
             help="{error_msg}",
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}")
-        parser.add_argument("exercise_solution", type=str, help="{error_msg}")
-        parser.add_argument(
-            "exercise_language",
-            type=lambda x: config.ExerciseLanguage(int(x)),
-            help="{error_msg}",
-        )
 
-        args = parser.parse_args(strict=True)
-
-        if args["exercise_title"] == "":
-            return make_response(jsonify(dict(message="exercise_title must not be empty")), 400)
+        args = parser.parse_args()
 
         # check for access
-        _, auth = utils.authorize(cookies=request.cookies, method="PUT", endpoint="exercise")
+        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="PUT", endpoint="exercise")
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        exercise = ExerciseModel.query.filter_by(exercise_id=args["exercise_id"]).first_or_404()
-        if args["exercise_title"]:
-            exercise.exercise_title = args["exercise_title"]
-        if args["exercise_description"]:
-            exercise.exercise_description = args["exercise_description"]
-        if args["exercise_type"]:
-            exercise.exercise_type = args["exercise_type"]
-        if args["exercise_content"]:
-            exercise.exercise_content = args["exercise_content"]
-        if args["exercise-solution"]:
-            exercise.exercise_solution = args["exercise_solution"]
-        if args["exercise_language"]:
-            exercise.exercise_language = args["exercise_language"]
-        try:
-            db_engine.session.commit()
-        # TODO: write exception message into response
-        except sqlalchemy.exc.IntegrityError:
-            # TODO: is IntegrityError also a nullable=False constraint violation?
-            # TODO: should we do a rollback at this point?
-            # db_engine.session.rollback()
-            return make_response(jsonify(dict(message="")), 409)
-        else:
-            return make_response(jsonify(dict(message="Changed properties successfully")), 200)
+        # load the exercise table
+        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
+        # drop the ID as we don't want to update it
+        values = args.copy()
+        del values["exercise_id"]
+        # compose the query to update the requested element
+        query = (
+            db_engine.update(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
+        )
+        # execute the query
+        selection = db_engine.session.execute(query)
+        db_engine.session.commit()
+        # if no element was updated, the rowcount is 0
+        if selection.rowcount == 0:
+            result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
+            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
-        # TODO: the method above is way more elegant; we should remove the lower part
-        # # load the exercise table
-        # exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
-        # # drop the ID as we don't want to update it
-        # values = args.copy()
-        # del values["exercise_id"]
-        # # compose the query to update the requested element
-        # query = (
-        #     db_engine.update(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
-        # )
-        # # execute the query
-        # selection = db_engine.session.execute(query)
-        # db_engine.session.commit()
-        # # if no element was updated, the rowcount is 0
-        # if selection.rowcount == 0:
-        #     result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
-        #     return make_response((jsonify(result)), 404)
-
-        # result = dict(message=f"Successfully changed exercise with exercise_id {args['exercise_id']}")
-        # return make_response((jsonify(result)), 200)
+        result = dict(message=f"Successfully chanaged exercise with exercise_id {args['exercise_id']}")
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def delete(self) -> Response:
         """
@@ -337,11 +294,11 @@ class ExerciseResource(Resource):
         args = parser.parse_args(strict=True)
 
         # check for access
-        _, auth = utils.authorize(cookies=request.cookies, method="DELETE", endpoint="exercise")
+        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="DELETE", endpoint="exercise")
         if auth == None:
-            return make_response((jsonify(dict(message="Login required"))), 401)
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
-            return make_response((jsonify(dict(message="No Access"))), 403)
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
@@ -354,7 +311,7 @@ class ExerciseResource(Resource):
         # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
-            return make_response((jsonify(result)), 404)
+            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"Successfully deleted exercise with exercise_id {args['exercise_id']}")
-        return make_response((jsonify(result)), 200)
+        return utils.makeResponseNewCookie(result, 200, request.cookies)

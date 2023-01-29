@@ -1,6 +1,7 @@
 # files:
 .coverage
 notes.md
+.coverage
 *.log
 
 # directories:

@@ -4,7 +4,7 @@ summary: A learning platform for programming beginners.
 authors:
     - Max Linke
     - and others
-date: 2022-01-10
+date: 2023-01-27
 ---
 
 # User API
@@ -47,12 +47,12 @@ Arguments are constructed as dictionaries or JSON objects.
 |---|---|---|---|---|
 | `user_id` | `int` | optional | `1` | The ID of the user. Normally obtained after creating a new user. |
 | `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is not guaranteed. |
-| `user_mail` | `string` | optional | `john.doe@example.com` | The e-mail address of the user. |
+| `user_mail` | `string` | optional | `john.doe@example.com` | The e-mail address of the user. This is unique for every account. |
 | `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
 | `user_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
 | `user_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 
-Note: If no argument is sent, the system returns the user data of the logged in client.
+Note: If no argument is sent, the system returns the user data of the logged in client (not as dict).
 
 ### Response
 
@@ -67,8 +67,19 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 		"1": {
 			"user_id": 1,
 			"user_name": "John Doe",
-			"user_mail": "john.doe@example.com"
+			"user_mail": "john.doe@example.com",
+			"user_role": "User"
 		}
+	}
+	```
+	If no argument is sent the reponse is not mapped to the user_id:
+
+	```JSON
+	{
+		"user_id": 1,
+		"user_name": "John Doe",
+		"user_mail": "john.doe@example.com",
+		"user_role": "User"
 	}
 	```
 
@@ -144,7 +155,7 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 |---|---|---|---|---|
 | `user_name` | `string` | required | `John Doe` | The name of the user. Uniqueness is guaranteed. |
 | `user_pass` | `int` | required | `testPW` | The password of the new user. |
-| `user_mail` | `string` | required | `john.doe@example.com` | The e-mail address of the user. |
+| `user_mail` | `string` | required | `john.doe@example.com` | The e-mail address of the user. This is unique for every account. |
 
 ### Response
 

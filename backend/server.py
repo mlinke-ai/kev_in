@@ -14,6 +14,7 @@ from backend.lib.routes import (
     LoginResource,
     SolutionResource,
     UserResource,
+    LogoutResource,
 )
 
 
@@ -33,6 +34,7 @@ class Server:
         self.api.add_resource(LoginResource, "/login")
         self.api.add_resource(UserResource, "/user")
         self.api.add_resource(SolutionResource, "/solution")
+        self.api.add_resource(LogoutResource, "/logout")
 
     def _base(self) -> Response:
         return send_from_directory("../frontend/dist", "index.html")

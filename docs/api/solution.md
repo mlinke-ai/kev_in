@@ -64,13 +64,13 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
     The response is a dictionary of JSON object. The solution ID is mapped to all solution attributes.
     ```JSON
     {
-        "1": {
-            "solution_id": 1,
-            "solution_user": 1,
-            "solution_exercise": 1,
-            "solution_date": 1672946590,
-            "solution_duration": 524,
+        "2": {
             "solution_correct": true,
+            "solution_date": "2023-01-11 15:16:25",
+            "solution_duration": "122 days, 0:00:00",
+            "solution_exercise": 1,
+            "solution_id": 2,
+            "solution_user": 1,
             "solution_pending": false,
             "solution_content": <...>
         }
@@ -141,7 +141,6 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `solution_user` | `int` | required | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | required | `1` | The ID of the exercise which the solution was provided for. |
 | `solution_date` | `int` | required | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
 | `solution_duration` | `int` | required | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
@@ -154,12 +153,13 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
     The response is a dictionary or JSON object, together with the HTTP status 201. All attributes of the created exercise will be shown, together with a response message.
     ```JSON
     {
-        "solution_id": 1,
-        "solution_user": 1,
-        "solution_exercise": 1,
-        "solution_date": 1672946590,
-        "solution_duration": 524,
+        "message": "Successfully submitted solution",
         "solution_correct": true,
+        "solution_date": "2023-01-11 15:16:25",
+        "solution_duration": "122 days, 0:00:00",
+        "solution_exercise": 1,
+        "solution_id": 2,
+        "solution_user": 1,
         "solution_pending": false,
         "solution_content": <...>
     }

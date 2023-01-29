@@ -26,12 +26,12 @@ class LoginResource(Resource):
         Content-Length: 114
 
         {
-            "user_name": "sadmin",
+            "user_mail": "sadmin@example.com",
             "user_pass": "sadmin"
         }
 
         Arguments:
-            user_name: account name of the user (required)
+            user_mail: account mail-address (required)
             user_pass: account passwort (required)
 
         Returns:
@@ -41,7 +41,7 @@ class LoginResource(Resource):
 
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_name", type=str, help="{error_msg}", required=True)
+        parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         args = parser.parse_args(strict=True)
         # hash the password with sha-256
@@ -52,7 +52,7 @@ class LoginResource(Resource):
         query = (
             db_engine.select(user_table)
             .select_from(user_table)
-            .where(user_table.c.user_name == args["user_name"])
+            .where(user_table.c.user_mail == args["user_mail"])
             .where(user_table.c.user_pass == args["user_pass"])
         )
         result = dict()
@@ -60,13 +60,13 @@ class LoginResource(Resource):
         selection = db_engine.session.execute(query)
         try:
             user = selection.one()
-        except sqlalchemy.exc.NoResultFound as e:
+        except sqlalchemy.exc.NoResultFound:
             result = dict(message="Incorrect user name or password")
             return make_response(jsonify(result), 401)
         else:
             token = jwt.encode({"user_id": user[0]}, config.JWT_SECRET)
-            result = dict(message=f"Welcome {user[1]}!")
-
-        response = make_response(jsonify(result), 200)
-        response.set_cookie("token", token, max_age=3600, httponly=True)
-        return response
+            result = dict(message=f"Welcome {user.user_name}!")
+            response = make_response(jsonify(result), 200)
+            response.set_cookie("token", token, max_age=3600, httponly=True)
+            return response
+        

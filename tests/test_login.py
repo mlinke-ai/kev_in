@@ -28,8 +28,9 @@ class LoginTest(unittest.TestCase):
     The documentation of the API can be found [here](https://mlinke-ai.github.io/kev_in/api/login/).
     """
 
-    user_name = "sadmin"
+    user_mail = "sadmin@example.com"
     user_pass = "sadmin"
+    user_name = "sadmin"
 
     def test_login_success(self) -> None:
         """
@@ -40,7 +41,7 @@ class LoginTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": LoginTest.user_name, "user_pass": LoginTest.user_pass},
+            json={"user_mail": LoginTest.user_mail, "user_pass": LoginTest.user_pass},
             headers={"Content-Type": "application/json"},
         )
 
@@ -57,7 +58,7 @@ class LoginTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "unknownUser", "user_pass": LoginTest.user_pass},
+            json={"user_mail": "unkownUser@example.com", "user_pass": LoginTest.user_pass},
             headers={"Content-Type": "application/json"},
         )
 
@@ -68,7 +69,7 @@ class LoginTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": LoginTest.user_name, "user_pass": "trashPW"},
+            json={"user_mail": LoginTest.user_mail, "user_pass": "trashPW"},
             headers={"Content-Type": "application/json"},
         )
 
@@ -78,7 +79,7 @@ class LoginTest(unittest.TestCase):
 
     def test_login_without_req_arg(self) -> None:
         """
-        Try to log in an sadmin account without giving required argument user_name and user_pass.
+        Try to log in an sadmin account without giving required argument user_mail and user_pass.
         The system should respond with an error message about the missing argument in JSON,
         HTTP-status 400 and without a Session-Cookie.
         """
@@ -96,13 +97,13 @@ class LoginTest(unittest.TestCase):
             self.fail("An error message should be returned")
 
         self.assertNotIn("Set-Cookie", r.headers)  # no cookie should be returned
-        self.assertIn("user_name", errors)
+        self.assertIn("user_mail", errors)
         self.assertEqual(r.status_code, 400)
 
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": LoginTest.user_name},
+            json={"user_mail": LoginTest.user_mail},
             headers={"Content-Type": "application/json"},
         )
 
