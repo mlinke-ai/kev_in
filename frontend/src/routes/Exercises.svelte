@@ -9,71 +9,119 @@
     Actions,
     ActionButtons,
     ActionIcons,
-  } from '@smui/card';
+  } from "@smui/card";
   import EditSvg from "../lib/components/AnimatedSVG/EditSVG.svelte";
+  //import { mdiFormatColorFill, mdiWrench, mdiCurrencyUsd } from '@mdi/js';
+  import IconButton, { Icon } from "@smui/icon-button";
+  import { Svg } from "@smui/common";
 
-  const exercises = [];
-  let numExercises = 0;
+  const exercises = [
+    {
+      exercise_id: 0,
+      exercise_title: "example",
+      exercise_description: "some description",
+      exercise_type: 0,
+      exercise_content: "1+1=",
+      exercise_offset: 0,
+      exercise_limit: 0,
+    },
+    {
+      exercise_id: 1,
+      exercise_title: "example2",
+      exercise_description: "some other description",
+      exercise_type: 0,
+      exercise_content: "1+2=",
+      exercise_offset: 0,
+      exercise_limit: 0,
+    },
+    {
+      exercise_id: 2,
+      exercise_title: "example3",
+      exercise_description: "some other description",
+      exercise_type: 0,
+      exercise_content: "3+2=",
+      exercise_offset: 0,
+      exercise_limit: 0,
+    },
+    //content only for testcases
+    //turn later to
+    //getExercises
+  ];
+
   let currExercise = 1;
 
-  const getNumExercises = async () => {
+  const getExercises = async () => {
     await fetch("http://127.0.0.1:5000/exercise", {
       method: "GET",
     }).then((response) => {
       if (response.status == 200) {
-        numExercises = this
+        exercises.push(this);
       } else if (response.status == 401) {
-        alert(this.message)
+        alert(this.message);
       } else if (response.status == 403) {
-        alert(this.message)
-      } else if (response.status == 500){
-        alert("Oops an Error occured. Please try again.")
+        alert(this.message);
+      } else if (response.status == 500) {
+        alert("Oops an Error occured. Please try again.");
       } else {
-        alert("Oops an Error occured. " + response.status)
+        alert("Oops an Error occured. " + response.status);
       }
     });
   };
 
-  const getExercises = async () => {
-    await fetch("http://127.0.0.1:5000/exercise?exercise_id=currExercise", {
-      method: "GET",
-    }).then((response) => {
-      if (response.status == 200) {
-        exercises.push(this)
-        currExercise++
-      } else if (response.status == 401) {
-        alert(this.message)
-      } else if (response.status == 403) {
-        alert(this.message)
-      } else if (response.status == 500){
-        alert("Oops an Error occured. Please try again.")
-      } else {
-        alert("Oops an Error occured. " + response.status)
-      }
-    });
-  };
-
-
-  import { mdiFormatColorFill, mdiWrench, mdiCurrencyUsd } from '@mdi/js';
-  import IconButton, { Icon } from '@smui/icon-button';
-  import { Svg } from '@smui/common';
- 
   let clicked = 0;
-
 </script>
 
 <Page>
   <h1>Exercises</h1>
 
-  <p>
-    This is a placeholder site for listing all exercises.
-  </p>
+  <p>This is a placeholder site for listing all exercises.</p>
 
-  <p>
-    
-  </p>
+  <div class="add-exercise-icon">
+    <div style="display: flex; align-items: center;">
+      <a href="/#/error">
+        <IconButton>
+          <Icon component={Svg} viewBox="0 0 24 24">
+            <path
+              fill="outlined"
+              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+            />
+          </Icon>
+        </IconButton>
+      </a>
+    </div>
+  </div>
 
   <div class="grid-container">
+    {#each exercises as exercise}
+      <div class="grid-item">
+        <Card>
+          <a href="/#/error">
+            #{exercise.exercise_id}
+            {exercise.exercise_title}
+          </a>
+          <p>
+            {exercise.exercise_description}
+            {exercise.exercise_type}
+          </p>
+
+          <div style="display: flex; align-items: center;">
+            <a href="/#/error">
+              <IconButton>
+                <Icon component={Svg} viewBox="0 0 24 24">
+                  <path
+                    fill="outlined"
+                    d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                  />
+                </Icon>
+              </IconButton>
+            </a>
+          </div>
+        </Card>
+      </div>
+    {/each}
+  </div>
+
+  <!-- <div class="grid-container">
     <div class="grid-item">
         <Card>
         Exercise 01
@@ -103,27 +151,32 @@
     <div class="grid-item">Exercise 13</div>
     <div class="grid-item">Exercise 14</div>
     <div class="grid-item">Exercise 15</div>
-  </div>
+  </div> -->
 
   <a href="/#/admin-dashboard">
-  <Button>
-     Back to dashboard
-  </Button>
-</a>
+    <Button>Back to dashboard</Button>
+  </a>
 </Page>
 
 <style>
   .grid-container {
     display: grid;
     grid-template-columns: auto auto auto;
-    background-color: rgb(0, 57, 49);;
+    background-color: rgb(0, 57, 49);
     padding: 10px;
   }
+
   .grid-item {
+    width: 350px;
     background-color: #001a16;
     border: 1px solid rgba(0, 0, 0, 0.8);
-    padding: 20px;
+    padding: 10px;
     font-size: 30px;
     text-align: center;
+  }
+
+  .add-exercise-icon{
+    position: right;
+    align-items: right;
   }
 </style>
