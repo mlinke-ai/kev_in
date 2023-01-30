@@ -195,7 +195,6 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
         parser.add_argument(
             "solution_date",
@@ -222,8 +221,6 @@ class SolutionResource(Resource):
         solution = SolutionModel.query.filter_by(
             solution_id=args["solution_id"]).first_or_404(description=f"Solution with solution_id {args['solution_id']} does not exist")
 
-        if args["solution_user"]:
-            solution.solution_user = args["solution_user"]
         if args["solution_exercise"]:
             solution.solution_exercise = args["solution_exercise"]
         if args["solution_date"]:
