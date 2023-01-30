@@ -2,12 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import enum
-import string
-import secrets
 
-#generate a random 64 letter password
-alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_'
-tmp = ''.join(secrets.choice(alphabet) for i in range(64))
 
 SADMIN_NAME = "sadmin"
 SADMIN_PASS = "sadmin"
@@ -24,8 +19,6 @@ TESTING_DATABASE_URI = "sqlite:///testing.db"
 USER_TABLE = "users"
 EXERCISE_TABLE = "exercises"
 SOLUTION_TABLE = "solutions"
-
-JWT_SECRET = tmp
 
 MAX_ITEMS_RETURNED = 20
 

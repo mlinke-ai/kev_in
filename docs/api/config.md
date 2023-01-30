@@ -38,10 +38,6 @@ The table name of the exercise table. Defaults to `exercises`.
 
 The table name of the solution table. Defaults to `solutions`.
 
-## JWT_SECRET
-
-The base seed which is used to encrypt and decrypt JSON Web Tokens. Defaults to `9457645763984570345`.
-
 ## MAX_ITEMS_RETURNED
 
 The number of items which one request should return on maximum. This value is used to prevent overwhelming the server. Defaults to `20`.

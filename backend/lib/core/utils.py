@@ -5,9 +5,9 @@ import jwt
 from werkzeug.datastructures import ImmutableMultiDict
 from typing import Any
 from flask_sqlalchemy.query import sqlalchemy
-from flask import Response, jsonify, make_response
+from flask import Response, jsonify, make_response, current_app
 
-from backend.lib.core.config import JWT_SECRET, UserRole, USER_TABLE, SOLUTION_TABLE
+from backend.lib.core.config import UserRole, USER_TABLE, SOLUTION_TABLE
 from backend.lib.interfaces.database import db_engine
 
 def authorize(
@@ -127,7 +127,7 @@ def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:
         return None #more than one value for key 'token' exists
 
     try:
-        user_data = jwt.decode(token[0], JWT_SECRET, algorithms=["HS256"])
+        user_data = jwt.decode(token[0], current_app.config["JWT_SECRET"], algorithms=["HS256"])
     except jwt.exceptions.DecodeError:
         return None #token could not be extracted
     else:
