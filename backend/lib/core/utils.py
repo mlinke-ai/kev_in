@@ -7,8 +7,8 @@ from typing import Any
 from flask_sqlalchemy.query import sqlalchemy
 from flask import Response, jsonify, make_response, current_app
 
-from backend.lib.core.config import UserRole, USER_TABLE, SOLUTION_TABLE
-from backend.lib.interfaces.database import db_engine
+from backend.lib.core.config import UserRole
+from backend.lib.interfaces.database import db_engine, UserModel, SolutionModel
 
 def authorize(
     cookies: ImmutableMultiDict,
@@ -138,12 +138,9 @@ def _getUserRole(user_id: int) -> UserRole | None:
     Checks what role a user has, given the user_id.
     """
 
-    user_table = sqlalchemy.Table(USER_TABLE, db_engine.metadata, autoload=True)
-    query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == user_id)
-    selection = db_engine.session.execute(query)
     try:
-        row = selection.fetchone()
-        role = UserRole(row["user_role"])
+        user_obj = UserModel.query.filter_by(user_id=user_id).one()
+        role = UserRole(user_obj.user_role)
     except (sqlalchemy.exc.NoResultFound, TypeError):
         return None #the user with the given id was not found in the database
 
@@ -170,15 +167,13 @@ def _authUser(role: UserRole, method: str, userId: int, resourceId: int, changeT
 
     if method == "GET" or method == "DELETE":
         if role == UserRole.User:
+
             #check if client want's to access its own data
-            user_table = sqlalchemy.Table(USER_TABLE, db_engine.metadata, autoload=True)
-            query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == resourceId)
-            selection = db_engine.session.execute(query)
             try:
-                row = selection.fetchone()
+                user_obj = UserModel.query.filter_by(user_id=resourceId).one()
             except sqlalchemy.exc.NoResultFound:
                 return False #we're sure here that client don't want to access its own data
-            return userId == row["user_id"]
+            return userId == user_obj.user_id
         else:
             return True
 
@@ -190,14 +185,11 @@ def _authUser(role: UserRole, method: str, userId: int, resourceId: int, changeT
             return False
         elif role == UserRole.User:
             #check if client want's to access its own data
-            user_table = sqlalchemy.Table(USER_TABLE, db_engine.metadata, autoload=True)
-            query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_id == resourceId)
-            selection = db_engine.session.execute(query)
             try:
-                row = selection.fetchone()
+                user_obj = UserModel.query.filter_by(user_id=resourceId).one()
             except sqlalchemy.exc.NoResultFound:
                 return False #we're sure here that client don't want to access its own data
-            return userId == row["user_id"]
+            return userId == user_obj.user_id
         else:
             return True
 
@@ -209,14 +201,11 @@ def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> 
     if method == "GET" or method == "PUT" or method == "DELETE":
         if role == UserRole.User:
             #check if client want's to access its own data
-            solution_table = sqlalchemy.Table(SOLUTION_TABLE, db_engine.metadata, autoload=True)
-            query = db_engine.select(solution_table).select_from(solution_table).where(solution_table.c.user_id == resourceId)
-            selection = db_engine.session.execute(query)
             try:
-                row = selection.fetchone()
+                solution_obj = SolutionModel.query.filter_by(solution_id=resourceId).one()
             except sqlalchemy.exc.NoResultFound:
                 return False #we're sure here that client don't want to access its own data
-            return userId == row["solution_user"]
+            return userId == solution_obj.solution_user
         else:
             return True
     elif method == "POST":
