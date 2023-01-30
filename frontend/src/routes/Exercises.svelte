@@ -14,6 +14,7 @@
   //import { mdiFormatColorFill, mdiWrench, mdiCurrencyUsd } from '@mdi/js';
   import IconButton, { Icon } from "@smui/icon-button";
   import { Svg } from "@smui/common";
+  import { each } from "svelte/internal";
 
   const exercises = [
     {
@@ -48,15 +49,23 @@
     //getExercises
   ];
 
-  let currExercise = 1;
+  let currentExercise = 0;
+  let maxDisplayedExercises = 3;
 
   const getExercises = async () => {
-    await fetch("http://127.0.0.1:5000/exercise", {
-      method: "GET",
-    }).then((response) => {
+    await fetch(
+      "http://127.0.0.1:5000/exercise?exercise_offset=currentExercise&exercise_limit=maxDisplayedExercises",
+      {
+        method: "GET",
+      }
+    ).then((response) => {
       if (response.status == 200) {
+        while (exercises.length != 0) {
+          exercises.pop();
+        }
         exercises.push(this);
-      } else if (response.status == 401) {
+        currentExercise += exercises.length;
+      } else if (response.status == 400) {
         alert(this.message);
       } else if (response.status == 403) {
         alert(this.message);
@@ -68,13 +77,15 @@
     });
   };
 
-  let clicked = 0;
+  getExercises();
+
+  function showLastExercises() {
+    currentExercise -= exercises.length;
+    getExercises();
+  }
 </script>
 
 <Page>
-  <h1>Exercises</h1>
-
-  <p>This is a placeholder site for listing all exercises.</p>
 
   <div class="add-exercise-icon">
     <div style="display: flex; align-items: center;">
@@ -83,13 +94,17 @@
           <Icon component={Svg} viewBox="0 0 24 24">
             <path
               fill="outlined"
-              d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+              d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"
             />
           </Icon>
-        </IconButton>
+        </IconButton>&nbsp; add exercise
       </a>
     </div>
   </div>
+
+  <h1>Exercises</h1>
+
+  <p>This is a placeholder site for listing all exercises.</p>
 
   <div class="grid-container">
     {#each exercises as exercise}
@@ -101,6 +116,8 @@
           </a>
           <p>
             {exercise.exercise_description}
+          </p>
+          <p>
             {exercise.exercise_type}
           </p>
 
@@ -156,6 +173,30 @@
   <a href="/#/admin-dashboard">
     <Button>Back to dashboard</Button>
   </a>
+
+  
+
+  {#if exercises.length < maxDisplayedExercises}
+
+  <div class="list-exercises-buttons">
+    <Button on:click={showLastExercises}>last exercises</Button>
+  </div>
+
+  {:else if exercises.length == maxDisplayedExercises && currentExercise == 0}
+
+  <div class="list-exercises-buttons">
+    <Button on:click={getExercises}>more exercises</Button>
+  </div>
+
+  {:else}
+
+  <div class="list-exercises-buttons">
+    <Button on:click={getExercises}>more exercises</Button>
+    <Button on:click={showLastExercises}>last exercises</Button>
+  </div>
+
+  {/if}
+  
 </Page>
 
 <style>
@@ -175,8 +216,12 @@
     text-align: center;
   }
 
-  .add-exercise-icon{
-    position: right;
+  .add-exercise-icon {
+    float: right;
     align-items: right;
+  }
+
+  .list-exercises-buttons{
+    float: right;
   }
 </style>
