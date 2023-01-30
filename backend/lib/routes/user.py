@@ -255,7 +255,9 @@ class UserResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        user = UserModel.query.filter_by(user_id=args["user_id"]).first_or_404()
+        user = UserModel.query.filter_by(
+            user_id=args["user_id"]).first_or_404(description=f"User with user_id {args['user_id']} does not exist")
+            
         if args["user_name"]:
             user.user_name = args["user_name"]
         if args["user_mail"]:
