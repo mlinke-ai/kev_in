@@ -3,7 +3,7 @@
   import Page from "../lib/components/common/Page.svelte";
   import Textfield from "@smui/textfield";
 
-  import TestCard from "../lib/components/CodeSandbox/TestCard.svelte";
+  import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
   import { each } from "svelte/internal";
 
   let itemsLeft = [];
@@ -60,7 +60,7 @@
       <Textfield variant="filled" bind:value={exerciseTitle} label="Exercise Title" required style="width: 100%"/>
     </div>
     <div class="task-area">
-      <TestCard />
+      <TaskCard />
     </div>
     <div class="creation-area">
       {#each itemsLeft as item(item.id)}
@@ -85,20 +85,19 @@
   .exercise-container {
     display: grid;
     grid-template-columns: 3fr 9fr;
-    grid-template-rows: 1.5fr 8fr 0.5fr;
+    grid-template-rows: auto 9fr auto;
     grid-template-areas:
       "head head"
       "task creation-area"
       "status status";
-    gap: 1%;
-    padding: 1rem 1rem 0.5rem 1rem;
-    // background-color: rgb(0, 0, 0);
-    // margin-left: 3%;
-    height: 100%;
+    gap: 0.5rem;
+    height: 98vh;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   }
 
   .header-area {
     grid-area: head;
+    height: max-content;
   }
   .task-area {
     grid-area: task;
@@ -110,7 +109,7 @@
     flex-direction: column;
     overflow: auto;
     gap: 10px;
-    padding-top: 10px;
+    padding-top: 5px;
   }
   .status-bar {
     grid-area: status;
@@ -120,6 +119,7 @@
     align-items: center;
     gap: auto;
     justify-content: space-between;
+    height: max-content;
   }
 
 </style>

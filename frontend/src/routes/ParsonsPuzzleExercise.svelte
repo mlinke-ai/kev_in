@@ -4,7 +4,7 @@
   import PuzzleCard from "../lib/components/Excercises/ParsonsPuzzle/PuzzleCard.svelte";
   import { userName } from "../stores";
 
-  import TaskCard from "../lib/components/Excercises/CodeSandbox/TaskCard.svelte";
+  import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
   import StatusBar from "../lib/components/Excercises/StatusBar.svelte";
   import { accessLevels } from "../lib/types";
 
@@ -170,7 +170,6 @@
     bottom: 0;
     right: 0;
     background-color: black;
-    // margin-left: 3%;
   }
 
   .header-area {
