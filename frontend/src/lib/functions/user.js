@@ -2,7 +2,7 @@ import { accessLevel, startPage } from "../../stores";
 import { accessLevels } from "../types";
 
 export function getAccessLevel() {
-    return accessLevels.admin 
+    return accessLevels.default 
     //just for test cases
     //change later back to .default
 }

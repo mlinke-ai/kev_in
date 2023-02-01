@@ -1,6 +1,5 @@
 <script>
     import Page from "../lib/components/common/Page.svelte";
-    import Paper, {Title,} from '@smui/paper';
 
     import Card, {
     Content,
@@ -15,10 +14,6 @@
   import GroupSvg from "../lib/components/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../lib/components/AnimatedSVG/ExerciseSVG.svelte";
 
-let clicked = 0;
- 
-
-    
 </script>
 
 
@@ -66,18 +61,8 @@ let clicked = 0;
 
       <!--  Right -->
       <div class="right-outside">
-        <Paper>
-          <Title>Latest action</Title>
-          <Content>
-            This function is not implemented yet
-            <a href="/#/exercises">
-            <Button>
-              GO FOR IT!
-            </Button>
-            </a>
-          </Content>
-        </Paper> 
-
+        <h4>Solved Exercieses:</h4>
+        <p>function not implemented yet</p>
       </div>
 
       <!--  Footer -->
@@ -104,7 +89,7 @@ let clicked = 0;
       grid-area: main; 
     }
     .right-outside { 
-      width: auto;
+      max-width: 1200px;
       align-content: center;
       grid-area: right; 
       padding: 10px;
@@ -115,9 +100,9 @@ let clicked = 0;
     .grid-container-outside {
       display: grid;
       grid-template-areas:
-        'header header header header header'
-        'main main main main right';
-      gap: 10px;
+        'header header header'
+        'main main right';
+      gap: 5px;
       background-color: transparent;
       padding: 10px;
     }
