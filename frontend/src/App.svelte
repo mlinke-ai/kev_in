@@ -2,13 +2,11 @@
   import Navbar from "./lib/components/Navbar/Navbar.svelte";
   import Router, { replace as replaceRoute } from "svelte-spa-router";
   import routes from "./routes/";
-  import { setupUserSettings, getAccessLevel } from "./lib/functions/user";
-  import Footer from "./lib/components/Footer/Footer.svelte";
-
+  import { getUserData, setupUserSettings } from "./lib/functions/user"
   let ready = false;
 
   function prepareApp() {
-    setupUserSettings(getAccessLevel());
+    setupUserSettings();
     ready = true;
   }
 </script>
@@ -20,9 +18,7 @@
 />
 
 {#if ready}
-  <Navbar />
+  <!--<Navbar />-->
   <Router {routes} />
   <!--<Footer />-->
-{:else}
-  preparing...
 {/if}
