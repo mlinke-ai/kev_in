@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import hashlib
-
-import jwt
-from flask import Response, jsonify, make_response
+from flask import Response, jsonify, make_response, current_app
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -64,9 +61,8 @@ class LoginResource(Resource):
             result = dict(message="Incorrect user name or password")
             return make_response(jsonify(result), 401)
         else:
-            token = jwt.encode({"user_id": user[0]}, config.JWT_SECRET)
+            token = jwt.encode({"user_id": user[0]}, current_app.config["JWT_SECRET"])
             result = dict(message=f"Welcome {user.user_name}!")
             response = make_response(jsonify(result), 200)
             response.set_cookie("token", token, max_age=3600, httponly=True)
             return response
-        

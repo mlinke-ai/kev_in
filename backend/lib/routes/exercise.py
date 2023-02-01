@@ -260,22 +260,19 @@ class ExerciseResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        # load the exercise table
-        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
-        # drop the ID as we don't want to update it
-        values = args.copy()
-        del values["exercise_id"]
-        # compose the query to update the requested element
-        query = (
-            db_engine.update(exercise_table).where(exercise_table.c.exercise_id == args["exercise_id"]).values(values)
-        )
-        # execute the query
-        selection = db_engine.session.execute(query)
+        exercise = ExerciseModel.query.filter_by(
+            exercise_id=args["exercise_id"]).first_or_404(description=f"Exercise with exercise_id {args['exercise_id']} does not exist")
+
+        if args["exercise_title"]:
+            exercise.exercise_title = args["exercise_title"]
+        if args["exercise_description"]:
+            exercise.exercise_description = args["exercise_description"]
+        if args["exercise_type"]:
+            exercise.exercise_title = args["exercise_type"]
+        if args["exercise_content"]:
+            exercise.exercise_content = args["exercise_content"]
+
         db_engine.session.commit()
-        # if no element was updated, the rowcount is 0
-        if selection.rowcount == 0:
-            result = dict(message=f"Exercise with exercise_id {args['exercise_id']} does not exist")
-            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"Successfully chanaged exercise with exercise_id {args['exercise_id']}")
         return utils.makeResponseNewCookie(result, 200, request.cookies)

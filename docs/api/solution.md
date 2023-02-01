@@ -239,7 +239,6 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `solution_id` | `int` | required | `1` | The ID of the solution. Normally obtained after creating a new solution. |
-| `solution_user` | `int` | optional | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | optional | `1` | The ID of the exercise which the solution was provided for. |
 | `solution_date` | `int` | optional | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
 | `solution_duration` | `int` | optional | `524` | The time the user needed to solve the exercise. Encoded in seconds. |

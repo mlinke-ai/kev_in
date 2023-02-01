@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import string
+import secrets
 
 from flask import Flask, Response, send_from_directory
 from flask_restful import Api
@@ -24,6 +26,7 @@ class Server:
         self.app.add_url_rule("/", "base", self._base)
         self.app.add_url_rule("/<path:path>", "assets", self._assets)
         self.app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
+        self.app.config["JWT_SECRET"] = self._gen_JWT_secret()
         with self.app.app_context():
             db_engine.init_app(self.app)
             db_engine.create_all()
@@ -85,6 +88,11 @@ class Server:
             print("too many tusers")
         else:
             print("exactly one tuser")
+
+    def _gen_JWT_secret(self) -> str:
+        #generate a random 64 letter password
+        alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_'
+        return ''.join(secrets.choice(alphabet) for i in range(64))
 
     def run(self, debug: bool = False, host: bool = False) -> None:
         self.app.run(debug=debug, host="0.0.0.0" if host else "127.0.0.1")
