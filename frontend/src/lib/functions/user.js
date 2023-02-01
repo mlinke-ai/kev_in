@@ -10,6 +10,8 @@ export const getUserData = async () => {
         console.log(data.user_role);
         accessLevel.set(accessLevels.admin);
       });
+    } else {
+      accessLevel.set(accessLevels.default);
     }
   });
 };
