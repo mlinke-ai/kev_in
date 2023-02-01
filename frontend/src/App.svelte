@@ -5,10 +5,7 @@
   import { getUserData, setupUserSettings } from "./lib/functions/user"
   let ready = false;
 
-  
-
   function prepareApp() {
-    getUserData();
     setupUserSettings();
     ready = true;
   }
@@ -21,7 +18,7 @@
 />
 
 {#if ready}
-  <Navbar />
+  <!--<Navbar />-->
   <Router {routes} />
   <!--<Footer />-->
 {/if}

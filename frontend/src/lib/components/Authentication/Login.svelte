@@ -5,6 +5,7 @@
   import { accessLevel, userName, startPage } from "../../../stores";
   import { accessLevels } from "../../types";
   import { getUserData, setupUserSettings } from "../../functions/user";
+  import { replace as replaceRoute } from "svelte-spa-router";
 
   let email = "";
   let password = "";
@@ -22,7 +23,6 @@
     }).then((response) => {
       if (response.status == 200) {
         response.json().then((data) => {
-          getUserData();
           setupUserSettings();
         });
       } else if (response.status == 401) {
