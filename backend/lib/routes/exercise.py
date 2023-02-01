@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import Response, request
+from flask import Response, request, make_response, jsonify
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -68,9 +68,6 @@ class ExerciseResource(Resource):
 
         # check for access
         is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
-
-        # check for access
-        _, auth = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
         if auth == None:
             return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
@@ -101,23 +98,42 @@ class ExerciseResource(Resource):
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
+        # for row in selection.fetchall():
+        #     print(row)
+        #     if args["exercise_details"]:
+        #         result[int(row["exercise_id"])] = dict(
+        #             exercise_id=int(row["exercise_id"]),
+        #             exercise_title=str(row["exercise_title"]),
+        #             exercise_description=str(row["exercise_description"]),
+        #             exercise_type=row["exercise_type"].name,
+        #             exercise_content=str(row["exercise_content"]),
+        #             exercise_solution=str(row["exercise_solution"]),
+        #             exercise_language=row["exercise_language"].name,
+        #         )
+        #     else:
+        #         result[int(row["exercise_id"])] = dict(
+        #             exercise_id=int(row["exercise_id"]),
+        #             exercise_title=str(row["exercise_title"]),
+        #             exercise_type=row["exercise_type"].name,
+        #             exercise_language=row["exercise_language"].name,
+        #         )
         for row in selection.fetchall():
             if args["exercise_details"]:
-                result[int(row["exercise_id"])] = dict(
-                    exercise_id=int(row["exercise_id"]),
-                    exercise_title=str(row["exercise_title"]),
-                    exercise_description=str(row["exercise_description"]),
-                    exercise_type=row["exercise_type"].name,
-                    exercise_content=str(row["exercise_content"]),
-                    exercise_solution=str(row["exercise_solution"]),
-                    exercise_language=row["exercise_language"].name,
+                result[int(row[0])] = dict(
+                    exercise_id=int(row[0]),
+                    exercise_title=str(row[1]),
+                    exercise_description=str(row[2]),
+                    exercise_type=row[3].name,
+                    exercise_content=str(row[4]),
+                    exercise_solution=str(row[5]),
+                    exercise_language=row[6].name,
                 )
             else:
-                result[int(row["exercise_id"])] = dict(
-                    exercise_id=int(row["exercise_id"]),
-                    exercise_title=str(row["exercise_title"]),
-                    exercise_type=row["exercise_type"].name,
-                    exercise_language=row["exercise_language"].name,
+                result[int(row[0])] = dict(
+                    exercise_id=int(row[0]),
+                    exercise_title=str(row[1]),
+                    exercise_type=row[3].name,
+                    exercise_language=row[6].name,
                 )
 
         return utils.makeResponseNewCookie(result, 200, request.cookies)
@@ -140,6 +156,10 @@ class ExerciseResource(Resource):
             required=True,
         )
         parser.add_argument("exercise_content", type=str, help="{error_msg}", required=True)
+        parser.add_argument("exercise_solution", type=str, help="{error_msg}", required=True)
+        parser.add_argument(
+            "exercise_language", type=lambda x: config.ExerciseLanguage(int(x)), help="{error_msg}", required=True
+        )
 
         args = parser.parse_args()
 
@@ -260,8 +280,9 @@ class ExerciseResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        exercise = ExerciseModel.query.filter_by(
-            exercise_id=args["exercise_id"]).first_or_404(description=f"Exercise with exercise_id {args['exercise_id']} does not exist")
+        exercise = ExerciseModel.query.filter_by(exercise_id=args["exercise_id"]).first_or_404(
+            description=f"Exercise with exercise_id {args['exercise_id']} does not exist"
+        )
 
         if args["exercise_title"]:
             exercise.exercise_title = args["exercise_title"]
@@ -274,7 +295,7 @@ class ExerciseResource(Resource):
 
         db_engine.session.commit()
 
-        result = dict(message=f"Successfully chanaged exercise with exercise_id {args['exercise_id']}")
+        result = dict(message=f"Successfully changed exercise with exercise_id {args['exercise_id']}")
         return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def delete(self) -> Response:

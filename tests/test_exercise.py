@@ -73,7 +73,6 @@ class ExerciseTest(unittest.TestCase):
                 "user_name": ExerciseTest.user_name,
                 "user_pass": ExerciseTest.user_pass,
                 "user_mail": ExerciseTest.user_mail,
-                "user_role": 3,
             },
             headers={"Content-Type": "application/json"},
         )
@@ -84,11 +83,12 @@ class ExerciseTest(unittest.TestCase):
             "POST",
             "http://127.0.0.1:5000/login",
             json={
-                "user_name": ExerciseTest.user_name,
+                "user_mail": ExerciseTest.user_mail,
                 "user_pass": ExerciseTest.user_pass,
             },
             headers={"Content-Type": "application/json"},
         )
+        print(r.headers)
         cls.userCookie = r.headers["Set-Cookie"]
 
     @classmethod

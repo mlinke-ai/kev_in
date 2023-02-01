@@ -576,6 +576,11 @@ class UserTest(unittest.TestCase):
             headers=UserTest.content_header,
         )
         self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["message"], "Welcome Allcen Mila!")
+        header = UserTest.content_header.copy()
+        header.update({"Cookie": r.headers["Set-Cookie"]})
+        r = requests.request("DELETE", "http://127.0.0.1:5000/user", json={"user_id": user_id}, headers=header)
+        self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json()["message"], f"Successfully deleted user with user_id {user_id}")
 
     def test_delete_self_as_user(self) -> None:

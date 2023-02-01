@@ -7,7 +7,8 @@ from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config
 from backend.lib.interfaces.database import db_engine
-
+import hashlib
+import jwt
 
 class LoginResource(Resource):
     def post(self) -> Response:

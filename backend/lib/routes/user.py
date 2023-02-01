@@ -105,21 +105,19 @@ class UserResource(Resource):
         # load the selection into the response data
         result = dict()
         for row in selection.fetchall():
-
             # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
             is_admin, auth, client_id = utils.authorize(
-                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row["user_id"])
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
             if auth == None:
                 return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
             elif not auth:
                 return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
-
-            result[int(row["user_id"])] = dict(
-                user_id=int(row["user_id"]),
-                user_name=str(row["user_name"]),
-                user_mail=str(row["user_mail"]),
-                user_role=row["user_role"].name,
+            result[int(row[0])] = dict(
+                user_id=int(row[0]),
+                user_name=str(row[1]),
+                user_mail=str(row[3]),
+                user_role=row[4].name,
             )
 
         return utils.makeResponseNewCookie(result, 200, request.cookies)
