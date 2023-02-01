@@ -17,7 +17,7 @@
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        user_name: email,
+        user_mail: email,
         user_pass: password,
       }),
     }).then((response) => {
