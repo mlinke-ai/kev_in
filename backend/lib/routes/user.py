@@ -60,27 +60,26 @@ class UserResource(Resource):
                 request.cookies
             )
 
-        # load the user table
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        # compose a query to select the requested element
-        query = db_engine.select(user_table).select_from(user_table)
-
         if len(request.url.split("?")) == 1: #a request with no arguments was sent
             #return the user data from the logged in user
             id = utils.getUseridFromCookies(request.cookies)
             if id == None:
                 return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-            query = query.where(user_table.c.user_id == id)
-            selection = db_engine.session.execute(query)
-            row = selection.fetchone()
+        
+            user_obj = UserModel.query.filter_by(user_id=id).one()
 
             result = dict(
-                user_id=int(row["user_id"]),
-                user_name=str(row["user_name"]),
-                user_mail=str(row["user_mail"]),
-                user_role=row["user_role"].name
+                user_id=int(user_obj.user_id),
+                user_name=str(user_obj.user_name),
+                user_mail=str(user_obj.user_mail),
+                user_role=user_obj.user_role.name
             )
             return utils.makeResponseNewCookie(result, 200, request.cookies)
+
+        # load the user table
+        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
+        # compose a query to select the requested element
+        query = db_engine.select(user_table).select_from(user_table)
             
         if args["user_id"]:
             query = query.where(user_table.c.user_id == args["user_id"])
@@ -256,7 +255,9 @@ class UserResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        user = UserModel.query.filter_by(user_id=args["user_id"]).first_or_404()
+        user = UserModel.query.filter_by(
+            user_id=args["user_id"]).first_or_404(description=f"User with user_id {args['user_id']} does not exist")
+            
         if args["user_name"]:
             user.user_name = args["user_name"]
         if args["user_mail"]:

@@ -195,7 +195,6 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
         parser.add_argument(
             "solution_date",
@@ -219,24 +218,19 @@ class SolutionResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        # load the solution table
-        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
-        # drop the ID as we don#t want to update it
-        values = args.copy()
-        del values["solution_id"]
-        # compose the query to update the requested element
-        query = (
-            db_engine.update(solution_table).where(solution_table.c.solution_id == args["solution_id"]).values(values)
-        )
-        # execute the query
-        selection = db_engine.session.execute(query)
+        solution = SolutionModel.query.filter_by(
+            solution_id=args["solution_id"]).first_or_404(description=f"Solution with solution_id {args['solution_id']} does not exist")
+
+        if args["solution_exercise"]:
+            solution.solution_exercise = args["solution_exercise"]
+        if args["solution_date"]:
+            solution.solution_date = args["solution_date"]
+        if args["solution_duration"]:
+            solution.solution_duration = args["solution_duration"]
+        if args["solution_correct"]:
+            solution.solution_correct = args["solution_correct"]
+
         db_engine.session.commit()
-
-        # if no element was updated, the rowcount is 0
-
-        if selection.rowcount == 0:
-            result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
         return utils.makeResponseNewCookie(result, 200, request.cookies)
