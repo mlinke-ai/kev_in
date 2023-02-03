@@ -17,14 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from flask import Response, request
+import datetime
+
+import datetime
+
+from flask import Response, request, make_response, jsonify
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
-from backend.lib.interfaces.database import SolutionModel, db_engine
 from backend.lib.core import config, utils
-
-import datetime
+from backend.lib.interfaces.database import SolutionModel, db_engine
 
 
 class SolutionResource(Resource):
@@ -44,21 +46,21 @@ class SolutionResource(Resource):
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
         parser.add_argument(
-            "solution_date",
-            type=lambda x: datetime.datetime.fromtimestamp(x),
-            help="{error_msg}",
-            location="args"
-            )
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", location="args"
+        )
         parser.add_argument(
-            "solution_duration",
-            type=lambda x: datetime.timedelta(x),
-            help="{error_msg}",
-            location="args"
-            )
+            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", location="args"
+        )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_content", type=str, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
         parser.add_argument(
-            "solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args"
+            "solution_limit",
+            type=int,
+            default=config.MAX_ITEMS_RETURNED,
+            help="{error_msg}",
+            location="args",
         )
 
         args = parser.parse_args()
@@ -68,8 +70,8 @@ class SolutionResource(Resource):
             return utils.makeResponseNewCookie(
                 dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
                 400,
-                request.cookies
-                )
+                request.cookies,
+            )
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -85,11 +87,17 @@ class SolutionResource(Resource):
         if args["solution_exercise"]:
             query = query.where(solution_table.c.solution_exercise == args["solution_exercise"])
         if args["solution_date"]:
-            query = query.where(solution_table.c.solution_date == args["solution_date"])
+            lower = args["solution_date"].replace(hour=0, minute=0, second=0, microsecond=0)
+            upper = lower + datetime.timedelta(days=1)
+            query = query.where(sqlalchemy.between(solution_table.c.solution_date, lower, upper))
         if args["solution_duration"]:
             query = query.where(solution_table.c.solution_duration == args["solution_duration"])
         if args["solution_correct"]:
             query = query.where(solution_table.c.solution_correct == args["solution_correct"])
+        if args["solution_pending"]:
+            query = query.where(solution_table.c.solution_correct == args["solution_pending"])
+        if args["solution_content"]:
+            query = query.where(solution_table.c.solution_content == args["solution_content"])
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
@@ -112,6 +120,8 @@ class SolutionResource(Resource):
                 solution_date=str(row[3]),
                 solution_duration=str(row[4]),
                 solution_correct=row[5],
+                solution_pending=row[6],
+                solution_text=row[7],
             )
 
         return utils.makeResponseNewCookie(result, 200, request.cookies)
@@ -127,32 +137,23 @@ class SolutionResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
         parser.add_argument(
-            "solution_date",
-            type=lambda x: datetime.datetime.fromtimestamp(x),
-            help="{error_msg}",
-            required=True
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", required=True
         )
-        parser.add_argument("solution_duration",
-            type=lambda x: datetime.timedelta(x),
-            help="{error_msg}",
-            required=True
+        parser.add_argument(
+            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", required=True
         )
 
         args = parser.parse_args()
 
         # check for access
-        is_admin, auth, user_id = utils.authorize(
-            cookies= request.cookies,
-            method= "POST",
-            endpoint= "solution"
-            )
+        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="POST", endpoint="solution")
         if auth == None:
             return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
-        correct = True
+        correct, pending = True, False
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -162,7 +163,9 @@ class SolutionResource(Resource):
             solution_exercise=args["solution_exercise"],
             solution_date=args["solution_date"],
             solution_duration=args["solution_duration"],
-            solution_correct=correct
+            solution_correct=correct,
+            solution_pending=pending,
+            solution_text=args["solution_text"],
         )
         # add the new element
         db_engine.session.add(solution)
@@ -177,11 +180,13 @@ class SolutionResource(Resource):
         result = dict(
             message="Successfully submitted solution",
             solution_id=row[0],
-            solution_user=solution.solution_user,
-            solution_exercise=solution.solution_exercise,
-            solution_date=str(solution.solution_date),
-            solution_duration=str(solution.solution_duration),
-            solution_correct=solution.solution_correct
+            solution_user=row[1],
+            solution_exercise=row[2],
+            solution_date=row[3],
+            solution_duration=row[4],
+            solution_correct=row[5],
+            solution_pending=row[6],
+            solution_content=row[7],
         )
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 
@@ -196,18 +201,13 @@ class SolutionResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        parser.add_argument(
-            "solution_date",
-            type=lambda x: datetime.datetime.fromtimestamp(x),
-            help="{error_msg}"
-        )
-        parser.add_argument("solution_duration",
-            type=lambda x: datetime.timedelta(x),
-            help="{error_msg}"
-        )
+        parser.add_argument("solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}")
+        parser.add_argument("solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
+        parser.add_argument("solution_pending", type=bool, help="{error_msg}")
+        parser.add_argument("solution_content", type=str, help="{error_msg}")
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth, user_id = utils.authorize(
@@ -218,8 +218,9 @@ class SolutionResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        solution = SolutionModel.query.filter_by(
-            solution_id=args["solution_id"]).first_or_404(description=f"Solution with solution_id {args['solution_id']} does not exist")
+        solution = SolutionModel.query.filter_by(solution_id=args["solution_id"]).first_or_404(
+            description=f"Solution with solution_id {args['solution_id']} does not exist"
+        )
 
         if args["solution_exercise"]:
             solution.solution_exercise = args["solution_exercise"]
@@ -246,7 +247,7 @@ class SolutionResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         # check for access
         is_admin, auth, user_id = utils.authorize(

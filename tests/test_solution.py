@@ -20,9 +20,6 @@
 import unittest
 import requests
 
-from parameterized import parameterized
-
-
 class SolutionTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -55,6 +52,9 @@ class SolutionTest(unittest.TestCase):
     def test_get_existing_by_pending(self) -> None:
         pass
 
+    def test_get_existing_by_content(self) -> None:
+        pass
+
     def test_get_non_existing_by_id(self) -> None:
         pass
 
@@ -74,6 +74,9 @@ class SolutionTest(unittest.TestCase):
         pass
 
     def test_get_non_existing_by_pending(self) -> None:
+        pass
+
+    def test_get_non_existing_by_content(self) -> None:
         pass
 
     def test_get_restrict_page_size(self) -> None:
@@ -115,10 +118,10 @@ class SolutionTest(unittest.TestCase):
     def test_create_with_negative_duration(self) -> None:
         pass
 
-    def test_create_with_empty_text(self) -> None:
+    def test_create_with_empty_content(self) -> None:
         pass
 
-    def test_create_with_malformed_text(self) -> None:
+    def test_create_with_malformed_content(self) -> None:
         pass
 
     # --- PUT ---
@@ -150,10 +153,13 @@ class SolutionTest(unittest.TestCase):
     def test_change_to_negative_duration(self) -> None:
         pass
 
-    def test_change_to_empty_text(self) -> None:
+    def test_change_pending(self) -> None:
         pass
 
-    def test_change_to_malformed_text(self) -> None:
+    def test_change_to_empty_content(self) -> None:
+        pass
+
+    def test_change_to_malformed_content(self) -> None:
         pass
 
     # --- DELETE ---

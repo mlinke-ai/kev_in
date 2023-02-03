@@ -1,6 +1,8 @@
 # files:
+.coverage
 notes.md
 .coverage
+*.log
 
 # directories:
 __pycache__/
@@ -9,3 +11,4 @@ instance/
 node_modules/
 tex/
 .idea/
+wip/

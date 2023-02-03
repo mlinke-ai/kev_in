@@ -3,25 +3,33 @@
 
 import argparse
 import shutil
-import os
 
-from backend.server import Server
 from backend.lib.core import config
+from backend.server import Server
 
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="Kev.in Management Script", description="The control script to manage the server."
+        prog="Kev.in Management Script",
+        description="The control script to manage the server.",
     )
     parser.add_argument("-d", "--debug", action="store_true", help="Run the flask server in debug mode")
     parser.add_argument(
-        "-c", "--clean", action="store_true", help="Remove local database files before starting flask server"
+        "-c",
+        "--clean",
+        action="store_true",
+        help="Remove local database files before starting flask server",
     )
     parser.add_argument(
-        "-t", "--testing", action="store_true", help="Starts the server in test mode. Overrules environment variables."
+        "-t",
+        "--testing",
+        action="store_true",
+        help="Starts the server in test mode. Overrules environment variables.",
     )
     parser.add_argument(
-        "--host", action="store_true", help="Bind the flask server to the machines Ip address not 'localhost'"
+        "--host",
+        action="store_true",
+        help="Bind the flask server to the machines Ip address not 'localhost'",
     )
     args = parser.parse_args()
 

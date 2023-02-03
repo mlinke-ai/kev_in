@@ -18,8 +18,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
-from backend.lib.evaluator.sandboxes.pyenv.pysandbox import ExecutePython
+
 from parameterized import parameterized
+
+from backend.lib.evaluator.sandboxes.pyenv.pysandbox import ExecutePython
 
 """ Test input parameter """
 
@@ -48,11 +50,14 @@ reverse_string = {
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {"ERROR": ()},
-        "RESULTLOG": {"0": (['"Hello World"'], ["dlroW olleH"]), "1": (['"Kev.in"'], ["ni.veK"])},
+        "RESULTLOG": {
+            "0": (['"Hello World"'], ["dlroW olleH"]),
+            "1": (['"Kev.in"'], ["ni.veK"]),
+        },
     },
 }
 
-# Mulitplication with three input parameter.
+# Multiplication with three input parameter.
 multiplication = {
     "user_code": "def mult(a, b, c):\r\n    return a*b*c",
     "user_func": "mult",
@@ -143,7 +148,10 @@ class TestPySandbox(unittest.TestCase):
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
         expected = test_input["expected"]
-        self.assertEqual(self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args), expected)
+        self.assertEqual(
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
+            expected,
+        )
 
     # Test input
     @parameterized.expand([[multiplication_wrong], [fibonacci_wrong]])
@@ -153,7 +161,10 @@ class TestPySandbox(unittest.TestCase):
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
         not_expected = test_input["not_expected"]
-        self.assertNotEqual(self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args), not_expected)
+        self.assertNotEqual(
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
+            not_expected,
+        )
 
     # Test input
     @parameterized.expand([[infinite_loop]])
@@ -163,7 +174,10 @@ class TestPySandbox(unittest.TestCase):
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
         expected = test_input["expected"]
-        self.assertEqual(self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args), expected)
+        self.assertEqual(
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
+            expected,
+        )
 
     # Test input
     @parameterized.expand([[not_compilable]])

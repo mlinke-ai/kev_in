@@ -4,18 +4,17 @@
 from flask import Response, jsonify, make_response, current_app
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
-import jwt
-import hashlib
 
-from backend.lib.interfaces.database import db_engine
 from backend.lib.core import config
-
+from backend.lib.interfaces.database import db_engine
+import hashlib
+import jwt
 
 class LoginResource(Resource):
     def post(self) -> Response:
         """
         Implementation of HTTP POST method. Use this method to log in to an existing Account.
-        The Post request needs two arguments: user_namme, user_pass.
+        The Post request needs two arguments: user_name, user_pass.
         It is important to set 'Content-Type = application/json' in the header of the Request.
 
         Example Post Request (with default and passwort-hash):
@@ -42,7 +41,7 @@ class LoginResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
         # hash the password with sha-256
         args["user_pass"] = hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest()
         # load the user table
@@ -68,4 +67,3 @@ class LoginResource(Resource):
             response = make_response(jsonify(result), 200)
             response.set_cookie("token", token, max_age=3600, httponly=True)
             return response
-        

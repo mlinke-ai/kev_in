@@ -1,5 +1,5 @@
 # My notes: Java Sandbox API
-So far only tested on linux. 
+So far only tested on Linux. 
 
 TODO:
 - Test java sandbox in Windows (subprocess)
@@ -25,5 +25,5 @@ from JavaSandboxEnv directory
 ### subprocess
 - capture_output sends stdout to javaEnv and not to console 
 - text convert the stdout to string 
-- shell=True is neccessary for windows user 
-- check=True Python throw an error if subprocess failes
+- shell=True is necessary for windows user 
+- check=True Python throw an error if subprocess fails

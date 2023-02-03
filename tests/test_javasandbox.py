@@ -18,7 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
-import requests
+
 from parameterized import parameterized
 
 # This unit test is written in pseudocode as the class ExecuteJava isn't deployed yet.

@@ -13,7 +13,7 @@ The exercise route is the endpoint to perform all different kinds of operations 
 
 The endpoint can be accessed at `<address>:<port>/exercise`.
 
-This endpoint is only accessable if the client is logged in as a existing user (if he sends the session cookie with a JWT inside).
+This endpoint is only accessible if the client is logged in as a existing user (if he sends the session cookie with a JWT inside).
 
 ## GET
 
@@ -40,7 +40,7 @@ fetch("http://<address>:<port>/exercise?<URLarguments>", {method: "GET"})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are seperated with `&`.
+Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are separated with `&`.
 
 ### Arguments
 
@@ -78,7 +78,7 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 === "400"
 
-	The `user_limit` is out of ragne, e.g. grater then `config.MAX_ITEMS_RETURNED`.
+	The `user_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.
 
 	```JSON
 	{
@@ -271,7 +271,7 @@ Arguments are constructed as dictionaries or JSON objects.
 
     ```JSON
     {
-        "message": "Successfully chanaged exercise with exercise_id 1"
+        "message": "Successfully changed exercise with exercise_id 1"
     }
     ```
 

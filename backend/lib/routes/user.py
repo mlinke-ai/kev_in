@@ -17,14 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from flask import Response, request
-from flask_restful import Resource, reqparse
-from flask_sqlalchemy.query import sqlalchemy
+import hashlib
 
 import hashlib
 
-from backend.lib.interfaces.database import UserModel, db_engine
+from flask import Response, request, make_response, jsonify
+from flask_restful import Resource, reqparse
+from flask_sqlalchemy.query import sqlalchemy
+
 from backend.lib.core import config, utils
+from backend.lib.interfaces.database import UserModel, db_engine
 
 
 class UserResource(Resource):
@@ -45,10 +47,16 @@ class UserResource(Resource):
             type=lambda x: config.UserRole(int(x)),
             default=config.UserRole.User,
             help="{error_msg}",
-            location="args"
+            location="args",
         )
         parser.add_argument("user_offset", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("user_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
+        parser.add_argument(
+            "user_limit",
+            type=int,
+            default=config.MAX_ITEMS_RETURNED,
+            help="{error_msg}",
+            location="args",
+        )
 
         args = parser.parse_args()
 
@@ -57,22 +65,22 @@ class UserResource(Resource):
             return utils.makeResponseNewCookie(
                 dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
                 400,
-                request.cookies
+                request.cookies,
             )
 
-        if len(request.url.split("?")) == 1: #a request with no arguments was sent
-            #return the user data from the logged in user
+        if len(request.url.split("?")) == 1:  # a request with no arguments was sent
+            # return the user data from the logged in user
             id = utils.getUseridFromCookies(request.cookies)
             if id == None:
                 return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-        
+
             user_obj = UserModel.query.filter_by(user_id=id).one()
 
             result = dict(
                 user_id=int(user_obj.user_id),
                 user_name=str(user_obj.user_name),
                 user_mail=str(user_obj.user_mail),
-                user_role=user_obj.user_role.name
+                user_role=user_obj.user_role.name,
             )
             return utils.makeResponseNewCookie(result, 200, request.cookies)
 
@@ -80,7 +88,7 @@ class UserResource(Resource):
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         # compose a query to select the requested element
         query = db_engine.select(user_table).select_from(user_table)
-            
+
         if args["user_id"]:
             query = query.where(user_table.c.user_id == args["user_id"])
         else:
@@ -97,24 +105,19 @@ class UserResource(Resource):
         # load the selection into the response data
         result = dict()
         for row in selection.fetchall():
-
-            #check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
             is_admin, auth, client_id = utils.authorize(
-                cookies= request.cookies,
-                method= "GET",
-                endpoint= "user",
-                resourceId= int(row["user_id"])
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
             if auth == None:
                 return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
             elif not auth:
                 return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
-
-            result[int(row["user_id"])] = dict(
-                user_id=int(row["user_id"]),
-                user_name=str(row["user_name"]),
-                user_mail=str(row["user_mail"]),
-                user_role=row["user_role"].name,
+            result[int(row[0])] = dict(
+                user_id=int(row[0]),
+                user_name=str(row[1]),
+                user_mail=str(row[3]),
+                user_role=row[4].name,
             )
 
         return utils.makeResponseNewCookie(result, 200, request.cookies)
@@ -133,7 +136,7 @@ class UserResource(Resource):
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         if args["user_name"] == "":
             return utils.makeResponseNewCookie(dict(message="user_name must not be empty"), 400, request.cookies)
@@ -155,18 +158,19 @@ class UserResource(Resource):
         except sqlalchemy.exc.IntegrityError:
             # TODO: should we do a rollback at this point?
             # db_engine.session.rollback()
-            return utils.makeResponseNewCookie(dict(message="A user with this mail already exists"), 409, request.cookies)
+            return utils.makeResponseNewCookie(
+                dict(message="A user with this mail already exists"), 409, request.cookies
+            )
         else:
             result = dict(
-                        message="The user was created successfully",
-                        user_id=user.user_id,
-                        user_name=user.user_name,
-                        user_mail=user.user_mail,
-                        user_role=user.user_role,
-                    )
-            
+                message="The user was created successfully",
+                user_id=user.user_id,
+                user_name=user.user_name,
+                user_mail=user.user_mail,
+                user_role=user.user_role,
+            )
+
             return utils.makeResponseNewCookie(result, 201, request.cookies)
-            
 
         # TODO: the method above is way more elegant; we should remove the lower part
         # # load the user table
@@ -230,7 +234,7 @@ class UserResource(Resource):
         parser.add_argument("user_mail", type=str, help="{error_msg}")
         parser.add_argument("user_role", type=lambda x: config.UserRole(int(x)), help="{error_msg}")
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
         if args["user_name"] == "":
             return utils.makeResponseNewCookie(dict(message="user_name must not be empty"), 400, request.cookies)
@@ -239,25 +243,26 @@ class UserResource(Resource):
         if args["user_mail"] == "":
             return utils.makeResponseNewCookie(dict(message="user_mail must not be empty"), 400, request.cookies)
 
-        if args["user_role"] == config.UserRole.SAdmin: #prevent creating super admin
+        if args["user_role"] == config.UserRole.SAdmin:  # prevent creating super admin
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        #check for access
+        # check for access
         is_admin, auth, client_id = utils.authorize(
-            cookies= request.cookies,
-            method= "PUT",
-            endpoint= "user",
-            resourceId= args["user_id"],
-            changeToAdmin=(not args["user_role"]==config.UserRole.User)
-            )
+            cookies=request.cookies,
+            method="PUT",
+            endpoint="user",
+            resourceId=args["user_id"],
+            changeToAdmin=(not args["user_role"] == config.UserRole.User),
+        )
         if auth == None:
             return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        user = UserModel.query.filter_by(
-            user_id=args["user_id"]).first_or_404(description=f"User with user_id {args['user_id']} does not exist")
-            
+        user = UserModel.query.filter_by(user_id=args["user_id"]).first_or_404(
+            description=f"User with user_id {args['user_id']} does not exist"
+        )
+
         if args["user_name"]:
             user.user_name = args["user_name"]
         if args["user_mail"]:
@@ -268,10 +273,14 @@ class UserResource(Resource):
             user.user_role = args["user_role"]
         try:
             db_engine.session.commit()
+        # TODO: write exception message into response
         except sqlalchemy.exc.IntegrityError:
+            # TODO: is IntegrityError also a nullable=False constraint violation?
             # TODO: should we do a rollback at this point?
             # db_engine.session.rollback()
-            return utils.makeResponseNewCookie(dict(message="A user with this mail already exists"), 409, request.cookies)
+            return utils.makeResponseNewCookie(
+                dict(message="A user with this mail already exists"), 409, request.cookies
+            )
         else:
             result = dict(message="Changed properties successfully")
             return utils.makeResponseNewCookie(result, 200, request.cookies)
@@ -307,15 +316,12 @@ class UserResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
-        #check for access
+        # check for access
         is_admin, auth, client_id = utils.authorize(
-            cookies= request.cookies,
-            method= "DELETE",
-            endpoint= "user",
-            resourceId= args["user_id"]
-            )
+            cookies=request.cookies, method="DELETE", endpoint="user", resourceId=args["user_id"]
+        )
         if auth == None:
             return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
         elif not auth:
