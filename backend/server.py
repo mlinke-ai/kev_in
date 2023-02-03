@@ -11,7 +11,7 @@ from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config, errors
-from backend.lib.interfaces import db_engine, UserModel
+from backend.lib.interfaces import db_engine, UserModel, ExerciseModel
 from backend.lib.routes import ExerciseResource, LoginResource, UserResource, SolutionResource, LogoutResource
 
 
@@ -27,6 +27,7 @@ class Server:
             db_engine.create_all()
             self._sadmin_check()
             self._tuser_check()
+            self._gen_exercises()
         self.api = Api(self.app)
         self.api.add_resource(ExerciseResource, "/exercise")
         self.api.add_resource(LoginResource, "/login")
@@ -88,6 +89,20 @@ class Server:
         #generate a random 64 letter password
         alphabet = string.ascii_letters + string.digits + '!@#$%^&*()_'
         return ''.join(secrets.choice(alphabet) for i in range(64))
+
+    def _gen_exercises(self) -> None:
+        #create some dummy exercises with different types
+        for i in range(1, 10):
+            for j in range(1, 8):
+                exercise = ExerciseModel(
+                    exercise_title=f"{config.ExerciseType(j).name}{i}",
+                    exercise_description=f"Dummy {config.ExerciseType(j).name} number {i}",
+                    exercise_type=config.ExerciseType(j),
+                    exercise_content='Here should be some formatted data',
+                )
+                db_engine.session.add(exercise)
+
+        db_engine.session.commit()
 
     def run(self, debug: bool = False, host: bool = False) -> None:
         self.app.run(debug=debug, host="0.0.0.0" if host else "127.0.0.1")
