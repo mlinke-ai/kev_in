@@ -10,7 +10,7 @@ from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config
-from backend.lib.interfaces import UserModel, db_engine
+from backend.lib.interfaces import UserModel, db_engine, ExerciseModel
 from backend.lib.routes import (
     ExerciseResource,
     LoginResource,
