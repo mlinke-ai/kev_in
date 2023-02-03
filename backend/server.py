@@ -103,7 +103,9 @@ class Server:
                     exercise_title=f"{config.ExerciseType(j).name}{i}",
                     exercise_description=f"Dummy {config.ExerciseType(j).name} number {i}",
                     exercise_type=config.ExerciseType(j),
-                    exercise_content='Here should be some formatted data',
+                    exercise_content='Here should be the exercise definition.',
+                    exercise_solution="here should be a solution.",
+                    exercise_language=config.ExerciseLanguage.Python
                 )
                 db_engine.session.add(exercise)
 
