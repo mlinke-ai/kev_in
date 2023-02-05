@@ -55,8 +55,9 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 | `exercise_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 | `exercise_language` | `int` | optional | `Python` | Programming Language of the exercise. `1` for Python, `2` for Java |
 | `exercise_details` | `bool` | optional | `true` | Query the system for advanced exercise details. |
+| `exercise_solution` | `string` | optional | `2` | The right solution to the exercise. |
+
 Arguments are constructed as dictionaries or JSON objects.
-| `exercise_solution` | `string` | optional | `2` | The right solution to the exercise . |
 
 ### Response
 
