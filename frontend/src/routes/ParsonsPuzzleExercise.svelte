@@ -68,7 +68,7 @@
       } else if (response.status === 400){
         console.log("user_limit out of range")
       } else if (response.status === 200){
-        response.json().then((data) => {
+        response.json().then(data => {
           // using static test data for now as data type is not disccused yet
           itemsRight = [];
           itemsLeft = [
@@ -85,7 +85,7 @@
           ];
           itemsLeftOriginal = itemsLeft.slice();
           console.log(data);
-          exerciseID = data[1]["exercise_id"];
+          // exerciseID = data[1]["exercise_id"];
           exerciseTitle = data[1]["exercise_title"];
           exerciseDescription = data[1]["exercise_description"];
           exerciseContent = data[1]["exercise_content"];

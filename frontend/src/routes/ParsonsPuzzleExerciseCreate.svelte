@@ -2,9 +2,10 @@
   import Button from "@smui/button/src/Button.svelte";
   import Page from "../lib/components/common/Page.svelte";
   import Textfield from "@smui/textfield";
-
+  import IconButton from '@smui/icon-button';
   import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
   import { each } from "svelte/internal";
+  import UiCard from "../lib/components/common/UICard.svelte";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
@@ -16,6 +17,15 @@
 
   function newPuzzlePiece(){
     itemsLeft = [...itemsLeft, {id: itemsLeft.length + 1, name: ""}]
+  }
+
+  function deletePuzzlePiece(idx){
+    idx --;
+    itemsLeft.splice(idx, 1);
+    for(let k = idx; k < itemsLeft.length; k++){
+      itemsLeft[k]["id"] --;
+    }
+    itemsLeft = itemsLeft
   }
 
 
@@ -51,7 +61,7 @@
       }
     })
   }
-
+  
 </script>
 
 <Page title="Create PPE" fullwidth={true}>
@@ -64,8 +74,12 @@
     </div>
     <div class="creation-area">
       {#each itemsLeft as item(item.id)}
-        <Textfield textarea bind:value={item.name} label={"Puzzle Piece #" + item.id}>
-        </Textfield>
+        <div style="display: flex; flex-direction: row; align-items: center;">
+          <Textfield textarea bind:value={item.name} label={"Puzzle Piece #" + item.id}></Textfield>
+          <IconButton class="material-icons" on:click={() => deletePuzzlePiece(item.id)}
+            >delete</IconButton
+          >
+        </div>
       {/each}
       <Button variant="raised" on:click={newPuzzlePiece}>Add a new Puzzle Piece</Button>
     </div>
