@@ -128,7 +128,8 @@ class SolutionResource(Resource):
 
     def post(self) -> Response:
         """
-        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents duplication.
+        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents
+        duplication.
 
         Returns:
             Response: A HTTP response with the new element or an error message in JSON.
@@ -172,7 +173,18 @@ class SolutionResource(Resource):
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        query = db_engine.select([sqlalchemy.func.max(solution_table.c.solution_id)]).select_from(solution_table)
+        subquery = (
+            db_engine.
+            select([sqlalchemy.func.max(solution_table.c.solution_id)])
+            .select_from(solution_table)
+            .scalar_subquery()
+        )
+        query = (
+            db_engine
+            .select(["*"])
+            .select_from(solution_table)
+            .where(solution_table.c.solution_id == subquery)
+        )
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
@@ -180,14 +192,14 @@ class SolutionResource(Resource):
         row = selection.fetchone()
         result = dict(
             message="Successfully submitted solution",
-            solution_id=row[0],#
-            solution_user=row[1],#
-            solution_exercise=row[2],#
-            solution_date=row[3],#
-            solution_duration=row[4],#
-            solution_correct=row[5],#
-            solution_pending=row[6],#
-            solution_content=row[7],#
+            solution_id=row[0],
+            solution_user=row[1],
+            solution_exercise=row[2],
+            solution_date=row[3],
+            solution_duration=row[4],
+            solution_correct=row[5],
+            solution_pending=row[6],
+            solution_content=row[7],
         )
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 
