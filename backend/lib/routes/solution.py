@@ -142,6 +142,7 @@ class SolutionResource(Resource):
         parser.add_argument(
             "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", required=True
         )
+        parser.add_argument("solution_content", type=str, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
@@ -165,7 +166,7 @@ class SolutionResource(Resource):
             solution_duration=args["solution_duration"],
             solution_correct=correct,
             solution_pending=pending,
-            solution_text=args["solution_text"],
+            solution_content=args["solution_content"],
         )
         # add the new element
         db_engine.session.add(solution)
@@ -179,14 +180,14 @@ class SolutionResource(Resource):
         row = selection.fetchone()
         result = dict(
             message="Successfully submitted solution",
-            solution_id=row[0],
-            solution_user=row[1],
-            solution_exercise=row[2],
-            solution_date=row[3],
-            solution_duration=row[4],
-            solution_correct=row[5],
-            solution_pending=row[6],
-            solution_content=row[7],
+            solution_id=row[0],#
+            solution_user=row[1],#
+            solution_exercise=row[2],#
+            solution_date=row[3],#
+            solution_duration=row[4],#
+            solution_correct=row[5],#
+            solution_pending=row[6],#
+            solution_content=row[7],#
         )
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 
