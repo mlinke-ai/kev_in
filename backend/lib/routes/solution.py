@@ -128,7 +128,8 @@ class SolutionResource(Resource):
 
     def post(self) -> Response:
         """
-        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents duplication.
+        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents
+        duplication.
 
         Returns:
             Response: A HTTP response with the new element or an error message in JSON.
@@ -142,6 +143,7 @@ class SolutionResource(Resource):
         parser.add_argument(
             "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", required=True
         )
+        parser.add_argument("solution_content", type=str, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
@@ -165,13 +167,24 @@ class SolutionResource(Resource):
             solution_duration=args["solution_duration"],
             solution_correct=correct,
             solution_pending=pending,
-            solution_text=args["solution_text"],
+            solution_content=args["solution_content"],
         )
         # add the new element
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        query = db_engine.select([sqlalchemy.func.max(solution_table.c.solution_id)]).select_from(solution_table)
+        subquery = (
+            db_engine.
+            select([sqlalchemy.func.max(solution_table.c.solution_id)])
+            .select_from(solution_table)
+            .scalar_subquery()
+        )
+        query = (
+            db_engine
+            .select(["*"])
+            .select_from(solution_table)
+            .where(solution_table.c.solution_id == subquery)
+        )
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
