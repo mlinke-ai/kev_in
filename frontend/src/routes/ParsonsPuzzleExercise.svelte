@@ -14,29 +14,28 @@
   let exerciseID = null;
   let exerciseTitle = "Exercise";
   let exerciseDescription = "Please use your Brain"
-  let exerciseContent = ""
 
 
   function getCurrentTimestamp () {
     return Date.now()
   }
 
-  const submitSolution = async (exercise_id) =>{
+  const submitSolution = async () =>{
     fetch(
       "/solution",
       {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          solution_user: 1,
           solution_exercise: exerciseID,
-          solution_date: getCurrentTimestamp(),
+          solution_date: 1675621950,
           solution_duration: elapsedTime,
+          solution_content: JSON.stringify(itemsRight.map(item => item.name))
         })
       }
     ).then(response => {
       if (response.status === 400){
-        alert("The user_limit is out of range");
+        alert("A required argument was not sent");
       }
       else if (response.status === 401){
         // redirect to login
@@ -54,7 +53,7 @@
 
   const getExercise = async () =>{
     fetch(
-      "/exercise?exercise_type=3&exercise_limit=19", 
+      "/exercise?exercise_type=3&exercise_limit=1&exercise_details=True&exercise_title=hallo", 
       {
         method: "GET",
         headers: {"Content-Type": "application/json"},
@@ -69,26 +68,21 @@
         console.log("user_limit out of range")
       } else if (response.status === 200){
         response.json().then(data => {
+          console.log(data)
           // using static test data for now as data type is not disccused yet
           itemsRight = [];
-          itemsLeft = [
-            {id: 1, name: "# calculations"},
-            {id: 2, name: "# input"},
-            {id: 3, name: "import math"},
-            {id: 4, name: "pi = (math.pi)"},
-            {id: 5, name: "perimeter = 2*radius*pi"},
-            {id: 6, name: "radius = input(\"Please enter the radius\""},
-            {id: 7, name: "area = pi * radius * radius"},
-            {id: 8, name: "print(radius, perimeter, area)"},
-            {id: 9, name: "print(\"results:\""},
-            {id: 10, name: "# output"}
-          ];
+          let exerciseData = Object.values(data)[0]
+          console.log(exerciseData)
+          let exerciseContent = JSON.parse(exerciseData["exercise_content"])
+          console.log(exerciseContent)
+          for(let i = 0; i < exerciseContent.length; i++){
+            itemsLeft[i] = {id: i+1, name: exerciseContent[i]}
+          }
           itemsLeftOriginal = itemsLeft.slice();
-          console.log(data);
-          // exerciseID = data[1]["exercise_id"];
-          exerciseTitle = data[1]["exercise_title"];
-          exerciseDescription = data[1]["exercise_description"];
-          exerciseContent = data[1]["exercise_content"];
+          console.log(itemsLeft);
+          exerciseTitle = exerciseData["exercise_title"];
+          exerciseDescription = exerciseData["exercise_description"];
+          exerciseID = exerciseData["exercise_id"]
         })
       }
     })

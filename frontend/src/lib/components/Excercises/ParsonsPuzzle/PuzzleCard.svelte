@@ -1,5 +1,5 @@
 <script>
-  import HorizontalList from "../../ParsonsPuzzleExercise/horizontalList.svelte";
+  import HorizontalList from "./horizontalList.svelte";
   import UiCard from "../../common/UICard.svelte";
 
   let initHeight = 0;

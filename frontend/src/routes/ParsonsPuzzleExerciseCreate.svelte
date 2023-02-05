@@ -36,10 +36,12 @@
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
-          exercise_title: "Test",
+          exercise_title: exerciseTitle,
           exercise_description: "My PPE Description",
           exercise_type: 3,
-          exercise_content: "Content String",
+          exercise_content: JSON.stringify(itemsLeft.map(item => item.name)),
+          exercise_language: 1,
+          exercise_solution: JSON.stringify(itemsLeft.map(item => item.name))
         })
       }
     ).then(response => {
