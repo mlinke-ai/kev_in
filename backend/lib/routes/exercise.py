@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import Response, request, make_response, jsonify
+from flask import Response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -185,19 +185,20 @@ class ExerciseResource(Resource):
         except sqlalchemy.exc.IntegrityError:
             # TODO: should we do a rollback at this point?
             # db_engine.session.rollback()
-            return make_response(jsonify(dict(message="An exercise with this title already exists")), 409)
+            return utils.makeResponseNewCookie(
+                dict(message="An exercise with this title already exists"), 409, request.cookies
+                )
         else:
-            return make_response(
-                jsonify(
-                    dict(
-                        message="The exercise was created successfully",
-                        exercise_id=exercise.exercise_id,
-                        exercise_title=exercise.exercise_title,
-                        exercise_description=exercise.exercise_description,
-                        exercise_content=exercise.exercise_content,
-                    )
+            return utils.makeResponseNewCookie(
+                dict(
+                    message="The exercise was created successfully",
+                    exercise_id=exercise.exercise_id,
+                    exercise_title=exercise.exercise_title,
+                    exercise_description=exercise.exercise_description,
+                    exercise_content=exercise.exercise_content,
                 ),
                 201,
+                request.cookies
             )
 
         # TODO: the method above is way more elegant; we should remove the lower part
