@@ -7,58 +7,55 @@
   import { Svg } from "@smui/common";
   import { each } from "svelte/internal";
 
-  let exercises = [
-    {
-      exercise_id: 0,
-      exercise_title: "example",
-      exercise_description: "some description",
-      exercise_type: 0,
-      exercise_content: "1+1=",
-      exercise_offset: 0,
-      exercise_limit: 0,
-    },
-    {
-      exercise_id: 1,
-      exercise_title: "example2",
-      exercise_description: "some other description",
-      exercise_type: 0,
-      exercise_content: "1+2=",
-      exercise_offset: 0,
-      exercise_limit: 0,
-    },
-    {
-      exercise_id: 2,
-      exercise_title: "example3",
-      exercise_description: "some other description",
-      exercise_type: 0,
-      exercise_content: "3+2=",
-      exercise_offset: 0,
-      exercise_limit: 0,
-    },
-    //content only for testcases
-    //turn later to
-    //getExercises
-  ];
+  let exercises = [];
+  //   {
+  //     exercise_id: 0,
+  //     exercise_title: "example",
+  //     exercise_description: "some description",
+  //     exercise_type: 0,
+  //     exercise_content: "1+1=",
+  //     exercise_offset: 0,
+  //     exercise_limit: 0,
+  //   },
+  //   {
+  //     exercise_id: 1,
+  //     exercise_title: "example2",
+  //     exercise_description: "some other description",
+  //     exercise_type: 0,
+  //     exercise_content: "1+2=",
+  //     exercise_offset: 0,
+  //     exercise_limit: 0,
+  //   },
+  //   {
+  //     exercise_id: 2,
+  //     exercise_title: "example3",
+  //     exercise_description: "some other description",
+  //     exercise_type: 0,
+  //     exercise_content: "3+2=",
+  //     exercise_offset: 0,
+  //     exercise_limit: 0,
+  //   },
+  //   //content only for testcases
+  //   //turn later to
+  //   //getExercises
+  // ];
 
-  let displayedExercises = [];
-
-  let currentExercise = 0;
-  let maxDisplayedExercises = 3;
+  let currentExercise = 1;
+  let maxDisplayedExercises = 20;
   let exercisesLoaded = false;
 
   const getExercises = async () => {
-    fetch("/exercise?exercise_id=0&exercise_offset=currentExercise", {
+    fetch(`/exercise?exercise_offset=${currentExercise}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
 
         response.json().then((data) => {
           console.log(data);
-          while (exercises.length != 0) {
-            exercises.pop();
-          }
-          exercises.push(data);
+          //exercises = [];
+          exercises = Object.values(data);
           console.log(exercises);
+          currentExercise += maxDisplayedExercises;
           exercisesLoaded = true;
         });
 
@@ -77,7 +74,8 @@
   getExercises();
 
   function showLastExercises() {
-    currentExercise -= exercises.length;
+    currentExercise -= maxDisplayedExercises;
+    exercisesLoaded = true;
     getExercises();
   }
 </script>
@@ -103,6 +101,7 @@
   <p>This is a placeholder site for listing all exercises.</p>
 
   {#if exercisesLoaded}
+   
     <div class="grid-container">
       {#each exercises as exercise}
         <div class="grid-item">
@@ -140,20 +139,20 @@
     <Button>Back to dashboard</Button>
   </a>
 
-  {#if exercises.length < maxDisplayedExercises}
-    <div class="list-exercises-buttons">
-      <Button on:click={showLastExercises}>last exercises</Button>
-    </div>
-  {:else if exercises.length == maxDisplayedExercises && currentExercise == 0}
-    <div class="list-exercises-buttons">
-      <Button on:click={getExercises}>more exercises</Button>
-    </div>
-  {:else}
-    <div class="list-exercises-buttons">
-      <Button on:click={getExercises}>more exercises</Button>
-      <Button on:click={showLastExercises}>last exercises</Button>
-    </div>
-  {/if}
+  {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
+  <div class="list-exercises-buttons">
+    <Button on:click={getExercises}>more users</Button>
+  </div>
+{:else if exercises.length > maxDisplayedExercises && exercises.length <= (currentExercise+ maxDisplayedExercises -1)}
+  <div class="list-exercises-buttons">
+    <Button on:click={showLastExercises}>last users</Button>
+  </div>
+{:else if exercises.length > maxDisplayedExercises && currentExercise != 1}
+  <div class="list-exercises-buttons">
+    <Button on:click={getExercises}>more users</Button>
+    <Button on:click={showLastExercises}>last users</Button>
+  </div>
+{/if}
 </Page>
 
 <style>
