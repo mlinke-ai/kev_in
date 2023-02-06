@@ -27,6 +27,7 @@ from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config, utils
 from backend.lib.interfaces.database import SolutionModel, db_engine
+from backend.lib.evaluator.evaluator import eval_solution
 
 
 class SolutionResource(Resource):
@@ -104,7 +105,8 @@ class SolutionResource(Resource):
         result = dict()
         for row in selection.fetchall():
 
-            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            # check for access for every resource, if client has no access for a certain resource the enpoint
+            # immediately returns 401 or 403
             is_admin, auth, user_id = utils.authorize(
                 cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
@@ -154,8 +156,11 @@ class SolutionResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
-        correct, pending = True, False
+        #evaluate solution attempt
+        correct, pending = eval_solution(
+            args["solution_content"],
+            args["solution_exercise"]
+        )
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -174,8 +179,8 @@ class SolutionResource(Resource):
         db_engine.session.commit()
         # check whether the element was added successfully
         subquery = (
-            db_engine.
-            select([sqlalchemy.func.max(solution_table.c.solution_id)])
+            db_engine
+            .select([sqlalchemy.func.max(solution_table.c.solution_id)])
             .select_from(solution_table)
             .scalar_subquery()
         )
@@ -197,8 +202,8 @@ class SolutionResource(Resource):
             solution_exercise=row[2],
             solution_date=row[3],
             solution_duration=row[4],
-            solution_correct=row[5],
-            solution_pending=row[6],
+            solution_correct=bool(row[5]), #db reponds with 0 or 1 sometimes
+            solution_pending=bool(row[6]),
             solution_content=row[7],
         )
         return utils.makeResponseNewCookie(result, 201, request.cookies)

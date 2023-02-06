@@ -1,9 +1,66 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from json import loads, JSONDecodeError
+
+from backend.lib.core.config import ExerciseType
+from backend.lib.interfaces.database import ExerciseModel
+
 from .sandboxes.pyenv.pysandbox import ExecutePython
 
 # from .sandboxes.javaenv.javasandbox import ExecuteJava
+
+def eval_solution(
+        solution_content: dict,
+        exercise_id: int
+        ) -> tuple[bool, bool]:
+    """
+    Evaluates if a provided solution attempt is correct.
+
+    Args:
+        solution_content :class:`str`:
+            The user input form the solution attempt. This should be JSON
+            serializable.
+        exercise_id :class:`int`
+            The id form the exercise, the solution attempt is about.
+            
+    """
+    
+    exercise: ExerciseModel = (
+        ExerciseModel
+        .query
+        .filter_by(exercise_id=exercise_id)
+        .one()
+    )
+    try:
+        sol_attempt = loads(solution_content)
+        sample_sol = loads(exercise.exercise_solution)
+    except (JSONDecodeError, TypeError):
+        return False, False
+    
+    if exercise.exercise_type == ExerciseType.GapTextExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.SyntaxExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
+        return (
+            Evaluator.evaluate_ppe(sol_attempt, sample_sol),
+            False
+        )
+    
+    elif exercise.exercise_type == ExerciseType.FindTheBugExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.DocumentationExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.OutputExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
+        return True, False
 
 
 class Evaluator:
@@ -54,3 +111,15 @@ class Evaluator:
             return {"Incorrect": "Not implemented yet"}
         else:
             return dict()
+
+    @staticmethod
+    def evaluate_ppe(user_input: dict, sample_solution: dict) -> bool:
+        """
+        Evaluates, if solution for a parsons puzzle exercise is right. Expected
+        solurion format is:
+        {
+            "list": ["item1", "item2", ...]
+        }
+        """
+
+        return user_input["list"] == sample_solution["list"]
