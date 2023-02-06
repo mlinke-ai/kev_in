@@ -6,6 +6,7 @@
   import { blur } from "svelte/transition";
   import AuthDialog from "../lib/components/Authentication/AuthDialog.svelte";
   import Dialog, { Title, Content, Actions, InitialFocus } from "@smui/dialog";
+  import Footer from "../lib/components/Footer/Footer.svelte";
 
   let open = false;
 </script>
@@ -54,6 +55,7 @@
     <AuthDialog />
   </Dialog>
 </Page>
+<Footer />
 
 <style lang="scss">
   header {
