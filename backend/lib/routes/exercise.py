@@ -126,7 +126,7 @@ class ExerciseResource(Resource):
                     exercise_title=str(row[1]),
                     exercise_description=str(row[2]),
                     exercise_type=row[3].name,
-                    exercise_content=json.loads(row[4]),
+                    exercise_content=utils.prepareExerciseContent(json.loads(row[4]), row[3].value),
                     exercise_solution=json.loads(row[5]),
                     exercise_language=row[6].name,
                 )
