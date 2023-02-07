@@ -18,10 +18,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import datetime
+import json
 
-import datetime
-
-from flask import Response, request, make_response, jsonify
+from flask import Response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -54,7 +53,7 @@ class SolutionResource(Resource):
         )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
-        parser.add_argument("solution_content", type=str, help="{error_msg}", location="args")
+        parser.add_argument("solution_content", type=dict, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
         parser.add_argument(
             "solution_limit",
@@ -145,7 +144,7 @@ class SolutionResource(Resource):
         parser.add_argument(
             "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", required=True
         )
-        parser.add_argument("solution_content", type=str, help="{error_msg}", required=True)
+        parser.add_argument("solution_content", type=dict, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
@@ -172,7 +171,7 @@ class SolutionResource(Resource):
             solution_duration=args["solution_duration"],
             solution_correct=correct,
             solution_pending=pending,
-            solution_content=args["solution_content"],
+            solution_content=json.dumps(args["solution_content"])
         )
         # add the new element
         db_engine.session.add(solution)
@@ -204,7 +203,7 @@ class SolutionResource(Resource):
             solution_duration=row[4],
             solution_correct=bool(row[5]), #db reponds with 0 or 1 sometimes
             solution_pending=bool(row[6]),
-            solution_content=row[7],
+            solution_content=json.loads(row[7]),
         )
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 
@@ -223,7 +222,7 @@ class SolutionResource(Resource):
         parser.add_argument("solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}")
-        parser.add_argument("solution_content", type=str, help="{error_msg}")
+        parser.add_argument("solution_content", type=dict, help="{error_msg}")
 
         args = parser.parse_args(strict=True)
 

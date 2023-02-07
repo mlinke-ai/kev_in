@@ -18,9 +18,9 @@ def eval_solution(
     Evaluates if a provided solution attempt is correct.
 
     Args:
-        solution_content :class:`str`:
-            The user input form the solution attempt. This should be JSON
-            serializable.
+        solution_content :class:`dict`:
+            The user input form the solution attempt. This should be a JSON
+            object.
         exercise_id :class:`int`
             The id form the exercise, the solution attempt is about.
             
@@ -33,7 +33,6 @@ def eval_solution(
         .one()
     )
     try:
-        sol_attempt = loads(solution_content)
         sample_sol = loads(exercise.exercise_solution)
     except (JSONDecodeError, TypeError):
         return False, False
@@ -46,7 +45,7 @@ def eval_solution(
     
     elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
         return (
-            Evaluator.evaluate_ppe(sol_attempt, sample_sol),
+            Evaluator.evaluate_ppe(solution_content, sample_sol),
             False
         )
     
