@@ -1,45 +1,15 @@
-<script>
+<script lang="ts">
   import Page from "../lib/components/common/Page.svelte";
-  import Button from "@smui/button/src/Button.svelte";
   import Card from "@smui/card";
+  import Menu from "@smui/menu";
+  import List, { Item, Separator, Text } from "@smui/list";
+  import Button, { Label } from "@smui/button";
 
   import IconButton, { Icon } from "@smui/icon-button";
   import { Svg } from "@smui/common";
   import { each } from "svelte/internal";
 
   let exercises = [];
-  //   {
-  //     exercise_id: 0,
-  //     exercise_title: "example",
-  //     exercise_description: "some description",
-  //     exercise_type: 0,
-  //     exercise_content: "1+1=",
-  //     exercise_offset: 0,
-  //     exercise_limit: 0,
-  //   },
-  //   {
-  //     exercise_id: 1,
-  //     exercise_title: "example2",
-  //     exercise_description: "some other description",
-  //     exercise_type: 0,
-  //     exercise_content: "1+2=",
-  //     exercise_offset: 0,
-  //     exercise_limit: 0,
-  //   },
-  //   {
-  //     exercise_id: 2,
-  //     exercise_title: "example3",
-  //     exercise_description: "some other description",
-  //     exercise_type: 0,
-  //     exercise_content: "3+2=",
-  //     exercise_offset: 0,
-  //     exercise_limit: 0,
-  //   },
-  //   //content only for testcases
-  //   //turn later to
-  //   //getExercises
-  // ];
-
   let currentExercise = 1;
   let maxDisplayedExercises = 20;
   let exercisesLoaded = false;
@@ -49,7 +19,6 @@
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
-
         response.json().then((data) => {
           console.log(data);
           //exercises = [];
@@ -58,7 +27,6 @@
           currentExercise += maxDisplayedExercises;
           exercisesLoaded = true;
         });
-
       } else if (response.status === 400) {
         alert(this.message);
       } else if (response.status === 403) {
@@ -78,30 +46,76 @@
     exercisesLoaded = true;
     getExercises();
   }
+
+  let menu: Menu;
+  let anchor: HTMLDivElement;
+  let anchorClasses: { [k: string]: boolean } = {};
 </script>
 
 <Page>
-  <div class="add-exercise-icon">
-    <div style="display: flex; align-items: center;">
-      <a href="/#/error">
-        <IconButton>
-          <Icon component={Svg} viewBox="0 0 24 24">
-            <path
-              fill="outlined"
-              d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"
-            />
-          </Icon>
-        </IconButton>&nbsp; add exercise
-      </a>
-    </div>
-  </div>
-
   <h1>Exercises</h1>
+
+  <div class="add-exercise">
+
+      <Button on:click={() => menu.setOpen(true)}>
+        <Icon component={Svg} viewBox="0 0 24 24">
+          <path
+            fill="outlined"
+            d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"
+          />
+        </Icon>
+        <Label>add exercise</Label>
+      </Button>
+
+      <Menu bind:this={menu}>
+        <List style="width: fit-content">
+          <Item>
+            <div class="display-icon">
+              <Icon component={Svg} viewBox="-1 -11 45 45">
+                <!-- 2 -8 50 50  -->
+                <path
+                  fill="outlined"
+                  d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"
+                />
+              </Icon>
+            </div>
+            <p style="width: 175px;"><a href="/#/error">Parsons Puzzle</a></p>
+<!-- please insert link to create a parsons puzzle here -->
+          </Item>
+          <Item>
+            <div class="display-icon">
+              <Icon component={Svg} viewBox="0 -8 45 45">
+                <!-- 2 -8 45 45 -->
+                <path
+                  fill="outlined"
+                  d="M22 24H2v-4h20v4zM13.06 5.19l3.75 3.75L7.75 18H4v-3.75l9.06-9.06zm4.82 2.68-3.75-3.75 1.83-1.83c.39-.39 1.02-.39 1.41 0l2.34 2.34c.39.39.39 1.02 0 1.41l-1.83 1.83z"
+                />
+              </Icon>
+            </div>
+            <p style="width: 175px;"><a href="/#/error">Fill in the Blanks</a></p>
+<!-- please insert link to create a fill in the blank here -->
+          </Item>
+          <Item>
+            <div class="display-icon">
+              <Icon component={Svg} viewBox="2 -6 35 35">
+                <!-- 2 -4 35 35 -->
+                <path
+                  fill="outlined"
+                  d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"
+                />
+              </Icon>
+            </div>
+            <p style="width: 175px;"><a href="/#/error">Free Coding Exercise</a></p>
+<!-- please insert link to create a free coding exercise here -->
+          </Item>
+        </List>
+      </Menu>
+
+    </div>
 
   <p>This is a placeholder site for listing all exercises.</p>
 
   {#if exercisesLoaded}
-   
     <div class="grid-container">
       {#each exercises as exercise}
         <div class="grid-item">
@@ -140,19 +154,19 @@
   </a>
 
   {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
-  <div class="list-exercises-buttons">
-    <Button on:click={getExercises}>more users</Button>
-  </div>
-{:else if exercises.length > maxDisplayedExercises && exercises.length <= (currentExercise+ maxDisplayedExercises -1)}
-  <div class="list-exercises-buttons">
-    <Button on:click={showLastExercises}>last users</Button>
-  </div>
-{:else if exercises.length > maxDisplayedExercises && currentExercise != 1}
-  <div class="list-exercises-buttons">
-    <Button on:click={getExercises}>more users</Button>
-    <Button on:click={showLastExercises}>last users</Button>
-  </div>
-{/if}
+    <div class="list-exercises-buttons">
+      <Button on:click={getExercises}>more users</Button>
+    </div>
+  {:else if exercises.length > maxDisplayedExercises && exercises.length <= currentExercise + maxDisplayedExercises - 1}
+    <div class="list-exercises-buttons">
+      <Button on:click={showLastExercises}>last users</Button>
+    </div>
+  {:else if exercises.length > maxDisplayedExercises && currentExercise != 1}
+    <div class="list-exercises-buttons">
+      <Button on:click={getExercises}>more users</Button>
+      <Button on:click={showLastExercises}>last users</Button>
+    </div>
+  {/if}
 </Page>
 
 <style>
@@ -175,12 +189,21 @@
     text-align: center;
   }
 
-  .add-exercise-icon {
+  .add-exercise {
     float: right;
-    align-items: right;
+    align-items: center;
+    /* margin-left: auto; */
+    display: flex;
+    width: fit-content;
   }
 
   .list-exercises-buttons {
     float: right;
+  }
+
+  .display-icon {
+    margin-right: auto;
+    width: 50px;
+    height: 50px;
   }
 </style>
