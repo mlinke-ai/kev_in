@@ -76,11 +76,9 @@
     </div>
     <div class="creation-area">
       {#each itemsLeft as item(item.id)}
-        <div style="display: flex; flex-direction: row; align-items: center;">
-          <Textfield textarea bind:value={item.name} label={"Puzzle Piece #" + item.id}></Textfield>
-          <IconButton class="material-icons" on:click={() => deletePuzzlePiece(item.id)}
-            >delete</IconButton
-          >
+        <div style="display: flex; flex-direction: row; align-items: center">
+          <Textfield textarea bind:value={item.name} label={"Puzzle Piece #" + item.id} style="width: 100%;"></Textfield>
+          <IconButton class="material-icons" on:click={() => deletePuzzlePiece(item.id)}>delete</IconButton>
         </div>
       {/each}
       <Button variant="raised" on:click={newPuzzlePiece}>Add a new Puzzle Piece</Button>
