@@ -121,4 +121,10 @@ class Evaluator:
         }
         """
 
-        return user_input["list"] == sample_solution["list"]
+        try:
+            t1 = user_input["list"]
+            t2 = sample_solution["list"]
+        except KeyError:
+            return False #wrong format somewhere
+
+        return t1 == t2
