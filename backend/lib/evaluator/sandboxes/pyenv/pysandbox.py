@@ -1,6 +1,7 @@
 import importlib.util
 import os
 import sys
+import re
 
 from RestrictedPython import compile_restricted_exec
 from RestrictedPython import limited_builtins, utility_builtins, safe_builtins
@@ -47,6 +48,13 @@ class ExecutePython:
         f = open("usercode.py", "w")
         f.write(user_code)
         f.close()
+
+        # Extract function name from function head by using regular expression.
+        matchObject = re.search("(?<=def.).[a-z|A-Z|_]+[^\(]", user_func)
+        if matchObject:
+            user_func = matchObject.group(0)
+        else:
+            raise ValueError("User function does not have the form 'def fun(..):'")
 
         # Adds another lines to user code that executes user function.
         for args in args_list:
