@@ -17,7 +17,7 @@
  -->
 
 <footer class="bottom-footer">
-    <Button class="footer-btn">
+    <Button class="footer-btn" disabled>
       Copyright © 2007 Free Software Foundation, Inc.
     </Button>
 

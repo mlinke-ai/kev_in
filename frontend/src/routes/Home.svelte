@@ -4,6 +4,7 @@
   import Page from "../lib/components/common/Page.svelte";
   import LanguageCard from "../lib/components/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
+  import Footer from "../lib/components/Footer/Footer.svelte";
   //import GroupSvg from "../lib/components/AnimatedSVG/GroupSVG.svelte";
 </script>
 
@@ -44,6 +45,8 @@
     </div>
   </main>
 </Page> 
+
+<Footer></Footer>
 
 <style lang="scss">
   header {
