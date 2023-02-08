@@ -8,7 +8,7 @@
     </div>
 </UiCard>
 
-<style lang="scss">
+<style>
     .output-container {
         position: absolute;
         top: 0;
