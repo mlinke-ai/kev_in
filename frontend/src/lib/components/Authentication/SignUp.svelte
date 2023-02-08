@@ -4,7 +4,7 @@
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
-  import { accessLevels, passwordLength } from "../../types";
+  import { accessLevels, passwordLength } from "../../constants";
 
   let email = "";
   let emailRegEx =
