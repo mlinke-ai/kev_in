@@ -1,6 +1,12 @@
 import { userID, userName, userMail, accessLevel } from "../../stores";
 import { accessLevels } from "../constants";
 
+export const logout = async() => {
+  await fetch("/logout", { method: "POST" }).then(() => {
+    window.location.replace("/")
+  });
+};
+
 export const setupUserSettings = async () => {
   await fetch("/user", { method: "GET" }).then((response) => {
     if (response.status == 200) {
