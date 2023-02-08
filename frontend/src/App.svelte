@@ -5,8 +5,10 @@
   import { setupUserSettings } from "./lib/functions/user";
   import { accessLevel } from "./stores";
 
-  function prepareApp() {
-    setupUserSettings();
+  const prepareApp = async () => {
+    await setupUserSettings().then(null, () => {
+      $accessLevel = 0;
+    });
   }
 </script>
 
