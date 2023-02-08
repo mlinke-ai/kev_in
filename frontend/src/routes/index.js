@@ -7,6 +7,7 @@ import SignUp from "./SignUp.svelte"
 import AdminDashboard from "./AdminDashboard.svelte"
 import Exercises from "./Exercises.svelte"
 import Users from "./Users.svelte"
+import AddUser from "./AddUser.svelte"
 //import ExamplePage from "./Example.svelte"
 
 export default {
@@ -18,6 +19,7 @@ export default {
     "/admin-dashboard": AdminDashboard,
     "/exercises": Exercises,
     "/users": Users,
+    "/adduser": AddUser,
     //"/example-path": <ExamplePage>,
     "*": Error
 }

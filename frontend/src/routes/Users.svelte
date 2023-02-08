@@ -12,44 +12,16 @@
   } from "@smui/card";
 
   import IconButton, { Icon } from "@smui/icon-button";
-  import { Svg } from "@smui/common";
+  import { Label, Svg } from "@smui/common";
   import { each } from "svelte/internal";
 
   let currentUser = 1;
+  //let maxGetUsers =20;
+  //dont change this, it is a limit from the backend
+  //let idxUsersLoaded = 0;
   let maxDisplayedUsers = 20;
   let usersLoaded = false;
   let users = [];
-
-  // {
-  //   user_id: 0,
-  //   user_name: "nobody"
-
-  // },
-  // {
-  //   user_id: 1,
-  //   user_name: "nobody"
-  // },
-  // {
-  //   user_id: 2,
-  //   user_name: "nobody"
-
-  // },
-  // {
-  //   user_id: 3,
-  //   user_name: "nobody"
-
-  // },
-  // {
-  //   user_id: 4,
-  //   user_name: "nobody"
-
-  // },
-  //content only for testcases
-  //turn later to
-  //getUsers
-  // ];
-
-  //&user_limit=${maxDisplayedUsers+currentUser}
 
   const getUsers = async () => {
     await fetch(`/user?user_offset=${currentUser}`, {
@@ -58,7 +30,6 @@
       if (response.status == 200) {
         response.json().then((data) => {
           console.log(data);
-          //users = [];
           users = Object.values(data);
           console.log(users);
           currentUser += maxDisplayedUsers;
@@ -78,7 +49,15 @@
 
   getUsers();
 
+  function showNextUsers() {
+    // idxUsersLoaded +=maxDisplayedUsers;
+    usersLoaded = false;
+    getUsers();
+  }
+
   function showLastUsers() {
+    // idxUsersLoaded -=maxDisplayedUsers;
+    // currentUser -= (maxGetUsers - maxDisplayedUsers);
     currentUser -= maxDisplayedUsers;
     usersLoaded = false;
     getUsers();
@@ -86,22 +65,22 @@
 </script>
 
 <Page>
-  <div class="add-user-icon">
-    <div style="display: flex; align-items: center;">
-      <a href="/#/error">
-        <IconButton>
-          <Icon component={Svg} viewBox="0 0 24 24">
-            <path
-              fill="outlined"
-              d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"
-            />
-          </Icon>
-        </IconButton>&nbsp; add user
-      </a>
-    </div>
-  </div>
 
   <h1>Users</h1>
+
+  <div class="add-user-icon">
+    <a href="/#/adduser">
+    <Button>
+      <Icon component={Svg} viewBox="0 0 24 24">
+        <path
+          fill="outlined"
+          d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"
+        />
+      </Icon>
+      <Label>add user</Label>
+    </Button>
+  </a>
+  </div>
 
   <p>This is a placeholder site for listing all users.</p>
 
@@ -112,6 +91,7 @@
           <Card>
             <div style="display: flex; align-items: center;">
               <a href="/#/error">
+                <!-- please add link to profile of user with {user.user_id} -->
                 <IconButton>
                   <Icon component={Svg} viewBox="0 0 24 24">
                     <path
@@ -124,6 +104,7 @@
             </div>
 
             <a href="/#/error">
+              <!-- please add link to profile of user with {user.user_id} -->
               #{user.user_id}
               {user.user_name}
             </a>
@@ -137,20 +118,21 @@
     <Button>Back to dashboard</Button>
   </a>
 
-  {#if users.length > maxDisplayedUsers && currentUser == 1}
+  {#if users.length > maxDisplayedUsers && currentUser == 0}
     <div class="list-users-buttons">
-      <Button on:click={getUsers}>more users</Button>
+      <Button on:click={showNextUsers}>more users</Button>
     </div>
   {:else if users.length > maxDisplayedUsers && users.length <= currentUser + maxDisplayedUsers - 1}
     <div class="list-users-buttons">
       <Button on:click={showLastUsers}>last users</Button>
     </div>
-  {:else if users.length > maxDisplayedUsers && currentUser != 1}
+  {:else if users.length > maxDisplayedUsers && currentUser != 0}
     <div class="list-users-buttons">
-      <Button on:click={getUsers}>more users</Button>
+      <Button on:click={showNextUsers}>more users</Button>
       <Button on:click={showLastUsers}>last users</Button>
     </div>
   {/if}
+<!-- does not work properly yet, needs total number of users from backend-->
 </Page>
 
 <style>
