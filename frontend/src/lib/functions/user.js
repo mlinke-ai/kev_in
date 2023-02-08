@@ -1,10 +1,11 @@
-import { userName, userMail, accessLevel, startPage } from "../../stores";
+import { userID, userName, userMail, accessLevel, startPage } from "../../stores";
 import { accessLevels } from "../types";
 
 export const getUserData = async () => {
   await fetch("/user", { method: "GET" }).then((response) => {
     if (response.status == 200) {
       response.json().then((data) => {
+        userID.set(data.user_id);
         userName.set(data.user_name);
         userMail.set(data.user_mail);
         console.log(data.user_role);
