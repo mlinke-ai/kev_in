@@ -10,12 +10,9 @@ export let navbarConfig = {
             //    route: "/my-route",
             //},
         ],
-        buttons: [
-        ]
     },
     authenticated: {
         links: [],
-        buttons: []
     },
     admin: {
         links: [
