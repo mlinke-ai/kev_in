@@ -8,6 +8,12 @@ from .sandboxes.pyenv.pysandbox import ExecutePython
 
 class Evaluator:
 
+    @staticmethod
+    def evaluate(**kwargs):
+        # Define input arguments for evaluate
+        # Get user func from head e.g. "def func(someArg, ...,)->None:" -> "func"
+        pass
+
     # TODO function name required "user_func"
     @staticmethod
     def evaluate_user_code(user_code: str, user_func: str, language: str, **args_result_dict: dict) -> dict:
@@ -16,11 +22,11 @@ class Evaluator:
 
         Args:
             user_code: String containing user code.
-            user_func: Function inside user_code to execute e.g. "fibonacci" or "multiplication" or "reverseString".
+            user_func: Function inside user_code to execute. E.g. "def fibonacci(n):"
             language: "python" or "java"
             **args_result_dict: Dictionary {'1': ([Arg1, Arg2,.., Argn], [Result]), \
                                             '2': ([Args], [Result]), ..}
-                                            e.g. {"0": ([2, 2, 2], [8])}
+                                            e.g. {'1': ([2, 2, 2], [8])}
                                             Dictionary with input args and expected result.
         Return:
             Dictionary as a result log:
