@@ -4,6 +4,7 @@
 import hashlib
 import secrets
 import string
+import json
 
 from flask import Flask, Response, send_from_directory
 from flask_restful import Api
@@ -99,12 +100,16 @@ class Server:
             print("create dummy exercises")
             for i in range(10):
                 for j in range(7):
+                    if j == 2:
+                        content = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+                    else:
+                        content = {}
                     exercise = ExerciseModel(
                         exercise_title=f"{config.ExerciseType(j + 1).name}{i}",
                         exercise_description=f"Dummy {config.ExerciseType(j + 1).name} number {i}",
                         exercise_type=config.ExerciseType(j + 1),
-                        exercise_content="here should be the exercise definition.",
-                        exercise_solution="here should be a solution.",
+                        exercise_content=json.dumps(content),
+                        exercise_solution=json.dumps(content),
                         exercise_language=config.ExerciseLanguage.Python,
                     )
                     db_engine.session.add(exercise)
