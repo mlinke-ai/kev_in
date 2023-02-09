@@ -44,10 +44,6 @@ class ExecutePython:
         Return:
         {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()}, 'RESULTLOG': {'0': (['arg0'], ['solution0']), ...}}
         """
-        # Create usercode.py where user code is stored.
-        f = open("usercode.py", "w")
-        f.write(user_code)
-        f.close()
 
         # Extract function name from function head by using regular expression.
         matchObject = re.search("(?<=def.).[a-z|A-Z|_]+[^\(]", user_func)
@@ -55,6 +51,11 @@ class ExecutePython:
             user_func = matchObject.group(0)
         else:
             raise ValueError("User function does not have the form 'def fun(..):'")
+
+        # Create usercode.py where user code is stored.
+        f = open("usercode.py", "w")
+        f.write(user_code)
+        f.close()
 
         # Adds another lines to user code that executes user function.
         for args in args_list:
@@ -67,6 +68,8 @@ class ExecutePython:
 
         # Compilation failed.
         if self.__compile_result.code is None:
+            if os.path.exists("usercode.py"):
+                os.remove("usercode.py")
             return self.__sandbox_logs
 
         # Import module "usercode.py" as it is now safe to import.
