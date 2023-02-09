@@ -4,7 +4,7 @@
 <script>
   import { blur } from "svelte/transition";
   import { accessLevel } from "../../../stores";
-  import { accessLevels } from "../../types";
+  import { accessLevels } from "../../constants";
   import { replace as replaceRoute } from "svelte-spa-router";
 
   export let transition = true;

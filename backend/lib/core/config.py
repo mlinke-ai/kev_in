@@ -3,6 +3,7 @@
 
 import enum
 
+
 SADMIN_NAME = "sadmin"
 SADMIN_PASS = "sadmin"
 SADMIN_MAIL = "sadmin@example.com"
@@ -18,8 +19,6 @@ TESTING_DATABASE_URI = "sqlite:///testing.db"
 USER_TABLE = "users"
 EXERCISE_TABLE = "exercises"
 SOLUTION_TABLE = "solutions"
-
-JWT_SECRET = "9457645763984570345"
 
 MAX_ITEMS_RETURNED = 20
 

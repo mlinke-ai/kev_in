@@ -1,16 +1,12 @@
 import Home from "./Home.svelte"
-import Login from "./Login.svelte"
-import Profile from "./Profile.svelte"
+import Dashboard from "./Dashboard.svelte"
 import Error from "./Error.svelte"
 import CodeSandbox from "./CodeSandbox.svelte"
-import SignUp from "./SignUp.svelte"
 //import ExamplePage from "./Example.svelte"
 
 export default {
     "/": Home,
-    "/login": Login,
-    "/signup": SignUp,
-    "/profile": Profile,
+    "/dashboard": Dashboard,
     "/sandbox": CodeSandbox,
     //"/example-path": <ExamplePage>,
     "*": Error

@@ -1,15 +1,14 @@
 <script>
   import Navbar from "./lib/components/Navbar/Navbar.svelte";
-  import Router, { replace as replaceRoute } from "svelte-spa-router";
+  import Router from "svelte-spa-router";
   import routes from "./routes/";
-  import { setupUserSettings, getAccessLevel } from "./lib/functions/user";
-  import Footer from "./lib/components/Footer/Footer.svelte";
+  import { setupUserSettings } from "./lib/functions/user";
+  import { accessLevel } from "./stores";
 
-  let ready = false;
-
-  function prepareApp() {
-    setupUserSettings(getAccessLevel());
-    ready = true;
+  const prepareApp = async () => {
+    await setupUserSettings().then(null, () => {
+      $accessLevel = 0;
+    });
   }
 </script>
 
@@ -19,10 +18,8 @@
   }}
 />
 
-{#if ready}
+{#if $accessLevel >= 0}
   <Navbar />
   <Router {routes} />
   <!--<Footer />-->
-{:else}
-  preparing...
 {/if}

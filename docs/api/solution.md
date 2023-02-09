@@ -38,7 +38,7 @@ fetch("http://<address>:<port>/solution?<URLarguments>", {method: "GET"})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
-Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are seperated with `&`.
+Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the argument, example values are listed in the table below). Multiple arguments are separated with `&`.
 
 ### Arguments
 
@@ -47,9 +47,11 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 | `solution_id` | `int` | optional | `1` | The ID of the solution. Normally obtained after creating a new solution. |
 | `solution_user` | `int` | optional | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | optional | `1` | The ID of the exercise which the solution was provided for. |
-| `solution_date` | `int` | optional | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
+| `solution_date` | `int` | optional | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. As querring for a specific timestamp, the system queries for all solutions which have the same year, month and date `solution_date`. |
 | `solution_duration` | `int` | optional | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
 | `solution_correct` | `bool` | optional | `true` | Whether the solution solves the exercise correctly or not. |
+| `solution_pending` | `bool` | optional | `false` | Whether the solution is in pending state. Pending state means an admin needs to evaluate the solution. |
+| `solution_content` | `str` | optional | `"hello, world"` | The content provided by the user. Querring for the solution content is quite useless but this field is added for completeness. |
 | `solution_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
 | `solution_limit` | `int` | optional | `1` | The size of the page. If a page is requested and `solution_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 
@@ -62,25 +64,27 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
     The response is a dictionary of JSON object. The solution ID is mapped to all solution attributes.
     ```JSON
     {
-        "1": {
-            "solution_id": 1,
-            "solution_user": 1,
+        "2": {
+            "solution_correct": true,
+            "solution_date": "2023-01-11 15:16:25",
+            "solution_duration": "122 days, 0:00:00",
             "solution_exercise": 1,
-            "solution_date": 1672946590,
-            "solution_duration": 524,
-            "solution_correct": true
+            "solution_id": 2,
+            "solution_user": 1,
+            "solution_pending": false,
+            "solution_content": <...>
         }
     }
     ```
 
 === "400"
 
-	The `user_limit` is out of ragne, e.g. grater then `config.MAX_ITEMS_RETURNED`.
+	The `user_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.
 	```JSON
 	{
 		"message": "Page limit not in range",
-		"min_limit": "<min_value>",
-		"max_limit": "<max_value>"
+		"min_limit": <min_value>,
+		"max_limit": <max_value>
 	}
 	```
 
@@ -137,10 +141,10 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `solution_user` | `int` | required | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | required | `1` | The ID of the exercise which the solution was provided for. |
-| `solution_data` | `int` | required | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
+| `solution_date` | `int` | required | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
 | `solution_duration` | `int` | required | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
+| `solution_content` | `str` | required | `"hello, world!"` | The content provided by the user. |
 
 ### Response
 
@@ -149,12 +153,15 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
     The response is a dictionary or JSON object, together with the HTTP status 201. All attributes of the created exercise will be shown, together with a response message.
     ```JSON
     {
-        "solution_id": 1,
-        "solution_user": 1,
+        "message": "Successfully submitted solution",
+        "solution_correct": true,
+        "solution_date": "2023-01-11 15:16:25",
+        "solution_duration": "122 days, 0:00:00",
         "solution_exercise": 1,
-        "solution_date": 1672946590,
-        "solution_duration": 524,
-        "solution_correct": true
+        "solution_id": 2,
+        "solution_user": 1,
+        "solution_pending": false,
+        "solution_content": <...>
     }
     ```
 
@@ -232,11 +239,12 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `solution_id` | `int` | required | `1` | The ID of the solution. Normally obtained after creating a new solution. |
-| `solution_user` | `int` | optional | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | optional | `1` | The ID of the exercise which the solution was provided for. |
 | `solution_date` | `int` | optional | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
 | `solution_duration` | `int` | optional | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
 | `solution_correct` | `bool` | optional | `true` | Whether the solution solves the exercise correctly or not. |
+| `solution_pending` | `bool` | optional | `false` | Whether the solution is in pending state or not. |
+| `solution_content` | `str` | optional | `"hello, world!"` | The content of the solution provided by the user. |
 
 ### Response
 
