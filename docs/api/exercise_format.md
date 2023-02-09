@@ -107,7 +107,7 @@ Note: When getting this via GET, the pieces will be randomized.
 {
     "exercise_content": {
         "code": "def multiply(x,y):\r\npass",
-        "func": "mul"
+        "func": "multiply"
     }
 }
 ```
@@ -151,7 +151,7 @@ Note: When getting this via GET, the pieces will be randomized.
 ```JSON
 {
     "solution_content": {
-        "code": "def mul(x,y):\r\nreturn x*y"
+        "code": "def multiply(x,y):\r\nreturn x*y"
     }
 }
 ```
