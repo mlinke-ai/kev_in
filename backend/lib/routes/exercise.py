@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import Response, request, make_response, jsonify
+from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -67,11 +67,11 @@ class ExerciseResource(Resource):
             )
 
         # check for access
-        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
-        if auth == None:
-            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-        elif not auth:
-            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+        # is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
+        # if auth == None:
+        #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+        # elif not auth:
+        #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the exercise table
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
