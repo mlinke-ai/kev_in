@@ -94,46 +94,31 @@ class ExerciseResource(Resource):
             query = query.where(exercise_table.c.exercise_solution == args["exercise_content"])
         if args["exercise_language"]:
             query = query.where(exercise_table.c.exercise_language == args["exercise_language"])
-        result = dict()
+        result = list()
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
-        # for row in selection.fetchall():
-        #     print(row)
-        #     if args["exercise_details"]:
-        #         result[int(row["exercise_id"])] = dict(
-        #             exercise_id=int(row["exercise_id"]),
-        #             exercise_title=str(row["exercise_title"]),
-        #             exercise_description=str(row["exercise_description"]),
-        #             exercise_type=row["exercise_type"].name,
-        #             exercise_content=str(row["exercise_content"]),
-        #             exercise_solution=str(row["exercise_solution"]),
-        #             exercise_language=row["exercise_language"].name,
-        #         )
-        #     else:
-        #         result[int(row["exercise_id"])] = dict(
-        #             exercise_id=int(row["exercise_id"]),
-        #             exercise_title=str(row["exercise_title"]),
-        #             exercise_type=row["exercise_type"].name,
-        #             exercise_language=row["exercise_language"].name,
-        #         )
         for row in selection.fetchall():
             if args["exercise_details"]:
-                result[int(row[0])] = dict(
-                    exercise_id=int(row[0]),
-                    exercise_title=str(row[1]),
-                    exercise_description=str(row[2]),
-                    exercise_type=row[3].name,
-                    exercise_content=str(row[4]),
-                    exercise_solution=str(row[5]),
-                    exercise_language=row[6].name,
+                result.append(
+                    dict(
+                        exercise_id=int(row[0]),
+                        exercise_title=str(row[1]),
+                        exercise_description=str(row[2]),
+                        exercise_type=row[3].name,
+                        exercise_content=str(row[4]),
+                        exercise_solution=str(row[5]),
+                        exercise_language=row[6].name,
+                    )
                 )
             else:
-                result[int(row[0])] = dict(
-                    exercise_id=int(row[0]),
-                    exercise_title=str(row[1]),
-                    exercise_type=row[3].name,
-                    exercise_language=row[6].name,
+                result.append(
+                    dict(
+                        exercise_id=int(row[0]),
+                        exercise_title=str(row[1]),
+                        exercise_type=row[3].name,
+                        exercise_language=row[6].name,
+                    )
                 )
 
         return utils.makeResponseNewCookie(result, 200, request.cookies)
