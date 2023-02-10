@@ -79,9 +79,6 @@ class ExerciseResource(Resource):
         query = db_engine.select(exercise_table).select_from(exercise_table)
         if args["exercise_id"]:
             query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
-        else:
-            query = query.where(exercise_table.c.exercise_id >= args["exercise_offset"])
-            query = query.limit(args["exercise_limit"])
         if args["exercise_title"]:
             query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
         if args["exercise_description"]:
