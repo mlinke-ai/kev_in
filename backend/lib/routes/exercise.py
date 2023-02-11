@@ -58,6 +58,14 @@ class ExerciseResource(Resource):
             location="args",
         )
 
+        # check for access
+        # is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
+        # if auth == None:
+        #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+        # elif not auth:
+        #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+        is_admin = True
+
         args = parser.parse_args()
 
         exercises = ExerciseModel.query.order_by(ExerciseModel.exercise_id)
@@ -78,14 +86,6 @@ class ExerciseResource(Resource):
         exercises = exercises.paginate(
             page=args["exercise_page"], per_page=args["exercise_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
-
-        # check for access
-        # is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
-        # if auth == None:
-        #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-        # elif not auth:
-        #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
-        is_admin = True
 
         response = dict(data=list(), meta=dict())
         for exercise in exercises.items:
