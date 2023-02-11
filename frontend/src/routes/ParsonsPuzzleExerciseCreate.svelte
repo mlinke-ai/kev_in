@@ -6,13 +6,13 @@
   import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
   import { each } from "svelte/internal";
   import UiCard from "../lib/components/common/UICard.svelte";
+  import { accessLevels } from "../lib/constants";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
   let itemsLeftOriginal = [];
   let itemsRight = [];
 
-  let valueA = "";
   let exerciseTitle = "";
 
   function newPuzzlePiece(){
@@ -39,9 +39,13 @@
           exercise_title: exerciseTitle,
           exercise_description: "My PPE Description",
           exercise_type: 3,
-          exercise_content: JSON.stringify(itemsLeft.map(item => item.name)),
+          exercise_content: {
+            list: itemsLeft.map(item => item.name)
+          },
           exercise_language: 1,
-          exercise_solution: JSON.stringify(itemsLeft.map(item => item.name))
+          exercise_solution: {
+            list: itemsLeft.map(item => item.name)
+          },
         })
       }
     ).then(response => {
@@ -66,7 +70,7 @@
   
 </script>
 
-<Page title="Create PPE" fullwidth={true}>
+<Page title="Create PPE" fullwidth={true} requiredAccessLevel={accessLevels.admin}>
   <div class="exercise-container">
     <div class="header-area">
       <Textfield variant="filled" bind:value={exerciseTitle} label="Exercise Title" required style="width: 100%"/>

@@ -6,7 +6,7 @@
 
   import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
   import StatusBar from "../lib/components/Excercises/StatusBar.svelte";
-  import { accessLevels } from "../lib/types";
+  import { accessLevels } from "../lib/constants";
 
   let itemsLeft = [];
   let itemsLeftOriginal = [];
@@ -15,9 +15,12 @@
   let exerciseTitle = "Exercise";
   let exerciseDescription = "Please use your Brain"
 
+  // TODO fix this by adapting the Statusbar (bind)
+  let elapsedTime = 0;
+
 
   function getCurrentTimestamp () {
-    return Date.now()
+    return (Date.now()/1000)
   }
 
   const submitSolution = async () =>{
@@ -28,9 +31,11 @@
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           solution_exercise: exerciseID,
-          solution_date: 1675621950,
+          solution_date: getCurrentTimestamp(),
           solution_duration: elapsedTime,
-          solution_content: JSON.stringify(itemsRight.map(item => item.name))
+          solution_content: {
+            list: itemsRight.map(item => item.name)
+          }
         })
       }
     ).then(response => {
@@ -63,23 +68,19 @@
         // redirect to login
         window.location.replace("/#/login");
       } else if (response.status === 403){
-        console.log("No admin rights")
+        alert("No admin rights")
       } else if (response.status === 400){
-        console.log("user_limit out of range")
+        alert("user_limit out of range")
       } else if (response.status === 200){
         response.json().then(data => {
-          console.log(data)
           // using static test data for now as data type is not disccused yet
           itemsRight = [];
           let exerciseData = Object.values(data)[0]
-          console.log(exerciseData)
-          let exerciseContent = JSON.parse(exerciseData["exercise_content"])
-          console.log(exerciseContent)
+          let exerciseContent = exerciseData["exercise_content"]["list"]
           for(let i = 0; i < exerciseContent.length; i++){
             itemsLeft[i] = {id: i+1, name: exerciseContent[i]}
           }
           itemsLeftOriginal = itemsLeft.slice();
-          console.log(itemsLeft);
           exerciseTitle = exerciseData["exercise_title"];
           exerciseDescription = exerciseData["exercise_description"];
           exerciseID = exerciseData["exercise_id"]
@@ -91,43 +92,8 @@
   function reset(){
     itemsLeft = itemsLeftOriginal.slice();
     itemsRight = [];
-  }
-
-  let startTime = 0;
-  let elapsedTime = 0;
-  let intervallID;
-  const startTimer = () => {
-    startTime = Date.now();
-    intervallID = setInterval(() => {
-      const endTime = Date.now();
-      elapsedTime = endTime - startTime;
-    })
-  }
-
-  const resetTimer = () => {
-    elapsedTime = 0;
-    clearInterval(intervallID);
-  }
-  
-  let maxTimeReached = false;
-  const format = (min, sec) => {
-    // format to 2 digits and if maximum of 59 minutes and 59 seconds is reached, stop it
-    if (maxTimeReached || min >= 59 && sec >= 59){
-      maxTimeReached = true;
-      return "59:59";
-    }
-    else {
-      return ("00"+min.toString()).slice(-2) + ":" + ("00"+sec.toString()).slice(-2);
-    }
-  }
-  $: seconds = (Math.floor(elapsedTime / 1000) % 60);
-  $: minutes = (Math.floor(elapsedTime / 1000 / 60) % 60);
-  $: formattedTime = format(minutes, seconds);
-  
-  startTimer();
-  
+  }  
   getExercise();
-  
 </script>
 
 <Page title="Parsons Puzzle Exercise" fullwidth={true} requiredAccessLevel={accessLevels.user}>
