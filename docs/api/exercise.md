@@ -21,7 +21,7 @@ The GET method is used to retrieve exercise data based on attributes. This metho
 
 ### Access
 
-Python `requests`:  
+Python `requests`:
 
 ```python
 requests.request("GET", "http://<address>:<port>/exercise?<URLarguments>")
@@ -50,12 +50,12 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 | `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
 | `exercise_description` | `string` | optional | `This is a good Test example!` | The description of the exercise
 | `exercise_type` | `int` | optional | `SyntaxExercise` | The type of the exercise: `1` for GapTextExercise, `2` for SyntaxExercise, `3` for ParsonsPuzzleExercise, `4` for FindTheBugExercise, `5` for DocumentationExercise, `6` for OutputExercise, `7` for ProgrammingExercise|
-| `exercise_content` | `string` | optional | `1+1=` | The content of the exercise. |
+| `exercise_content` | `dict` | optional | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON dict or object, containing the content of the exercise. The encoding is `exercise_type`-specific. |
 | `exercise_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
 | `exercise_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 | `exercise_language` | `int` | optional | `Python` | Programming Language of the exercise. `1` for Python, `2` for Java |
 | `exercise_details` | `bool` | optional | `true` | Query the system for advanced exercise details. |
-| `exercise_solution` | `string` | optional | `2` | The right solution to the exercise. |
+| `exercise_solution` | `dict` | optional | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON object or dict, containing the solution of the exercise. The encoding is `exercise_type`-specific. |
 
 Arguments are constructed as dictionaries or JSON objects.
 
@@ -70,11 +70,11 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
     ```JSON
     {
         "1": {
-            "exercise_content": "1+1=",
+            "exercise_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]},
             "exercise_description": "This is a good Test example!",
             "exercise_id": 1,
             "exercise_title": "MyExercise",
-            "exercise_type": "ExerciseType.ParsonsPuzzleExercise"
+            "exercise_type": "ParsonsPuzzleExercise"
         }
     }
     ```
@@ -151,9 +151,9 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 | `exercise_title` | `string` | required | `My Exercise` | The display title of the exercise. |
 | `exercise_description` | `string` | required | `This is a good Test example!` | The description of the exercise
 | `exercise_type` | `int` | required | `1` | Number between 1 and 7 for the different exercise types, as defined in the database model. |
-| `exercise_content` | `string` | required | `1+1=` | The content of the exercise. |
-| `exercise_language` | `int` | requireed | `Python` | Programming Language of the exercise. `1` for Python, `2` for Java |
-| `exercise_solution` | `string` | required | `2` | The right solution to the exercise . |
+| `exercise_content` | `dict` | required | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON dict or object, containing the content of the exercise. The encoding is `exercise_type`-specific. |
+| `exercise_language` | `int` | required | `Python` | Programming Language of the exercise. `1` for Python, `2` for Java |
+| `exercise_solution` | `dict` | required | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON object or dict, containing the solution of the exercise. The encoding is `exercise_type`-specific. |
 
 Arguments are constructed as dictionaries or JSON objects.
 
@@ -165,8 +165,20 @@ Arguments are constructed as dictionaries or JSON objects.
 
     ```JSON
     {
-        "exercise_id": 1,
-        "exercise_title": "My Exercise",
+        "exercise_content": {
+            "list": [
+                "Hello",
+                "this",
+                "World",
+                "is",
+                "the",
+                "first",
+                "exercise"
+            ]
+        },
+        "exercise_description": "This is a good Test example!",
+        "exercise_id": 71,
+        "exercise_title": "MyExercise2",
         "message": "The exercise was created successfully"
     }
     ```
@@ -264,7 +276,6 @@ Replace `<arguments>` with the arguments listed below. (in curl in key value pai
 | `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
 | `exercise_description` | `string` | optional | `This is a good Test example!` | The description of the exercise
 | `exercise_type` | `int` | optional | `1` | Number between 1 and 7 for the different exercise types, as defined in the database model. |
-| `exercise_content` | `string` | optional | `1+1=` | The content of the exercise. |
 
 Arguments are constructed as dictionaries or JSON objects.
 

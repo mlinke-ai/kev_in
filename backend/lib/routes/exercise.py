@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
+
 from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
@@ -32,8 +34,8 @@ class ExerciseResource(Resource):
             help="{error_msg}",
             location="args",
         )
-        parser.add_argument("exercise_content", type=str, help="{error_msg}", location="args")
-        parser.add_argument("exercise_solution", type=str, help="{error_msg}", location="args")
+        parser.add_argument("exercise_content", type=dict, help="{error_msg}", location="args")
+        parser.add_argument("exercise_solution", type=dict, help="{error_msg}", location="args")
         parser.add_argument(
             "exercise_language",
             type=lambda x: config.ExerciseLanguage(int(x)),
@@ -120,8 +122,8 @@ class ExerciseResource(Resource):
             help="{error_msg}",
             required=True,
         )
-        parser.add_argument("exercise_content", type=str, help="{error_msg}", required=True)
-        parser.add_argument("exercise_solution", type=str, help="{error_msg}", required=True)
+        parser.add_argument("exercise_content", type=dict, help="{error_msg}", required=True)
+        parser.add_argument("exercise_solution", type=dict, help="{error_msg}", required=True)
         parser.add_argument(
             "exercise_language", type=lambda x: config.ExerciseLanguage(int(x)), help="{error_msg}", required=True
         )
@@ -140,8 +142,8 @@ class ExerciseResource(Resource):
             exercise_title=args["exercise_title"],
             exercise_description=args["exercise_description"],
             exercise_type=args["exercise_type"],
-            exercise_content=args["exercise_content"],
-            exercise_solution=args["exercise_solution"],
+            exercise_content=json.dumps(args["exercise_content"]),
+            exercise_solution=json.dumps(args["exercise_solution"]),
             exercise_language=args["exercise_language"],
         )
         db_engine.session.add(exercise)
@@ -150,71 +152,21 @@ class ExerciseResource(Resource):
         except sqlalchemy.exc.IntegrityError:
             # TODO: should we do a rollback at this point?
             # db_engine.session.rollback()
-            return make_response(jsonify(dict(message="An exercise with this title already exists")), 409)
+            return utils.makeResponseNewCookie(
+                dict(message="An exercise with this title already exists"), 409, request.cookies
+            )
         else:
-            return make_response(
-                jsonify(
-                    dict(
-                        message="The exercise was created successfully",
-                        exercise_id=exercise.exercise_id,
-                        exercise_title=exercise.exercise_title,
-                        exercise_description=exercise.exercise_description,
-                        exercise_content=exercise.exercise_content,
-                    )
+            return utils.makeResponseNewCookie(
+                dict(
+                    message="The exercise was created successfully",
+                    exercise_id=exercise.exercise_id,
+                    exercise_title=exercise.exercise_title,
+                    exercise_description=exercise.exercise_description,
+                    exercise_content=json.loads(exercise.exercise_content),
                 ),
                 201,
+                request.cookies,
             )
-
-        # TODO: the method above is way more elegant; we should remove the lower part
-        # # load the exercise table
-        # exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
-        # # compose the query
-        # query = db_engine.select([sqlalchemy.func.count()]).select_from(exercise_table)
-        # if args["exercise_title"]:
-        #     query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
-        # # execute the query and store the selection
-        # selection = db_engine.session.execute(query)
-        # # check wether the selection contains an element
-        # if selection.scalar() == 0:
-        #     # if the selection contains no elements it means we can safely create the new element
-        #     # create a new element
-        #     exercise = ExerciseModel(
-        #         exercise_title=args["exercise_title"],
-        #         exercise_description=args["exercise_description"],
-        #         exercise_type=args["exercise_type"],
-        #         exercise_content=args["exercise_content"],
-        #     )
-        #     # add the new element
-        #     db_engine.session.add(exercise)
-        #     db_engine.session.commit()
-        #     # compose a query to check wether the new element was added successfully
-        #     # TODO: query for last created element not based on given parameters
-        #     query = (
-        #         db_engine.select([exercise_table.c.exercise_title, exercise_table.c.exercise_id])
-        #         .select_from(exercise_table)
-        #         .where(exercise_table.c.exercise_title == args["exercise_title"])
-        #     )
-        #     # execute the query and store the result
-        #     selection = db_engine.session.execute(query)
-        #     try:
-        #         # get the only element from the selection
-        #         row = selection.fetchone()
-        #     except sqlalchemy.exc.NoResultFound:
-        #         # if there is no element the element could not be added
-        #         result = dict(message="An error occurred while creating the exercise")
-        #         return make_response((jsonify(result)), 500)
-        #     else:
-        #         result = dict(
-        #             message="The exercise was created successfully",
-        #             exercise_title=row.exercise_title,
-        #             exercise_id=row.exercise_id,
-        #         )
-        #         return make_response((jsonify(result)), 201)
-        # else:
-        #     # if the selection contains an element we can't create a new one as we would create a duplicate
-        #     result = dict(message="An exercise with this title already exists")
-        #     return make_response((jsonify(result)), 409)
-        # # return the new element (importend for the ID) or an error message
 
     def put(self) -> Response:
         """
@@ -234,7 +186,6 @@ class ExerciseResource(Resource):
             type=lambda x: config.ExerciseType(int(x)),
             help="{error_msg}",
         )
-        parser.add_argument("exercise_content", type=str, help="{error_msg}")
 
         args = parser.parse_args()
 
