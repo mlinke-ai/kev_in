@@ -51,9 +51,11 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 | `solution_duration` | `int` | optional | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
 | `solution_correct` | `bool` | optional | `true` | Whether the solution solves the exercise correctly or not. |
 | `solution_pending` | `bool` | optional | `false` | Whether the solution is in pending state. Pending state means an admin needs to evaluate the solution. |
-| `solution_content` | `str` | optional | `"hello, world"` | The content provided by the user. Querring for the solution content is quite useless but this field is added for completeness. |
+| `solution_content` | `dict` | optional | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON object or dict, containing the solution attempt. The encoding is `exercise_type`-specific. Querring for the solution content is quite useless but this field is added for completeness. |
 | `solution_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
 | `solution_limit` | `int` | optional | `1` | The size of the page. If a page is requested and `solution_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
+
+Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
@@ -144,7 +146,9 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 | `solution_exercise` | `int` | required | `1` | The ID of the exercise which the solution was provided for. |
 | `solution_date` | `int` | required | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. |
 | `solution_duration` | `int` | required | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
-| `solution_content` | `str` | required | `"hello, world!"` | The content provided by the user. |
+| `solution_content` | `dict` | required | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON object or dict, containing the solution attempt. The encoding is `exercise_type`-specific. |
+
+Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
@@ -244,7 +248,9 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 | `solution_duration` | `int` | optional | `524` | The time the user needed to solve the exercise. Encoded in seconds. |
 | `solution_correct` | `bool` | optional | `true` | Whether the solution solves the exercise correctly or not. |
 | `solution_pending` | `bool` | optional | `false` | Whether the solution is in pending state or not. |
-| `solution_content` | `str` | optional | `"hello, world!"` | The content of the solution provided by the user. |
+| `solution_content` | `dict` | optional | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON object or dict, containing the solution attempt. The encoding is `exercise_type`-specific. |
+
+Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
@@ -330,6 +336,8 @@ Replace `<address>` and `<port>` with your respective setup. Replace `<arguments
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
 | `solution_id` | `int` | required | `1` | The ID of the solution. Normally obtained after creating a new solution. |
+
+Arguments are constructed as dictionaries or JSON objects.
 
 ### Response
 
