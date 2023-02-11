@@ -68,23 +68,23 @@ class ExerciseResource(Resource):
 
         args = parser.parse_args()
 
-        exercises = ExerciseModel.query.order_by(ExerciseModel.exercise_id)
+        query = db_engine.select(ExerciseModel).order_by(ExerciseModel.exercise_id)
         if args["exercise_id"]:
-            exercises = exercises.where(ExerciseModel.exercise_id == args["exercise_id"])
+            query = query.where(ExerciseModel.exercise_id == args["exercise_id"])
         if args["exercise_title"]:
-            exercises = exercises.where(ExerciseModel.exercise_title == args["exercise_title"])
+            query = query.where(ExerciseModel.exercise_title == args["exercise_title"])
         if args["exercise_description"]:
-            exercises = exercises.where(ExerciseModel.exercise_description == args["exercise_description"])
+            query = query.where(ExerciseModel.exercise_description == args["exercise_description"])
         if args["exercise_type"]:
-            exercises = exercises.where(ExerciseModel.exercise_type == args["exercise_type"])
+            query = query.where(ExerciseModel.exercise_type == args["exercise_type"])
         if args["exercise_content"]:
-            exercises = exercises.where(ExerciseModel.exercise_content == args["exercise_content"])
+            query = query.where(ExerciseModel.exercise_content == args["exercise_content"])
         if args["exercise_solution"]:
-            exercises = exercises.where(ExerciseModel.exercise_solution == args["exercise_solution"])
+            query = query.where(ExerciseModel.exercise_solution == args["exercise_solution"])
         if args["exercise_language"]:
-            exercises = exercises.where(ExerciseModel.exercise_language == args["exercise_language"])
-        exercises = exercises.paginate(
-            page=args["exercise_page"], per_page=args["exercise_limit"], max_per_page=config.MAX_ITEMS_RETURNED
+            query = query.where(ExerciseModel.exercise_language == args["exercise_language"])
+        exercises = db_engine.paginate(
+            query, page=args["exercise_page"], per_page=args["exercise_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
 
         response = dict(data=list(), meta=dict())
