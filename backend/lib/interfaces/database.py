@@ -28,6 +28,29 @@ class ExerciseModel(db_engine.Model):
     exercise_solution = db_engine.Column(db_engine.Text)
     exercise_language = db_engine.Column(db_engine.Enum(config.ExerciseLanguage))
 
+    def to_json(self, details: bool, is_admin: bool) -> dict:
+        if details:
+            return dict(
+                exercise_id=self.exercise_id,
+                exercise_title=self.exercise_title,
+                exercise_description=self.exercise_description,
+                exercise_type_name=self.exercise_type.name,
+                exercise_type_value=self.exercise_type.value,
+                exercise_content=self.exercise_content,
+                exercise_solution=self.exercise_solution if is_admin else None,
+                exercise_language_name=self.exercise_language.name,
+                exercise_language_value=self.exercise_language.value,
+            )
+        else:
+            return dict(
+                exercise_id=self.exercise_id,
+                exercise_title=self.exercise_title,
+                exercise_type_name=self.exercise_type.name,
+                exercise_type_value=self.exercise_type.value,
+                exercise_language_name=self.exercise_language.name,
+                exercise_language_value=self.exercise_language.value,
+            )
+
 
 class SolutionModel(db_engine.Model):
     __tablename__ = config.SOLUTION_TABLE
