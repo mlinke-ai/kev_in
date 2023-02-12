@@ -1,6 +1,6 @@
 <script lang="js">
   import Button from "@smui/button";
-    import { blur } from "svelte/transition";
+  import { blur } from "svelte/transition";
 
   function toTop() {
     document.body.scrollTop = 0;
@@ -18,28 +18,22 @@
  -->
 
 <footer class="bottom-footer" in:blur={{ duration: 2000 }}>
-    <Button class="footer-btn">
-      Copyright © 2007 Free Software Foundation, Inc.
-    </Button>
+  <Button class="footer-btn">
+    Copyright © 2007 Free Software Foundation, Inc.
+  </Button>
 
-    <Button class="footer-btn">impressum & dsgvo</Button>
+  <Button class="footer-btn">impressum & dsgvo</Button>
 
-    <Button
-      class="footer-btn"
-      on:click={() => window.open("https://github.com/mlinke-ai/kev.in")}
-      >github</Button
-    >
+  <Button
+    class="footer-btn"
+    on:click={() => window.open("https://github.com/mlinke-ai/kev.in")}
+    >github</Button
+  >
 
-    <Button class="footer-btn" on:click={() => toTop()}
-      >zurück nach oben</Button
-    >
+  <Button class="footer-btn" on:click={() => toTop()}>zurück nach oben</Button>
 </footer>
 
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-  }
   * :global(.footer-btn) {
     color: white;
   }

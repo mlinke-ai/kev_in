@@ -55,14 +55,12 @@
                 >
             {/if}
         </ul>
-<<<<<<< HEAD
+
         {#if $accessLevel > 0}
         <div in:blur="{{ duration: 250, delay: 1000 }}">
             <AccountMenu />
         </div>
         {/if}
-=======
->>>>>>> develop
     </nav>
 {/if}
 
