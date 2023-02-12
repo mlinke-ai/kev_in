@@ -1,7 +1,6 @@
 <script>
-    import Button, { Icon, Label } from "@smui/button";
+    import { Icon } from "@smui/button";
     import Card from "@smui/card";
-    import IconButton from "@smui/icon-button";
 
     export let title = "";
     export let icon = "";
