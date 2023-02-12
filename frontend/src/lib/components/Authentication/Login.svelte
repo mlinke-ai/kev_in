@@ -2,36 +2,25 @@
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import PasswordInput from "./PasswordInput.svelte";
-  import { setupUserSettings } from "../../functions/user";
+  import { login } from "../../functions/user";
 
   let email = "";
   let password = "";
 
   let wrongCredentials = false;
 
-  const login = async () => {
-    let response = await fetch("/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        user_mail: email,
-        user_pass: password,
-      }),
-    });
-
-    if (response.status == 200) {
-      await setupUserSettings().then(() => {
-        location.reload();
-      });
-    } else if (response.status == 401) {
-      wrongCredentials = true;
-      console.log("Login failed");
-      document.getElementById("email-input").focus();
-    }
-  };
+  $: if (wrongCredentials) {
+    document.getElementById("email-input").focus();
+  }
 </script>
 
-<form class="login-form" on:submit|preventDefault={login} hidden>
+<form
+  class="login-form"
+  on:submit|preventDefault={() => {
+    wrongCredentials = login(email, password);
+  }}
+  hidden
+>
   <div class="input">
     <Textfield
       invalid={wrongCredentials}
@@ -49,8 +38,9 @@
       style="width: 20rem"
     />
   </div>
+  <input type="submit" hidden />
 </form>
-<Button class="login-button" on:click={login} type="submit" variant="unelevated"
+<Button on:click={async () => {wrongCredentials = !await login(email, password)}} variant="unelevated"
   >Login</Button
 >
 
