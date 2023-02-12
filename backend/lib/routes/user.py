@@ -74,17 +74,17 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        users = UserModel.query.order_by(UserModel.user_id)
+        query = db_engine.select(UserModel).order_by(UserModel.user_id)
         if args["user_id"]:
-            users = users.where(UserModel.user_id == args["user_id"])
+            query = query.where(UserModel.user_id == args["user_id"])
         if args["user_name"]:
-            users = users.where(UserModel.user_name == args["user_name"])
+            query = query.where(UserModel.user_name == args["user_name"])
         if args["user_mail"]:
-            users = users.where(UserModel.user_mail == args["user_mail"])
+            query = query.where(UserModel.user_mail == args["user_mail"])
         if args["user_role"]:
-            users = users.where(UserModel.user_role == args["user_role"])
-        users = users.paginate(
-            page=args["user_page"], per_page=args["user_limit"], max_per_page=config.MAX_ITEMS_RETURNED
+            query = query.where(UserModel.user_role == args["user_role"])
+        users = db_engine.paginate(
+            query, page=args["user_page"], per_page=args["user_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
 
         response = dict(data=list(), meta=dict())
