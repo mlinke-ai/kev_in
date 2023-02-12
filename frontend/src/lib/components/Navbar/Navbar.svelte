@@ -6,7 +6,6 @@
     import { accessLevels } from "../../constants";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
-    import IconButton from "@smui/icon-button";
     import AccountMenu from "./AccountMenu.svelte";
 
     let ready = false;
@@ -49,7 +48,9 @@
             {/if}
         </ul>
         {#if $accessLevel > 0}
+        <div in:blur="{{ duration: 250, delay: 1000 }}">
             <AccountMenu />
+        </div>
         {/if}
     </nav>
 {/if}
