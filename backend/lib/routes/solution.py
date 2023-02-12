@@ -65,27 +65,27 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        solutions = SolutionModel.query.order_by(SolutionModel.solution_id)
+        query = db_engine.select(SolutionModel).order_by(SolutionModel.solution_id)
         if args["solution_id"]:
-            solutions = solutions.where(SolutionModel.solution_id == args["solution_id"])
+            query = query.where(SolutionModel.solution_id == args["solution_id"])
         if args["solution_user"]:
-            solutions = solutions.where(SolutionModel.solution_user == args["solution_user"])
+            query = query.where(SolutionModel.solution_user == args["solution_user"])
         if args["solution_exercise"]:
-            solutions = solutions.where(SolutionModel.solution_exercise == args["solution_exercise"])
+            query = query.where(SolutionModel.solution_exercise == args["solution_exercise"])
         if args["solution_date"]:
             lower = args["solution_date"].replace(hour=0, minute=0, second=0, microsecond=0)
             upper = lower + datetime.timedelta(days=1)
-            solutions = solutions.where(sqlalchemy.between(SolutionModel.solution_date, lower, upper))
+            query = query.where(sqlalchemy.between(SolutionModel.solution_date, lower, upper))
         if args["solution_duration"]:
-            solutions = solutions.where(SolutionModel.solution_duration == args["solution_duration"])
+            query = query.where(SolutionModel.solution_duration == args["solution_duration"])
         if args["solution_correct"]:
-            solutions = solutions.where(SolutionModel.solution_correct == args["solution_correct"])
+            query = query.where(SolutionModel.solution_correct == args["solution_correct"])
         if args["solution_pending"]:
-            solutions = solutions.where(SolutionModel.solution_pending == args["solution_pending"])
+            query = query.where(SolutionModel.solution_pending == args["solution_pending"])
         if args["solution_content"]:
-            solutions = solutions.where(SolutionModel.solution_content == args["solution_content"])
-        solutions = solutions.paginate(
-            page=args["solution_page"], per_page=args["solution_limit"], max_per_page=config.MAX_ITEMS_RETURNED
+            query = query.where(SolutionModel.solution_content == args["solution_content"])
+        solutions = db_engine.paginate(
+            query, page=args["solution_page"], per_page=args["solution_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
 
         response = dict(data=list(), meta=dict())
