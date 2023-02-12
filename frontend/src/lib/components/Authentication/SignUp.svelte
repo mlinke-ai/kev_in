@@ -4,6 +4,7 @@
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
   import { passwordLength } from "../../constants";
+  import { login } from "../../functions/user";
 
   let email = "";
   let emailRegEx =
@@ -40,7 +41,7 @@
       }),
     }).then((response) => {
       if (response.status == 201) {
-        // TODO: display success message
+        login(email, password);
       } else if (response.status == 401) {
         document.getElementById("email-input").focus();
         alert("Sign Up failed");
@@ -147,11 +148,7 @@
   </div>
 </form>
 
-<Button
-  type="submit"
-  variant="unelevated"
-  on:click={signup}
->
+<Button type="submit" variant="unelevated" on:click={signup}>
   Sign Up now
 </Button>
 
