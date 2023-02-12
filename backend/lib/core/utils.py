@@ -251,7 +251,6 @@ def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> 
 
 
 def get_url(url: str, **kwargs: dict) -> str:
-    print(kwargs)
     for key, value in kwargs.items():
         if re.search(key, url) == None:
             url += f"&{key}={value}"

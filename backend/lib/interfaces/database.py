@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # TODO: is nullable=False applicable somewhere?
 
+import json
+
 import flask_sqlalchemy
 
 from backend.lib.core import config
@@ -45,8 +47,8 @@ class ExerciseModel(db_engine.Model):
                 exercise_description=self.exercise_description,
                 exercise_type_name=self.exercise_type.name,
                 exercise_type_value=self.exercise_type.value,
-                exercise_content=self.exercise_content,
-                exercise_solution=self.exercise_solution if is_admin else None,
+                exercise_content=json.loads(self.exercise_content),
+                exercise_solution=json.loads(self.exercise_solution if is_admin else ""),
                 exercise_language_name=self.exercise_language.name,
                 exercise_language_value=self.exercise_language.value,
             )
