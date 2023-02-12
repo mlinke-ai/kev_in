@@ -6,17 +6,10 @@
     import { push as pushRoute } from "svelte-spa-router";
     import Button, { Icon, Label } from "@smui/button";
     import { userName } from "../../../stores";
-    import { onMount } from "svelte";
 
     let menu: Menu;
     let anchor: HTMLDivElement;
     let anchorClasses: { [k: string]: boolean } = {};
-
-    let menuOpen = false;
-    let mounted = false;
-
-    $: if (mounted) menu.setOpen(menuOpen);
-    onMount(() => (mounted = true));
 </script>
 
 <div
@@ -38,8 +31,7 @@
 >
     <Button
         class="account-button"
-        on:click={() => (menuOpen = !menuOpen)}
-        on:blur={() => (menuOpen = false)}
+        on:click={() => (menu.setOpen(!menu.menuOpen))}
     >
         <Icon class="material-icons account-icon">account_circle</Icon>
         <Label>{$userName}</Label>
