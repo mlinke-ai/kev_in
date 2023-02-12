@@ -4,6 +4,7 @@
   import routes from "./routes/";
   import { setupUserSettings } from "./lib/functions/user";
   import { accessLevel } from "./stores";
+  import AcceptCookies from "./lib/components/AcceptCookies/AcceptCookies.svelte";
 
   const prepareApp = async () => {
     await setupUserSettings().then(null, () => {
@@ -21,5 +22,5 @@
 {#if $accessLevel >= 0}
   <Navbar />
   <Router {routes} />
-  <!--<Footer />-->
+  <AcceptCookies />
 {/if}

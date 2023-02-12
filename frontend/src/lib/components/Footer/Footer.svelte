@@ -1,5 +1,6 @@
 <script lang="js">
   import Button from "@smui/button";
+    import { blur } from "svelte/transition";
 
   function toTop() {
     document.body.scrollTop = 0;
@@ -16,7 +17,7 @@
   - button to scroll back to top
  -->
 
-<footer class="bottom-footer">
+<footer class="bottom-footer" in:blur={{ duration: 2000 }}>
     <Button class="footer-btn">
       Copyright © 2007 Free Software Foundation, Inc.
     </Button>
