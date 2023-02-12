@@ -16,8 +16,8 @@
 
 <form
   class="login-form"
-  on:submit|preventDefault={() => {
-    wrongCredentials = login(email, password);
+  on:submit|preventDefault={async () => {
+    wrongCredentials = !(await login(email, password));
   }}
   hidden
 >
@@ -40,8 +40,11 @@
   </div>
   <input type="submit" hidden />
 </form>
-<Button on:click={async () => {wrongCredentials = !await login(email, password)}} variant="unelevated"
-  >Login</Button
+<Button
+  on:click={async () => {
+    wrongCredentials = !(await login(email, password));
+  }}
+  variant="unelevated">Login</Button
 >
 
 <style>

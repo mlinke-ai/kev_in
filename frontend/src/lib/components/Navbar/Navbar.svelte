@@ -38,7 +38,6 @@
                         id={index}
                     />
                 {/each}
-                <AccountMenu />
             {:else if $accessLevel >= accessLevels.user}
                 {#each navbarConfig.authenticated.links as item, index}
                     <NavbarLink
@@ -47,9 +46,11 @@
                         id={linkCount + index}
                     />
                 {/each}
-                <AccountMenu />
             {/if}
         </ul>
+        {#if $accessLevel > 0}
+            <AccountMenu />
+        {/if}
     </nav>
 {/if}
 
