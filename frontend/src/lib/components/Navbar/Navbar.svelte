@@ -2,12 +2,12 @@
     import NavbarLink from "./NavbarLink.svelte";
     import { link } from "svelte-spa-router";
     import { navbarConfig } from "./config";
-    import { accessLevel} from "../../../stores";
+    import { accessLevel } from "../../../stores";
     import { accessLevels } from "../../constants";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
-  import Button from "@smui/button";
-  import { logout } from "../../functions/user";
+    import IconButton from "@smui/icon-button";
+    import { logout } from "../../functions/user";
 
     let ready = false;
     let linkCount = 0;
@@ -38,7 +38,9 @@
                         id={index}
                     />
                 {/each}
-                <Button on:click={logout}>Logout</Button>
+                <IconButton style="color: white;" class="material-icons" on:click={logout}
+                    >logout</IconButton
+                >
             {:else if $accessLevel >= accessLevels.user}
                 {#each navbarConfig.authenticated.links as item, index}
                     <NavbarLink
@@ -47,6 +49,9 @@
                         id={linkCount + index}
                     />
                 {/each}
+                <IconButton style="color: white;" class="material-icons" on:click={logout}
+                    >logout</IconButton
+                >
             {/if}
         </ul>
     </nav>
