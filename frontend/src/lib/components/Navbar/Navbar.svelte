@@ -7,8 +7,6 @@
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
     import AccountMenu from "./AccountMenu.svelte";
-    import IconButton from "@smui/icon-button";
-    import { logout } from "../../functions/user";
 
     let ready = false;
     let linkCount = 0;
@@ -39,9 +37,6 @@
                         id={index}
                     />
                 {/each}
-                <IconButton style="color: white;" class="material-icons" on:click={logout}
-                    >logout</IconButton
-                >
             {:else if $accessLevel >= accessLevels.user}
                 {#each navbarConfig.authenticated.links as item, index}
                     <NavbarLink
@@ -50,9 +45,6 @@
                         id={linkCount + index}
                     />
                 {/each}
-                <IconButton style="color: white;" class="material-icons" on:click={logout}
-                    >logout</IconButton
-                >
             {/if}
         </ul>
 
