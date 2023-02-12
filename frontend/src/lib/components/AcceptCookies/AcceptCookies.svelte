@@ -13,7 +13,6 @@
     open = false;
     localStorage.setItem('cookiesAccepted', 'true');
   }
-  // let open = true;
 </script>
 
 {#if open}
@@ -41,6 +40,7 @@
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
+    z-index: 1000;
   }
 
   #banner {
@@ -59,6 +59,7 @@
 
     background-color: rgba(0,57,49,1);
     border-radius: 2vw;
+    z-index: 1001;
   }
 
   #message {
