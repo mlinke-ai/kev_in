@@ -15,7 +15,6 @@
         }
     }
 
-    // @ts-ignore
     const checkCapsLock = (e) => {
         capsLockActive = e.getModifierState("CapsLock")
     }

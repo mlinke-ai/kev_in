@@ -1,13 +1,16 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-from typing import Any
 
 import jwt
+import random
+
+from typing import Any
+
 from flask_sqlalchemy.query import sqlalchemy
 from flask import Response, jsonify, make_response, current_app
 from werkzeug.datastructures import ImmutableMultiDict
 
-from backend.lib.core.config import UserRole
+from backend.lib.core.config import UserRole, ExerciseType
 from backend.lib.interfaces.database import db_engine, UserModel, SolutionModel
 
 
@@ -105,6 +108,43 @@ def makeResponseNewCookie(jsonData: dict, status: int, oldCookies: ImmutableMult
     response.set_cookie("token", token[0], max_age=3600, httponly=True)
 
     return response
+
+
+def prepareExerciseContent(exerciseContent: dict, exerciseType: ExerciseType) -> dict:
+    """
+    Before sending out the exercise content via GET, some preperations have to be done for some exercise types. This
+    method implements these preperations.
+    """
+
+    newContent = exerciseContent
+
+    if exerciseType == ExerciseType.ParsonsPuzzleExercise:
+        newContent = _randomizePPEContent(exerciseContent)
+
+    if newContent == None:
+        return exerciseContent #preperation failed, just returns default exerciseContent
+    
+    return newContent
+
+
+def _randomizePPEContent(content: dict[str, list]) -> dict[str, list] | None:
+    """
+    Takes the `exercise_content` argument from a parsons puzzle exercise and randomizes the list, which is stored
+    under the "list" key.
+    """
+
+    try:
+        data = content["list"]
+    except KeyError:
+        return None
+    
+    if type(data) is not list:
+        return None
+    
+    random.shuffle(data)
+    content["list"] = data
+
+    return content
 
 
 def _extractUserData(cookies: ImmutableMultiDict) -> dict[str, Any] | None:

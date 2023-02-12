@@ -6,8 +6,10 @@
   import { accessLevel } from "./stores";
   import AcceptCookies from "./lib/components/AcceptCookies/AcceptCookies.svelte";
 
-  function prepareApp() {
-    setupUserSettings();
+  const prepareApp = async () => {
+    await setupUserSettings().then(null, () => {
+      $accessLevel = 0;
+    });
   }
 </script>
 

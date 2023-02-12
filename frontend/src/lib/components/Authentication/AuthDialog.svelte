@@ -1,5 +1,4 @@
 <script>
-    import Card from "@smui/card/";
     import Tab, { Label as TLabel } from "@smui/tab";
     import TabBar from "@smui/tab-bar";
     import SignUp from "./SignUp.svelte";

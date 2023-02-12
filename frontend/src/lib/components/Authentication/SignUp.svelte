@@ -1,10 +1,9 @@
 <script>
   import Button from "@smui/button";
-  import Card from "@smui/card/";
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
-  import { accessLevels, passwordLength } from "../../types";
+  import { passwordLength } from "../../constants";
 
   let email = "";
   let emailRegEx =

@@ -18,15 +18,15 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import datetime
+import json
 
-import datetime
-
-from flask import Response, request, make_response, jsonify
+from flask import Response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config, utils
 from backend.lib.interfaces.database import SolutionModel, db_engine
+from backend.lib.evaluator.evaluator import eval_solution
 
 
 class SolutionResource(Resource):
@@ -53,7 +53,7 @@ class SolutionResource(Resource):
         )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
-        parser.add_argument("solution_content", type=str, help="{error_msg}", location="args")
+        parser.add_argument("solution_content", type=dict, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
         parser.add_argument(
             "solution_limit",
@@ -104,7 +104,8 @@ class SolutionResource(Resource):
         result = dict()
         for row in selection.fetchall():
 
-            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
+            # check for access for every resource, if client has no access for a certain resource the enpoint
+            # immediately returns 401 or 403
             is_admin, auth, user_id = utils.authorize(
                 cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
             )
@@ -128,7 +129,8 @@ class SolutionResource(Resource):
 
     def post(self) -> Response:
         """
-        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents duplication.
+        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents
+        duplication.
 
         Returns:
             Response: A HTTP response with the new element or an error message in JSON.
@@ -142,6 +144,7 @@ class SolutionResource(Resource):
         parser.add_argument(
             "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", required=True
         )
+        parser.add_argument("solution_content", type=dict, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
@@ -152,8 +155,11 @@ class SolutionResource(Resource):
         elif not auth:
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
-        correct, pending = True, False
+        #evaluate solution attempt
+        correct, pending = eval_solution(
+            args["solution_content"],
+            args["solution_exercise"]
+        )
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -165,13 +171,24 @@ class SolutionResource(Resource):
             solution_duration=args["solution_duration"],
             solution_correct=correct,
             solution_pending=pending,
-            solution_text=args["solution_text"],
+            solution_content=json.dumps(args["solution_content"])
         )
         # add the new element
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        query = db_engine.select([sqlalchemy.func.max(solution_table.c.solution_id)]).select_from(solution_table)
+        subquery = (
+            db_engine
+            .select([sqlalchemy.func.max(solution_table.c.solution_id)])
+            .select_from(solution_table)
+            .scalar_subquery()
+        )
+        query = (
+            db_engine
+            .select(["*"])
+            .select_from(solution_table)
+            .where(solution_table.c.solution_id == subquery)
+        )
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
@@ -184,9 +201,9 @@ class SolutionResource(Resource):
             solution_exercise=row[2],
             solution_date=row[3],
             solution_duration=row[4],
-            solution_correct=row[5],
-            solution_pending=row[6],
-            solution_content=row[7],
+            solution_correct=bool(row[5]), #db reponds with 0 or 1 sometimes
+            solution_pending=bool(row[6]),
+            solution_content=json.loads(row[7]),
         )
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 
@@ -205,7 +222,7 @@ class SolutionResource(Resource):
         parser.add_argument("solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}")
-        parser.add_argument("solution_content", type=str, help="{error_msg}")
+        parser.add_argument("solution_content", type=dict, help="{error_msg}")
 
         args = parser.parse_args(strict=True)
 

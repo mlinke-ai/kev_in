@@ -1,11 +1,8 @@
-<script>
+<script type="application/javascript">
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import PasswordInput from "./PasswordInput.svelte";
-  import { accessLevel, userName, startPage } from "../../../stores";
-  import { accessLevels } from "../../types";
-  import { getUserData, setupUserSettings } from "../../functions/user";
-  import { replace as replaceRoute } from "svelte-spa-router";
+  import { setupUserSettings } from "../../functions/user";
 
   let email = "";
   let password = "";
@@ -13,26 +10,24 @@
   let wrongCredentials = false;
 
   const login = async () => {
-    await fetch("/login", {
+    let response = await fetch("/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         user_mail: email,
         user_pass: password,
       }),
-    }).then((response) => {
-      if (response.status == 200) {
-        response.json().then((data) => {
-          setupUserSettings();
-        });
-      } else if (response.status == 401) {
-        wrongCredentials = true;
-        console.log("Login failed");
-        document.getElementById("email-input").focus();
-      } else {
-        // TODO: Handle exceptions
-      }
     });
+
+    if (response.status == 200) {
+      await setupUserSettings().then(() => {
+        location.reload();
+      });
+    } else if (response.status == 401) {
+      wrongCredentials = true;
+      console.log("Login failed");
+      document.getElementById("email-input").focus();
+    }
   };
 </script>
 

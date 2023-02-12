@@ -4,11 +4,17 @@
   import Page from "../lib/components/common/Page.svelte";
   import LanguageCard from "../lib/components/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
+  import Dialog from "@smui/dialog";
   import AuthDialog from "../lib/components/Authentication/AuthDialog.svelte";
-  import Dialog, { Title, Content, Actions, InitialFocus } from "@smui/dialog";
   import Footer from "../lib/components/Footer/Footer.svelte";
+  import { accessLevel } from "../stores";
+  import { accessLevels, dashboardPage } from "../lib/constants";
+  import { replace as replaceRoute } from "svelte-spa-router";
 
   let open = false;
+  if ($accessLevel != accessLevels.default) {
+    replaceRoute(dashboardPage);
+  }
 </script>
 
 <Page title="Home">

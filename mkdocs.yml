@@ -35,6 +35,7 @@ nav:
       - Logout: "api/logout.md"
       - Solution: "api/solution.md"
       - Config: "api/config.md"
+      - Exercise Format: "api/exercise_format.md"
   - License: "license.md"
 plugins:
   - search

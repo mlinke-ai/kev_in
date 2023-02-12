@@ -1,10 +1,15 @@
 import importlib.util
 import os
 import sys
-from inspect import getmembers, isfunction
+import re
 
-import timeout_decorator
+from RestrictedPython import compile_restricted_exec
+from RestrictedPython import limited_builtins, utility_builtins, safe_builtins
 from RestrictedPython import CompileResult, compile_restricted_exec, utility_builtins
+
+from inspect import getmembers, isfunction
+import timeout_decorator
+
 
 __all__ = ["ExecutePython"]
 _FORBIDDEN_MODULES = frozenset(
@@ -44,6 +49,14 @@ class ExecutePython:
         Return:
         {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()}, 'RESULTLOG': {'0': (['arg0'], ['solution0']), ...}}
         """
+
+        # Extract function name from function head by using regular expression.
+        matchObject = re.search("(?<=def.).[a-z|A-Z|_]+[^\(]", user_func)
+        if matchObject:
+            user_func = matchObject.group(0)
+        else:
+            raise ValueError("User function does not have the form 'def fun(..):'")
+
         # Create usercode.py where user code is stored.
         f = open("usercode.py", "w")
         f.write(user_code)
@@ -60,6 +73,8 @@ class ExecutePython:
 
         # Compilation failed.
         if self.__compile_result.code is None:
+            if os.path.exists("usercode.py"):
+                os.remove("usercode.py")
             return self.__sandbox_logs
 
         # Import module "usercode.py" as it is now safe to import.

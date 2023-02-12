@@ -1,12 +1,13 @@
 <script>
     import NavbarLink from "./NavbarLink.svelte";
-    import NavbarButton from "./NavbarButton.svelte";
     import { link } from "svelte-spa-router";
     import { navbarConfig } from "./config";
-    import { startPage, accessLevel} from "../../../stores";
-    import { accessLevels } from "../../types";
+    import { accessLevel } from "../../../stores";
+    import { accessLevels } from "../../constants";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
+    import IconButton from "@smui/icon-button";
+    import { logout } from "../../functions/user";
 
     let ready = false;
     let linkCount = 0;
@@ -18,7 +19,7 @@
 
 {#if ready}
     <nav class="navbar-container" in:blur={{ duration: 2000 }}>
-        <a class="navbar-icon" href={$startPage} use:link>
+        <a class="navbar-icon" href={"/"} use:link>
             <img src={navbarConfig.logo.src} alt={navbarConfig.logo.alt} />
         </a>
         <ul class="navbar-links">
@@ -37,6 +38,9 @@
                         id={index}
                     />
                 {/each}
+                <IconButton style="color: white;" class="material-icons" on:click={logout}
+                    >logout</IconButton
+                >
             {:else if $accessLevel >= accessLevels.user}
                 {#each navbarConfig.authenticated.links as item, index}
                     <NavbarLink
@@ -45,27 +49,11 @@
                         id={linkCount + index}
                     />
                 {/each}
+                <IconButton style="color: white;" class="material-icons" on:click={logout}
+                    >logout</IconButton
+                >
             {/if}
         </ul>
-        <div class="navbar-buttons">
-            {#if $accessLevel >= accessLevels.user}
-                {#each navbarConfig.authenticated.buttons as button}
-                    <NavbarButton
-                        label={button.label}
-                        route={button.route}
-                        variant={button.variant}
-                    />
-                {/each}
-            {:else}
-                {#each navbarConfig.default.buttons as button}
-                    <NavbarButton
-                        label={button.label}
-                        route={button.route}
-                        variant={button.variant}
-                    />
-                {/each}
-            {/if}
-        </div>
     </nav>
 {/if}
 
@@ -98,12 +86,6 @@
         display: flex;
         align-items: center;
         margin-left: auto;
-        padding-right: 2rem;
-    }
-
-    .navbar-buttons {
-        display: flex;
-        align-items: center;
         padding-right: 2rem;
     }
 </style>
