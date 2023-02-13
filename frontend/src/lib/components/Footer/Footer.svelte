@@ -30,7 +30,7 @@
     >github</Button
   >
     <Button class="footer-btn" on:click={() => toTop()}
-      >scroll back to top</Button
+      >scroll back to top</Button>
 </footer>
 
 <style>
