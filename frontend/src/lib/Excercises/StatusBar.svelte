@@ -53,7 +53,7 @@
 </div>
 
 <style lang="scss">
-  @use "../../../variables" as vars;
+  @use "../../variables" as vars;
   .status-bar {
     grid-area: status;
     color: vars.$consoleColor;

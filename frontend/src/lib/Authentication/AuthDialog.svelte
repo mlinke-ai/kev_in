@@ -1,3 +1,5 @@
+<!-- Component to wrap sign up and login in one single Tab view -->
+
 <script>
     import Tab, { Label as TLabel } from "@smui/tab";
     import TabBar from "@smui/tab-bar";
@@ -8,7 +10,7 @@
 </script>
 
 <TabBar tabs={["Login", "Sign Up"]} let:tab bind:active>
-    <Tab style={"cursor: default"} {tab}>
+    <Tab {tab}>
         <TLabel>{tab}</TLabel>
     </Tab>
 </TabBar>

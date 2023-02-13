@@ -1,3 +1,6 @@
+<!-- Component that provides an editor with syntax highlighting for
+     Java and Python using ace -->
+
 <script>
     import UiCard from "../../common/UICard.svelte";
     import * as ace from "brace";
@@ -15,7 +18,7 @@
     $: setLanguage(value);
 
     onMount(() => {
-        editor = ace.edit("javascript-editor");
+        editor = ace.edit("editor");
         editor.getSession().setMode("ace/mode/python");
         editor.setTheme("ace/theme/gob");
         editor.setValue(defaultContentPython, 1);
@@ -39,7 +42,7 @@
 
 <UiCard icon="code" title="Coding">
     <div class="coding-area">
-        <div id="javascript-editor" />
+        <div id="editor" />
     </div>
 </UiCard>
 
@@ -50,7 +53,7 @@
         position: relative;
         overflow: scroll;
     }
-    #javascript-editor {
+    #editor {
         position: absolute;
         top: 0;
         bottom: 0;

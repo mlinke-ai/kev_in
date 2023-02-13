@@ -1,11 +1,11 @@
 <script>
   import {dndzone} from "svelte-dnd-action";
-  import Page from "../lib/components/common/Page.svelte";
-  import PuzzleCard from "../lib/components/Excercises/ParsonsPuzzle/PuzzleCard.svelte";
+  import Page from "../lib/common/Page.svelte";
+  import PuzzleCard from "../lib//Excercises/ParsonsPuzzle/PuzzleCard.svelte";
   import { userName } from "../stores";
 
-  import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
-  import StatusBar from "../lib/components/Excercises/StatusBar.svelte";
+  import TaskCard from "../lib/Excercises/TaskCard.svelte";
+  import StatusBar from "../lib/Excercises/StatusBar.svelte";
   import { accessLevels } from "../lib/constants";
 
   let itemsLeft = [];

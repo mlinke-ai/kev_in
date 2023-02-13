@@ -2,8 +2,8 @@
     import NavbarLink from "./NavbarLink.svelte";
     import { link } from "svelte-spa-router";
     import { navbarConfig } from "./config";
-    import { accessLevel } from "../../../stores";
-    import { accessLevels } from "../../constants";
+    import { accessLevel } from "../../stores";
+    import { accessLevels } from "../constants";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
     import AccountMenu from "./AccountMenu.svelte";

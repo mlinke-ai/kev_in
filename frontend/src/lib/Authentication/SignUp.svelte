@@ -1,10 +1,12 @@
+<!-- Sign Up component that provides email format and password length checking -->
+
 <script>
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
-  import { passwordLength } from "../../constants";
-  import { login } from "../../functions/user";
+  import { passwordLength } from "../constants";
+  import { login } from "./user";
 
   let email = "";
   let emailRegEx =

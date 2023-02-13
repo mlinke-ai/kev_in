@@ -1,3 +1,5 @@
+<!-- Unified UI Card element with custom Title and content -->
+
 <script>
     import { Icon } from "@smui/button";
     import Card from "@smui/card";

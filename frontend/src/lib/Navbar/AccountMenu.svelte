@@ -2,10 +2,10 @@
     import Menu from "@smui/menu";
     import { Anchor } from "@smui/menu-surface";
     import List, { Item, Separator, Text } from "@smui/list";
-    import { logout } from "../../functions/user";
+    import { logout } from "../Authentication/user";
     import { push as pushRoute } from "svelte-spa-router";
     import Button, { Icon, Label } from "@smui/button";
-    import { userName } from "../../../stores";
+    import { userName } from "../../stores";
 
     let menu: Menu;
     let anchor: HTMLDivElement;
@@ -81,7 +81,7 @@
 </div>
 
 <style lang="scss">
-    @use "../../../variables";
+    @use "../../variables";
     * :global(.account-icon) {
         transform: scale(1.5);
     }

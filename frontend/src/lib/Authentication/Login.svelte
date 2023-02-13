@@ -1,8 +1,10 @@
-<script type="application/javascript">
+<!-- Login component that requests email and password from user -->
+
+<script>
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import PasswordInput from "./PasswordInput.svelte";
-  import { login } from "../../functions/user";
+  import { login } from "./user";
 
   let email = "";
   let password = "";

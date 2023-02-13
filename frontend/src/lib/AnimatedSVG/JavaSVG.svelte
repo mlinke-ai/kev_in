@@ -1,3 +1,5 @@
+<!-- Animated SVG outline picture of the Java logo -->
+
 <script>
   import { draw } from "svelte/transition";
   import { quintOut } from "svelte/easing";
