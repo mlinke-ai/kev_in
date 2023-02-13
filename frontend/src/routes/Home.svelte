@@ -61,9 +61,9 @@
     <AuthDialog />
   </Dialog>
 </Page>
+
 <Footer />
 
-<Footer></Footer>
 
 <style lang="scss">
   header {
