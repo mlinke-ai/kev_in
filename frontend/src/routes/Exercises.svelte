@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
   import Card from "@smui/card";
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
@@ -9,7 +9,7 @@
 
   import { each } from "svelte/internal";
   import { accessLevel } from "../stores";
-  import { accessLevels } from "../lib/types";
+  import { accessLevels } from "../lib/constants";
 
   let exercises = [];
   let currentExercise = 1;

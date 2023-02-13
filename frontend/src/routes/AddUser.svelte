@@ -3,11 +3,11 @@
   import Card from "@smui/card/";
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
-  import PasswordInput from "../lib/components/Login/PasswordInput.svelte"
+  import PasswordInput from "../lib/Authentication/PasswordInput.svelte";
   import { userName, userMail, accessLevel } from "../stores"
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
   import { push } from "svelte-spa-router";
-  import { accessLevels, passwordLength } from "../lib/types"
+  import { accessLevels, passwordLength } from "../lib/constants"
 
   
   let email = "";

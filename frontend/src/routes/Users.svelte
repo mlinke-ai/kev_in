@@ -1,5 +1,5 @@
 <script>
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
   import Button from "@smui/button/src/Button.svelte";
 
   import IconButton, { Icon } from "@smui/icon-button";

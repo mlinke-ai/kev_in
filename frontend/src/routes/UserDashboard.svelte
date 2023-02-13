@@ -1,5 +1,5 @@
 <script>
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
   import Card, {
     Content,
     PrimaryAction,
@@ -10,8 +10,8 @@
     ActionIcons,
   } from "@smui/card";
   import Button, { Label } from "@smui/button";
-  import GroupSvg from "../lib/components/AnimatedSVG/GroupSVG.svelte";
-  import ExerciseSvg from "../lib/components/AnimatedSVG/ExerciseSVG.svelte";
+  import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
+  import ExerciseSvg from "../lib/AnimatedSVG/ExerciseSVG.svelte";
   import { userName } from "../stores";
   //import { userID } from "../stores";
 
