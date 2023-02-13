@@ -1,24 +1,12 @@
 <script>
   import Page from "../lib/components/common/Page.svelte";
   import Button from "@smui/button/src/Button.svelte";
-  import Card, {
-    Content,
-    PrimaryAction,
-    Media,
-    MediaContent,
-    Actions,
-    ActionButtons,
-    ActionIcons,
-  } from "@smui/card";
 
   import IconButton, { Icon } from "@smui/icon-button";
   import { Label, Svg } from "@smui/common";
   import { each } from "svelte/internal";
 
   let currentUser = 1;
-  //let maxGetUsers =20;
-  //dont change this, it is a limit from the backend
-  //let idxUsersLoaded = 0;
   let maxDisplayedUsers = 20;
   let usersLoaded = false;
   let users = [];
@@ -50,14 +38,11 @@
   getUsers();
 
   function showNextUsers() {
-    // idxUsersLoaded +=maxDisplayedUsers;
     usersLoaded = false;
     getUsers();
   }
 
   function showLastUsers() {
-    // idxUsersLoaded -=maxDisplayedUsers;
-    // currentUser -= (maxGetUsers - maxDisplayedUsers);
     currentUser -= maxDisplayedUsers;
     usersLoaded = false;
     getUsers();
@@ -88,27 +73,29 @@
     <div class="grid-container">
       {#each users as user}
         <div class="grid-item">
-          <Card>
-            <div style="display: flex; align-items: center;">
+          
+            <div class="display-icon">
+            
               <a href="/#/error">
                 <!-- please add link to profile of user with {user.user_id} -->
-                <IconButton>
-                  <Icon component={Svg} viewBox="0 0 24 24">
+                  <Icon component={Svg} viewBox="0 1 20 20">
                     <path
                       fill="outlined"
-                      d="M12 12.75c1.63 0 3.07.39 4.24.9 1.08.48 1.76 1.56 1.76 2.73V18H6v-1.61c0-1.18.68-2.26 1.76-2.73 1.17-.52 2.61-.91 4.24-.91zM4 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm1.13 1.1c-.37-.06-.74-.1-1.13-.1-.99 0-1.93.21-2.78.58C.48 14.9 0 15.62 0 16.43V18h4.5v-1.61c0-.83.23-1.61.63-2.29zM20 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85-.85-.37-1.79-.58-2.78-.58-.39 0-.76.04-1.13.1.4.68.63 1.46.63 2.29V18H24v-1.57zM12 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"
+                      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                     />
                   </Icon>
-                </IconButton>
+              </a>
+          
+          </div>
+
+            <div class="label">
+              <a href="/#/error">
+                <!-- please add link to profile of user with {user.user_id} -->
+                #{user.user_id}
+                {user.user_name}
               </a>
             </div>
-
-            <a href="/#/error">
-              <!-- please add link to profile of user with {user.user_id} -->
-              #{user.user_id}
-              {user.user_name}
-            </a>
-          </Card>
+        
         </div>
       {/each}
     </div>
@@ -135,7 +122,7 @@
 <!-- does not work properly yet, needs total number of users from backend-->
 </Page>
 
-<style>
+<style lang="scss">
   .grid-container {
     max-width: 3fr;
     display: grid;
@@ -148,11 +135,26 @@
   }
 
   .grid-item {
+    border: #001a16;
     width: 350px;
     background-color: #001a16;
     padding: 10px;
+  }
+
+  .display-icon{
+    float: left;
+    width: 100px;
+    height: 100px;
+  }
+
+  .label{
+    float: center;
+    width: 200px;
+    word-break: break-all;
+    padding: 20px 0px 5px 50px;
+    margin-left: 80px;
+    font-family: monospace;
     font-size: 30px;
-    text-align: center;
   }
 
   .add-user-icon {
