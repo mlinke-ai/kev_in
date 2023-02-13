@@ -5,7 +5,8 @@
     import { logout } from "../Authentication/user";
     import { push as pushRoute } from "svelte-spa-router";
     import Button, { Icon, Label } from "@smui/button";
-    import { userName } from "../../stores";
+    import { accessLevel, userName } from "../../stores";
+    import { accessLevels } from "../constants";
 
     let menu: Menu;
     let anchor: HTMLDivElement;
@@ -33,7 +34,11 @@
         class="account-button"
         on:click={() => (menu.setOpen(!menu.menuOpen))}
     >
+    {#if $accessLevel >= accessLevels.admin}
+        <Icon class="material-icons account-icon">admin_panel_settings</Icon>
+    {:else}
         <Icon class="material-icons account-icon">account_circle</Icon>
+    {/if}
         <Label>{$userName}</Label>
     </Button>
     <Menu
@@ -86,9 +91,9 @@
         transform: scale(1.5);
     }
     * :global(.account-button) {
-        color: white;
+        color: variables.$secondaryDark;
         display: flex;
-        justify-items: center;
+        align-items: center;
         gap: 0.35rem;
     }
     .menu-item {
