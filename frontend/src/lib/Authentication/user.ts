@@ -1,6 +1,7 @@
 import { userID, userName, userMail, accessLevel } from "../../stores";
 import { accessLevels } from "../constants";
 
+// function to send login data to the server
 export const login = async (email: string, password: string) => {
   let response = await fetch("/login", {
     method: "POST",
@@ -21,12 +22,14 @@ export const login = async (email: string, password: string) => {
   }
 };
 
+// function to make the server log out the client
 export const logout = async() => {
   await fetch("/logout", { method: "POST" }).then(() => {
     window.location.replace("/")
   });
 };
 
+// function to fetch user data from the server and save to svelte store
 export const setupUserSettings = async () => {
   await fetch("/user", { method: "GET" }).then((response) => {
     if (response.status == 200) {

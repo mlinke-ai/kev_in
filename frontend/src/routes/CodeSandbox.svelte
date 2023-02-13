@@ -1,9 +1,9 @@
 <script>
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
   import { Icon } from "@smui/common";
-  import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
-  import CodingCard from "../lib/components/Excercises/CodeSandbox/CodingCard.svelte";
-  import OutputCard from "../lib/components/Excercises/CodeSandbox/OutputCard.svelte";
+  import TaskCard from "../lib/Excercises/TaskCard.svelte";
+  import CodingCard from "../lib/Excercises/CodeSandbox/CodingCard.svelte";
+  import OutputCard from "../lib/Excercises/CodeSandbox/OutputCard.svelte";
 
   async function validate_code() {}
 </script>

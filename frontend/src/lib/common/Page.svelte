@@ -3,10 +3,10 @@
 -->
 <script>
   import { blur } from "svelte/transition";
-  import { accessLevel } from "../../../stores";
-  import { accessLevels } from "../../constants";
+  import { accessLevel } from "../../stores";
+  import { accessLevels } from "../constants";
   import { replace as replaceRoute } from "svelte-spa-router";
-  import { renderNavbar } from "../../../stores";
+  import { renderNavbar } from "../../stores";
 
   export let transition = true;
   export let title = "";

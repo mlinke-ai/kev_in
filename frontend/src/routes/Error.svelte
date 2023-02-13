@@ -3,7 +3,7 @@
   import Card from "@smui/card";
   import Button from "@smui/button";
   import { Label } from "@smui/button";
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
 
   export const params=""
 </script>

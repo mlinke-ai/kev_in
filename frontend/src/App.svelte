@@ -1,10 +1,10 @@
 <script>
-  import Navbar from "./lib/components/Navbar/Navbar.svelte";
+  import Navbar from "./lib/Navbar/Navbar.svelte";
   import Router from "svelte-spa-router";
   import routes from "./routes/";
-  import { setupUserSettings } from "./lib/functions/user";
+  import { setupUserSettings } from "./lib/Authentication/user";
   import { accessLevel } from "./stores";
-  import AcceptCookies from "./lib/components/AcceptCookies/AcceptCookies.svelte";
+  import AcceptCookies from "./lib/AcceptCookies/AcceptCookies.svelte";
 
   const prepareApp = async () => {
     await setupUserSettings().then(null, () => {

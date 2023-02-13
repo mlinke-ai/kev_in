@@ -1,3 +1,6 @@
+<!-- Modified version of the SMUI textfield that provides 
+    CapsLock checking and toggling password/cleartext view -->
+
 <script>
     import Textfield from '@smui/textfield'
     import HelperText from '@smui/textfield/helper-text'

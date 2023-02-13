@@ -1,11 +1,11 @@
 <script>
   import Button from "@smui/button/src/Button.svelte";
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
   import Textfield from "@smui/textfield";
   import IconButton from '@smui/icon-button';
-  import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
+  import TaskCard from "../lib/Excercises/TaskCard.svelte";
   import { each } from "svelte/internal";
-  import UiCard from "../lib/components/common/UICard.svelte";
+  import UiCard from "../lib/common/UICard.svelte";
   import { accessLevels } from "../lib/constants";
 
   let itemsLeft = [];

@@ -47,7 +47,7 @@
 
 
 <style lang="scss">
-    @use "../../../../variables" as theme;
+    @use "../../../variables" as theme;
     
     .hListStyling {
         padding: 0.3em;

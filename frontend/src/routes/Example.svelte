@@ -1,5 +1,5 @@
 <script>
-    import Page from "../lib/components/common/Page.svelte";
+    import Page from "../lib/common/Page.svelte";
     import { accessLevels } from "../lib/constants";
 
     const requiredAccessLevel = accessLevels.default
