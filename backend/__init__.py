@@ -9,6 +9,7 @@ from flask_restful import Api
 
 from backend.config import configure_app
 from backend.database.models import db
+from backend.routes.login import LoginResource
 from backend.routes.user import UserResource
 from backend.utils import refresh_token
 
@@ -42,7 +43,8 @@ def create_app():
     jwt = JWTManager(app)
     app.after_request(refresh_token)
     api = Api(app)
-    api.add_resource(UserResource, "/user")
+    api.add_resource(UserResource, "/user", endpoint="user")
+    api.add_resource(LoginResource, "/login", endpoint="login")
     return app
 
 
