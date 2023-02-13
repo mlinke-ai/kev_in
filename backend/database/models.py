@@ -3,6 +3,7 @@
 
 import datetime
 import enum
+import json
 
 from flask_sqlalchemy import SQLAlchemy
 
@@ -65,15 +66,17 @@ class ExerciseModel(db.Model):
         exercise_title: str,
         exercise_description: str,
         exercise_type: ExerciseType | int,
-        exercise_content: str,
-        exercise_solution: str,
+        exercise_content: str | dict,
+        exercise_solution: str | dict,
         exercise_language: ExerciseLanguage | int,
     ) -> None:
         self.exercise_title = exercise_title
         self.exercise_description = exercise_description
         self.exercise_type = exercise_type if isinstance(exercise_type, ExerciseType) else ExerciseType(exercise_type)
-        self.exercise_content = exercise_content
-        self.exercise_solution = exercise_solution
+        self.exercise_content = exercise_content if isinstance(exercise_content, str) else json.dumps(exercise_content)
+        self.exercise_solution = (
+            exercise_solution if isinstance(exercise_solution, str) else json.dumps(exercise_solution)
+        )
         self.exercise_language = (
             exercise_language
             if isinstance(exercise_language, ExerciseLanguage)
