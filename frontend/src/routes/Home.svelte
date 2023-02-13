@@ -57,7 +57,7 @@
       </div>
     </div>
   </main>
-  <Dialog bind:open>
+  <Dialog bind:open class="auth-dialog">
     <AuthDialog />
   </Dialog>
 </Page>
