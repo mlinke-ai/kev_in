@@ -1,9 +1,9 @@
 <script>
   import Page from "../lib/components/common/Page.svelte";
   import { Icon } from "@smui/common";
-  import TaskCard from "../lib/components/CodeSandbox/TaskCard.svelte";
-  import CodingCard from "../lib/components/CodeSandbox/CodingCard.svelte";
-  import OutputCard from "../lib/components/CodeSandbox/OutputCard.svelte";
+  import TaskCard from "../lib/components/Excercises/TaskCard.svelte";
+  import CodingCard from "../lib/components/Excercises/CodeSandbox/CodingCard.svelte";
+  import OutputCard from "../lib/components/Excercises/CodeSandbox/OutputCard.svelte";
 
   async function validate_code() {}
 </script>
@@ -14,7 +14,21 @@
       <h3>Coding Sandbox</h3>
     </div>
     <div class="task-area">
-      <TaskCard />
+      <TaskCard>
+        <h1>Welcome to your first test excercise!</h1>
+        <p>
+          To solve it you have to write a python script that prints out "Hello
+          World".
+        </p>
+        <br />
+        <hr />
+        <br />
+        Hints:
+        <ul>
+          <li>use the print() function</li>
+          <li>strings have to be in quotation marks</li>
+        </ul>
+      </TaskCard>
     </div>
     <div class="code-area">
       <CodingCard />
