@@ -49,7 +49,29 @@ class UserModel(db.Model):
         self.user_role = user_role if isinstance(user_role, UserRole) else UserRole(user_role)
 
     def __repr__(self) -> str:
-        return f"yUser id={self.user_id} name={self.user_name} mail={self.user_mail}, role={self.user_role}"
+        return f"<User id={self.user_id} name={self.user_name} mail={self.user_mail}, role={self.user_role}>"
+
+    def to_json(self, show_password: bool = False) -> dict:
+        if show_password:
+            return dict(
+                user_id=self.user_id,
+                user_name=self.user_name,
+                user_mail=self.user_mail,
+                user_pass=self.user_pass,
+                user_role_name=self.user_role.name,
+                user_role_value=self.user_role.value,
+            )
+        else:
+            return dict(
+                user_id=self.user_id,
+                user_name=self.user_name,
+                user_mail=self.user_mail,
+                user_role_name=self.user_role.name,
+                user_role_value=self.user_role.value,
+            )
+
+    def verify(self, password) -> bool:
+        return self.user_pass == password
 
 
 class ExerciseModel(db.Model):
@@ -85,6 +107,29 @@ class ExerciseModel(db.Model):
 
     def __repr__(self) -> str:
         return f"<Exercise id={self.exercise_id} title={self.exercise_title} type={self.exercise_type} language={self.exercise_language}>"
+
+    def to_json(self, details: bool, is_admin: bool) -> dict:
+        if details:
+            return dict(
+                exercise_id=self.exercise_id,
+                exercise_title=self.exercise_title,
+                exercise_description=self.exercise_description,
+                exercise_type_name=self.exercise_type.name,
+                exercise_type_value=self.exercise_type.value,
+                exercise_content=json.loads(self.exercise_content),
+                exercise_solution=json.loads(self.exercise_solution if is_admin else ""),
+                exercise_language_name=self.exercise_language.name,
+                exercise_language_value=self.exercise_language.value,
+            )
+        else:
+            return dict(
+                exercise_id=self.exercise_id,
+                exercise_title=self.exercise_title,
+                exercise_type_name=self.exercise_type.name,
+                exercise_type_value=self.exercise_type.value,
+                exercise_language_name=self.exercise_language.name,
+                exercise_language_value=self.exercise_language.value,
+            )
 
 
 class SolutionModel(db.Model):
@@ -122,3 +167,18 @@ class SolutionModel(db.Model):
         self.solution_correct = solution_correct
         self.solution_pending = solution_pending
         self.solution_content = solution_content
+
+    def __repr__(self) -> str:
+        return f"<Solution id={self.solution_id} user={self.solution_user} exercise={self.solution_exercise} date={self.solution_date} correct={self.solution_date}>"
+
+    def to_json(self) -> dict:
+        return dict(
+            solution_id=self.solution_id,
+            solution_user=self.solution_user,
+            solution_exercise=self.solution_exercise,
+            solution_date=self.solution_date,
+            solution_duration=self.solution_duration.total_seconds(),
+            solution_correct=self.solution_correct,
+            solution_pending=self.solution_pending,
+            solution_content=self.solution_content,
+        )
