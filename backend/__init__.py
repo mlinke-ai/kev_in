@@ -30,14 +30,16 @@ def _assets(path: str) -> Response:
     return send_from_directory("../frontend/dist", path)
 
 
-def create_app():
+def create_app(config=dict()):
     app = Flask(
         __name__,
         instance_path=_get_instance_folder_path(),
         instance_relative_config=True,
     )
-    configure_app(app)
-    db.init_app(app)
+    configure_app(app, config)
+    with app.app_context():
+        db.init_app(app)
+        db.create_all()
     app.add_url_rule("/", "base", _base)
     app.add_url_rule("/<path:path>", "assets", _assets)
     jwt = JWTManager(app)

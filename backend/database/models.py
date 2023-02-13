@@ -42,7 +42,9 @@ class UserModel(db.Model):
     user_mail = db.Column(db.String, nullable=False, unique=True)
     user_role = db.Column(db.Enum(UserRole), nullable=False)
 
-    def __init__(self, user_name: str, user_pass: str, user_mail: str, user_role: UserRole | int) -> None:
+    def __init__(
+        self, user_name: str, user_pass: str, user_mail: str, user_role: UserRole | int = UserRole.User
+    ) -> None:
         self.user_name = user_name
         self.user_pass = user_pass
         self.user_mail = user_mail

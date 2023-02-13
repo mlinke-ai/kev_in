@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Response, current_app, jsonify, make_response, request
+from flask_jwt_extended import verify_jwt_in_request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 from flask_sqlalchemy.session import Session
@@ -50,11 +51,46 @@ class UserResource(Resource):
                 400,
             )
 
-        stmt = sqlalchemy.select(UserModel).order_by(UserModel.user_id)
-        selection = db.session.execute(stmt)
         result = list()
-        for user in selection.scalars():
-            result.append(
-                dict(user_id=user.user_id, user_name=user.user_name, user_mail=user.user_mail, user_role=user.user_role)
-            )
+        stmt = sqlalchemy.select(UserModel).order_by(UserModel.user_id)
+        with Session(db) as session:
+            selection = session.execute(stmt)
+            for user in selection.scalars():
+                result.append(
+                    dict(
+                        user_id=user.user_id,
+                        user_name=user.user_name,
+                        user_mail=user.user_mail,
+                        user_role=user.user_role,
+                    )
+                )
         return make_response(jsonify(dict(data=result, size=len(result))), 200)
+
+    def post(self) -> Response:
+        # create a parser for the request data and parse the request
+        parser = reqparse.RequestParser()
+        parser.add_argument("user_name", type=str, help="{error_msg}", required=True)
+        parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
+        parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
+
+        args = parser.parse_args(strict=True)
+
+        if args["user_name"] == "":
+            return make_response(jsonify(dict(message="user_name must not be empty")), 400)
+        if args["user_pass"] == "":
+            return make_response(jsonify(dict(message="user_pass must not be empty")), 400)
+        if args["user_mail"] == "":
+            return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
+
+        # user = UserModel(args["user_name"], args["user_pass"], args["user_mail"])
+        stmt = sqlalchemy.insert(UserModel).values(args)
+        with Session(db) as session:
+            selection = session.execute(stmt)
+        result = dict()
+        print(selection)
+
+    def put(self) -> Response:
+        token = verify_jwt_in_request()
+
+    def delete(self) -> Response:
+        token = verify_jwt_in_request()

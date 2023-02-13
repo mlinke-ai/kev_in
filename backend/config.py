@@ -55,7 +55,7 @@ class StagingConfig(BaseConfig):
     DEBUG = False
     TESTING = True
     ENV = "staging"
-    SQLALCHEMY_DATABASE_URI = "sqlite://"
+    SQLALCHEMY_DATABASE_URI = "sqlite:///testing.db"
     SECRET_KEY = "942c3677-28ff-4841-bbd6-04f15b9d5a00"
 
 
