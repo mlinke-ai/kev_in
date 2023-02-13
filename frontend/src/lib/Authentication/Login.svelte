@@ -9,6 +9,7 @@
 
   let email = "";
   let password = "";
+
   let errorMessage;
   let warningMessage;
 

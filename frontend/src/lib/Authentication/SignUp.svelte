@@ -1,12 +1,12 @@
 <!-- Sign Up component that provides email format and password length checking -->
-
 <script>
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
-  import { passwordLength } from "../constants";
+  import { messages, passwordLength } from "../constants";
   import { login } from "./user";
+  import Message from "../common/Message/Message.svelte";
 
   let email = "";
   let emailRegEx =
@@ -16,6 +16,11 @@
   let passwordRepetition = "";
 
   let userExists = false;
+
+  let incorrectDataMessage;
+  let failMessage;
+  let userExistsMessage;
+  let serverErrorMessage;
 
   function checkData() {
     if (password.length < passwordLength) {
@@ -30,7 +35,7 @@
 
   const signup = async () => {
     if (!checkData()) {
-      alert("incorrect data");
+      incorrectDataMessage.open();
       return;
     }
     await fetch("/user", {
@@ -46,15 +51,15 @@
         login(email, password);
       } else if (response.status == 401) {
         document.getElementById("email-input").focus();
-        alert("Sign Up failed");
+        failMessage.open();
       } else if (response.status == 409) {
         userExists = true;
         document.getElementById("email-input").focus();
-        alert("Username is already taken.");
+        userExistsMessage.open();
       } else if (response.status == 500) {
-        alert("Oops an Error occured. Please try again.");
+        serverErrorMessage.open();
       } else {
-        alert("Oops an Error occured. " + response.status);
+        serverErrorMessage.open();
       }
     });
   };
@@ -105,9 +110,7 @@
           Please enter a valid E Mail address.
         {/if}
         {#if userExists}
-          An account with this E Mail has already been created. <a
-            href="/forgot-password">Forgot Password?</a
-          >
+          An account with this E Mail has already been created.
         {/if}
       </HelperText>
     </Textfield>
@@ -153,6 +156,27 @@
 <Button type="submit" variant="unelevated" on:click={signup}>
   Sign Up now
 </Button>
+
+<Message
+  bind:message={incorrectDataMessage}
+  content={"Please enter valid data."}
+  type={messages.warning}
+/>
+<Message
+  bind:message={failMessage}
+  content={"Sign Up failed!"}
+  type={messages.error}
+/>
+<Message
+  bind:message={userExistsMessage}
+  content={"An account with this email already exists"}
+  type={messages.error}
+/>
+<Message
+  bind:message={serverErrorMessage}
+  content={"Oops an Error occured. Please try again."}
+  type={messages.error}
+/>
 
 <style>
   .signup-form {
