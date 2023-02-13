@@ -30,6 +30,10 @@ class ExerciseLanguage(enum.IntEnum):
     Java = 2
 
 
+class BaseModel(db.Model):
+    __abstract__ = True
+
+
 class UserModel(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String, nullable=False)
@@ -37,15 +41,11 @@ class UserModel(db.Model):
     user_mail = db.Column(db.String, nullable=False, unique=True)
     user_role = db.Column(db.Enum(UserRole), nullable=False)
 
-    def __init__(
-        self, user_name: str, user_pass: str, user_mail: str, user_role: UserRole | int
-    ) -> None:
+    def __init__(self, user_name: str, user_pass: str, user_mail: str, user_role: UserRole | int) -> None:
         self.user_name = user_name
         self.user_pass = user_pass
         self.user_mail = user_mail
-        self.user_role = (
-            user_role if isinstance(user_role, UserRole) else UserRole(user_role)
-        )
+        self.user_role = user_role if isinstance(user_role, UserRole) else UserRole(user_role)
 
     def __repr__(self) -> str:
         return f"yUser id={self.user_id} name={self.user_name} mail={self.user_mail}, role={self.user_role}"
@@ -71,11 +71,7 @@ class ExerciseModel(db.Model):
     ) -> None:
         self.exercise_title = exercise_title
         self.exercise_description = exercise_description
-        self.exercise_type = (
-            exercise_type
-            if isinstance(exercise_type, ExerciseType)
-            else ExerciseType(exercise_type)
-        )
+        self.exercise_type = exercise_type if isinstance(exercise_type, ExerciseType) else ExerciseType(exercise_type)
         self.exercise_content = exercise_content
         self.exercise_solution = exercise_solution
         self.exercise_language = (
@@ -90,12 +86,8 @@ class ExerciseModel(db.Model):
 
 class SolutionModel(db.Model):
     solution_id = db.Column(db.Integer, primary_key=True)
-    solution_user = db.Column(
-        db.Integer, db.ForeignKey(UserModel.user_id), nullable=False
-    )
-    solution_exercise = db.Column(
-        db.Integer, db.ForeignKey(ExerciseModel.exercise_id), nullable=False
-    )
+    solution_user = db.Column(db.Integer, db.ForeignKey(UserModel.user_id), nullable=False)
+    solution_exercise = db.Column(db.Integer, db.ForeignKey(ExerciseModel.exercise_id), nullable=False)
     solution_date = db.Column(db.DateTime)
     solution_duration = db.Column(db.Interval)
     solution_correct = db.Column(db.Boolean)
