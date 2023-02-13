@@ -20,7 +20,7 @@
 />
 
 {#if $accessLevel >= 0}
-  <!-- <Navbar /> -->
+  <Navbar />
   <Router {routes} />
   <AcceptCookies />
 {/if}
