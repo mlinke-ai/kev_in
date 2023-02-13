@@ -12,7 +12,7 @@
   The Footer is a component. Just put it on the bottom of you html body.
   It contains:
   - copyright information
-  - link to impressum and dsgvo
+  - link to imprint and dsgvo
   - link to github page
   - button to scroll back to top
  -->
@@ -22,15 +22,15 @@
     Copyright © 2007 Free Software Foundation, Inc.
   </Button>
 
-  <Button class="footer-btn">impressum & dsgvo</Button>
+    <Button class="footer-btn">imprint & dsgvo</Button>
 
   <Button
     class="footer-btn"
     on:click={() => window.open("https://github.com/mlinke-ai/kev.in")}
     >github</Button
   >
-
-  <Button class="footer-btn" on:click={() => toTop()}>zurück nach oben</Button>
+    <Button class="footer-btn" on:click={() => toTop()}
+      >scroll back to top</Button
 </footer>
 
 <style>
