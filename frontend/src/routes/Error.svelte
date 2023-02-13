@@ -5,7 +5,14 @@
   import { Label } from "@smui/button";
   import Page from "../lib/common/Page.svelte";
 
+  import { startPage } from "../stores";
+  import { replace as replaceRoute } from "svelte-spa-router";
+
   export const params=""
+
+  function goToStartPage(){
+    replaceRoute($startPage);
+  }
 </script>
 
 <Page title="Page not found">
@@ -28,11 +35,11 @@
           Want to go back to starting page instead?
         </p>
 
-        <a href="/#">
-          <Button style="left: 20px; border:solid;">
-            <Label>Go back</Label>
-          </Button>
-        </a>
+       
+        <Button on:click={() => goToStartPage()}
+          style="left: 20px; border:solid;">
+          <Label>Go back</Label>
+        </Button>
       </Content>
     </Card>
   </div>

@@ -17,10 +17,17 @@
   - button to scroll back to top
  -->
 
+<<<<<<< HEAD:frontend/src/lib/components/Footer/Footer.svelte
+<footer class="bottom-footer">
+    <Button class="footer-btn" disabled>
+      Copyright © 2007 Free Software Foundation, Inc.
+    </Button>
+=======
 <footer class="bottom-footer" in:blur={{ duration: 2000 }}>
   <Button class="footer-btn">
     Copyright © 2007 Free Software Foundation, Inc.
   </Button>
+>>>>>>> origin/develop:frontend/src/lib/Footer/Footer.svelte
 
     <Button class="footer-btn">imprint & dsgvo</Button>
 
