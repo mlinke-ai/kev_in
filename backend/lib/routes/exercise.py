@@ -206,8 +206,6 @@ class ExerciseResource(Resource):
             exercise.exercise_description = args["exercise_description"]
         if args["exercise_type"]:
             exercise.exercise_title = args["exercise_type"]
-        if args["exercise_content"]:
-            exercise.exercise_content = args["exercise_content"]
 
         db_engine.session.commit()
 
