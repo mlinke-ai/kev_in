@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from .sandboxes.pyenv.pysandbox import *
-from .sandboxes.javaenv.javasandbox import *
 from .evaluator import *
+from .sandboxes.javaenv.javasandbox import *
+from .sandboxes.pyenv.pysandbox import *

@@ -1,20 +1,24 @@
 import Home from "./Home.svelte"
-import Login from "./Login.svelte"
-import Profile from "./Profile.svelte"
+import Dashboard from "./Dashboard.svelte"
 import Error from "./Error.svelte"
 import CodeSandbox from "./CodeSandbox.svelte"
+<<<<<<< HEAD
 import SignUp from "./SignUp.svelte"
 import AdminDashboard from "./AdminDashboard.svelte"
 import Exercises from "./Exercises.svelte"
 import Users from "./Users.svelte"
 import AddUser from "./AddUser.svelte"
+=======
+import ParsonsPuzzleExercise from "./ParsonsPuzzleExercise.svelte"
+import ParsonsPuzzleExerciseCreate from "./ParsonsPuzzleExerciseCreate.svelte"
+>>>>>>> origin/develop
 //import ExamplePage from "./Example.svelte"
 
 export default {
     "/": Home,
-    "/login": Login,
-    "/signup": SignUp,
-    "/profile": Profile,
+    "/dashboard": Dashboard,
+    "/parsonspuzzle": ParsonsPuzzleExercise,
+    "/ppecreation": ParsonsPuzzleExerciseCreate,
     "/sandbox": CodeSandbox,
     "/admin-dashboard": AdminDashboard,
     "/exercises": Exercises,

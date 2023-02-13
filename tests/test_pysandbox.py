@@ -18,8 +18,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
-from backend.lib.evaluator.sandboxes.pyenv.pysandbox import ExecutePython
+
 from parameterized import parameterized
+
+from backend.lib.evaluator.sandboxes.pyenv.pysandbox import ExecutePython
 
 """ Test input parameter """
 
@@ -30,7 +32,7 @@ fibonacci = {
     "n < 0:\r\n        return\r\n\r\n    # Check if n is 0\r\n    # then it will return 0\r\n    elif n "
     "== 0:\r\n        return 0\r\n\r\n    # Check if n is 1,2\r\n    # it will return 1\r\n    elif n == "
     "1 or n == 2:\r\n        return 1\r\n\r\n    else:\r\n        return fib(n - 1) + fib(n - 2)",
-    "user_func": "fib",
+    "user_func": "def fib(n):",
     "test_args": [[0], [1], [7]],
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
@@ -43,19 +45,22 @@ fibonacci = {
 reverse_string = {
     "user_code": "def reverseString(s):\r\n    s1 = ''\r\n    for c in s:\r\n        s1 = c + s1  # appending chars "
     "in reverse order\r\n    return s1",
-    "user_func": "reverseString",
+    "user_func": "def reverseString(s):",
     "test_args": [['"Hello World"'], ['"Kev.in"']],
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {"ERROR": ()},
-        "RESULTLOG": {"0": (['"Hello World"'], ["dlroW olleH"]), "1": (['"Kev.in"'], ["ni.veK"])},
+        "RESULTLOG": {
+            "0": (['"Hello World"'], ["dlroW olleH"]),
+            "1": (['"Kev.in"'], ["ni.veK"]),
+        },
     },
 }
 
-# Mulitplication with three input parameter.
+# Multiplication with three input parameter.
 multiplication = {
     "user_code": "def mult(a, b, c):\r\n    return a*b*c",
-    "user_func": "mult",
+    "user_func": "def mult(a, b, c):",
     "test_args": [[2, 2, 2]],
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
@@ -68,7 +73,7 @@ multiplication = {
 # Multiplication with three input parameter.
 multiplication_wrong = {
     "user_code": "def mult(a, b, c):\r\n    return a*c",
-    "user_func": "mult",
+    "user_func": "def mult(a, b, c):",
     "test_args": [[2, 2, 2]],
     "not_expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
@@ -83,7 +88,7 @@ fibonacci_wrong = {
     "n < 0:\r\n        return\r\n\r\n    # Check if n is 0\r\n    # then it will return 0\r\n    elif n "
     "== 0:\r\n        return 0\r\n\r\n    # Check if n is 1,2\r\n    # it will return 1\r\n    elif n == "
     "1 or n == 2:\r\n        return 1\r\n\r\n    else:\r\n        return fib(n - 1)",
-    "user_func": "fib",
+    "user_func": "def fib(n):",
     "test_args": [[0], [1], [7]],
     "not_expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
@@ -95,7 +100,7 @@ fibonacci_wrong = {
 # Infinite loop
 infinite_loop = {
     "user_code": "def infinite_loop(s):\r\n    while 1:\r\n        pass",
-    "user_func": "infinite_loop",
+    "user_func": "def infinite_loop(s):",
     "test_args": [['"Hello World"']],
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
@@ -109,7 +114,7 @@ infinite_loop = {
 # Not compilable. Here SyntaxError -> after while ":" missing
 not_compilable = {
     "user_code": "def not_compilable(s):\r\n    while 1\r\n        pass",
-    "user_func": "not_compilable",
+    "user_func": "def not_compilable(s):",
     "test_args": [['"Hello World"']],
 }
 
@@ -117,7 +122,7 @@ not_compilable = {
 not_executable = {
     "user_code": "import os\r\ndef not_executable(s):\r\n    s1 = ''\r\n    for c in s:\r\n        s1 = c + s1  # "
     "appending chars in reverse order\r\n    return s1",
-    "user_func": "not_executable",
+    "user_func": "def not_executable(s):",
     "test_args": [['"Hello World"']],
     "expected": {"COMPILERLOG": {"ERROR": (), "WARNINGS": []}, "RESULTLOG": {}},
 }
@@ -143,7 +148,10 @@ class TestPySandbox(unittest.TestCase):
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
         expected = test_input["expected"]
-        self.assertEqual(self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args), expected)
+        self.assertEqual(
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
+            expected,
+        )
 
     # Test input
     @parameterized.expand([[multiplication_wrong], [fibonacci_wrong]])
@@ -153,7 +161,10 @@ class TestPySandbox(unittest.TestCase):
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
         not_expected = test_input["not_expected"]
-        self.assertNotEqual(self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args), not_expected)
+        self.assertNotEqual(
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
+            not_expected,
+        )
 
     # Test input
     @parameterized.expand([[infinite_loop]])
@@ -163,7 +174,10 @@ class TestPySandbox(unittest.TestCase):
         user_func = test_input["user_func"]
         test_args = test_input["test_args"]
         expected = test_input["expected"]
-        self.assertEqual(self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args), expected)
+        self.assertEqual(
+            self.pysandbox_instance.exec_untrusted_code(user_code, user_func, *test_args),
+            expected,
+        )
 
     # Test input
     @parameterized.expand([[not_compilable]])

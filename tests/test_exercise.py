@@ -18,19 +18,21 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
+
 import requests
 
 
 class ExerciseTest(unittest.TestCase):
     """
     This test class tests the HTTP-request types of the Exercise endpoint. Therefor the class creates
-    a test exercise and a test user and loggs into an admin account and a user account (see setUpClass method).
+    a test exercise and a test user and logs into an admin account and a user account (see setUpClass method).
     The documentation of the API can be found [here](https://mlinke-ai.github.io/kev_in/api/exercise/).
     Note: all tests Use the IP 127.0.0.1 and Port 5000, so the server which provides the endpoint should be hosted there.
     """
 
     user_name = "G:ff#Test"
     user_pass = "hji'$4y33F?"
+    user_mail = "djfh:j@32asde.es"
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -38,7 +40,7 @@ class ExerciseTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": "sadmin", "user_pass": "sadmin"},
+            json={"user_mail": "sadmin@example.com", "user_pass": "sadmin"},
             headers={"Content-Type": "application/json"},
         )
         cls.adminCookie = r.headers["Set-Cookie"]
@@ -52,8 +54,13 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "Test",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
         cls.exercise_id = r.json()["exercise_id"]
         cls.exercise_title = r.json()["exercise_title"]
@@ -65,8 +72,7 @@ class ExerciseTest(unittest.TestCase):
             json={
                 "user_name": ExerciseTest.user_name,
                 "user_pass": ExerciseTest.user_pass,
-                "user_mail": "test@example.com",
-                "user_role": 3,
+                "user_mail": ExerciseTest.user_mail,
             },
             headers={"Content-Type": "application/json"},
         )
@@ -76,9 +82,13 @@ class ExerciseTest(unittest.TestCase):
         r = requests.request(
             "POST",
             "http://127.0.0.1:5000/login",
-            json={"user_name": ExerciseTest.user_name, "user_pass": ExerciseTest.user_pass},
+            json={
+                "user_mail": ExerciseTest.user_mail,
+                "user_pass": ExerciseTest.user_pass,
+            },
             headers={"Content-Type": "application/json"},
         )
+        print(r.headers)
         cls.userCookie = r.headers["Set-Cookie"]
 
     @classmethod
@@ -88,7 +98,10 @@ class ExerciseTest(unittest.TestCase):
             "DELETE",
             "http://127.0.0.1:5000/exercise",
             json={"exercise_id": ExerciseTest.exercise_id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
         cls.exercise_id = None
 
@@ -100,7 +113,10 @@ class ExerciseTest(unittest.TestCase):
             "DELETE",
             "http://127.0.0.1:5000/user",
             json={"user_id": ExerciseTest.user_id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
         cls.user_id = None
 
@@ -119,7 +135,7 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}&exercise_details=true",
             headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
         # server should return HTTP status 200
@@ -146,7 +162,7 @@ class ExerciseTest(unittest.TestCase):
             f"http://127.0.0.1:5000/exercise?exercise_id=-2",
             headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
-        # HTTP stauts 200 and empty JSON
+        # HTTP status 200 and empty JSON
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json(), {})
 
@@ -160,7 +176,7 @@ class ExerciseTest(unittest.TestCase):
 
         r = requests.request(
             "GET",
-            f"http://127.0.0.1:5000/exercise?exercise_id={id}",
+            f"http://127.0.0.1:5000/exercise?exercise_id={id}&exercise_details=true",
             headers={"Cookie": f"{ExerciseTest.userCookie}"},
         )
         # server should return HTTP status 200
@@ -211,8 +227,13 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
         self.assertEqual(r.status_code, 201)
 
@@ -232,7 +253,10 @@ class ExerciseTest(unittest.TestCase):
             "DELETE",
             "http://127.0.0.1:5000/exercise",
             json={"exercise_id": id},
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
 
     def test_post_no_access(self) -> None:
@@ -249,6 +273,8 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
             headers={"Content-Type": "application/json", "Cookie": "key=value;"},
         )
@@ -263,8 +289,13 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.userCookie}",
+            },
         )
         self.assertDictEqual(r.json(), {"message": "No Access"})
         self.assertEqual(r.status_code, 403)
@@ -286,8 +317,13 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
 
         try:
@@ -314,7 +350,10 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
 
         self.assertEqual(r.status_code, 400)
@@ -334,7 +373,7 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        # test changing all attribues
+        # test changing all attributes
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/exercise",
@@ -345,9 +384,15 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_type": 1,
                 "exercise_content": "2+4=",
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
-        self.assertDictEqual(r.json(), {"message": f"Successfully chanaged exercise with exercise_id {id}"})
+        self.assertDictEqual(
+            r.json(),
+            {"message": f"Successfully changed exercise with exercise_id {id}"},
+        )
         self.assertEqual(r.status_code, 200)
 
     def test_put_existing_user(self) -> None:
@@ -357,7 +402,7 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        # test changing all attribues
+        # test changing all attributes
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/exercise",
@@ -368,7 +413,10 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_type": 1,
                 "exercise_content": "2+4=",
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.userCookie}",
+            },
         )
         self.assertDictEqual(r.json(), {"message": "No Access"})
         self.assertEqual(r.status_code, 403)
@@ -380,7 +428,7 @@ class ExerciseTest(unittest.TestCase):
         """
 
         id = str(ExerciseTest.exercise_id)
-        # test changing all attribues
+        # test changing all attributes
         r = requests.request(
             "PUT",
             "http://127.0.0.1:5000/exercise",
@@ -411,7 +459,10 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_type": 1,
                 "exercise_content": "2+4=",
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
 
         # server should return HTTP status 400
@@ -440,7 +491,10 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_type": 1,
                 "exercise_content": "2+4=",
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
 
         self.assertIn("message", r.json())
@@ -465,8 +519,13 @@ class ExerciseTest(unittest.TestCase):
                 "exercise_description": "This is a good Test example!",
                 "exercise_type": 1,
                 "exercise_content": "1+1=",
+                "exercise_solution": "2",
+                "exercise_language": 1,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
         self.assertEqual(r.status_code, 201)
 
@@ -485,7 +544,10 @@ class ExerciseTest(unittest.TestCase):
             json={
                 "exercise_id": id,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.userCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.userCookie}",
+            },
         )
 
         self.assertEqual(r.status_code, 403)
@@ -513,7 +575,10 @@ class ExerciseTest(unittest.TestCase):
             json={
                 "exercise_id": id,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
 
         self.assertEqual(r.status_code, 200)
@@ -534,7 +599,10 @@ class ExerciseTest(unittest.TestCase):
             json={
                 "exercise_id": id,
             },
-            headers={"Content-Type": "application/json", "Cookie": f"{ExerciseTest.adminCookie}"},
+            headers={
+                "Content-Type": "application/json",
+                "Cookie": f"{ExerciseTest.adminCookie}",
+            },
         )
 
         self.assertEqual(r.status_code, 404)

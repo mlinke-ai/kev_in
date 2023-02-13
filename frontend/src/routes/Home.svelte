@@ -1,11 +1,25 @@
 <script>
   import Button, { Label } from "@smui/button";
-  import { PythonSvg, JavaSvg } from "../lib/components/AnimatedSVG";
-  import Page from "../lib/components/common/Page.svelte";
-  import LanguageCard from "../lib/components/common/LanguageCard.svelte";
+  import { PythonSvg, JavaSvg } from "../lib/AnimatedSVG";
+  import Page from "../lib/common/Page.svelte";
+  import LanguageCard from "../lib/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
+<<<<<<< HEAD
   import Footer from "../lib/components/Footer/Footer.svelte";
   //import GroupSvg from "../lib/components/AnimatedSVG/GroupSVG.svelte";
+=======
+  import Dialog from "@smui/dialog";
+  import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
+  import Footer from "../lib/Footer/Footer.svelte";
+  import { accessLevel } from "../stores";
+  import { accessLevels, dashboardPage } from "../lib/constants";
+  import { replace as replaceRoute } from "svelte-spa-router";
+
+  let open = false;
+  if ($accessLevel != accessLevels.default) {
+    replaceRoute(dashboardPage);
+  }
+>>>>>>> origin/develop
 </script>
 
 <Page title="Home">
@@ -16,11 +30,15 @@
       Exercises designed by experts with practical experience. Join our
       community today!
     </h5>
-    <a href="#/login">
-      <Button variant="raised" color="primary">
-        <Label>Start now</Label>
-      </Button>
-    </a>
+    <Button
+      variant="raised"
+      color="primary"
+      on:click={() => {
+        open = true;
+      }}
+    >
+      <Label>Start now</Label>
+    </Button>
   </header>
   <main>
     <div class="language-cards-area">
@@ -44,7 +62,11 @@
       </div>
     </div>
   </main>
-</Page> 
+  <Dialog bind:open>
+    <AuthDialog />
+  </Dialog>
+</Page>
+<Footer />
 
 <Footer></Footer>
 

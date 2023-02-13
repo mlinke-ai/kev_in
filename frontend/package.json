@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@material/typography": "^14.0.0",
+    "@smui/banner": "^7.0.0-beta.0",
     "@smui/button": "^7.0.0-beta.0",
     "@smui/icon-button": "^7.0.0-beta.0",
     "@smui/layout-grid": "^7.0.0-beta.0",
@@ -22,6 +23,7 @@
     "sass": "^1.57.1",
     "svelte": "^3.52.0",
     "svelte-ace": "^1.0.21",
+    "svelte-dnd-action": "^0.9.22",
     "svelte-highlight": "^7.1.2",
     "svelte-preprocess": "^5.0.0",
     "vite": "^3.2.3"
@@ -32,6 +34,10 @@
     "@smui/button": "^7.0.0-beta.0",
     "@smui/card": "^7.0.0-beta.0",
     "@smui/common": "^7.0.0-beta.0",
+    "@smui/dialog": "^7.0.0-beta.0",
+    "@smui/icon-button": "^7.0.0-beta.0",
+    "@smui/list": "^7.0.0-beta.0",
+    "@smui/menu": "^7.0.0-beta.0",
     "@smui/ripple": "^7.0.0-beta.0",
     "@smui/select": "^7.0.0-beta.0",
     "@smui/tab": "^7.0.0-beta.0",

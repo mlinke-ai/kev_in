@@ -1,16 +1,23 @@
 import importlib.util
 import os
 import sys
+import re
 
 from RestrictedPython import compile_restricted_exec
 from RestrictedPython import limited_builtins, utility_builtins, safe_builtins
-from inspect import getmembers, isfunction
-from RestrictedPython import CompileResult
+from RestrictedPython import CompileResult, compile_restricted_exec, utility_builtins
 
+from inspect import getmembers, isfunction
 import timeout_decorator
 
+
 __all__ = ["ExecutePython"]
-_FORBIDDEN_MODULES = frozenset(("os", "sys",))  # forbidden modules
+_FORBIDDEN_MODULES = frozenset(
+    (
+        "os",
+        "sys",
+    )
+)  # forbidden modules
 
 
 def _safe_import(*name: tuple):
@@ -22,7 +29,6 @@ def _safe_import(*name: tuple):
 
 
 class ExecutePython:
-
     def __init__(self):
         self.__sandbox_logs = dict()
         self.__sandbox_logs["COMPILERLOG"] = dict()
@@ -43,6 +49,14 @@ class ExecutePython:
         Return:
         {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()}, 'RESULTLOG': {'0': (['arg0'], ['solution0']), ...}}
         """
+
+        # Extract function name from function head by using regular expression.
+        matchObject = re.search("(?<=def.).[a-z|A-Z|_]+[^\(]", user_func)
+        if matchObject:
+            user_func = matchObject.group(0)
+        else:
+            raise ValueError("User function does not have the form 'def fun(..):'")
+
         # Create usercode.py where user code is stored.
         f = open("usercode.py", "w")
         f.write(user_code)
@@ -50,7 +64,7 @@ class ExecutePython:
 
         # Adds another lines to user code that executes user function.
         for args in args_list:
-            user_code += "\nresult.append({0}({1}))".format(user_func, ','.join(map(str, args)))
+            user_code += "\nresult.append({0}({1}))".format(user_func, ",".join(map(str, args)))
 
         # Compile code.
         self.__compile_result = compile_restricted_exec(source=user_code)
@@ -59,6 +73,8 @@ class ExecutePython:
 
         # Compilation failed.
         if self.__compile_result.code is None:
+            if os.path.exists("usercode.py"):
+                os.remove("usercode.py")
             return self.__sandbox_logs
 
         # Import module "usercode.py" as it is now safe to import.
@@ -105,8 +121,9 @@ class ExecutePython:
                 os.remove("usercode.py")
 
             # code execution took too long
-            self.__sandbox_logs["EXECUTELOG"]["ERROR"] = \
-                ('TimeoutError: Code execution has been interrupted. Maximum execution time has been reached!',)
+            self.__sandbox_logs["EXECUTELOG"]["ERROR"] = (
+                "TimeoutError: Code execution has been interrupted. Maximum execution time has been reached!",
+            )
             return self.__sandbox_logs
 
         except:
@@ -115,6 +132,7 @@ class ExecutePython:
 
             # The code did something that is not allowed. Runtime error in code.
             import traceback
+
             type_, value_, traceback_ = sys.exc_info()
 
             self.__sandbox_logs["EXECUTELOG"]["ERROR"] = (value_,)
@@ -122,6 +140,9 @@ class ExecutePython:
 
         else:
             for idx, arg in enumerate(args_list):
-                self.__sandbox_logs["RESULTLOG"][f'{idx}'] = (arg, [restricted_locals["result"][idx]])
+                self.__sandbox_logs["RESULTLOG"][f"{idx}"] = (
+                    arg,
+                    [restricted_locals["result"][idx]],
+                )
 
             return self.__sandbox_logs

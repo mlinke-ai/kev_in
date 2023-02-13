@@ -3,7 +3,7 @@
   import Card from "@smui/card";
   import Button from "@smui/button";
   import { Label } from "@smui/button";
-  import Page from "../lib/components/common/Page.svelte";
+  import Page from "../lib/common/Page.svelte";
 
   import { startPage } from "../stores";
   import { replace as replaceRoute } from "svelte-spa-router";

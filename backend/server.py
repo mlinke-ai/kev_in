@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
 import hashlib
+import secrets
+import string
+import json
 
 from flask import Flask, Response, send_from_directory
 from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
-from backend.lib.core import config, errors
-from backend.lib.interfaces import db_engine, UserModel
-from backend.lib.routes import ExerciseResource, LoginResource, UserResource, SolutionResource
+from backend.lib.core import config
+from backend.lib.interfaces import ExerciseModel, UserModel, db_engine
+from backend.lib.routes import (ExerciseResource, LoginResource,
+                                LogoutResource, SolutionResource, UserResource)
 
 
 class Server:
@@ -19,16 +22,19 @@ class Server:
         self.app.add_url_rule("/", "base", self._base)
         self.app.add_url_rule("/<path:path>", "assets", self._assets)
         self.app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
+        self.app.config["JWT_SECRET"] = self._gen_JWT_secret()
         with self.app.app_context():
             db_engine.init_app(self.app)
             db_engine.create_all()
             self._sadmin_check()
             self._tuser_check()
+            self._gen_exercises()
         self.api = Api(self.app)
         self.api.add_resource(ExerciseResource, "/exercise")
         self.api.add_resource(LoginResource, "/login")
         self.api.add_resource(UserResource, "/user")
         self.api.add_resource(SolutionResource, "/solution")
+        self.api.add_resource(LogoutResource, "/logout")
 
     def _base(self) -> Response:
         return send_from_directory("../frontend/dist", "index.html")
@@ -79,6 +85,37 @@ class Server:
             print("too many tusers")
         else:
             print("exactly one tuser")
+
+    def _gen_JWT_secret(self) -> str:
+        # generate a random 64 letter password
+        alphabet = string.ascii_letters + string.digits + "!@#$%^&*()_"
+        return "".join(secrets.choice(alphabet) for _ in range(64))
+
+    def _gen_exercises(self) -> None:
+        # create some dummy exercises with different types
+        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
+        query = db_engine.select(sqlalchemy.func.count()).select_from(exercise_table)
+        selection = db_engine.session.execute(query)
+        if selection.first()[0] < 50:
+            print("create dummy exercises")
+            for i in range(10):
+                for j in range(7):
+                    if j == 2:
+                        content = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+                    else:
+                        content = {}
+                    exercise = ExerciseModel(
+                        exercise_title=f"{config.ExerciseType(j + 1).name}{i}",
+                        exercise_description=f"Dummy {config.ExerciseType(j + 1).name} number {i}",
+                        exercise_type=config.ExerciseType(j + 1),
+                        exercise_content=json.dumps(content),
+                        exercise_solution=json.dumps(content),
+                        exercise_language=config.ExerciseLanguage.Python,
+                    )
+                    db_engine.session.add(exercise)
+        else:
+            print("found enough exercises")
+        db_engine.session.commit()
 
     def run(self, debug: bool = False, host: bool = False) -> None:
         self.app.run(debug=debug, host="0.0.0.0" if host else "127.0.0.1")

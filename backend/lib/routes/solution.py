@@ -17,15 +17,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from flask import Response, jsonify, make_response, request
+import datetime
+import json
+
+from flask import Response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
-import hashlib
-import jwt
-
+from backend.lib.core import config, utils
 from backend.lib.interfaces.database import SolutionModel, db_engine
-from backend.lib.core import config
+from backend.lib.evaluator.evaluator import eval_solution
 
 
 class SolutionResource(Resource):
@@ -44,29 +45,33 @@ class SolutionResource(Resource):
         parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="{error_msg}", location="args")
-        # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", location="args"
+        )
+        parser.add_argument(
+            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", location="args"
+        )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
+        parser.add_argument("solution_content", type=dict, help="{error_msg}", location="args")
         parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("solution_limit", type=int, default=config.MAX_ITEMS_RETURNED, help="{error_msg}", location="args")
+        parser.add_argument(
+            "solution_limit",
+            type=int,
+            default=config.MAX_ITEMS_RETURNED,
+            help="{error_msg}",
+            location="args",
+        )
 
         args = parser.parse_args()
 
         # check if page limit is in range
         if args["solution_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
-            return make_response(
-                jsonify(dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED)), 400
+            return utils.makeResponseNewCookie(
+                dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
+                400,
+                request.cookies,
             )
-
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"]):
-            return make_response(jsonify(dict(message="No access")), 403)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -82,83 +87,125 @@ class SolutionResource(Resource):
         if args["solution_exercise"]:
             query = query.where(solution_table.c.solution_exercise == args["solution_exercise"])
         if args["solution_date"]:
-            query = query.where(solution_table.c.solution_date == args["solution_date"])
+            lower = args["solution_date"].replace(hour=0, minute=0, second=0, microsecond=0)
+            upper = lower + datetime.timedelta(days=1)
+            query = query.where(sqlalchemy.between(solution_table.c.solution_date, lower, upper))
         if args["solution_duration"]:
             query = query.where(solution_table.c.solution_duration == args["solution_duration"])
         if args["solution_correct"]:
             query = query.where(solution_table.c.solution_correct == args["solution_correct"])
+        if args["solution_pending"]:
+            query = query.where(solution_table.c.solution_correct == args["solution_pending"])
+        if args["solution_content"]:
+            query = query.where(solution_table.c.solution_content == args["solution_content"])
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
         result = dict()
         for row in selection.fetchall():
+
+            # check for access for every resource, if client has no access for a certain resource the enpoint
+            # immediately returns 401 or 403
+            is_admin, auth, user_id = utils.authorize(
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
+            )
+            if auth == None:
+                return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+            elif not auth:
+                return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+
             result[row[0]] = dict(
                 solution_id=row[0],
                 solution_user=row[1],
                 solution_exercise=row[2],
-                solution_date=row[3],
-                solution_duration=row[4],
+                solution_date=str(row[3]),
+                solution_duration=str(row[4]),
                 solution_correct=row[5],
+                solution_pending=row[6],
+                solution_text=row[7],
             )
 
-        return make_response(jsonify(result), 200)
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def post(self) -> Response:
         """
-        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents duplication.
+        Implementation of the HTTP POST method. Use this method to create a new solution. This method prevents
+        duplication.
 
         Returns:
             Response: A HTTP response with the new element or an error message in JSON.
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
-        parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_exercise", type=int, help="{error_msg}", required=True)
+        parser.add_argument(
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", required=True
+        )
+        parser.add_argument(
+            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", required=True
+        )
+        parser.add_argument("solution_content", type=dict, help="{error_msg}", required=True)
 
         args = parser.parse_args()
 
-        # check if token cookie was sent
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["user_id"]):
-            return make_response(jsonify(dict(message="No access")), 403)
+        # check for access
+        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="POST", endpoint="solution")
+        if auth == None:
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+        elif not auth:
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
-        # TODO: evaluate solution attempt (the evaluator should return whether the attempt was correct or not)
-        correct = True
+        #evaluate solution attempt
+        correct, pending = eval_solution(
+            args["solution_content"],
+            args["solution_exercise"]
+        )
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
         solution = SolutionModel(
-            solution_user=args["solution_user"],
-            solution_exercise=args["solution_Exercise"],
-            solution_date=args["solution_args"],
+            solution_user=user_id,
+            solution_exercise=args["solution_exercise"],
+            solution_date=args["solution_date"],
             solution_duration=args["solution_duration"],
             solution_correct=correct,
+            solution_pending=pending,
+            solution_content=json.dumps(args["solution_content"])
         )
         # add the new element
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        query = db_engine.select([sqlalchemy.func.max(solution_table.c.solution_id)]).select_from(solution_table)
+        subquery = (
+            db_engine
+            .select([sqlalchemy.func.max(solution_table.c.solution_id)])
+            .select_from(solution_table)
+            .scalar_subquery()
+        )
+        query = (
+            db_engine
+            .select(["*"])
+            .select_from(solution_table)
+            .where(solution_table.c.solution_id == subquery)
+        )
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
         result = dict()
         row = selection.fetchone()
         result = dict(
+            message="Successfully submitted solution",
             solution_id=row[0],
             solution_user=row[1],
             solution_exercise=row[2],
             solution_date=row[3],
             solution_duration=row[4],
-            solution_correct=row[5],
+            solution_correct=bool(row[5]), #db reponds with 0 or 1 sometimes
+            solution_pending=bool(row[6]),
+            solution_content=json.loads(row[7]),
         )
-        return make_response(jsonify(result), 200)
+        return utils.makeResponseNewCookie(result, 201, request.cookies)
 
     def put(self) -> Response:
         """
@@ -170,46 +217,41 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
-        parser.add_argument("solution_user", type=int, help="{error_msg}")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}")
-        # TODO: lookup correct type
-        parser.add_argument("solution_date", type=int, help="{error_msg}")
-        # TODO: lookup correct type
-        parser.add_argument("solution_duration", type=int, help="{error_msg}")
+        parser.add_argument("solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}")
+        parser.add_argument("solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}")
         parser.add_argument("solution_correct", type=bool, help="{error_msg}")
+        parser.add_argument("solution_pending", type=bool, help="{error_msg}")
+        parser.add_argument("solution_content", type=dict, help="{error_msg}")
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
-        # check if the token cookie was sent
-        # TODO: this should be admins only
-        cookies = request.cookie.to_dict(True)  # we only use the value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorized(cookies["token"]):
-            return make_response(jsonify(dict(message="No Access")), 403)
-
-        # load the solution table
-        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
-        # drop the ID as we don#t want to update it
-        values = args.copy()
-        del values["solution_id"]
-        # compose the query to update the requested element
-        query = (
-            db_engine.update(solution_table).where(solution_table.c.solution_id == args["solution_id"]).values(values)
+        # check for access
+        is_admin, auth, user_id = utils.authorize(
+            cookies=request.cookies, method="PUT", endpoint="solution", resourceId=args["solution_id"]
         )
-        # execute the query
-        selection = db_engine.session.execute(query)
+        if auth == None:
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+        elif not auth:
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+
+        solution = SolutionModel.query.filter_by(solution_id=args["solution_id"]).first_or_404(
+            description=f"Solution with solution_id {args['solution_id']} does not exist"
+        )
+
+        if args["solution_exercise"]:
+            solution.solution_exercise = args["solution_exercise"]
+        if args["solution_date"]:
+            solution.solution_date = args["solution_date"]
+        if args["solution_duration"]:
+            solution.solution_duration = args["solution_duration"]
+        if args["solution_correct"]:
+            solution.solution_correct = args["solution_correct"]
+
         db_engine.session.commit()
 
-        # if no element was updated, the rowcount is 0
-
-        if selection.rowcount == 0:
-            result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return make_response(jsonify(result), 404)
-
         result = dict(message=f"The solution with solution_id {args['solution_id']} was changed successfully")
-        return make_response(jsonify(result), 200)
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
 
     def delete(self) -> Response:
         """
@@ -222,16 +264,16 @@ class SolutionResource(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("solution_id", type=int, help="{error_msg}", required=True)
 
-        args = parser.parse_args()
+        args = parser.parse_args(strict=True)
 
-        # check if token cookie was sent
-        # TODO: this should be admins only
-        cookies = request.cookies.to_dict(True)  # we only use the first value from each key
-        if not "token" in cookies:
-            return make_response(jsonify(dict(message="Login required")), 401)
-        # check if the client has access
-        if not self._authorize(cookies["token"], args["solution_id"]):
-            return make_response(jsonify(dict(message="No access")), 403)
+        # check for access
+        is_admin, auth, user_id = utils.authorize(
+            cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
+        )
+        if auth == None:
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+        elif not auth:
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
@@ -244,25 +286,7 @@ class SolutionResource(Resource):
         # if no element was updated, the rowcount is 0
         if selection.rowcount == 0:
             result = dict(message=f"Solution with solution_id {args['solution_id']} does not exist")
-            return make_response(jsonify(result), 404)
+            return utils.makeResponseNewCookie(result, 404, request.cookies)
 
         result = dict(message=f"Successfully deleted solution with solution_id {args['solution_id']}")
-        return make_response(jsonify(result), 200)
-
-    def _authorize(self, toke: str, solution_id: int = None, change_admin: bool = False) -> bool:
-        """
-        This method is used to determine if a certain client has the right to change or access data, based on the
-        HTTP request. Therefore the JWT is decoded. Returns True if access is granted and False when access is denied.
-        TODO: grand access only for admins
-
-        Args:
-            toke (str): The JWT token the client sends with the request.
-            solution_id (int, optional): The ID of the solution which the client wants to access. Defaults to None.
-            change_admin (bool, optional): True, if the client wants to change the admin status of a user or wants to create an admins account. TODO: do we need this flag?. Defaults to False.
-
-        Returns:
-            bool: True, if access is granted, otherwise False.
-        """
-
-        # TODO: rewrite the function as utility
-        return True
+        return utils.makeResponseNewCookie(result, 200, request.cookies)
