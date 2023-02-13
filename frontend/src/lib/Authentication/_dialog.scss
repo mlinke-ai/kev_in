@@ -1,0 +1,9 @@
+// enhance the looks of the default dialog scrim
+@use "@material/dialog/mixins";
+
+.mdc-dialog.auth-dialog {
+    .mdc-dialog__scrim {
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+    }
+}

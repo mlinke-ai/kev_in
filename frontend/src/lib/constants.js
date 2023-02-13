@@ -6,6 +6,13 @@ export const accessLevels = {
     sadmin: 3
 };
 
+export const messages = {
+    neutral: 0,
+    success: 1,
+    warning: 2,
+    error: 3
+}
+
 export const passwordLength = 8;
 
 export const dashboardPage = "/admin-dashboard"

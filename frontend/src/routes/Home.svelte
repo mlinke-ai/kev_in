@@ -57,13 +57,13 @@
       </div>
     </div>
   </main>
-  <Dialog bind:open>
+  <Dialog bind:open class="auth-dialog">
     <AuthDialog />
   </Dialog>
 </Page>
+
 <Footer />
 
-<Footer></Footer>
 
 <style lang="scss">
   header {

@@ -1,31 +1,33 @@
 <!-- Login component that requests email and password from user -->
-
 <script>
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
+  import Message from "../common/Message/Message.svelte";
+  import { messages } from "../constants";
   import PasswordInput from "./PasswordInput.svelte";
   import { login } from "./user";
 
   let email = "";
   let password = "";
+  let errorMessage;
+  let warningMessage;
 
-  let wrongCredentials = false;
-
-  $: if (wrongCredentials) {
-    document.getElementById("email-input").focus();
-  }
+  const attemptLogin = async () => {
+    if (!email || !password) {
+      warningMessage.open();
+      return;
+    }
+    if (await login(email, password)) {
+    } else {
+      document.getElementById("email-input").focus();
+      errorMessage.open();
+    }
+  };
 </script>
 
-<form
-  class="login-form"
-  on:submit|preventDefault={async () => {
-    wrongCredentials = !(await login(email, password));
-  }}
-  hidden
->
+<form class="login-form" on:submit|preventDefault={attemptLogin} hidden>
   <div class="input">
     <Textfield
-      invalid={wrongCredentials}
       id="email-input"
       style="width: 20rem"
       bind:value={email}
@@ -34,20 +36,22 @@
     />
   </div>
   <div class="input" style="margin-top: 1rem;">
-    <PasswordInput
-      bind:password
-      wrongPassword={wrongCredentials}
-      style="width: 20rem"
-    />
+    <PasswordInput bind:password style="width: 20rem" />
   </div>
   <input type="submit" hidden />
 </form>
-<Button
-  on:click={async () => {
-    wrongCredentials = !(await login(email, password));
-  }}
-  variant="unelevated">Login</Button
->
+<Button on:click={attemptLogin} variant="unelevated">Login</Button>
+
+<Message
+  bind:message={errorMessage}
+  content={"Wrong username or password"}
+  type={messages.error}
+/>
+<Message
+  bind:message={warningMessage}
+  content={"Please enter your credentials"}
+  type={messages.warning}
+/>
 
 <style>
   .login-form {
