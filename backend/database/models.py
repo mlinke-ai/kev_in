@@ -11,7 +11,7 @@ db = SQLAlchemy()
 
 
 class UserRole(enum.IntEnum):
-    SAdimn = 1
+    SAdmin = 1
     Admin = 2
     User = 3
 
