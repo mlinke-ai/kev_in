@@ -18,9 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
-
 import requests
-import json
 
 class ExerciseTest(unittest.TestCase):
     """
@@ -30,15 +28,13 @@ class ExerciseTest(unittest.TestCase):
     Note: all tests Use the IP 127.0.0.1 and Port 5000, so the server which provides the endpoint should be hosted there.
     """
 
-    user_name = "G:ff#Test"
-    user_pass = "hji'$4y33F?"
-    user_mail = "djfh:j@32asde.es"
     exercise_title = "Test Parsons Puzzle"
     exercise_description = "This is a test Parsosns Puzzle"
     exercise_type = 3
     exercise_content = {"list": ["Hello", "this", "World", "is", "the", "first", "exercise"]}
     exercise_solution = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
     exercise_language = 1
+    exercise_id_list = []
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -50,6 +46,15 @@ class ExerciseTest(unittest.TestCase):
             headers={"Content-Type": "application/json"},
         )
         cls.adminCookie = r.headers["Set-Cookie"]
+
+        # log into tuser
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/login",
+            json={"user_mail": "tuser@example.com", "user_pass": "tuser"},
+            headers={"Content-Type": "application/json"},
+        )
+        cls.userCookie = r.headers["Set-Cookie"]
 
         # create an exercise which we can later edit or access
         r = requests.request(
@@ -70,49 +75,25 @@ class ExerciseTest(unittest.TestCase):
         )
         cls.exercise_id = r.json()["exercise_id"]
 
-        # create a test user which we can use later
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/user",
-            json={
-                "user_name": ExerciseTest.user_name,
-                "user_pass": ExerciseTest.user_pass,
-                "user_mail": ExerciseTest.user_mail,
-            },
-            headers={"Content-Type": "application/json"},
-        )
-        cls.user_id = r.json()["user_id"]
-
-        # log into the created test user
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/login",
-            json={
-                "user_mail": ExerciseTest.user_mail,
-                "user_pass": ExerciseTest.user_pass,
-            },
-            headers={"Content-Type": "application/json"},
-        )
-        cls.userCookie = r.headers["Set-Cookie"]
-
         #generate additional dummy exercises
         for i in range(20):
             r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/exercise",
-            json={
-                "exercise_title": f"UnitTestDummyEx{i}",
-                "exercise_description": "Dummy for exercise UnitTests",
-                "exercise_type": 1,
-                "exercise_content": {},
-                "exercise_solution": {},
-                "exercise_language": 2,
-            },
-            headers={
-                "Content-Type": "application/json",
-                "Cookie": f"{ExerciseTest.adminCookie}",
-            },
+                "POST",
+                "http://127.0.0.1:5000/exercise",
+                json={
+                    "exercise_title": f"UnitTestDummyEx{i}",
+                    "exercise_description": "Dummy for exercise UnitTests",
+                    "exercise_type": 1,
+                    "exercise_content": {},
+                    "exercise_solution": {},
+                    "exercise_language": 2,
+                },
+                headers={
+                    "Content-Type": "application/json",
+                    "Cookie": f"{ExerciseTest.adminCookie}",
+                }
             )
+            ExerciseTest.exercise_id_list.append(r.json()["exercise_id"])
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -128,23 +109,19 @@ class ExerciseTest(unittest.TestCase):
         )
         cls.exercise_id = None
 
-        # log out of the user account
-        cls.userCookie = None
-
-        # delete the created user
-        requests.request(
-            "DELETE",
-            "http://127.0.0.1:5000/user",
-            json={"user_id": ExerciseTest.user_id},
-            headers={
-                "Content-Type": "application/json",
-                "Cookie": f"{ExerciseTest.adminCookie}",
-            },
-        )
-        cls.user_id = None
-
-        # log out of admin account
-        cls.adminCookie = None
+        #delete dummy exercises
+        for i in range(20):
+            r = requests.request(
+                "DELETE",
+                "http://127.0.0.1:5000/exercise",
+                json={
+                    "exercise_id": ExerciseTest.exercise_id_list[i],
+                },
+                headers={
+                    "Content-Type": "application/json",
+                    "Cookie": f"{ExerciseTest.adminCookie}",
+                }
+            )
 
     # ------------------------------HTTP-GET-----------------------------
 
@@ -249,7 +226,7 @@ class ExerciseTest(unittest.TestCase):
             headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
         self.assertEqual(r.status_code, 200)
-        self.assertEqual(len(r.json["data"]), arg)
+        self.assertEqual(len(r.json()["data"]), arg)
 
     def test_get_details_false(self) -> None:
 
@@ -315,14 +292,12 @@ class ExerciseTest(unittest.TestCase):
         The system should return HTTP-status 401 and an error message.
         """
 
-        id = str(ExerciseTest.exercise_id)
-
+        id = ExerciseTest.exercise_id
         r = requests.request(
             "GET",
             f"http://127.0.0.1:5000/exercise?exercise_id={id}",
             headers={"Cookie": f"key=value"},
         )
-
         self.assertEqual(r.status_code, 401)
         self.assertDictEqual(r.json(), {"message": "Login required"})
 
