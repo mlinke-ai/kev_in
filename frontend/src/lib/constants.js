@@ -8,4 +8,4 @@ export const accessLevels = {
 
 export const passwordLength = 8;
 
-export const dashboardPage = "/dashboard"
+export const dashboardPage = "/admin-dashboard"

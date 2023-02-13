@@ -4,10 +4,6 @@
   import Page from "../lib/common/Page.svelte";
   import LanguageCard from "../lib/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
-<<<<<<< HEAD
-  import Footer from "../lib/components/Footer/Footer.svelte";
-  //import GroupSvg from "../lib/components/AnimatedSVG/GroupSVG.svelte";
-=======
   import Dialog from "@smui/dialog";
   import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
   import Footer from "../lib/Footer/Footer.svelte";
@@ -19,7 +15,6 @@
   if ($accessLevel != accessLevels.default) {
     replaceRoute(dashboardPage);
   }
->>>>>>> origin/develop
 </script>
 
 <Page title="Home">
