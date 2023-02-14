@@ -19,7 +19,7 @@ export const getExercise = async (exerciseID) => {
       alert("user_limit out of range")
     } else if (response.status === 200) {
       response.json().then(data => {
-        return data.json();
+        return data;
       })
     }
   })

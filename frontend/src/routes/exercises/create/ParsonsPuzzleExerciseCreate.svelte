@@ -1,12 +1,12 @@
 <script>
   import Button from "@smui/button/src/Button.svelte";
-  import Page from "../lib/common/Page.svelte";
+  import Page from "../../../lib/common/Page.svelte";
   import Textfield from "@smui/textfield";
   import IconButton from '@smui/icon-button';
-  import TaskCard from "../lib/Excercises/TaskCard.svelte";
+  import TaskCard from "../../../lib/Excercises/TaskCard.svelte";
   import { each } from "svelte/internal";
-  import UiCard from "../lib/common/UICard.svelte";
-  import { accessLevels } from "../lib/constants";
+  import UiCard from "../../../lib/common/UICard.svelte";
+  import { accessLevels } from "../../../lib/constants";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
@@ -98,7 +98,7 @@
 </Page>
 
 <style lang="scss">
-  @use "../variables" as vars;
+  @use "../../../variables" as vars;
 
   .exercise-container {
     display: grid;

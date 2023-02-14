@@ -1,13 +1,14 @@
 import Home from "./Home.svelte"
 import Dashboard from "./Dashboard.svelte"
 import Error from "./Error.svelte"
-import CodeSandbox from "./CodeSandbox.svelte"
+import CodeSandbox from "./exercises/CodeSandbox.svelte"
 import AdminDashboard from "./AdminDashboard.svelte"
-import Exercises from "./Exercises.svelte"
+import Exercises from "./exercises/Exercises.svelte"
 import Users from "./Users.svelte"
 import AddUser from "./AddUser.svelte"
-import ParsonsPuzzleExercise from "./ParsonsPuzzleExercise.svelte"
-import ParsonsPuzzleExerciseCreate from "./ParsonsPuzzleExerciseCreate.svelte"
+import ParsonsPuzzleExercise from "./exercises/ParsonsPuzzleExercise.svelte"
+import ParsonsPuzzleExerciseCreate from "./exercises/create/ParsonsPuzzleExerciseCreate.svelte"
+import Exercise from "./exercises/Exercise.svelte"
 //import ExamplePage from "./Example.svelte"
 
 export default {
@@ -18,6 +19,7 @@ export default {
     "/sandbox": CodeSandbox,
     "/admin-dashboard": AdminDashboard,
     "/exercises": Exercises,
+    "/exercises/:exerciseID": Exercise,
     "/users": Users,
     "/adduser": AddUser,
     //"/example-path": <ExamplePage>,

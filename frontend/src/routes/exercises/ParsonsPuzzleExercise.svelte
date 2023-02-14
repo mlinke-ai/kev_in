@@ -1,13 +1,13 @@
 <script>
   import {dndzone} from "svelte-dnd-action";
-  import Page from "../lib/common/Page.svelte";
-  import PuzzleCard from "../lib//Excercises/ParsonsPuzzle/PuzzleCard.svelte";
-  import { userName } from "../stores";
+  import Page from "../../lib/common/Page.svelte";
+  import PuzzleCard from "../../lib/Excercises/ParsonsPuzzle/PuzzleCard.svelte";
+  import { userName } from "../../stores";
 
-  import TaskCard from "../lib/Excercises/TaskCard.svelte";
-  import StatusBar from "../lib/Excercises/StatusBar.svelte";
-  import { accessLevels } from "../lib/constants";
-  import { submitSolution } from "../lib/Excercises/exercise"
+  import TaskCard from "../../lib/Excercises/TaskCard.svelte";
+  import StatusBar from "../../lib/Excercises/StatusBar.svelte";
+  import { accessLevels } from "../../lib/constants";
+  import { submitSolution } from "../../lib/Excercises/exercise"
 
   let itemsLeft = [];
   let itemsLeftOriginal = [];
@@ -78,7 +78,7 @@
 </Page>
 
 <style lang="scss">
-  @use "../variables" as vars;
+  @use "../../variables" as vars;
 
   .exercise-container {
     display: grid;

@@ -1,12 +1,13 @@
 <script>
-  import Page from "../lib/common/Page.svelte";
-  import TaskCard from "../lib/Excercises/TaskCard.svelte";
-  import CodingCard from "../lib/Excercises/CodeSandbox/CodingCard.svelte";
-  import OutputCard from "../lib/Excercises/CodeSandbox/OutputCard.svelte";
-  import StatusBar from "../lib/Excercises/StatusBar.svelte";
-  import { getExercise, submitSolution } from "../lib/Excercises/exercise";
+  import Page from "../../lib/common/Page.svelte";
+  import TaskCard from "../../lib/Excercises/TaskCard.svelte";
+  import CodingCard from "../../lib/Excercises/CodeSandbox/CodingCard.svelte";
+  import OutputCard from "../../lib/Excercises/CodeSandbox/OutputCard.svelte";
+  import StatusBar from "../../lib/Excercises/StatusBar.svelte";
+  import { getExercise, submitSolution } from "../../lib/Excercises/exercise";
 
   let elapsedTime;
+  export let exerciseID = 7
 
   function get() {
     console.log(getExercise(exerciseID));
@@ -52,7 +53,7 @@
 </Page>
 
 <style lang="scss">
-  @use "../variables" as vars;
+  @use "../../variables" as vars;
 
   * {
     box-sizing: border-box;
