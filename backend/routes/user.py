@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import Response, current_app, jsonify, make_response, request
-from flask_jwt_extended import verify_jwt_in_request
+from flask import Response, current_app, jsonify, make_response
+from flask_jwt_extended import create_access_token, set_access_cookies, verify_jwt_in_request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 from flask_sqlalchemy.session import Session
@@ -82,15 +82,21 @@ class UserResource(Resource):
         if args["user_mail"] == "":
             return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
 
-        # user = UserModel(args["user_name"], args["user_pass"], args["user_mail"])
-        stmt = sqlalchemy.insert(UserModel).values(args)
-        with Session(db) as session:
-            selection = session.execute(stmt)
-        result = dict()
-        print(selection)
+        user = UserModel(args["user_name"], args["user_pass"], args["user_mail"])
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError:
+            return make_response(dict(message="An user with this mail does already exist"), 409)
+        else:
+            token = create_access_token(identity=user.user_mail)
+            response = make_response(jsonify(dict(message=user.to_json())), 200)
+            set_access_cookies(response, token)
+            return response
 
     def put(self) -> Response:
         token = verify_jwt_in_request()
+        print(token)
 
     def delete(self) -> Response:
         token = verify_jwt_in_request()
