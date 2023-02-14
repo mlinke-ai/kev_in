@@ -3,6 +3,7 @@
 
 import datetime
 import enum
+import hashlib
 import json
 
 from flask_sqlalchemy import SQLAlchemy
@@ -46,7 +47,7 @@ class UserModel(db.Model):
         self, user_name: str, user_pass: str, user_mail: str, user_role: UserRole | int = UserRole.User
     ) -> None:
         self.user_name = user_name
-        self.user_pass = user_pass
+        self.user_pass = hashlib.sha256(bytes(user_pass, encoding="utf-8")).hexdigest()
         self.user_mail = user_mail
         self.user_role = user_role if isinstance(user_role, UserRole) else UserRole(user_role)
 
