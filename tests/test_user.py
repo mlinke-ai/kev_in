@@ -75,7 +75,8 @@ class UserTest(BaseTest):
     # --- GET ---
 
     def test_get_existing_by_id(self, client: FlaskClient) -> None:
-        r = client.get("/user", json={"user_id": 1})
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.get(f"/user?user_id={UserTest.user_id}")
         self.assertEqual(r.status_code, 200)
 
     def test_get_existing_by_name(self, client: FlaskClient) -> None:
