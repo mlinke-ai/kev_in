@@ -13,6 +13,16 @@ export const messages = {
     error: 3
 }
 
+export const exerciseTypes = {
+    gapText: 1,
+    syntax: 2,
+    parsonsPuzzle: 3,
+    findTheBug: 4,
+    documentation: 5,
+    output: 6,
+    programming: 7
+}
+
 export const passwordLength = 8;
 
 export const dashboardPage = "/admin-dashboard"
