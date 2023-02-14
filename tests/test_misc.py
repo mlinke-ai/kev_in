@@ -40,6 +40,26 @@ class MiscTest(flask_unittest.ClientTestCase):
         r = client.get("/missing-route")
         self.assertEqual(r.status_code, 404)
 
+    def test_user_route_code(self, client: FlaskClient) -> None:
+        r = client.get("/user")
+        self.assertNotEqual(r.status_code, 404)
+
+    def test_exercise_route_code(self, client: FlaskClient) -> None:
+        r = client.get("/exercise")
+        self.assertNotEqual(r.status_code, 404)
+
+    def test_solution_route_code(self, client: FlaskClient) -> None:
+        r = client.get("/solution")
+        self.assertNotEqual(r.status_code, 404)
+
+    def test_login_route_code(self, client: FlaskClient) -> None:
+        r = client.get("/login")
+        self.assertNotEqual(r.status_code, 404)
+
+    def test_logout_route_code(self, client: FlaskClient) -> None:
+        r = client.get("/logout")
+        self.assertNotEqual(r.status_code, 404)
+
 
 if __name__ == "__main__":
     flask_unittest.main()
