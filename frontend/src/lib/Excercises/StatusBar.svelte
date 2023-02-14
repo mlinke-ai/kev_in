@@ -3,9 +3,9 @@
   import { Icon } from "@smui/common";
   export let reset;
   export let submitSolution;
+  export let elapsedTime = 0;
 
   let startTime = 0;
-  let elapsedTime = 0;
   let intervallID;
   const startTimer = () => {
     startTime = Date.now();
