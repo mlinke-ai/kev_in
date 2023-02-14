@@ -7,6 +7,7 @@
   import TaskCard from "../lib/Excercises/TaskCard.svelte";
   import StatusBar from "../lib/Excercises/StatusBar.svelte";
   import { accessLevels } from "../lib/constants";
+  import { submitSolution } from "../lib/Excercises/exercise"
 
   let itemsLeft = [];
   let itemsLeftOriginal = [];
@@ -16,44 +17,10 @@
   let exerciseDescription = "Please use your Brain"
 
   // TODO fix this by adapting the Statusbar (bind)
-  let elapsedTime = 0;
+  let elapsedTime;
 
-
-  function getCurrentTimestamp () {
-    return (Date.now()/1000)
-  }
-
-  const submitSolution = async () =>{
-    fetch(
-      "/solution",
-      {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          solution_exercise: exerciseID,
-          solution_date: getCurrentTimestamp(),
-          solution_duration: elapsedTime,
-          solution_content: {
-            list: itemsRight.map(item => item.name)
-          }
-        })
-      }
-    ).then(response => {
-      if (response.status === 400){
-        alert("A required argument was not sent");
-      }
-      else if (response.status === 401){
-        // redirect to login
-        window.location.replace("/#/login");
-      } else if (response.status === 403){
-        alert("you naughty naughty")
-      } else if (response.status === 200){
-        alert("Successfully submitted solution")
-        response.json().then(data => {
-          console.log(data);
-        })
-      }
-    })
+  function submit() {
+    submitSolution(exerciseID, elapsedTime, {list: itemsRight.map(item => item.name)})
   }
 
   const getExercise = async () =>{
@@ -107,7 +74,7 @@
     <div class="puzzle-area">
       <PuzzleCard bind:itemsLeft bind:itemsRight />
     </div>
-    <StatusBar {reset} {submitSolution}/>
+    <StatusBar {reset} {submit} bind:elapsedTime/>
   </div>
 </Page>
 
