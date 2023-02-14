@@ -4,15 +4,19 @@
   import CodingCard from "../lib/Excercises/CodeSandbox/CodingCard.svelte";
   import OutputCard from "../lib/Excercises/CodeSandbox/OutputCard.svelte";
   import StatusBar from "../lib/Excercises/StatusBar.svelte";
-  import { submitSolution } from "../lib/Excercises/exercise";
+  import { getExercise, submitSolution } from "../lib/Excercises/exercise";
 
   let elapsedTime;
-  let exerciseID = null;
+
+  function get() {
+    console.log(getExercise(exerciseID));
+  }
 
   function submit() {
-    submitSolution(exerciseID, elapsedTime, "code here")
+    submitSolution(exerciseID, elapsedTime, "code here");
   }
   function reset() {}
+  get();
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
@@ -22,7 +26,7 @@
     </div>
     <div class="task-area">
       <TaskCard>
-        <h1>Welcome to your first test excercise!</h1>
+        <h1>Welcome to your first test exercise!</h1>
         <p>
           To solve it you have to write a python script that prints out "Hello
           World".
@@ -43,7 +47,7 @@
     <div class="output-area">
       <OutputCard />
     </div>
-    <StatusBar bind:elapsedTime {reset} {submit}/>
+    <StatusBar bind:elapsedTime {reset} {submit} />
   </div>
 </Page>
 
