@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import re
 from datetime import datetime, timezone
 
 from flask import Response, current_app
-from flask_jwt_extended import (create_access_token, get_jwt, get_jwt_identity,
-                                set_access_cookies)
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, set_access_cookies
 
 
 def user_id_from_cookie():
@@ -28,3 +28,12 @@ def refresh_token(response: Response) -> Response:
         return response
     else:
         return response
+
+
+def get_url(url: str, **kwargs: dict) -> str:
+    for key, value in kwargs.items():
+        if re.search(key, url) == None:
+            url += f"&{key}={value}"
+        else:
+            url = re.sub(f"(?<={key}=)[^&]+(?=&|$)", str(value), url)
+    return url

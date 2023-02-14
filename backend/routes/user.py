@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from flask import Response, current_app, jsonify, make_response
+from flask import Response, current_app, jsonify, make_response, request
 from flask_jwt_extended import create_access_token, set_access_cookies, verify_jwt_in_request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
-from flask_sqlalchemy.session import Session
 
 from backend.database.models import UserModel, UserRole, db
-from backend.utils import user_id_from_cookie
+from backend.utils import get_url, user_id_from_cookie
 
 
 class UserResource(Resource):
@@ -21,13 +20,13 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, default=0, help="{error_msg}", location="args")
-        parser.add_argument("user_name", type=str, default="", help="{error_msg}", location="args")
-        parser.add_argument("user_mail", type=str, default="", help="{error_msg}", location="args")
+        parser.add_argument("user_id", type=int, help="{error_msg}", location="args")
+        parser.add_argument("user_name", type=str, help="{error_msg}", location="args")
+        parser.add_argument("user_mail", type=str, help="{error_msg}", location="args")
         parser.add_argument(
             "user_role", type=lambda x: UserRole(int(x)), default=UserRole.User, help="{error_msg}", location="args"
         )
-        parser.add_argument("user_offset", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("user_page", type=int, default=1, help="{error_msg}", location="args")
         parser.add_argument(
             "user_limit",
             type=int,
@@ -38,33 +37,33 @@ class UserResource(Resource):
 
         args = parser.parse_args()
 
-        # check if page limit is in range
-        if args["user_limit"] not in range(current_app.config["MAX_ITEMS_RETURNED"] + 1):
-            return make_response(
-                jsonify(
-                    dict(
-                        message="Page limit not in range",
-                        min_limit=0,
-                        max_limit=current_app.config["MAX_ITEMS_RETURNED"],
-                    )
-                ),
-                400,
-            )
+        query = db.select(UserModel).order_by(UserModel.user_id)
+        if args["user_id"] is not None:
+            query = query.where(UserModel.user_id == args["user_id"])
+        if args["user_name"] is not None:
+            query = query.where(UserModel.user_name == args["user_name"])
+        if args["user_mail"] is not None:
+            query = query.where(UserModel.user_mail == args["user_mail"])
+        query = query.where(UserModel.user_role == args["user_role"])
+        users = db.paginate(
+            query,
+            page=args["user_page"],
+            per_page=args["user_limit"],
+            max_per_page=current_app.config["MAX_ITEMS_RETURNED"],
+        )
 
-        result = list()
-        stmt = sqlalchemy.select(UserModel).order_by(UserModel.user_id)
-        with Session(db) as session:
-            selection = session.execute(stmt)
-            for user in selection.scalars():
-                result.append(
-                    dict(
-                        user_id=user.user_id,
-                        user_name=user.user_name,
-                        user_mail=user.user_mail,
-                        user_role=user.user_role,
-                    )
-                )
-        return make_response(jsonify(dict(data=result, size=len(result))), 200)
+        response = dict(data=list(), meta=dict())
+        for user in users.items:
+            response["data"].append(user.to_json())
+        response["meta"]["total"] = users.total
+        response["meta"]["next_page"] = users.next_num
+        response["meta"]["prev_page"] = users.prev_num
+        response["meta"]["next_url"] = get_url(request.url, user_page=users.next_num) if users.has_next else None
+        response["meta"]["prev_url"] = get_url(request.url, user_page=users.prev_num) if users.has_prev else None
+        response["meta"]["page_size"] = len(users.items)
+        response["meta"]["pages"] = users.pages
+
+        return make_response(jsonify(response), 200)
 
     def post(self) -> Response:
         # create a parser for the request data and parse the request
