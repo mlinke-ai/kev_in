@@ -90,7 +90,7 @@ class UserResource(Resource):
             return make_response(dict(message="An user with this mail does already exist"), 409)
         else:
             token = create_access_token(identity=user.user_mail)
-            response = make_response(jsonify(dict(message=user.to_json())), 200)
+            response = make_response(jsonify(user.to_json()), 200)
             set_access_cookies(response, token)
             return response
 
@@ -100,3 +100,12 @@ class UserResource(Resource):
 
     def delete(self) -> Response:
         token = verify_jwt_in_request()
+        parser = reqparse.RequestParser()
+        parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
+        args = parser.parse_args(strict=True)
+        query = db.select(UserModel).filter_by(user_id=args["user_id"])
+        user = db.one_or_404(query, description="An user with this ID does not exist.")
+        db.session.delete(user)
+        db.session.commit()
+        response = make_response(jsonify(dict(message="User deleted successfully")), 200)
+        return response

@@ -35,7 +35,9 @@ class BaseConfig(object):
     COMPRESS_MIN_SIZE = 500
     # JWT configuration
     JWT_COOKIE_SECURE = False
-    JWT_COOKIE_LOCATION = ["cookies"]
+    JWT_CSRF_IN_COOKIES = True
+    JWT_COOKIE_CSRF_PROTECT = True
+    JWT_TOKEN_LOCATION = ["cookies"]
     JWT_SECRET_KEY = "3bc507e0-2966-4a2c-a89b-24ce8a16ab1e"
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_REFRESH_PERIOD = timedelta(minutes=30)
