@@ -47,7 +47,30 @@ class ExecutePython:
             *args_list: Nested list of arguments passed to the user function.
 
         Return:
-        {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()}, 'RESULTLOG': {'0': (['arg0'], ['solution0']), ...}}
+        {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()},
+                                'RESULTLOG': {'0': [['arg0'], ['solution0']], ...}}
+
+        Example
+        Args:
+            user_code: "def multiply(x,y):\r\n  return x*y"
+            user_func: "def multiply(x,y):\r\n  pass"
+            *args_list: [[0,0], [1,0], [2,2], [3,3]]
+
+        Return:
+            {
+            'COMPILERLOG': {
+                            'ERROR': (), 'WARNINGS': []
+                            },
+            'EXECUTELOG': {
+                            'ERROR': ()
+                            },
+            'RESULTLOG': {
+                        '0': [[0,0], [0]],
+                        '1': [[1,0], [0]],
+                        '2': [[2,2], [4]],
+                        '3': [[3,3], [9]]
+                        }
+            }
         """
 
         # Extract function name from function head by using regular expression.
@@ -140,9 +163,9 @@ class ExecutePython:
 
         else:
             for idx, arg in enumerate(args_list):
-                self.__sandbox_logs["RESULTLOG"][f"{idx}"] = (
+                self.__sandbox_logs["RESULTLOG"][f"{idx}"] = [
                     arg,
                     [restricted_locals["result"][idx]],
-                )
+                ]
 
             return self.__sandbox_logs

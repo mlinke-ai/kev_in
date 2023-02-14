@@ -37,7 +37,7 @@ fibonacci = {
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {"ERROR": ()},
-        "RESULTLOG": {"0": ([0], [0]), "1": ([1], [1]), "2": ([7], [13])},
+        "RESULTLOG": {"0": [[0], [0]], "1": [[1], [1]], "2": [[7], [13]]},
     },
 }
 
@@ -51,8 +51,8 @@ reverse_string = {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {"ERROR": ()},
         "RESULTLOG": {
-            "0": (['"Hello World"'], ["dlroW olleH"]),
-            "1": (['"Kev.in"'], ["ni.veK"]),
+            "0": [['"Hello World"'], ["dlroW olleH"]],
+            "1": [['"Kev.in"'], ["ni.veK"]],
         },
     },
 }
@@ -65,7 +65,7 @@ multiplication = {
     "expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {"ERROR": ()},
-        "RESULTLOG": {"0": ([2, 2, 2], [8])},
+        "RESULTLOG": {"0": [[2, 2, 2], [8]]},
     },
 }
 
@@ -78,7 +78,7 @@ multiplication_wrong = {
     "not_expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {"ERROR": ()},
-        "RESULTLOG": {"0": ([2, 2, 2], [8])},
+        "RESULTLOG": {"0": [[2, 2, 2], [8]]},
     },
 }
 
@@ -93,7 +93,7 @@ fibonacci_wrong = {
     "not_expected": {
         "COMPILERLOG": {"ERROR": (), "WARNINGS": []},
         "EXECUTELOG": {"ERROR": ()},
-        "RESULTLOG": {"0": ([0], [0]), "1": ([1], [1]), "2": ([7], [13])},
+        "RESULTLOG": {"0": [[0], [0]], "1": [[1], [1]], "2": [[7], [13]]},
     },
 }
 
