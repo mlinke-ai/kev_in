@@ -16,7 +16,6 @@
   let exerciseTitle = "Exercise";
   let exerciseDescription = "Please use your Brain"
 
-  // TODO fix this by adapting the Statusbar (bind)
   let elapsedTime;
 
   function submit() {
