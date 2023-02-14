@@ -36,6 +36,7 @@ def eval_solution(
     try:
         sample_sol = loads(exercise.exercise_solution)
         sample_exc = loads(exercise.exercise_content)
+        sample_lag = loads(exercise.exercise_language)
     except (JSONDecodeError, TypeError):
         return False, False
 
@@ -61,7 +62,7 @@ def eval_solution(
         return True, False
 
     elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
-        return Evaluator.evaluate_user_code(solution_content, exercise.exercise_language.name,
+        return Evaluator.evaluate_user_code(solution_content, sample_lag.name,
                                             sample_sol, sample_exc), False
 
 
@@ -73,7 +74,7 @@ class Evaluator:
         # Get user func from head e.g. "def func(someArg, ...,)->None:" -> "func"
         pass
 
-    @staticmethod  # user_code: str, user_func: str, language: str, **args_result_dict: dict
+    @staticmethod
     def evaluate_user_code(user_input: dict, language: str, sample_sol: dict, sample_exc: dict) -> bool:
         """
         Description: Execute and evaluate untrusted user code.
