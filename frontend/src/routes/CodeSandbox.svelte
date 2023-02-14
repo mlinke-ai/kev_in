@@ -1,11 +1,18 @@
 <script>
   import Page from "../lib/common/Page.svelte";
-  import { Icon } from "@smui/common";
   import TaskCard from "../lib/Excercises/TaskCard.svelte";
   import CodingCard from "../lib/Excercises/CodeSandbox/CodingCard.svelte";
   import OutputCard from "../lib/Excercises/CodeSandbox/OutputCard.svelte";
+  import StatusBar from "../lib/Excercises/StatusBar.svelte";
+  import { submitSolution } from "../lib/Excercises/exercise";
 
-  async function validate_code() {}
+  let elapsedTime;
+  let exerciseID = null;
+
+  function submit() {
+    submitSolution(exerciseID, elapsedTime, "code here")
+  }
+  function reset() {}
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
@@ -36,13 +43,7 @@
     <div class="output-area">
       <OutputCard />
     </div>
-    <div class="status-bar">
-      Getting Started - Attempt 1
-      <div class="clock-widget">
-        00:00
-        <Icon class="material-icons">access_time</Icon>
-      </div>
-    </div>
+    <StatusBar bind:elapsedTime {reset} {submit}/>
   </div>
 </Page>
 
@@ -87,20 +88,5 @@
   .output-area {
     grid-area: out;
     background-color: vars.$consoleBackground;
-  }
-  .status-bar {
-    grid-area: status;
-    color: vars.$consoleColor;
-    font-family: "Roboto Mono";
-    display: flex;
-    align-items: center;
-    :last-child {
-      margin-left: auto;
-    }
-  }
-  .clock-widget {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
   }
 </style>
