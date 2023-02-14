@@ -18,23 +18,59 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import flask_unittest
+from flask_jwt_extended import decode_token, get_jti
+from flask_unittest import ClientTestCase
 from flask_unittest.case import FlaskClient
 
 from backend import create_app
 
 
-class UserTest(flask_unittest.ClientTestCase):
+class BaseTest(ClientTestCase):
     app = create_app()
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        pass
-
     def setUp(self, client: FlaskClient) -> None:
-        pass
+        raise NotImplementedError
 
     def tearDown(self, client: FlaskClient) -> None:
-        pass
+        raise NotImplementedError
+
+
+class UserTest(BaseTest):
+    user_id = None
+    user_name = "Willie Baldomero"
+    user_mail = "willie.baldomero@example.com"
+    user_pass = "eiZach2shoh4yo6kieBieFei"
+
+    def setUp(self, client: FlaskClient) -> None:
+        # create user (it is already logged in)
+        # TODO: check if user exists and simply log him in
+        self.assertTrue(client is not None)
+        self.assertTrue(isinstance(client, FlaskClient))
+        r = client.post(
+            "/user",
+            json={
+                "user_name": UserTest.user_name,
+                "user_mail": UserTest.user_mail,
+                "user_pass": UserTest.user_pass,
+            },
+            headers={"Content-Type": "application/json"},
+        )
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.status_code, 200)
+        UserTest.user_id = r.json.get("user_id", None)
+        self.assertTrue(UserTest.user_id is not None)
+        self.assertTrue(isinstance(UserTest.user_id, int))
+
+    def tearDown(self, client: FlaskClient) -> None:
+        # logout and delete user
+        self.assertTrue(client is not None)
+        self.assertTrue(isinstance(client, FlaskClient))
+        token = None
+        for cookie in client.cookie_jar:
+            token = cookie.value if cookie.name == "csrf_access_token" else None
+        r = client.delete("/user", json={"user_id": UserTest.user_id}, headers={"X-CSRF-TOKEN": token})
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.status_code, 200)
 
     # --- GET ---
 
@@ -69,9 +105,6 @@ class UserTest(flask_unittest.ClientTestCase):
     # --- POST ---
 
     def test_post_user(self, client: FlaskClient) -> None:
-        pass
-
-    def test_post_admin(self, client: FlaskClient) -> None:
         pass
 
     def test_post_user_without_token(self, client: FlaskClient) -> None:
@@ -115,16 +148,7 @@ class UserTest(flask_unittest.ClientTestCase):
     def test_put_sadmin_elevation_as_user(self, client: FlaskClient) -> None:
         pass
 
-    def test_put_admin_elevation_as_admin(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_sadmin_elevation_as_admin(self, client: FlaskClient) -> None:
-        pass
-
     def test_put_demotion_as_user(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_demotion_as_admin(self, client: FlaskClient) -> None:
         pass
 
     # --- DELETE ---
@@ -135,16 +159,76 @@ class UserTest(flask_unittest.ClientTestCase):
     def test_delete_non_existing(self, client: FlaskClient) -> None:
         pass
 
-    def test_delete_self_as_admin(self, client: FlaskClient) -> None:
-        pass
-
     def test_delete_self_as_user(self, client: FlaskClient) -> None:
         pass
 
-    def test_delete_other_as_admin(self, client: FlaskClient) -> None:
+    def test_delete_other_as_user(self, client: FlaskClient) -> None:
         pass
 
-    def test_delete_other_as_user(self, client: FlaskClient) -> None:
+
+class AdminTest(BaseTest):
+    def setUp(self, client: FlaskClient) -> None:
+        # create user (it is already logged in) and promote it to admin
+        self.assertTrue(client is not None)
+        self.assertTrue(isinstance(client, FlaskClient))
+
+    def tearDown(self, client: FlaskClient) -> None:
+        # logout and delete admin
+        self.assertTrue(client is not None)
+        self.assertTrue(isinstance(client, FlaskClient))
+
+    # --- GET ---
+
+    def test_get_existing_by_id(self, client: FlaskClient) -> None:
+        r = client.get("/user", json={"user_id": 1})
+        self.assertEqual(r.status_code, 200)
+
+    def test_get_existing_by_name(self, client: FlaskClient) -> None:
+        pass
+
+    def test_get_existing_by_mail(self, client: FlaskClient) -> None:
+        pass
+
+    def test_get_existing_by_role(self, client: FlaskClient) -> None:
+        pass
+
+    def test_get_non_existing_by_id(self, client: FlaskClient) -> None:
+        pass
+
+    def test_get_non_existing_by_name(self, client: FlaskClient) -> None:
+        pass
+
+    def test_get_non_existing_by_mail(self, client: FlaskClient) -> None:
+        pass
+
+    def test_get_non_existing_by_role(self, client: FlaskClient) -> None:
+        pass
+
+    def test_get_restrict_page_size(self, client: FlaskClient) -> None:
+        pass
+
+    # --- POST ---
+
+    def test_post_admin(self, client: FlaskClient) -> None:
+        pass
+
+    def test_put_demotion_as_admin(self, client: FlaskClient) -> None:
+        pass
+
+    # --- PUT ---
+
+    def test_put_admin_elevation_as_admin(self, client: FlaskClient) -> None:
+        pass
+
+    def test_put_sadmin_elevation_as_admin(self, client: FlaskClient) -> None:
+        pass
+
+    # --- DELETE ---
+
+    def test_delete_self_as_admin(self, client: FlaskClient) -> None:
+        pass
+
+    def test_delete_other_as_admin(self, client: FlaskClient) -> None:
         pass
 
 
