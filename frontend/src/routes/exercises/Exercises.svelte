@@ -10,13 +10,14 @@
   import { each } from "svelte/internal";
   import { accessLevel } from "../../stores";
   import { accessLevels } from "../../lib/constants";
+  import { link } from "svelte-spa-router";
 
   let exercises = [];
   let currentExercise = 1;
   let maxDisplayedExercises = 20;
   let exercisesLoaded = false;
 
-  let isAdmin = (Number(accessLevel) != accessLevels.user) ;
+  let isAdmin = $accessLevel > accessLevels.user;
   console.log(isAdmin);
 
   const getExercises = async () => {
@@ -73,46 +74,27 @@
 
       <Menu bind:this={menu}>
         <List style="width: fit-content">
-          <Item>
-            <div class="display-icon">
-              <Icon component={Svg} viewBox="-1 -11 45 45">
-                <path
-                  fill="outlined"
-                  d="M20.5 11H19V7c0-1.1-.9-2-2-2h-4V3.5C13 2.12 11.88 1 10.5 1S8 2.12 8 3.5V5H4c-1.1 0-1.99.9-1.99 2v3.8H3.5c1.49 0 2.7 1.21 2.7 2.7s-1.21 2.7-2.7 2.7H2V20c0 1.1.9 2 2 2h3.8v-1.5c0-1.49 1.21-2.7 2.7-2.7 1.49 0 2.7 1.21 2.7 2.7V22H17c1.1 0 2-.9 2-2v-4h1.5c1.38 0 2.5-1.12 2.5-2.5S21.88 11 20.5 11z"
-                />
-              </Icon>
-            </div>
-            <p style="width: 175px;"><a href="/#/error">Parsons Puzzle</a></p>
-            <!-- please insert link to create a parsons puzzle here -->
-          </Item>
-          <Item>
-            <div class="display-icon">
-              <Icon component={Svg} viewBox="0 -8 45 45">
-                <path
-                  fill="outlined"
-                  d="M22 24H2v-4h20v4zM13.06 5.19l3.75 3.75L7.75 18H4v-3.75l9.06-9.06zm4.82 2.68-3.75-3.75 1.83-1.83c.39-.39 1.02-.39 1.41 0l2.34 2.34c.39.39.39 1.02 0 1.41l-1.83 1.83z"
-                />
-              </Icon>
-            </div>
-            <p style="width: 175px;">
-              <a href="/#/error">Fill in the Blanks</a>
-            </p>
-            <!-- please insert link to create a fill in the blank here -->
-          </Item>
-          <Item>
-            <div class="display-icon">
-              <Icon component={Svg} viewBox="2 -6 35 35">
-                <path
-                  fill="outlined"
-                  d="M9.4 16.6 4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0 4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"
-                />
-              </Icon>
-            </div>
-            <p style="width: 175px;">
-              <a href="/#/error">Free Coding Exercise</a>
-            </p>
-            <!-- please insert link to create a free coding exercise here -->
-          </Item>
+          <a use:link href="/error">
+            <Item class="add-exercise-item">
+              <Icon class="material-icons add-exercise-item-icon">extension</Icon>
+              <p style="width: 175px;">Parsons Puzzle</p>
+              <!-- please insert link to create a free coding exercise here -->
+            </Item>
+          </a>
+          <a use:link href="/error">
+            <Item class="add-exercise-item">
+              <Icon class="material-icons add-exercise-item-icon">border_color</Icon>
+              <p style="width: 175px;">Fill in the Blanks</p>
+              <!-- please insert link to create a free coding exercise here -->
+            </Item>
+          </a>
+          <a use:link href="/error">
+            <Item class="add-exercise-item">
+              <Icon class="material-icons add-exercise-item-icon">code</Icon>
+              <p style="width: 175px;">Free Coding Exercise</p>
+              <!-- please insert link to create a free coding exercise here -->
+            </Item>
+          </a>
         </List>
       </Menu>
     </div>
@@ -138,21 +120,20 @@
             </p>
 
             {#if isAdmin}
-            <div style="display: flex; align-items: center;">
-              <a href="/#/error">
-                <!-- please add link to edit this exercise-->
-                <IconButton>
-                  <Icon component={Svg} viewBox="0 0 24 24">
-                    <path
-                      fill="outlined"
-                      d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                    />
-                  </Icon>
-                </IconButton>
-              </a>
-            </div>
+              <div style="display: flex; align-items: center;">
+                <a href="/#/error">
+                  <!-- please add link to edit this exercise-->
+                  <IconButton>
+                    <Icon component={Svg} viewBox="0 0 24 24">
+                      <path
+                        fill="outlined"
+                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
+                      />
+                    </Icon>
+                  </IconButton>
+                </a>
+              </div>
             {/if}
-
           </Card>
         </div>
       {/each}
@@ -160,14 +141,14 @@
   {/if}
 
   {#if isAdmin}
-  <a href="/#/admin-dashboard">
-    <Button>Back to dashboard</Button>
-  </a>
+    <a href="/#/admin-dashboard">
+      <Button>Back to dashboard</Button>
+    </a>
   {:else}
-  <a href="/#/admin-dashboard">
-    <!-- add link to normal user-dashboard -->
-    <Button>Back to dashboard</Button>
-  </a>
+    <a href="/#/admin-dashboard">
+      <!-- add link to normal user-dashboard -->
+      <Button>Back to dashboard</Button>
+    </a>
   {/if}
 
   {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
@@ -219,9 +200,12 @@
     float: right;
   }
 
-  .display-icon {
-    margin-right: auto;
-    width: 50px;
-    height: 50px;
+  * :global(.add-exercise-item) {
+    display: flex;
+    gap: 1rem;
+  }
+
+  * :global(.add-exercise-item-icon) {
+    transform: scale(110%);
   }
 </style>
