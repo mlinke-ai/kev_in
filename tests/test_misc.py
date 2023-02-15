@@ -26,39 +26,107 @@ from backend import create_app
 class MiscTest(flask_unittest.ClientTestCase):
     app = create_app()
 
-    @classmethod
-    def setUpClass(cls) -> None:
-        pass
-
     def setUp(self, client: FlaskClient) -> None:
         pass
 
     def tearDown(self, client: FlaskClient) -> None:
         pass
 
-    def test_missing_route_code(self, client: FlaskClient) -> None:
+    def test_missing_get_route_code(self, client: FlaskClient) -> None:
         r = client.get("/missing-route")
-        self.assertEqual(r.status_code, 404)
+        self.assertIn(r.status_code, (404, 405))
 
-    def test_user_route_code(self, client: FlaskClient) -> None:
+    def test_missing_post_route_code(self, client: FlaskClient) -> None:
+        r = client.post("/missing-route")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_missing_put_route_code(self, client: FlaskClient) -> None:
+        r = client.put("/missing-route")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_missing_delete_route_code(self, client: FlaskClient) -> None:
+        r = client.delete("/missing-route")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_user_get_route_code(self, client: FlaskClient) -> None:
         r = client.get("/user")
-        self.assertNotEqual(r.status_code, 404)
+        self.assertNotIn(r.status_code, (404, 405))
 
-    def test_exercise_route_code(self, client: FlaskClient) -> None:
+    def test_user_post_route_code(self, client: FlaskClient) -> None:
+        r = client.post("/user")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_user_put_route_code(self, client: FlaskClient) -> None:
+        r = client.put("/user")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_user_delete_route_code(self, client: FlaskClient) -> None:
+        r = client.delete("/user")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_exercise_get_route_code(self, client: FlaskClient) -> None:
         r = client.get("/exercise")
-        self.assertNotEqual(r.status_code, 404)
+        self.assertNotIn(r.status_code, (404, 405))
 
-    def test_solution_route_code(self, client: FlaskClient) -> None:
+    def test_exercise_post_route_code(self, client: FlaskClient) -> None:
+        r = client.post("/exercise")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_exercise_put_route_code(self, client: FlaskClient) -> None:
+        r = client.put("/exercise")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_exercise_delete_route_code(self, client: FlaskClient) -> None:
+        r = client.delete("/exercise")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_solution_get_route_code(self, client: FlaskClient) -> None:
         r = client.get("/solution")
-        self.assertNotEqual(r.status_code, 404)
+        self.assertNotIn(r.status_code, (404, 405))
 
-    def test_login_route_code(self, client: FlaskClient) -> None:
+    def test_solution_post_route_code(self, client: FlaskClient) -> None:
+        r = client.post("/solution")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_solution_put_route_code(self, client: FlaskClient) -> None:
+        r = client.put("/solution")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_solution_delete_route_code(self, client: FlaskClient) -> None:
+        r = client.delete("/solution")
+        self.assertNotIn(r.status_code, (404, 405))
+
+    def test_login_get_route_code(self, client: FlaskClient) -> None:
+        r = client.get("/login")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_login_post_route_code(self, client: FlaskClient) -> None:
         r = client.post("/login")
-        self.assertNotEqual(r.status_code, 404)
+        self.assertNotIn(r.status_code, (404, 405))
 
-    def test_logout_route_code(self, client: FlaskClient) -> None:
+    def test_login_put_route_code(self, client: FlaskClient) -> None:
+        r = client.put("/login")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_login_delete_route_code(self, client: FlaskClient) -> None:
+        r = client.delete("/login")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_logout_get_route_code(self, client: FlaskClient) -> None:
+        r = client.get("/logout")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_logout_post_route_code(self, client: FlaskClient) -> None:
+        r = client.post("/logout")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_logout_put_route_code(self, client: FlaskClient) -> None:
+        r = client.put("/logout")
+        self.assertIn(r.status_code, (404, 405))
+
+    def test_logout_delete_route_code(self, client: FlaskClient) -> None:
         r = client.delete("/logout")
-        self.assertNotEqual(r.status_code, 404)
+        self.assertNotIn(r.status_code, (404, 405))
 
 
 if __name__ == "__main__":
