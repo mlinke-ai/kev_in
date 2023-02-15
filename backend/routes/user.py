@@ -86,6 +86,7 @@ class UserResource(Resource):
         try:
             db.session.commit()
         except sqlalchemy.exc.IntegrityError:
+            db.session.rollback()
             return make_response(dict(message="An user with this mail does already exist"), 409)
         else:
             token = create_access_token(identity=user.user_mail)
