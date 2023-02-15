@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 from flask import Response, current_app
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, set_access_cookies
 
+from backend.database.models import BlocklistModel, db
+
 
 def user_id_from_token():
     pass
@@ -28,6 +30,13 @@ def refresh_token(response: Response) -> Response:
         return response
     else:
         return response
+
+
+def revoked_token_check(jwt_header, jwt_payload: dict) -> bool:
+    jti = jwt_payload["jti"]
+    query = db.select(BlocklistModel).filter_by(blocklist_jti=jti)
+    token = db.session.execute(query).scalar()
+    return token is not None
 
 
 def get_url(url: str, **kwargs: dict) -> str:
