@@ -9,11 +9,12 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
-  import Button, { Label } from "@smui/button";
+  import Button, { Label, Icon } from "@smui/button";
   import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../lib/AnimatedSVG/ExerciseSVG.svelte";
+  import { accessLevels } from "../lib/constants";
   import { userName } from "../stores";
-  //import { userID } from "../stores";
+  import { userID } from "../stores";
 
   //display exercise progress
   let totalExercises = 100;
@@ -23,10 +24,6 @@
   //let userProgress = (solvedExercises / totalExercises);
   let r = document.querySelector(":root");
   let statsLoaded = false;
-
-  let myName = $userName;
-  //let myID = 1;
-  //later change to $userID
 
   // function myFunction_get() {
   //   let rs = getComputedStyle(r);
@@ -44,7 +41,30 @@
           totalExercises = Object.values(data).length;
           console.log(solvedExercises);
           console.log(totalExercises);
-          //getSolvedExercises(); following function calls might be removed if this is activated
+          getSolvedExercises(); 
+          //following function calls might be removed if this is activated
+          // setTotalExercises();
+          // setSolvedExercises();
+          // setUserProgress();
+          //statsLoaded = true;
+        });
+      } else {
+        alert("Oops an Error occured. " + response.status);
+      }
+    });
+  };
+
+  const getSolvedExercises = async () => {
+    fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
+      //?solution_user=${$userID}&solution_correct=true
+      //to get the number of all correct solutions of the user with id ${me}
+      method: "GET",
+    }).then((response) => {
+      if (response.status === 200) {
+        response.json().then((data) => {
+          statsLoaded = false;
+          console.log(data);
+          solvedExercises = Object.values(data).length;
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();
@@ -55,29 +75,7 @@
       }
     });
   };
-
-  // const getSolvedExercises = async () => {
-  //   fetch(`/solution`, {
-  //     //?solution_user=${myID}&solution_correct=true
-  //     //to get the number of all correct solutions of the user with id ${me}
-  //     method: "GET",
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       response.json().then((data) => {
-  //         statsLoaded = false;
-  //         console.log(data);
-  //         solvedExercises = Object.values(data).length;
-  //         setTotalExercises();
-  //         setSolvedExercises();
-  //         setUserProgress();
-  //         statsLoaded = true;
-  //       });
-  //     } else {
-  //       alert("Oops an Error occured. " + response.status);
-  //     }
-  //   });
-  // };
-  //responses error 500
+  //responses error 500??
 
   function setUserProgress() {
     userProgress = Math.floor((solvedExercises / totalExercises) * 100);
@@ -90,8 +88,8 @@
   }
 
   function setSolvedExercises() {
-    solvedExercises = totalExercises / 3;
-    //just for testcases
+    //solvedExercises = Math.floor(totalExercises / 3);
+    //just for testcases, remove if getSolvedExercises() works properly
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
 
@@ -99,12 +97,12 @@
   //getSolvedExercises();
 </script>
 
-<Page>
+<Page requiredAccessLevel={accessLevels.admin}>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
       <h2 style="padding: 20px; font-family: monospace;">
-        Welcome to your dashboard, {myName}!
+        Welcome to your dashboard, {$userName}!
       </h2>
     </div>
 
@@ -150,7 +148,14 @@
     </div>
 
     <!--  Footer -->
-    <div class="footer-outside" />
+    <div class="footer-outside">
+      <a href="/#/solutions">
+        <Icon>
+          inventory_outlined
+        </Icon>
+      Show my own solutions
+      </a>
+    </div>
   </div>
 </Page>
 
@@ -213,6 +218,9 @@
   }
 
   .footer-outside {
+    align-content: center;
+    height: fit-content;
+    padding: 20px;
     grid-area: footer;
   }
 
@@ -220,7 +228,8 @@
     display: grid;
     grid-template-areas:
       "header header header"
-      "main right right";
+      "main right right"
+      "footer footer footer";
     gap: 10px;
     background-color: transparent;
     padding: 10px;
