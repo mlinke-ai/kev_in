@@ -16,8 +16,7 @@
   let maxDisplayedExercises = 20;
   let exercisesLoaded = false;
 
-  let isAdmin = (Number(accessLevel) != accessLevels.user) ;
-  console.log(isAdmin);
+  let isAdmin = $accessLevel > accessLevels.user;
 
   const getExercises = async () => {
     fetch(`/exercise?exercise_offset=${currentExercise}`, {
@@ -26,7 +25,6 @@
       if (response.status === 200) {
         response.json().then((data) => {
           console.log(data);
-          //exercises = [];
           exercises = Object.values(data);
           console.log(exercises);
           currentExercise += maxDisplayedExercises;
@@ -56,7 +54,7 @@
   //this item needs ts (does not work with js)
 </script>
 
-<Page>
+<Page requiredAccessLevel={accessLevels.user}>
   <h1>Exercises</h1>
 
   {#if isAdmin}
@@ -124,7 +122,6 @@
     <div class="grid-container">
       {#each exercises as exercise}
         <div class="grid-item">
-          <Card>
             <a href="/#/error">
               <!-- please add link to display this exercise-->
               #{exercise.exercise_id}
@@ -152,8 +149,6 @@
               </a>
             </div>
             {/if}
-
-          </Card>
         </div>
       {/each}
     </div>
@@ -164,8 +159,7 @@
     <Button>Back to dashboard</Button>
   </a>
   {:else}
-  <a href="/#/admin-dashboard">
-    <!-- add link to normal user-dashboard -->
+  <a href="/#/user-dashboard">
     <Button>Back to dashboard</Button>
   </a>
   {/if}
@@ -200,6 +194,7 @@
   }
 
   .grid-item {
+    word-break: break-all;
     width: minmax(350px, 1fr);
     background-color: #001a16;
     padding: 10px;

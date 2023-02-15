@@ -5,6 +5,8 @@
   import IconButton, { Icon } from "@smui/icon-button";
   import { Label, Svg } from "@smui/common";
   import { each } from "svelte/internal";
+  import { accessLevel } from "../stores";
+  import { accessLevels } from "../lib/constants";
 
   let currentUser = 1;
   let maxDisplayedUsers = 20;
@@ -49,7 +51,7 @@
   }
 </script>
 
-<Page>
+<Page requiredAccessLevel={accessLevels.admin}>
 
   <h1>Users</h1>
 
