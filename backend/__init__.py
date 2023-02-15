@@ -4,12 +4,13 @@
 import os
 
 from flask import Flask, Response, send_from_directory
-from flask_jwt_extended import JWTManager, jwt_required
+from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from backend.config import configure_app
-from backend.database.models import db
+from backend.database.models import BlocklistModel, db
 from backend.routes.login import LoginResource
+from backend.routes.logout import LogoutResource
 from backend.routes.user import UserResource
 from backend.utils import refresh_token
 
@@ -30,6 +31,13 @@ def _assets(path: str) -> Response:
     return send_from_directory("../frontend/dist", path)
 
 
+def _revoked_token_check(jwt_header, jwt_payload: dict) -> bool:
+    jti = jwt_payload["jti"]
+    query = db.select(BlocklistModel).filter_by(blocklist_jti=jti)
+    token = db.session.execute(query).scalar()
+    return token is not None
+
+
 def create_app(config=dict()):
     app = Flask(
         __name__,
@@ -43,10 +51,12 @@ def create_app(config=dict()):
     app.add_url_rule("/", "base", _base)
     app.add_url_rule("/<path:path>", "assets", _assets)
     jwt = JWTManager(app)
+    jwt.token_in_blocklist_loader(_revoked_token_check)
     app.after_request(refresh_token)
     api = Api(app)
     api.add_resource(UserResource, "/user", endpoint="user")
     api.add_resource(LoginResource, "/login", endpoint="login")
+    api.add_resource(LogoutResource, "/logout", endpoint="logout")
     return app
 
 

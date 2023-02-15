@@ -53,11 +53,11 @@ class MiscTest(flask_unittest.ClientTestCase):
         self.assertNotEqual(r.status_code, 404)
 
     def test_login_route_code(self, client: FlaskClient) -> None:
-        r = client.get("/login")
+        r = client.post("/login")
         self.assertNotEqual(r.status_code, 404)
 
     def test_logout_route_code(self, client: FlaskClient) -> None:
-        r = client.get("/logout")
+        r = client.delete("/logout")
         self.assertNotEqual(r.status_code, 404)
 
 

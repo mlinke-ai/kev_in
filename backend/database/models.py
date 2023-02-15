@@ -185,3 +185,21 @@ class SolutionModel(db.Model):
             solution_pending=self.solution_pending,
             solution_content=self.solution_content,
         )
+
+
+class BlocklistModel(db.Model):
+    blocklist_id = db.Column(db.Integer, primary_key=True)
+    blocklist_jti = db.Column(db.String(36), nullable=False, index=True)
+    blocklist_date = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, blocklist_jti: str, blocklist_date: datetime.datetime | None = None) -> None:
+        self.blocklist_jti = blocklist_jti
+        self.blocklist_date = blocklist_date if blocklist_date is not None else datetime.datetime.now()
+
+    def __repr__(self) -> str:
+        return f"<Blocklist id={self.blocklist_id} jti={self.blocklist_jti} date={self.blocklist_date}>"
+
+    def to_json(self) -> dict:
+        return dict(
+            blocklist_id=self.blocklist_id, blocklist_jti=self.blocklist_jti, blocklist_date=self.blocklist_date
+        )
