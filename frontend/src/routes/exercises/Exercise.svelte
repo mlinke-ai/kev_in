@@ -1,23 +1,27 @@
 <script>
-  import Message from "../../lib/common/Message/Message.svelte";
-  import { messages } from "../../lib/constants";
+  import { exerciseTypes } from "../../lib/constants";
   import { getExercise } from "../../lib/Excercises/exercise";
+  import CodeSandbox from "./CodeSandbox.svelte";
+  import ParsonsPuzzleExercise from "./ParsonsPuzzleExercise.svelte";
 
   export let params = {};
   let exerciseID = params.exerciseID;
   let exerciseData;
-
-  let error;
-  let errorMessage;
+  let ready = false;
 
   getExercise(exerciseID).then((data) => {
     if (data) {
       exerciseData = data[exerciseID];
-    } else {
-      error = "Error.";
-      errorMessage.open();
+      console.log(exerciseData.exercise_type);
+      ready = true;
     }
   });
 </script>
 
-<Message bind:errorMessage message={error} type={messages.error} />
+{#if ready}
+  {#if exerciseData.exercise_type == exerciseTypes.programming}
+    <CodeSandbox />
+  {:else if exerciseData.exercise_type == exerciseTypes.parsonsPuzzle}
+    <ParsonsPuzzleExercise />
+  {/if}
+{/if}
