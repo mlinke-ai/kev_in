@@ -2,27 +2,25 @@ function getCurrentTimestamp() {
   return (Date.now() / 1000)
 }
 
-export const getExercise = async (exerciseID) => {
-  fetch(
-    `/exercise?exercise_id=${exerciseID}&exercise_details=true`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+export const getExercise = async(exerciseID) => {
+  try {
+    const response = await fetch(
+      `/exercise?exercise_id=${exerciseID}&exercise_limit=1&exercise_details=true`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+      );
+    if (!response.ok) {
+      console.error(`Could not fetch Exercise #${exerciseID}: HTTP error ${response.status}`);
+      return undefined;
     }
-  ).then(response => {
-    if (response.status === 401) {
-      // redirect to login
-      window.location.replace("/");
-    } else if (response.status === 403) {
-      alert("No admin rights")
-    } else if (response.status === 400) {
-      alert("user_limit out of range")
-    } else if (response.status === 200) {
-      response.json().then(data => {
-        return data;
-      })
-    }
-  })
+    return await response.json();
+  }
+  catch (error) {
+    console.error(`Could not fetch Exercise #${exerciseID}: ${error}`);
+    return undefined;
+  }
 }
 
 export const submitSolution = async (exerciseID, elapsedTime, solutionContent) => {
