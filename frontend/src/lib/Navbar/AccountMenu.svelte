@@ -62,7 +62,8 @@
             </Item>
             <Item
                 on:SMUI:action={() => {
-                    pushRoute("/dashboard");
+                    pushRoute("/admin-dashboard");
+                    //add variable if user is common user or admin
                 }}
             >
                 <div class="menu-item">

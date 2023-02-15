@@ -98,7 +98,7 @@
 </script>
 
 <div class="login-card-container">
-    <Page>
+    <Page requiredAccessLevel={accessLevels.admin}>
       <Card variant="outlined">
 
         <form class="login-form">

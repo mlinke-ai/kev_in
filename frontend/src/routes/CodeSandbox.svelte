@@ -4,11 +4,12 @@
   import TaskCard from "../lib/Excercises/TaskCard.svelte";
   import CodingCard from "../lib/Excercises/CodeSandbox/CodingCard.svelte";
   import OutputCard from "../lib/Excercises/CodeSandbox/OutputCard.svelte";
+  import { accessLevels } from "../lib/constants";
 
   async function validate_code() {}
 </script>
 
-<Page title="Coding Sandbox" fullwidth={true}>
+<Page title="Coding Sandbox" fullwidth={true} requiredAccessLevel={accessLevels.user}>
   <div class="sandbox-container">
     <div class="header-area">
       <h3>Coding Sandbox</h3>
