@@ -95,8 +95,43 @@ class UserResource(Resource):
             return response
 
     def put(self) -> Response:
-        token = verify_jwt_in_request()
-        print(token)
+        # TODO: remove `optional` after debugging
+        token = verify_jwt_in_request(optional=True)
+        parser = reqparse.RequestParser()
+        parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
+        parser.add_argument("user_name", type=str, help="{error_msg}")
+        parser.add_argument("user_mail", type=str, help="{error_msg}")
+        parser.add_argument("user_pass", type=str, help="{error_msg}")
+        parser.add_argument("user_role", type=lambda x: UserRole(int(x)), help="{error_msg}")
+
+        args = parser.parse_args(strict=True)
+
+        if args["user_name"] == "":
+            return make_response(jsonify(dict(message="user_name must not be empty")), 400)
+        if args["user_mail"] == "":
+            return make_response(jsonify(dict(message="user_mail must not be empty")), 400)
+        if args["user_pass"] == "":
+            return make_response(jsonify(dict(message="user_pass must not be empty")), 400)
+        if args["user_role"] == UserRole.SAdmin:
+            return make_response(jsonify(dict(message="No Access")), 403)
+
+        query = db.select(UserModel).filter_by(user_id=args["user_id"])
+        user = db.one_or_404(query, description="An user with this ID does not exist.")
+        if args["user_name"]:
+            user.user_name = args["user_name"]
+        if args["user_mail"]:
+            user.user_mail = args["user_mail"]
+        if args["user_pass"]:
+            user.user_pass = args["user_pass"]
+        if args["user_role"]:
+            user.user_role = args["user_role"]
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            db.session.rollback()
+            return make_response(jsonify(dict(message="An error occurred while updating the user")), 409)
+        else:
+            return make_response(jsonify(dict(message="Changed properties successfully")), 200)
 
     def delete(self) -> Response:
         token = verify_jwt_in_request()
