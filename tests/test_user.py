@@ -40,6 +40,7 @@ class UserTest(BaseTest):
     user_name = "Willie Baldomero"
     user_mail = "willie.baldomero@example.com"
     user_pass = "eiZach2shoh4yo6kieBieFei"
+    user_role = None
 
     def setUp(self, client: FlaskClient) -> None:
         # create user (it is already logged in)
@@ -60,6 +61,9 @@ class UserTest(BaseTest):
         UserTest.user_id = r.json.get("user_id", None)
         self.assertTrue(UserTest.user_id is not None)
         self.assertTrue(isinstance(UserTest.user_id, int))
+        UserTest.user_role = r.json.get("user_role_value", None)
+        self.assertTrue(UserTest.user_role is not None)
+        self.assertTrue(isinstance(UserTest.user_role, int))
 
     def tearDown(self, client: FlaskClient) -> None:
         # logout and delete user
@@ -78,30 +82,83 @@ class UserTest(BaseTest):
         self.assertTrue(UserTest.user_id is not None)
         r = client.get(f"/user?user_id={UserTest.user_id}")
         self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertIn(UserTest.user_id, [d["user_id"] for d in r.json["data"]])
 
     def test_get_existing_by_name(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.get(f"/user?user_name={UserTest.user_name}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertIn(UserTest.user_id, [d["user_id"] for d in r.json["data"]])
 
     def test_get_existing_by_mail(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.get(f"/user?user_mail={UserTest.user_mail}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertIn(UserTest.user_id, [d["user_id"] for d in r.json["data"]])
 
     def test_get_existing_by_role(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.get(f"/user?user_role={UserTest.user_role}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertIn(UserTest.user_id, [d["user_id"] for d in r.json["data"]])
 
     def test_get_non_existing_by_id(self, client: FlaskClient) -> None:
-        pass
+        user_id = -1
+        r = client.get(f"/user?user_id={user_id}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertNotIn(user_id, [d["user_id"] for d in r.json["data"]])
 
     def test_get_non_existing_by_name(self, client: FlaskClient) -> None:
-        pass
+        user_name = "Does Not Exist"
+        r = client.get(f"/user?user_name={user_name}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertNotIn(user_name, [d["user_name"] for d in r.json["data"]])
 
     def test_get_non_existing_by_mail(self, client: FlaskClient) -> None:
-        pass
+        user_mail = "does.not.exist@example.com"
+        r = client.get(f"/user?user_mail={user_mail}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.json)
+        self.assertNotIn(user_mail, [d["user_mail"] for d in r.json["data"]])
 
     def test_get_non_existing_by_role(self, client: FlaskClient) -> None:
-        pass
+        user_role = -1
+        r = client.get(f"/user?user_role={user_role}")
+        self.assertEqual(r.status_code, 400)
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.json["message"], {"user_role": f"{user_role} is not a valid UserRole"})
 
     def test_get_restrict_page_size(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        user_limit = 1
+        r = client.get(f"/user?user_role={UserTest.user_role}&user_limit={user_limit}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertEqual(user_limit, r.json["meta"]["page_size"])
+
+    def test_get_page_index_zero(self, client: FlaskClient) -> None:
+        self.assertTrue(UserTest.user_id is not None)
+        user_page = 0
+        r = client.get(f"/user?user_id={UserTest.user_id}&user_page={user_page}")
+        self.assertEqual(r.status_code, 404)
+        self.assertTrue(r.is_json)
+        self.assertEqual(
+            r.json["message"],
+            "The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
+        )
+
+    def test_get_user_pass(self, client: FlaskClient) -> None:
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.get(f"/user?user_id={UserTest.user_id}")
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.is_json)
+        self.assertNotIn("user_pass", r.json["data"][0].keys())
 
     # --- POST ---
 
