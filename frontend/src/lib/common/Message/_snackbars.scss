@@ -12,7 +12,7 @@
 .mdc-snackbar.message-warning {
   @include mixins.fill-color(color-palette.$orange-500);
   @include mixins.label-ink-color(
-    theme-color.accessible-ink-color(color-palette.$orange-500)
+    theme-color.accessible-ink-color(color-palette.$red-500)
   );
 }
 
