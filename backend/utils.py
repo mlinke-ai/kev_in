@@ -8,11 +8,11 @@ from flask import Response, current_app
 from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, set_access_cookies
 
 
-def user_id_from_cookie():
+def user_id_from_token():
     pass
 
 
-def is_admin_from_cookie():
+def user_id_from_token():
     pass
 
 

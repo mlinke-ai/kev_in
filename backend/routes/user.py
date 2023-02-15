@@ -7,7 +7,7 @@ from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.database.models import UserModel, UserRole, db
-from backend.utils import get_url, user_id_from_cookie
+from backend.utils import get_url, user_id_from_token
 
 
 class UserResource(Resource):
