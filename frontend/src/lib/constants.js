@@ -16,11 +16,11 @@ export const messages = {
 export const exerciseTypes = {
     gapText: 1,
     syntax: 2,
-    parsonsPuzzle: 3,
+    parsonsPuzzle: "ParsonsPuzzleExercise",
     findTheBug: 4,
     documentation: 5,
     output: 6,
-    programming: 7
+    programming: "ProgrammingExercise"
 }
 
 export const passwordLength = 8;
