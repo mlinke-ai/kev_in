@@ -1,11 +1,12 @@
 <script>
   import Button, { Label } from "@smui/button";
-  import { PythonSvg, JavaSvg } from "../lib/components/AnimatedSVG";
-  import Page from "../lib/components/common/Page.svelte";
-  import LanguageCard from "../lib/components/common/LanguageCard.svelte";
+  import { PythonSvg, JavaSvg } from "../lib/AnimatedSVG";
+  import Page from "../lib/common/Page.svelte";
+  import LanguageCard from "../lib/common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
-  import AuthDialog from "../lib/components/Authentication/AuthDialog.svelte";
   import Dialog from "@smui/dialog";
+  import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
+  import Footer from "../lib/Footer/Footer.svelte";
   import { accessLevel } from "../stores";
   import { accessLevels, dashboardPage } from "../lib/constants";
   import { replace as replaceRoute } from "svelte-spa-router";
@@ -42,7 +43,7 @@
           description="Worldwide beloved and broadly used high-level programming
     language."
         >
-          <PythonSvg />
+          <PythonSvg/>
         </LanguageCard>
       </div>
       <div in:blur={{ delay: 500, duration: 500 }}>
@@ -56,10 +57,13 @@
       </div>
     </div>
   </main>
-  <Dialog bind:open>
+  <Dialog bind:open class="auth-dialog">
     <AuthDialog />
   </Dialog>
 </Page>
+
+<Footer />
+
 
 <style lang="scss">
   header {
