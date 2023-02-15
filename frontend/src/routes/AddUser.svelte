@@ -178,7 +178,6 @@
       width: 40%;
       margin-left: auto;
       margin-right: auto;
-
     }
   
   </style>
