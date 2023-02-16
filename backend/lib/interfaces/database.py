@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 # TODO: is nullable=False applicable somewhere?
 
+import json
+
 import flask_sqlalchemy
 
 from backend.lib.core import config
@@ -17,6 +19,15 @@ class UserModel(db_engine.Model):
     user_mail = db_engine.Column(db_engine.String, unique=True)
     user_role = db_engine.Column(db_engine.Enum(config.UserRole))
 
+    def to_json(self) -> dict:
+        return dict(
+            user_id=self.user_id,
+            user_name=self.user_name,
+            user_mail=self.user_mail,
+            user_role_name=self.user_role.name,
+            user_role_value=self.user_role.value,
+        )
+
 
 class ExerciseModel(db_engine.Model):
     __tablename__ = config.EXERCISE_TABLE
@@ -27,6 +38,29 @@ class ExerciseModel(db_engine.Model):
     exercise_content = db_engine.Column(db_engine.Text)
     exercise_solution = db_engine.Column(db_engine.Text)
     exercise_language = db_engine.Column(db_engine.Enum(config.ExerciseLanguage))
+
+    def to_json(self, details: bool, is_admin: bool) -> dict:
+        if details:
+            return dict(
+                exercise_id=self.exercise_id,
+                exercise_title=self.exercise_title,
+                exercise_description=self.exercise_description,
+                exercise_type_name=self.exercise_type.name,
+                exercise_type_value=self.exercise_type.value,
+                exercise_content=json.loads(self.exercise_content),
+                exercise_solution=json.loads(self.exercise_solution if is_admin else ""),
+                exercise_language_name=self.exercise_language.name,
+                exercise_language_value=self.exercise_language.value,
+            )
+        else:
+            return dict(
+                exercise_id=self.exercise_id,
+                exercise_title=self.exercise_title,
+                exercise_type_name=self.exercise_type.name,
+                exercise_type_value=self.exercise_type.value,
+                exercise_language_name=self.exercise_language.name,
+                exercise_language_value=self.exercise_language.value,
+            )
 
 
 class SolutionModel(db_engine.Model):
@@ -41,3 +75,15 @@ class SolutionModel(db_engine.Model):
     solution_content = db_engine.Column(db_engine.Text)
     user_relation = db_engine.relationship(UserModel, foreign_keys="SolutionModel.solution_user")
     exercise_relation = db_engine.relationship(ExerciseModel, foreign_keys="SolutionModel.solution_exercise")
+
+    def to_json(self) -> dict:
+        return dict(
+            solution_id=self.solution_id,
+            solution_user=self.solution_user,
+            solution_exercise=self.solution_exercise,
+            solution_date=self.solution_date,
+            solution_duration=self.solution_duration,
+            solution_correct=self.solution_correct,
+            solution_pending=self.solution_pending,
+            solution_content=self.solution_content,
+        )

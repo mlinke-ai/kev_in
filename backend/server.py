@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 import secrets
 import string
 import json
@@ -12,8 +13,7 @@ from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config
 from backend.lib.interfaces import ExerciseModel, UserModel, db_engine
-from backend.lib.routes import (ExerciseResource, LoginResource,
-                                LogoutResource, SolutionResource, UserResource)
+from backend.lib.routes import ExerciseResource, LoginResource, LogoutResource, SolutionResource, UserResource
 
 
 class Server:
@@ -30,10 +30,10 @@ class Server:
             self._tuser_check()
             self._gen_exercises()
         self.api = Api(self.app)
-        self.api.add_resource(ExerciseResource, "/exercise")
+        self.api.add_resource(ExerciseResource, "/exercise", endpoint="exercise")
         self.api.add_resource(LoginResource, "/login")
-        self.api.add_resource(UserResource, "/user")
-        self.api.add_resource(SolutionResource, "/solution")
+        self.api.add_resource(UserResource, "/user", endpoint="user")
+        self.api.add_resource(SolutionResource, "/solution", endpoint="solution")
         self.api.add_resource(LogoutResource, "/logout")
 
     def _base(self) -> Response:

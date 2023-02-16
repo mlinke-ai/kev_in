@@ -1,17 +1,16 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import jwt
 import random
-
+import re
 from typing import Any
 
+import jwt
+from flask import Response, current_app, jsonify, make_response
 from flask_sqlalchemy.query import sqlalchemy
-from flask import Response, jsonify, make_response, current_app
 from werkzeug.datastructures import ImmutableMultiDict
-
-from backend.lib.core.config import UserRole, ExerciseType
-from backend.lib.interfaces.database import db_engine, UserModel, SolutionModel
+from backend.lib.core.config import ExerciseType, UserRole
+from backend.lib.interfaces.database import SolutionModel, UserModel, db_engine
 
 
 def authorize(
@@ -122,8 +121,7 @@ def prepareExerciseContent(exerciseContent: dict, exerciseType: ExerciseType) ->
         newContent = _randomizePPEContent(exerciseContent)
 
     if newContent == None:
-        return exerciseContent #preperation failed, just returns default exerciseContent
-    
+        return exerciseContent  # preperation failed, just returns default exerciseContent
     return newContent
 
 
@@ -137,10 +135,8 @@ def _randomizePPEContent(content: dict[str, list]) -> dict[str, list] | None:
         data = content["list"]
     except KeyError:
         return None
-    
-    if type(data) is not list:
+    if not isinstance(data, list):
         return None
-    
     random.shuffle(data)
     content["list"] = data
 
@@ -205,7 +201,6 @@ def _authUser(role: UserRole, method: str, userId: int, resourceId: int, changeT
 
     if method == "GET" or method == "DELETE":
         if role == UserRole.User:
-
             # check if client want's to access its own data
             try:
                 user_obj = UserModel.query.filter_by(user_id=resourceId).one()
@@ -249,3 +244,12 @@ def _authSolution(role: UserRole, method: str, userId: int, resourceId: int) -> 
             return True
     elif method == "POST":
         return True
+
+
+def get_url(url: str, **kwargs: dict) -> str:
+    for key, value in kwargs.items():
+        if re.search(key, url) == None:
+            url += f"&{key}={value}"
+        else:
+            url = re.sub(f"(?<={key}=)[^&]+(?=&|$)", str(value), url)
+    return url
