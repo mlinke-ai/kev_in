@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { exerciseTypes } from "../../lib/constants";
+  import { exercises } from "../../lib/constants";
   import { Exercise, getExercise } from "../../lib/Excercises/exercise";
-  import CodeSandbox from "./CodeSandbox.svelte";
+  import CodeSandbox from "./ProgrammingExercise.svelte";
   import ParsonsPuzzleExercise from "./ParsonsPuzzleExercise.svelte";
 
   export let params: { exerciseID: number };
@@ -11,14 +11,15 @@
 
   getExercise(exerciseID).then((data) => {
     exerciseData = data;
+    console.log(exerciseData)
     ready = true;
   });
 </script>
 
 {#if ready}
-  {#if exerciseData.exercise_type == exerciseTypes.programming}
+  {#if exerciseData.exercise_type == exercises.programming}
     <CodeSandbox {exerciseData}/>
-  {:else if exerciseData.exercise_type == exerciseTypes.parsonsPuzzle}
+  {:else if exerciseData.exercise_type == exercises.parsonsPuzzle}
     <ParsonsPuzzleExercise />
   {/if}
 {/if}

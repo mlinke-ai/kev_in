@@ -1,15 +1,17 @@
 <script lang="ts">
   import Page from "../../lib/common/Page.svelte";
   import TaskCard from "../../lib/Excercises/TaskCard.svelte";
-  import CodingCard from "../../lib/Excercises/CodeSandbox/CodingCard.svelte";
-  import OutputCard from "../../lib/Excercises/CodeSandbox/OutputCard.svelte";
+  import CodingCard from "../../lib/Excercises/Programming/CodingCard.svelte";
+  import OutputCard from "../../lib/Excercises/Programming/OutputCard.svelte";
   import StatusBar from "../../lib/Excercises/StatusBar.svelte";
   import { Exercise, submitSolution } from "../../lib/Excercises/exercise";
 
-  let elapsedTime;
+  let elapsedTime = 0;
   export let exerciseData: Exercise;
+  let content: string;
 
   function submit() {
+    console.log(content);
     submitSolution(exerciseData.exercise_id, elapsedTime, "code here");
   }
   function reset() {}
@@ -26,7 +28,7 @@
       </TaskCard>
     </div>
     <div class="code-area">
-      <CodingCard />
+      <CodingCard bind:content language={exerciseData.exercise_language} />
     </div>
     <div class="output-area">
       <OutputCard />
