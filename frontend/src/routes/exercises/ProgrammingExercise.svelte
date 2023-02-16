@@ -1,49 +1,34 @@
-<script>
+<script lang="ts">
   import Page from "../../lib/common/Page.svelte";
   import TaskCard from "../../lib/Excercises/TaskCard.svelte";
-  import CodingCard from "../../lib/Excercises/CodeSandbox/CodingCard.svelte";
-  import OutputCard from "../../lib/Excercises/CodeSandbox/OutputCard.svelte";
+  import CodingCard from "../../lib/Excercises/Programming/CodingCard.svelte";
+  import OutputCard from "../../lib/Excercises/Programming/OutputCard.svelte";
   import StatusBar from "../../lib/Excercises/StatusBar.svelte";
-  import { getExercise, submitSolution } from "../../lib/Excercises/exercise";
+  import { Exercise, submitSolution } from "../../lib/Excercises/exercise";
 
-  let elapsedTime;
-  export let exerciseID = 7
-
-  function get() {
-    console.log(getExercise(exerciseID));
-  }
+  let elapsedTime = 0;
+  export let exerciseData: Exercise;
+  let content: string;
 
   function submit() {
-    submitSolution(exerciseID, elapsedTime, "code here");
+    console.log(content);
+    submitSolution(exerciseData.exercise_id, elapsedTime, "code here");
   }
   function reset() {}
-  get();
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
   <div class="sandbox-container">
     <div class="header-area">
-      <h3>Coding Sandbox</h3>
+      <h3>{exerciseData.exercise_title}</h3>
     </div>
     <div class="task-area">
       <TaskCard>
-        <h1>Welcome to your first test exercise!</h1>
-        <p>
-          To solve it you have to write a python script that prints out "Hello
-          World".
-        </p>
-        <br />
-        <hr />
-        <br />
-        Hints:
-        <ul>
-          <li>use the print() function</li>
-          <li>strings have to be in quotation marks</li>
-        </ul>
+        {exerciseData.exercise_description}
       </TaskCard>
     </div>
     <div class="code-area">
-      <CodingCard />
+      <CodingCard bind:content language={exerciseData.exercise_language} />
     </div>
     <div class="output-area">
       <OutputCard />
