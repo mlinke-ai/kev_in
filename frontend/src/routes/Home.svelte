@@ -10,6 +10,7 @@
   import { accessLevel } from "../stores";
   import { accessLevels, dashboardPage } from "../lib/constants";
   import { replace as replaceRoute } from "svelte-spa-router";
+  import SolutionView from "../lib/Solutions/SolutionView.svelte";
 
   let open = false;
   if ($accessLevel != accessLevels.default) {
@@ -43,7 +44,7 @@
           description="Worldwide beloved and broadly used high-level programming
     language."
         >
-          <PythonSvg/>
+          <PythonSvg />
         </LanguageCard>
       </div>
       <div in:blur={{ delay: 500, duration: 500 }}>
@@ -63,7 +64,6 @@
 </Page>
 
 <Footer />
-
 
 <style lang="scss">
   header {

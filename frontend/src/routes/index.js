@@ -9,6 +9,7 @@ import AddUser from "./AddUser.svelte"
 import ParsonsPuzzleExercise from "./exercises/ParsonsPuzzleExercise.svelte"
 import ParsonsPuzzleExerciseCreate from "./exercises/create/ParsonsPuzzleExerciseCreate.svelte"
 import ExerciseRouter from "./exercises/ExerciseRouter.svelte"
+import Solutions from "./Solutions.svelte"
 //import ExamplePage from "./Example.svelte"
 
 export default {
@@ -22,6 +23,7 @@ export default {
     "/exercises/:exerciseID": ExerciseRouter,
     "/users": Users,
     "/adduser": AddUser,
+    "/solutions": Solutions,
     //"/example-path": <ExamplePage>,
     "*": Error
 }
