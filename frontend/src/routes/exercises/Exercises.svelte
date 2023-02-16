@@ -107,7 +107,7 @@
       {#each exercises as exercise}
         <div class="grid-item">
           <Card>
-            <a href="/#/error">
+            <a use:link href={`/exercises/${exercise.exercise_id}`}>
               <!-- please add link to display this exercise-->
               #{exercise.exercise_id}
               {exercise.exercise_title}
