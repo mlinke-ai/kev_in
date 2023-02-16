@@ -32,7 +32,7 @@ class Server:
         self.api.add_resource(ExerciseResource, "/exercise", endpoint="exercise")
         self.api.add_resource(LoginResource, "/login")
         self.api.add_resource(UserResource, "/user", endpoint="user")
-        self.api.add_resource(SolutionResource, "/solution")
+        self.api.add_resource(SolutionResource, "/solution", endpoint="solution")
         self.api.add_resource(LogoutResource, "/logout")
 
     def _base(self) -> Response:

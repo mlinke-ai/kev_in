@@ -75,3 +75,15 @@ class SolutionModel(db_engine.Model):
     solution_content = db_engine.Column(db_engine.Text)
     user_relation = db_engine.relationship(UserModel, foreign_keys="SolutionModel.solution_user")
     exercise_relation = db_engine.relationship(ExerciseModel, foreign_keys="SolutionModel.solution_exercise")
+
+    def to_json(self) -> dict:
+        return dict(
+            solution_id=self.solution_id,
+            solution_user=self.solution_user,
+            solution_exercise=self.solution_exercise,
+            solution_date=self.solution_date,
+            solution_duration=self.solution_duration,
+            solution_correct=self.solution_correct,
+            solution_pending=self.solution_pending,
+            solution_content=self.solution_content,
+        )

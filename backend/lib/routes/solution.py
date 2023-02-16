@@ -20,7 +20,7 @@
 import datetime
 import json
 
-from flask import Response, request
+from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -54,7 +54,7 @@ class SolutionResource(Resource):
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_content", type=dict, help="{error_msg}", location="args")
-        parser.add_argument("solution_offset", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("solution_page", type=int, default=1, help="{error_msg}", location="args")
         parser.add_argument(
             "solution_limit",
             type=int,
@@ -65,66 +65,55 @@ class SolutionResource(Resource):
 
         args = parser.parse_args()
 
-        # check if page limit is in range
-        if args["solution_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
-            return utils.makeResponseNewCookie(
-                dict(message="Page limit no tin range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
-                400,
-                request.cookies,
-            )
-
-        # load the solution table
-        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
-        # compose a query to select the requested element
-        query = db_engine.select(solution_table).select_from(solution_table)
+        query = db_engine.select(SolutionModel).order_by(SolutionModel.solution_id)
         if args["solution_id"]:
-            query = query.where(solution_table.c.solution_id == args["solution_id"])
-        else:
-            query = query.where(solution_table.c.solution_id >= args["solution_offset"])
-            query = query.limit(args["solution_limit"])
+            query = query.where(SolutionModel.solution_id == args["solution_id"])
         if args["solution_user"]:
-            query = query.where(solution_table.c.solution_user == args["solution_user"])
+            query = query.where(SolutionModel.solution_user == args["solution_user"])
         if args["solution_exercise"]:
-            query = query.where(solution_table.c.solution_exercise == args["solution_exercise"])
+            query = query.where(SolutionModel.solution_exercise == args["solution_exercise"])
         if args["solution_date"]:
             lower = args["solution_date"].replace(hour=0, minute=0, second=0, microsecond=0)
             upper = lower + datetime.timedelta(days=1)
-            query = query.where(sqlalchemy.between(solution_table.c.solution_date, lower, upper))
+            query = query.where(sqlalchemy.between(SolutionModel.solution_date, lower, upper))
         if args["solution_duration"]:
-            query = query.where(solution_table.c.solution_duration == args["solution_duration"])
+            query = query.where(SolutionModel.solution_duration == args["solution_duration"])
         if args["solution_correct"]:
-            query = query.where(solution_table.c.solution_correct == args["solution_correct"])
+            query = query.where(SolutionModel.solution_correct == args["solution_correct"])
         if args["solution_pending"]:
-            query = query.where(solution_table.c.solution_correct == args["solution_pending"])
+            query = query.where(SolutionModel.solution_pending == args["solution_pending"])
         if args["solution_content"]:
-            query = query.where(solution_table.c.solution_content == args["solution_content"])
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
-        # load the selection into the response data
-        result = dict()
-        for row in selection.fetchall():
+            query = query.where(SolutionModel.solution_content == args["solution_content"])
+        solutions = db_engine.paginate(
+            query, page=args["solution_page"], per_page=args["solution_limit"], max_per_page=config.MAX_ITEMS_RETURNED
+        )
+
+        response = dict(data=list(), meta=dict())
+        for solution in solutions.items:
             # check for access for every resource, if client has no access for a certain resource the enpoint
             # immediately returns 401 or 403
-            is_admin, auth, user_id = utils.authorize(
-                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
-            )
-            if auth == None:
-                return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-            elif not auth:
-                return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+            # _, auth, _ = utils.authorize(
+            #     cookies=request.cookies, method="GET", endpoint="user", resourceId=solution.solution_id
+            # )
+            # if auth == None:
+            #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+            # elif not auth:
+            #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+            response["data"].append(solution.to_json())
+        response["meta"]["total"] = solutions.total
+        response["meta"]["next_page"] = solutions.next_num
+        response["meta"]["prev_page"] = solutions.prev_num
+        response["meta"]["next_url"] = (
+            utils.get_url(request.url, solution_page=solutions.next_num) if solutions.has_next else None
+        )
+        response["meta"]["prev_url"] = (
+            utils.get_url(request.url, solution_page=solutions.prev_num) if solutions.has_prev else None
+        )
+        response["meta"]["page_size"] = len(solutions.items)
+        response["meta"]["pages"] = solutions.pages
 
-            result[row[0]] = dict(
-                solution_id=row[0],
-                solution_user=row[1],
-                solution_exercise=row[2],
-                solution_date=str(row[3]),
-                solution_duration=str(row[4]),
-                solution_correct=row[5],
-                solution_pending=row[6],
-                solution_text=row[7],
-            )
-
-        return utils.makeResponseNewCookie(result, 200, request.cookies)
+        return make_response(jsonify(response), 200)
+        # return utils.makeResponseNewCookie(response, 200, request.cookies)
 
     def post(self) -> Response:
         """
