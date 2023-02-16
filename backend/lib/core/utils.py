@@ -9,7 +9,6 @@ import jwt
 from flask import Response, current_app, jsonify, make_response
 from flask_sqlalchemy.query import sqlalchemy
 from werkzeug.datastructures import ImmutableMultiDict
-
 from backend.lib.core.config import ExerciseType, UserRole
 from backend.lib.interfaces.database import SolutionModel, UserModel, db_engine
 
@@ -123,7 +122,6 @@ def prepareExerciseContent(exerciseContent: dict, exerciseType: ExerciseType) ->
 
     if newContent == None:
         return exerciseContent  # preperation failed, just returns default exerciseContent
-
     return newContent
 
 
@@ -137,10 +135,8 @@ def _randomizePPEContent(content: dict[str, list]) -> dict[str, list] | None:
         data = content["list"]
     except KeyError:
         return None
-
-    if type(data) is not list:
+    if not isinstance(data, list):
         return None
-
     random.shuffle(data)
     content["list"] = data
 

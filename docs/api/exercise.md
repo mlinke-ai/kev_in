@@ -49,7 +49,7 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 | `exercise_id` | `int` | optional | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
 | `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
 | `exercise_description` | `string` | optional | `This is a good Test example!` | The description of the exercise
-| `exercise_type` | `int` | optional | `SyntaxExercise2` | The type of the exercise: `1` for GapTextExercise, `2` for SyntaxExercise, `3` for ParsonsPuzzleExercise, `4` for FindTheBugExercise, `5` for DocumentationExercise, `6` for OutputExercise, `7` for ProgrammingExercise|
+| `exercise_type` | `int` | optional | `2` | The type of the exercise: `1` for GapTextExercise, `2` for SyntaxExercise, `3` for ParsonsPuzzleExercise, `4` for FindTheBugExercise, `5` for DocumentationExercise, `6` for OutputExercise, `7` for ProgrammingExercise|
 | `exercise_content` | `dict` | optional | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON dict or object, containing the content of the exercise. The encoding is `exercise_type`-specific. |
 | `exercise_page` | `int` | optional | `1` | The page of the query result. Default value is 1. |
 | `exercise_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |

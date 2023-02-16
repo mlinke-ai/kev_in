@@ -1,5 +1,3 @@
-@use '@material/theme/color-palette';
-
 // THEME COLORS
 
 // Light Theme
@@ -7,14 +5,14 @@ $primaryLight: #005f50;
 $secondaryLight: #D79922;
 $surfaceLight: #eee;
 $backgroundLight: #fff;
-$errorLight: color-palette.$red-900;
+$errorLight: red;
 
 // Dark Theme
 $primaryDark: #005f50;
 $secondaryDark: #D79922;
 $surfaceDark: #001a16;
 $backgroundDark: #000;
-$errorDark: color-palette.$red-700;
+$errorDark: red;
 
 // Console Colors
 $consoleColor:  #7cfc00;

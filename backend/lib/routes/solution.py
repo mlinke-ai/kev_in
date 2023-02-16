@@ -27,6 +27,7 @@ from flask_sqlalchemy.query import sqlalchemy
 from backend.lib.core import config, utils
 from backend.lib.evaluator.evaluator import eval_solution
 from backend.lib.interfaces.database import SolutionModel, db_engine
+from backend.lib.evaluator.evaluator import eval_solution
 
 
 class SolutionResource(Resource):

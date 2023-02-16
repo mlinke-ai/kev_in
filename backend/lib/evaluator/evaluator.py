@@ -10,6 +10,57 @@ from .sandboxes.pyenv.pysandbox import ExecutePython
 
 # from .sandboxes.javaenv.javasandbox import ExecuteJava
 
+def eval_solution(
+        solution_content: dict,
+        exercise_id: int
+        ) -> tuple[bool, bool]:
+    """
+    Evaluates if a provided solution attempt is correct.
+
+    Args:
+        solution_content :class:`dict`:
+            The user input form the solution attempt. This should be a JSON
+            object.
+        exercise_id :class:`int`
+            The id form the exercise, the solution attempt is about.
+            
+    """
+    
+    exercise: ExerciseModel = (
+        ExerciseModel
+        .query
+        .filter_by(exercise_id=exercise_id)
+        .one()
+    )
+    try:
+        sample_sol = loads(exercise.exercise_solution)
+    except (JSONDecodeError, TypeError):
+        return False, False
+    
+    if exercise.exercise_type == ExerciseType.GapTextExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.SyntaxExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
+        return (
+            Evaluator.evaluate_ppe(solution_content, sample_sol),
+            False
+        )
+    
+    elif exercise.exercise_type == ExerciseType.FindTheBugExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.DocumentationExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.OutputExercise:
+        return True, False
+    
+    elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
+        return True, False
+
 
 def eval_solution(solution_content: dict, exercise_id: int) -> tuple[bool, bool]:
     """
