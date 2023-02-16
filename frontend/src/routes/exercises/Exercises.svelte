@@ -7,7 +7,6 @@
   import IconButton, { Icon } from "@smui/icon-button";
   import { Svg } from "@smui/common";
 
-  import { each } from "svelte/internal";
   import { accessLevel } from "../../stores";
   import { accessLevels } from "../../lib/constants";
   import { link } from "svelte-spa-router";

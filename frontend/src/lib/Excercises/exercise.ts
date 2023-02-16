@@ -1,13 +1,12 @@
 import type { languages, exercises } from "../constants";
 
+// type definitions
 interface ExerciseType {
   exercise_id: number;
   exercise_title: string;
   exercise_description: string;
   exercise_type: exercises;
   exercise_language: languages;
-  exercise_content: object;
-  exercise_solution: object;
 }
 
 export interface ProgrammingExerciseType extends ExerciseType {
@@ -29,6 +28,8 @@ export interface ParsonsPuzzleExerciseType extends ExerciseType {
   };
 }
 
+// function for fetching a single exercise in detailed view by its id
+// TODO: Error handling
 export const getExercise = async (
   exerciseID: number
 ): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType> => {

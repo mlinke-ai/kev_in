@@ -1,3 +1,5 @@
+// type definitions
+
 interface SolutionPost {
   solution_exercise: number;
   solution_date: number;
