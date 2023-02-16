@@ -152,6 +152,12 @@ class MiscTest(flask_unittest.ClientTestCase):
         r = client.delete("/logout")
         self.assertNotIn(r.status_code, (404, 405))
 
+    def test_login_logout(self, client: FlaskClient) -> None:
+        pass
+
+    def test_prevent_admin_creation(self, client: FlaskClient) -> None:
+        pass
+
 
 if __name__ == "__main__":
     flask_unittest.main()

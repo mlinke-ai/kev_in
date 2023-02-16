@@ -77,11 +77,14 @@ config = dict(
 )
 
 
-def configure_app(app, test_config=dict()):
+def configure_app(app, add_config: dict | str = dict()):
     config_name = os.getenv("FLASK_CONFIGURATION", "default")
     app.config.from_object(config[config_name])
     app.config.from_pyfile("config.cfg", silent=True)
-    app.config.from_mapping(test_config)
+    if isinstance(add_config, dict):
+        app.config.from_mapping(add_config)
+    else:
+        app.config.from_pyfile(add_config, silent=True)
     # configure logging
     handler = logging.FileHandler(app.config["LOGGING_LOCATION"])
     handler.setLevel(app.config["LOGGING_LEVEL"])

@@ -134,6 +134,7 @@ class UserResource(Resource):
             return make_response(jsonify(dict(message="Changed properties successfully")), 200)
 
     def delete(self) -> Response:
+        # TODO: revoke token after self delete
         token = verify_jwt_in_request()
         parser = reqparse.RequestParser()
         parser.add_argument("user_id", type=int, help="{error_msg}", required=True)

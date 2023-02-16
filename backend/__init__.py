@@ -31,7 +31,7 @@ def _assets(path: str) -> Response:
     return send_from_directory("../frontend/dist", path)
 
 
-def create_app(config=dict()):
+def create_app(config: dict | str = dict()):
     app = Flask(
         __name__,
         instance_path=_get_instance_folder_path(),
