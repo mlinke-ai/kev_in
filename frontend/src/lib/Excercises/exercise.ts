@@ -1,11 +1,13 @@
+import type { languages, exercises } from "../constants";
+
 export interface Exercise {
-  exercise_id: Number;
-  exercise_title: String;
-  exercise_description: String;
-  exercise_type: String; // should be a Number
-  exercise_language: String; // should be a Number
-  exercise_content: Object;
-  exercise_solution: Object;
+  exercise_id: number;
+  exercise_title: string;
+  exercise_description: string;
+  exercise_type: exercises;
+  exercise_language: languages;
+  exercise_content: object;
+  exercise_solution: object;
 }
 
 export const getExercise = async (exerciseID: number): Promise<Exercise> => {
