@@ -8,7 +8,7 @@ date: 2023-01-27
 ---
 
 # User API
-  
+
 The user route is the endpoint to perform all different kinds of operations on the user database.
 The endpoint can be accessed at `<address>:<port>/user`.
 
@@ -18,7 +18,7 @@ The GET method is used to retrieve user data based on attributes. This method su
 
 ### Access
 
-Python `requests`:  
+Python `requests`:
 
 ```python
 requests.request("GET", "http://<address>:<port>/user?<URLarguments>")
@@ -49,7 +49,7 @@ Arguments are constructed as dictionaries or JSON objects.
 | `user_name` | `string` | optional | `John Doe` | The name of the user. Uniqueness is not guaranteed. |
 | `user_mail` | `string` | optional | `john.doe@example.com` | The e-mail address of the user. This is unique for every account. |
 | `user_role` | `int` | optional  | `1` | An integer defining the user role. One of the following values: `1` for super admin, `2` for admin and `3` for regular users. |
-| `user_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
+| `user_page` | `int` | optional | `1` | The page if the query result. Default value is 1. |
 | `user_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 
 Note: If no argument is sent, the system returns the user data of the logged in client (not as dict).
@@ -60,19 +60,43 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 === "200"
 
-	The response is a dictionary of JSON object. The user ID is mapped to all user attributes.
+	The response is a dictionary of JSON object. `"data"` is mapped to the query result as a list. `"meta"` is mapped to the meta data.
+
+	Response structure:
+	| Field | Description |
+	|:--|:--|
+	| `"data"` | A list of the elements returned by the query ordered by `user_id`. |
+	| `"next_page"` | The index of the next page. If there is no next page this value will be `null`. |
+	| `"next_url"` | The URL to request the next page. If there is no next page this value will be `null`. |
+	| `"page_size"` | The number of elements in the current page. |
+	| `"pages"` | The number of pages. |
+	| `"prev_page"` | The index of the previous page. If the is no previous page this value will be `null`. |
+	| `"prev_url"` | The URL to request the previous page. If there is no previous page this value will be `null`. |
+	| `"total"` | The total number of elements which match the query. Basically the sum of all page sizes. |
 
 	```JSON
 	{
-		"1": {
-			"user_id": 1,
-			"user_name": "John Doe",
-			"user_mail": "john.doe@example.com",
-			"user_role": "User"
+		"data": [
+            {
+                "exercise_id": 1,
+                "user_name": "John Doe",
+                "user_mail": "john.doe@example.com",
+                "user_role_name": "User",
+                "user_role_value": 3
+            }
+        ],
+        "meta": {
+            "next_page": null,
+            "next_url": null,
+            "page_size": 1,
+            "pages": 1,
+            "prev_page": null,
+            "prev_url": null,
+            "total": 1
 		}
 	}
 	```
-	If no argument is sent the reponse is not mapped to the user_id:
+	If no argument is sent the response is not mapped to the `user_id`:
 
 	```JSON
 	{
@@ -117,14 +141,14 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 ## POST
 
-The POST method is used to create a new user. 
+The POST method is used to create a new user.
 This method prevents duplication.
 
 ### Access
 
 No Authorizazion is needed. So this method can be accessed without sending a cookie.
 
-Python `requests`:  
+Python `requests`:
 
 ```python
 requests.request("POST", "http://<address>:<port>/user",json=<arguments>,headers={"Content-Type": "application/json"})

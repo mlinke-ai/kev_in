@@ -19,9 +19,7 @@
 
 import hashlib
 
-import hashlib
-
-from flask import Response, request, make_response, jsonify
+from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -49,7 +47,7 @@ class UserResource(Resource):
             help="{error_msg}",
             location="args",
         )
-        parser.add_argument("user_offset", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("user_page", type=int, default=1, help="{error_msg}", location="args")
         parser.add_argument(
             "user_limit",
             type=int,
@@ -57,16 +55,6 @@ class UserResource(Resource):
             help="{error_msg}",
             location="args",
         )
-
-        args = parser.parse_args()
-
-        # check if page limit is in range
-        if args["user_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
-            return utils.makeResponseNewCookie(
-                dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
-                400,
-                request.cookies,
-            )
 
         if len(request.url.split("?")) == 1:  # a request with no arguments was sent
             # return the user data from the logged in user
@@ -84,43 +72,32 @@ class UserResource(Resource):
             )
             return utils.makeResponseNewCookie(result, 200, request.cookies)
 
-        # load the user table
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        # compose a query to select the requested element
-        query = db_engine.select(user_table).select_from(user_table)
+        args = parser.parse_args()
 
+        query = db_engine.select(UserModel).order_by(UserModel.user_id)
         if args["user_id"]:
-            query = query.where(user_table.c.user_id == args["user_id"])
-        else:
-            query = query.where(user_table.c.user_id >= args["user_offset"])
-            query = query.limit(args["user_limit"])
+            query = query.where(UserModel.user_id == args["user_id"])
         if args["user_name"]:
-            query = query.where(user_table.c.user_name == args["user_name"])
+            query = query.where(UserModel.user_name == args["user_name"])
         if args["user_mail"]:
-            query = query.where(user_table.c.user_mail == args["user_mail"])
+            query = query.where(UserModel.user_mail == args["user_mail"])
         if args["user_role"]:
-            query = query.where(user_table.c.user_role == args["user_role"])
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
-        # load the selection into the response data
-        result = dict()
-        for row in selection.fetchall():
-            # check for access for every resource, if client has no access for a certain resource the enpoint immediately returns 401 or 403
-            is_admin, auth, client_id = utils.authorize(
-                cookies=request.cookies, method="GET", endpoint="user", resourceId=int(row[0])
-            )
-            if auth == None:
-                return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-            elif not auth:
-                return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
-            result[int(row[0])] = dict(
-                user_id=int(row[0]),
-                user_name=str(row[1]),
-                user_mail=str(row[3]),
-                user_role=row[4].name,
-            )
+            query = query.where(UserModel.user_role == args["user_role"])
+        users = db_engine.paginate(
+            query, page=args["user_page"], per_page=args["user_limit"], max_per_page=config.MAX_ITEMS_RETURNED
+        )
 
-        return utils.makeResponseNewCookie(result, 200, request.cookies)
+        response = dict(data=list(), meta=dict())
+        for user in users.items:
+            response["data"].append(user.to_json())
+        response["meta"]["total"] = users.total
+        response["meta"]["next_page"] = users.next_num
+        response["meta"]["prev_page"] = users.prev_num
+        response["meta"]["next_url"] = utils.get_url(request.url, user_page=users.next_num) if users.has_next else None
+        response["meta"]["prev_url"] = utils.get_url(request.url, user_page=users.prev_num) if users.has_prev else None
+
+        return make_response(jsonify(response), 200)
+        # return utils.makeResponseNewCookie(response, 200, request.cookie)
 
     def post(self) -> Response:
         """

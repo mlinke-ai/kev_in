@@ -31,7 +31,7 @@ class Server:
         self.api = Api(self.app)
         self.api.add_resource(ExerciseResource, "/exercise", endpoint="exercise")
         self.api.add_resource(LoginResource, "/login")
-        self.api.add_resource(UserResource, "/user")
+        self.api.add_resource(UserResource, "/user", endpoint="user")
         self.api.add_resource(SolutionResource, "/solution")
         self.api.add_resource(LogoutResource, "/logout")
 

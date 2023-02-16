@@ -19,6 +19,15 @@ class UserModel(db_engine.Model):
     user_mail = db_engine.Column(db_engine.String, unique=True)
     user_role = db_engine.Column(db_engine.Enum(config.UserRole))
 
+    def to_json(self) -> dict:
+        return dict(
+            user_id=self.user_id,
+            user_name=self.user_name,
+            user_mail=self.user_mail,
+            user_role_name=self.user_role.name,
+            user_role_value=self.user_role.value,
+        )
+
 
 class ExerciseModel(db_engine.Model):
     __tablename__ = config.EXERCISE_TABLE
