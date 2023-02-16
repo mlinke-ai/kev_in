@@ -4,15 +4,24 @@
   import CodingCard from "../../lib/Excercises/Programming/CodingCard.svelte";
   import OutputCard from "../../lib/Excercises/Programming/OutputCard.svelte";
   import StatusBar from "../../lib/Excercises/StatusBar.svelte";
-  import { Exercise, submitSolution } from "../../lib/Excercises/exercise";
+  import type { ProgrammingExerciseType } from "../../lib/Excercises/exercise";
+  import { submitSolution, getCurrentTimestamp, SolutionPostProgramming } from "../../lib/Excercises/solution";
 
   let elapsedTime = 0;
-  export let exerciseData: Exercise;
-  let content: string;
+  export let exerciseData: ProgrammingExerciseType;
+  let content: string = exerciseData.exercise_content.code;
+  let solution: SolutionPostProgramming;
 
   function submit() {
-    console.log(content);
-    submitSolution(exerciseData.exercise_id, elapsedTime, "code here");
+    solution = {
+      solution_exercise: exerciseData.exercise_id,
+      solution_date: getCurrentTimestamp(),
+      solution_duration: elapsedTime,
+      solution_content: {
+        code: content
+      }
+    }
+    submitSolution(solution);
   }
   function reset() {}
 </script>
