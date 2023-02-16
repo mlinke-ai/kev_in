@@ -8,22 +8,22 @@
   } from "@smui/data-table";
   import Select, { Option } from "@smui/select";
   import IconButton from "@smui/icon-button";
-  import { Label } from "@smui/common";
-  import type { GetSolutionData, GetSolutionMeta } from "./solution";
-
-  export let solutionData: Array<GetSolutionData>;
-  export let solutionMeta: GetSolutionMeta;
+  import { Icon, Label } from "@smui/common";
+  import type { GetSolutionData, GetSolutionMeta } from "../solution";
+  import { solutionData, solutionMeta } from "../exampleSolutions";
+  import { exerciseIcons } from "../../constants";
+  import { getExercise } from "../../Excercises/exercise";
 
   export let currentPage: number = 1;
   export let rowsPerPage: number = 10;
 </script>
 
-<DataTable stickyHeader table$aria-label="User list" style="height: 500px; width: 50%;">
+<DataTable stickyHeader table$aria-label="User list" style="width: 100%;">
   <Head>
     <Row>
       <Cell numeric>ID</Cell>
-      <Cell numeric>User</Cell>
-      <Cell numeric>Exercise</Cell>
+      <Cell>User</Cell>
+      <Cell>Exercise</Cell>
       <Cell>Solved</Cell>
     </Row>
   </Head>
@@ -47,7 +47,8 @@
       </Select>
     </svelte:fragment>
     <svelte:fragment slot="total">
-      {solutionData[0].solution_id}-{solutionData[0].solution_id + rowsPerPage} of {solutionMeta.total}
+      {solutionData[0].solution_id}-{solutionData[0].solution_id + rowsPerPage} of
+      {solutionMeta.total}
     </svelte:fragment>
 
     <IconButton
@@ -83,15 +84,12 @@
 
 <style>
   /* Reset some of the demo app styles that interfere. */
-  :global(body),
-  :global(html) {
+  :global(body) {
     height: auto;
     width: auto;
     position: static;
-  }
-  :global(#smui-app) {
-    display: block;
-    height: auto;
-    overflow: auto;
+    padding: 0;
+    margin: 0;
+    background-color: black;
   }
 </style>

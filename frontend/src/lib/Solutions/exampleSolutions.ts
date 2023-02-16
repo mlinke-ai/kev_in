@@ -1,4 +1,4 @@
-import { GetSolutionData, GetSolutionMeta } from "./solution"
+import type { GetSolutionData, GetSolutionMeta } from "./solution"
 
 export let solutionData: Array<GetSolutionData> = [
     {
@@ -14,7 +14,7 @@ export let solutionData: Array<GetSolutionData> = [
     {
       solution_id: 2,
       solution_user: 2,
-      solution_exercise: 3,
+      solution_exercise: 7,
       solution_date: 4,
       solution_duration: 5,
       solution_pending: true,
@@ -24,7 +24,7 @@ export let solutionData: Array<GetSolutionData> = [
     {
       solution_id: 3,
       solution_user: 2,
-      solution_exercise: 3,
+      solution_exercise: 2,
       solution_date: 4,
       solution_duration: 5,
       solution_pending: true,
@@ -34,7 +34,7 @@ export let solutionData: Array<GetSolutionData> = [
     {
       solution_id: 4,
       solution_user: 2,
-      solution_exercise: 3,
+      solution_exercise: 1,
       solution_date: 4,
       solution_duration: 5,
       solution_pending: true,

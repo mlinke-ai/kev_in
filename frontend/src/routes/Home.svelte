@@ -10,7 +10,6 @@
   import { accessLevel } from "../stores";
   import { accessLevels, dashboardPage } from "../lib/constants";
   import { replace as replaceRoute } from "svelte-spa-router";
-  import SolutionView from "../lib/Solutions/SolutionView.svelte";
 
   let open = false;
   if ($accessLevel != accessLevels.default) {
