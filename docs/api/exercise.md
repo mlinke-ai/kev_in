@@ -63,21 +63,21 @@ Arguments are constructed as dictionaries or JSON objects.
 
 NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` items.
 
-Meta Information Attributes:
-| Field | Description |
-|:--|:--|
-| `"data"` | A list of the elements returned by the query ordered by `exercise_id`. |
-| `"next_page"` | The index of the next page. If there is no next page this value will be `null`. |
-| `"next_url"` | The URL to request the next page. If there is no next page this value will be `null`. |
-| `"page_size"` | The number of elements in the current page. |
-| `"pages"` | The number of pages. |
-| `"prev_page"` | The index of the previous page. If the is no previous page this value will be `null`. |
-| `"prev_url"` | The URL to request the previous page. If there is no previous page this value will be `null`. |
-| `"total"` | The total number of elements which match the query. Basically the sum of all page sizes. |
-
 === "200"
 
-    The response is a dictionary of JSON object. A list of exercise JSON objects is mapped to `data` and a JSON object of meta information is mapped to `meta`.
+    The response is a dictionary of JSON object. `"data"` is mapped to the query result as a list. `"meta"` is mapped to the meta data.
+
+    Response structure:
+    | Field | Description |
+    |:--|:--|
+    | `"data"` | A list of the elements returned by the query ordered by `exercise_id`. |
+    | `"next_page"` | The index of the next page. If there is no next page this value will be `null`. |
+    | `"next_url"` | The URL to request the next page. If there is no next page this value will be `null`. |
+    | `"page_size"` | The number of elements in the current page. |
+    | `"pages"` | The number of pages. |
+    | `"prev_page"` | The index of the previous page. If the is no previous page this value will be `null`. |
+    | `"prev_url"` | The URL to request the previous page. If there is no previous page this value will be `null`. |
+    | `"total"` | The total number of elements which match the query. Basically the sum of all page sizes. |
 
     ```JSON
     {
