@@ -27,7 +27,6 @@ from flask_sqlalchemy.query import sqlalchemy
 from backend.lib.core import config, utils
 from backend.lib.evaluator.evaluator import eval_solution
 from backend.lib.interfaces.database import SolutionModel, db_engine
-from backend.lib.evaluator.evaluator import eval_solution
 
 
 class SolutionResource(Resource):
@@ -131,7 +130,7 @@ class SolutionResource(Resource):
             "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", required=True
         )
         parser.add_argument(
-            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", required=True
+            "solution_duration", type=lambda x: datetime.timedelta(seconds=x), help="{error_msg}", required=True
         )
         parser.add_argument("solution_content", type=dict, help="{error_msg}", required=True)
 
@@ -164,11 +163,11 @@ class SolutionResource(Resource):
         db_engine.session.commit()
         # check whether the element was added successfully
         subquery = (
-            db_engine.select([sqlalchemy.func.max(solution_table.c.solution_id)])
+            db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id))
             .select_from(solution_table)
             .scalar_subquery()
         )
-        query = db_engine.select(["*"]).select_from(solution_table).where(solution_table.c.solution_id == subquery)
+        query = db_engine.select("*").select_from(solution_table).where(solution_table.c.solution_id == subquery)
         # execute the query and store the selection
         selection = db_engine.session.execute(query)
         # load the selection into the response data
