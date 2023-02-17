@@ -1,6 +1,13 @@
 import { userID, userName, userMail, accessLevel } from "../../stores";
 import { accessLevels } from "../constants";
 
+interface GetUser {
+  user_id: number;
+  user_mail: string;
+  user_name: string;
+  user_role: string;
+}
+
 // function to send login data to the server
 export const login = async (email: string, password: string) => {
   let response = await fetch("/login", {
@@ -13,9 +20,8 @@ export const login = async (email: string, password: string) => {
   });
 
   if (response.status == 200) {
-    await setupUserSettings().then(() => {
-      location.reload();
-    });
+    storeUser(<GetUser>(await getUser()));
+    location.reload();
     return true;
   } else if (response.status == 401) {
     return false;
@@ -23,24 +29,29 @@ export const login = async (email: string, password: string) => {
 };
 
 // function to make the server log out the client
-export const logout = async() => {
+export const logout = async () => {
   await fetch("/logout", { method: "POST" }).then(() => {
-    window.location.replace("/")
+    window.location.replace("/");
   });
 };
 
-// function to fetch user data from the server and save to svelte store
-export const setupUserSettings = async () => {
-  await fetch("/user", { method: "GET" }).then((response) => {
-    if (response.status == 200) {
-      response.json().then((data) => {
-        userID.set(data.user_id);
-        userName.set(data.user_name);
-        userMail.set(data.user_mail);
-        accessLevel.set(accessLevels.admin);
-      });
-    } else {
-      accessLevel.set(accessLevels.default);
+// function to fetch user data from the server
+export const getUser = async (): Promise<GetUser | null> => {
+  try {
+    const response = await fetch("/user", { method: "GET" });
+    if (!response.ok) {
+      return null;
     }
-  });
+    return await response.json();
+  } catch (error) {
+    return null;
+  }
 };
+
+// function to store user data
+export function storeUser(user: GetUser) {
+  userID.set(user.user_id);
+  userName.set(user.user_name);
+  userMail.set(user.user_mail);
+  accessLevel.set(accessLevels.admin);
+}
