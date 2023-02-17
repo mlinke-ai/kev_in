@@ -6,6 +6,14 @@ export enum accessLevels {
     sadmin = 3
 };
 
+export enum userRoles {
+    undefined = "Undefined",
+    default = "Default",
+    user = "User",
+    admin = "Admin",
+    sadmin = "SAdmin"
+}
+
 export enum messages {
     neutral = 0,
     success = 1,
