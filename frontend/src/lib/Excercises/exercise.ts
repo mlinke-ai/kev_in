@@ -1,13 +1,15 @@
 import type { languages, exercises } from "../constants";
 
 interface ExerciseType {
-  exercise_id: number;
-  exercise_title: string;
-  exercise_description: string;
-  exercise_type: exercises;
-  exercise_language: languages;
-  exercise_content: object;
-  exercise_solution: object;
+  exercise_id: number,
+  exercise_title: string,
+  exercise_description: string,
+  exercise_type_name: string,
+  exercise_type_value: exercises,
+  exercise_language_type: languages,
+  exercise_language_name: string,
+  exercise_content: object,
+  exercise_solution: object
 }
 
 export interface ProgrammingExerciseType extends ExerciseType {
@@ -43,7 +45,7 @@ export const getExercise = async (
     if (!response.ok) {
       throw new Error();
     }
-    return await response.json().then((data) => data[exerciseID]);
+    return await response.json().then((data) => data.data[0]); // Last index should be exerciseID, not 0
   } catch (error) {
     throw new Error();
   }

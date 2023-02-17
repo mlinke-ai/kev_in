@@ -36,7 +36,7 @@
       solution_date: getCurrentTimestamp(),
       solution_duration: elapsedTime,
       solution_content: {
-        list: ["Hello", "World", "this", "is"]
+        list: itemsRight.map(item => item.name)
       }
     }
     submitSolution(solution);

@@ -15,7 +15,7 @@
 
   getExercise(exerciseID).then((data) => {
     exerciseData = data;
-    switch (exerciseData.exercise_type) {
+    switch (exerciseData.exercise_type_name) {
       case exercises.parsonsPuzzle:
         parsonsPuzzleData = exerciseData as ParsonsPuzzleExerciseType;
         break
@@ -28,14 +28,14 @@
 </script>
 
 {#if ready}
-  {#if exerciseData.exercise_type == exercises.programming}
+  {#if exerciseData.exercise_type_name == exercises.programming}
     <ProgrammingExercise exerciseData={programmingData} />
-  {:else if exerciseData.exercise_type == exercises.parsonsPuzzle}
+  {:else if exerciseData.exercise_type_name == exercises.parsonsPuzzle}
     <ParsonsPuzzleExercise exerciseData={parsonsPuzzleData}/>
   {:else}
     <Message
       bind:message={messageComponent}
-      content={`A component for exercise type "${exerciseData.exercise_type}" does not
+      content={`A component for exercise type "${exerciseData.exercise_type_name}" does not
       exist yet.`}
       type={messages.error}
       autoOpen={true}
