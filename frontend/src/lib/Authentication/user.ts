@@ -1,5 +1,6 @@
-import { userID, userName, userMail, accessLevel } from "../../stores";
-import { accessLevels, userRoles } from "../constants";
+import { userID, userName, userMail, accessLevel, startPage } from "../../stores";
+import { accessLevels, startPages, userRoles } from "../constants";
+import { get as getStore } from "svelte/store";
 
 interface GetUser {
   user_id: number;
@@ -21,7 +22,7 @@ export const login = async (email: string, password: string) => {
 
   if (response.status == 200) {
     storeUser(<GetUser>await getUser());
-    location.reload();
+    window.location.replace(getStore(startPage))
     return true;
   } else if (response.status == 401) {
     return false;
@@ -31,7 +32,8 @@ export const login = async (email: string, password: string) => {
 // function to make the server log out the client
 export const logout = async () => {
   await fetch("/logout", { method: "POST" }).then(() => {
-    window.location.replace("/");
+    resetUser()
+    window.location.replace(getStore(startPage));
   });
 };
 
@@ -66,10 +68,36 @@ export function getAccessLevel(user_role: string): number {
   return level;
 }
 
+export function getStartPage(level: accessLevels): startPages {
+  switch (level) {
+    case accessLevels.user:
+      return startPages.user
+    case accessLevels.admin:
+      return startPages.admin
+    case accessLevels.sadmin:
+      return startPages.sadmin
+    default:
+      return startPages.default
+  }
+}
+
 // function to store user data
 export function storeUser(user: GetUser) {
+  let level: number = getAccessLevel(user.user_role);
   userID.set(user.user_id);
   userName.set(user.user_name);
   userMail.set(user.user_mail);
-  accessLevel.set(getAccessLevel(user.user_role));
+  accessLevel.set(level);
+  console.log(getStartPage(level))
+  startPage.set(getStartPage(level))
+}
+
+export function resetUser() {
+  const user: GetUser = {
+    user_id: 0,
+    user_name: "",
+    user_role: "Default",
+    user_mail: ""
+  }
+  storeUser(user)
 }
