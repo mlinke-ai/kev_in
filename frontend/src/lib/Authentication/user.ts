@@ -1,5 +1,5 @@
 import { userID, userName, userMail, accessLevel } from "../../stores";
-import { accessLevels } from "../constants";
+import { accessLevels, userRoles } from "../constants";
 
 interface GetUser {
   user_id: number;
@@ -20,7 +20,7 @@ export const login = async (email: string, password: string) => {
   });
 
   if (response.status == 200) {
-    storeUser(<GetUser>(await getUser()));
+    storeUser(<GetUser>await getUser());
     location.reload();
     return true;
   } else if (response.status == 401) {
@@ -48,10 +48,28 @@ export const getUser = async (): Promise<GetUser | null> => {
   }
 };
 
+export function getAccessLevel(user_role: string): number {
+  let level: number = accessLevels.undefined;
+  switch (user_role) {
+    case userRoles.default:
+      level = accessLevels.default;
+      break;
+    case userRoles.user:
+      level = accessLevels.user;
+      break;
+    case userRoles.admin:
+      level = accessLevels.admin;
+      break;
+    case userRoles.sadmin:
+      level = accessLevels.sadmin;
+  }
+  return level;
+}
+
 // function to store user data
 export function storeUser(user: GetUser) {
   userID.set(user.user_id);
   userName.set(user.user_name);
   userMail.set(user.user_mail);
-  accessLevel.set(accessLevels.admin);
+  accessLevel.set(getAccessLevel(user.user_role));
 }
