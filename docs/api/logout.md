@@ -22,19 +22,19 @@ The POST method is used to perform the logout. It is the only request-type suppo
 Python `requests`:
 
 ```python
-requests.request("DELETE", "http://<address>:<port>/logout")
+requests.request("POST", "http://<address>:<port>/logout")
 ```
 
 Unix `curl`:
 
 ```
-curl --location --request DELETE 'http://<address>:<port>/logout'
+curl --location --request POST 'http://<address>:<port>/logout'
 ```
 
 JavaScript `fetch`:
 
 ```javascript
-fetch("http://<address>:<port>/logout", {method: "DELETE"})
+fetch("http://<address>:<port>/logout", {method: "POST"})
 ```
 
 Replace `<address>` and `<port>` with your respective setup.
@@ -45,6 +45,13 @@ No arguments are needed.
 
 ### Response
 
-=== "302"
+=== "200"
 
-    The response is an empty HTTP-response, containing a redirect to the base URL. HTTP status will be 302.
+    Normally the response should be a 200 OK and a success message.
+    It doesen't matter if the client was logged in before.
+
+    ```JSON
+    {
+        "message": "Successfully logged out."
+    }
+    ```
