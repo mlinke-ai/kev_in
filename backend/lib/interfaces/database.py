@@ -82,8 +82,8 @@ class SolutionModel(db_engine.Model):
             solution_user=self.solution_user,
             solution_exercise=self.solution_exercise,
             solution_date=self.solution_date,
-            solution_duration=self.solution_duration,
+            solution_duration=int(self.solution_duration.total_seconds()),
             solution_correct=self.solution_correct,
             solution_pending=self.solution_pending,
-            solution_content=self.solution_content,
+            solution_content=json.loads(self.solution_content),
         )
