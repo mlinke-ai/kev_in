@@ -31,6 +31,7 @@ export const login = async (email: string, password: string) => {
 // function to make the server log out the client
 export const logout = async () => {
   await fetch("/logout", { method: "POST" }).then(() => {
+    resetUser()
     window.location.replace("/");
   });
 };
@@ -72,4 +73,14 @@ export function storeUser(user: GetUser) {
   userName.set(user.user_name);
   userMail.set(user.user_mail);
   accessLevel.set(getAccessLevel(user.user_role));
+}
+
+export function resetUser() {
+  const user: GetUser = {
+    user_id: 0,
+    user_name: "",
+    user_role: "Default",
+    user_mail: ""
+  }
+  storeUser(user)
 }
