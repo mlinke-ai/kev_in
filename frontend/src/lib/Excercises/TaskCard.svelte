@@ -1,13 +1,18 @@
 <script>
     import UiCard from "../common/UICard.svelte";
+    import showdown from "showdown";
+
     export let markdownSourceCode = "";
 
-
-</script>
+    let converter = new showdown.Converter();
+    converter.setOption("tables", "true");
+    converter.setFlavor("github");
+    let renderedMD = converter.makeHtml(markdownSourceCode);
+  </script>
 
 <UiCard icon="school" title="Task">
     <div class="task-container">
-      <pre>{markdownSourceCode}</pre>
+      {@html renderedMD}
     </div>
 </UiCard>
 
