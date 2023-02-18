@@ -272,7 +272,7 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.status_code, 200)
         self.assertEqual(r.json()["data"], [])
 
-    def test_get_existing_user(self) -> None:
+    def test_get_user(self) -> None:
         """
         Query the System for an existing exercise with HTTP-GET by id as logged in user.
         The system should return HTTP-status 200 and the attributes of the exercise in JSON format.
@@ -286,7 +286,7 @@ class ExerciseTest(unittest.TestCase):
         )
         self.assertEqual(r.status_code, 200)
 
-    def test_get_existing_no_login(self) -> None:
+    def test_get_no_login(self) -> None:
         """
         Query the System for an existing exercise with HTTP-GET by id as logged out client (no token in cookie).
         The system should return HTTP-status 401 and an error message.
