@@ -1,10 +1,13 @@
 <script>
     import UiCard from "../common/UICard.svelte";
+    export let markdownSourceCode = "";
+
+
 </script>
 
 <UiCard icon="school" title="Task">
     <div class="task-container">
-        <slot />
+      <pre>{markdownSourceCode}</pre>
     </div>
 </UiCard>
 
@@ -21,6 +24,6 @@
         color: #7cfc00;
         padding: 1rem;
         font-family: "Roboto Mono";
-        overflow: scroll;
+        overflow: auto;
     }
 </style>

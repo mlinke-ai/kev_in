@@ -58,7 +58,7 @@
       <h3>{exerciseData.exercise_title}</h3>
     </div>
     <div class="task-area">
-      <TaskCard />
+      <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
     </div>
     <div class="puzzle-area">
       <PuzzleCard bind:itemsLeft bind:itemsRight />
