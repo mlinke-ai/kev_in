@@ -31,6 +31,16 @@ export interface ParsonsPuzzleExerciseType extends ExerciseType {
   };
 }
 
+// export interface FillInBlanksExerciseType extends ExerciseType {
+//   exercise_content: {
+//     text: String;
+//     blankPos: Array<BigInteger>;
+//   };
+//   exercise_solution: {
+//     userEntries: Array<string>;
+//   };
+// }
+
 export const getExercise = async (
   exerciseID: number
 ): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType> => {

@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
     import Page from "../lib/common/Page.svelte";
     import Button from "@smui/button";
 
@@ -73,4 +73,4 @@
     }}
         >submit</Button
     >
-</Page>
+</Page> -->
