@@ -23,7 +23,23 @@ import requests
 class SolutionTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        pass
+        #log in into sadmin
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/login",
+            json={"user_mail": "sadmin@example.com", "user_pass": "sadmin"},
+            headers={"Content-Type": "application/json"},
+        )
+        cls.adminCookie = r.headers["Set-Cookie"]
+
+        #log in into tuser
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/login",
+            json={"user_mail": "tuser@example.com", "user_pass": "tuser"},
+            headers={"Content-Type": "application/json"},
+        )
+        cls.userCookie = r.headers["Set-Cookie"]
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -32,55 +48,214 @@ class SolutionTest(unittest.TestCase):
     # --- GET ---
 
     def test_get_existing_by_id(self) -> None:
-        pass
+        
+        arg = 1
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_id={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_id"], arg)
 
-    def test_get_existing_by_user_id(self) -> None:
-        pass
+    def test_get_existing_by_user(self) -> None:
+        
+        arg = 1
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_user={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_user"], arg)
 
-    def test_get_existing_by_exercise_id(self) -> None:
-        pass
+    def test_get_existing_by_exercise(self) -> None:
+
+        arg = 1
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_exercise={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_exercise"], arg)
 
     def test_get_existing_by_date(self) -> None:
-        pass
+        
+        arg = 1234567890
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_date={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_date"], "Sat, 14 Feb 2009 00:31:30 GMT")
 
     def test_get_existing_by_duration(self) -> None:
-        pass
+        
+        arg = 0
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_duration={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_duration"], arg)
 
     def test_get_existing_by_correct(self) -> None:
-        pass
+        
+        arg = True
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_correct={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_correct"], arg)
 
     def test_get_existing_by_pending(self) -> None:
-        pass
+        
+        arg = True
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_pending={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_pending"], arg)
 
     def test_get_existing_by_content(self) -> None:
-        pass
+        
+        arg = {"solution": "some JSON"}
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_content={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_content"], arg)
 
     def test_get_non_existing_by_id(self) -> None:
-        pass
+        
+        arg = -1
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_id={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"], [])
 
     def test_get_non_existing_by_user_id(self) -> None:
-        pass
+        
+        arg = -1
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_user={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"], [])
 
     def test_get_non_existing_by_exercise_id(self) -> None:
-        pass
+        
+        arg = -1
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_exercise={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"], [])
 
     def test_get_non_existing_by_date(self) -> None:
-        pass
+        
+        arg = 0
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_date={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"], [])
 
     def test_get_non_existing_by_duration(self) -> None:
-        pass
+        
+        arg = -1
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_duration={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"], [])
 
     def test_get_non_existing_by_correct(self) -> None:
-        pass
+        pass #only True and False possible here
 
     def test_get_non_existing_by_pending(self) -> None:
-        pass
+        pass #only True and False possible here
 
     def test_get_non_existing_by_content(self) -> None:
-        pass
+        
+        arg = {"cont3nt": 1, "trash_data": "This dict should not be possible"}
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_content={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"], arg)
 
     def test_get_restrict_page_size(self) -> None:
-        pass
+        
+        arg = 2
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_limit={arg}",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.json()["data"]), arg)
+
+    def test_get_large_page_number(self) -> None:
+
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/exercise?solution_page=4000",
+            headers={"Cookie": f"{SolutionTest.adminCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["meta"]["prev_page"], None)
+        self.assertEqual(r.json()["meta"]["prev_url"], None)
+
+    def test_get_user_not_own_data(self) -> None:
+        
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_user=1",
+            headers={"Cookie": f"{SolutionTest.userCookie}"},
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_get_user_own_data(self) -> None:
+        
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution?solution_user=2",
+            headers={"Cookie": f"{SolutionTest.userCookie}"},
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.json()["data"][0]["solution_user"], 2)
+
+    def test_get_no_login(self) -> None:
+        
+        r = requests.request(
+            "GET",
+            f"http://127.0.0.1:5000/solution",
+            headers={"Cookie": f"key=value"},
+        )
+        self.assertEqual(r.status_code, 401)
 
     # --- POST ---
 
@@ -88,20 +263,7 @@ class SolutionTest(unittest.TestCase):
         pass
 
     def test_create_as_admin(self) -> None:
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/login",
-            json={"user_mail": "sadmin@example.com", "user_pass": "sadmin"},
-            headers={"Content-Type": "application/json"},
-        )
-        c = r.headers["Set-Cookie"]
-        r = requests.request(
-            "POST",
-            "http://127.0.0.1:5000/solution",
-            json={"solution_exercise": 1, "solution_date": 1674501941, "solution_duration": 128},
-            headers={"Content-Type": "application/json", "Cookies": c},
-        )
-        print(r.json())
+        pass
 
     def test_create_without_token(self) -> None:
         pass
