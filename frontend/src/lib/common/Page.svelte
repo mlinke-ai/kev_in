@@ -1,7 +1,7 @@
 <!-- Skeletton component for all pages to provide 
     unified transitions, title naming and basic access control 
 -->
-<script>
+<script lang="ts">
   import { blur } from "svelte/transition";
   import { accessLevel } from "../../stores";
   import { accessLevels } from "../constants";
@@ -10,7 +10,7 @@
 
   export let transition = true;
   export let title = "";
-  export let requiredAccessLevel = accessLevels.default;
+  export let requiredAccessLevel: accessLevels = accessLevels.default;
   export let fullwidth = false;
 
   $renderNavbar = !fullwidth;

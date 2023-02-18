@@ -22,8 +22,5 @@
         padding: 1rem;
         font-family: "Roboto Mono";
         overflow: scroll;
-        hr {
-            color: #7cfc00;
-        }
     }
 </style>
