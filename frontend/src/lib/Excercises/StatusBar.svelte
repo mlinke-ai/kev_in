@@ -2,10 +2,10 @@
   import Button from "@smui/button/src/Button.svelte";
   import { Icon } from "@smui/common";
   export let reset;
-  export let submitSolution;
+  export let submit;
+  export let elapsedTime = 0;
 
   let startTime = 0;
-  let elapsedTime = 0;
   let intervallID;
   const startTimer = () => {
     startTime = Date.now();
@@ -41,8 +41,8 @@
 <div class="status-bar">
   Getting Started - Attempt 1
   <div>
-    <Button variant="outlined" on:click={reset}>Reset</Button>
-    <Button variant="raised" on:click={() => submitSolution("1")}>
+    <Button variant="outlined" on:click={() => {reset(); resetTimer(); startTimer()}}>Reset</Button>
+    <Button variant="raised" on:click={submit}>
       Submit
     </Button>
   </div>

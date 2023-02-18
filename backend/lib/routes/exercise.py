@@ -3,7 +3,7 @@
 
 import json
 
-from flask import Response, request
+from flask import Response, jsonify, make_response, request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -42,7 +42,7 @@ class ExerciseResource(Resource):
             help="{error_msg}",
             location="args",
         )
-        parser.add_argument("exercise_offset", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("exercise_page", type=int, default=1, help="{error_msg}", location="args")
         parser.add_argument(
             "exercise_limit",
             type=int,
@@ -58,87 +58,52 @@ class ExerciseResource(Resource):
             location="args",
         )
 
+        # check for access
+        # is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
+        # if auth == None:
+        #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+        # elif not auth:
+        #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+        is_admin = True
+
         args = parser.parse_args()
 
-        # check if page limit is in range
-        if args["exercise_limit"] not in range(config.MAX_ITEMS_RETURNED + 1):
-            return utils.makeResponseNewCookie(
-                dict(message="Page limit not in range", min_limit=0, max_limit=config.MAX_ITEMS_RETURNED),
-                400,
-                request.cookies,
-            )
-
-        # check for access
-        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
-        if auth == None:
-            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-        elif not auth:
-            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
-
-        # load the exercise table
-        exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
-        # compose a query to select the requested element
-        query = db_engine.select(exercise_table).select_from(exercise_table)
+        query = db_engine.select(ExerciseModel).order_by(ExerciseModel.exercise_id)
         if args["exercise_id"]:
-            query = query.where(exercise_table.c.exercise_id == args["exercise_id"])
-        else:
-            query = query.where(exercise_table.c.exercise_id >= args["exercise_offset"])
-            query = query.limit(args["exercise_limit"])
+            query = query.where(ExerciseModel.exercise_id == args["exercise_id"])
         if args["exercise_title"]:
-            query = query.where(exercise_table.c.exercise_title == args["exercise_title"])
+            query = query.where(ExerciseModel.exercise_title == args["exercise_title"])
         if args["exercise_description"]:
-            query = query.where(exercise_table.c.exercise_description == args["exercise_description"])
+            query = query.where(ExerciseModel.exercise_description == args["exercise_description"])
         if args["exercise_type"]:
-            query = query.where(exercise_table.c.exercise_type == args["exercise_type"])
+            query = query.where(ExerciseModel.exercise_type == args["exercise_type"])
         if args["exercise_content"]:
-            query = query.where(exercise_table.c.exercise_content == args["exercise_content"])
+            query = query.where(ExerciseModel.exercise_content == args["exercise_content"])
         if args["exercise_solution"]:
-            query = query.where(exercise_table.c.exercise_solution == args["exercise_content"])
+            query = query.where(ExerciseModel.exercise_solution == args["exercise_solution"])
         if args["exercise_language"]:
-            query = query.where(exercise_table.c.exercise_language == args["exercise_language"])
-        result = dict()
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
-        # load the selection into the response data
-        # for row in selection.fetchall():
-        #     print(row)
-        #     if args["exercise_details"]:
-        #         result[int(row["exercise_id"])] = dict(
-        #             exercise_id=int(row["exercise_id"]),
-        #             exercise_title=str(row["exercise_title"]),
-        #             exercise_description=str(row["exercise_description"]),
-        #             exercise_type=row["exercise_type"].name,
-        #             exercise_content=str(row["exercise_content"]),
-        #             exercise_solution=str(row["exercise_solution"]),
-        #             exercise_language=row["exercise_language"].name,
-        #         )
-        #     else:
-        #         result[int(row["exercise_id"])] = dict(
-        #             exercise_id=int(row["exercise_id"]),
-        #             exercise_title=str(row["exercise_title"]),
-        #             exercise_type=row["exercise_type"].name,
-        #             exercise_language=row["exercise_language"].name,
-        #         )
-        for row in selection.fetchall():
-            if args["exercise_details"]:
-                result[int(row[0])] = dict(
-                    exercise_id=int(row[0]),
-                    exercise_title=str(row[1]),
-                    exercise_description=str(row[2]),
-                    exercise_type=row[3].name,
-                    exercise_content=utils.prepareExerciseContent(json.loads(row[4]), row[3].value),
-                    exercise_solution=json.loads(row[5]),
-                    exercise_language=row[6].name,
-                )
-            else:
-                result[int(row[0])] = dict(
-                    exercise_id=int(row[0]),
-                    exercise_title=str(row[1]),
-                    exercise_type=row[3].name,
-                    exercise_language=row[6].name,
-                )
+            query = query.where(ExerciseModel.exercise_language == args["exercise_language"])
+        exercises = db_engine.paginate(
+            query, page=args["exercise_page"], per_page=args["exercise_limit"], max_per_page=config.MAX_ITEMS_RETURNED
+        )
 
-        return utils.makeResponseNewCookie(result, 200, request.cookies)
+        response = dict(data=list(), meta=dict())
+        for exercise in exercises.items:
+            response["data"].append(exercise.to_json(details=args["exercise_details"], is_admin=is_admin))
+        response["meta"]["total"] = exercises.total
+        response["meta"]["next_page"] = exercises.next_num
+        response["meta"]["prev_page"] = exercises.prev_num
+        response["meta"]["next_url"] = (
+            utils.get_url(request.url, exercise_page=exercises.next_num) if exercises.has_next else None
+        )
+        response["meta"]["prev_url"] = (
+            utils.get_url(request.url, exercise_page=exercises.prev_num) if exercises.has_prev else None
+        )
+        response["meta"]["page_size"] = len(exercises.items)
+        response["meta"]["pages"] = exercises.pages
+
+        return make_response(jsonify(response), 200)
+        # return utils.makeResponseNewCookie(response, 200, request.cookies)
 
     def post(self) -> Response:
         """
@@ -189,7 +154,7 @@ class ExerciseResource(Resource):
             # db_engine.session.rollback()
             return utils.makeResponseNewCookie(
                 dict(message="An exercise with this title already exists"), 409, request.cookies
-                )
+            )
         else:
             return utils.makeResponseNewCookie(
                 dict(
@@ -200,7 +165,7 @@ class ExerciseResource(Resource):
                     exercise_content=json.loads(exercise.exercise_content),
                 ),
                 201,
-                request.cookies
+                request.cookies,
             )
 
     def put(self) -> Response:
@@ -241,8 +206,6 @@ class ExerciseResource(Resource):
             exercise.exercise_description = args["exercise_description"]
         if args["exercise_type"]:
             exercise.exercise_title = args["exercise_type"]
-        if args["exercise_content"]:
-            exercise.exercise_content = args["exercise_content"]
 
         db_engine.session.commit()
 

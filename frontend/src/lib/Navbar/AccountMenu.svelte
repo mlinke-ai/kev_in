@@ -5,7 +5,7 @@
     import { logout } from "../Authentication/user";
     import { push as pushRoute } from "svelte-spa-router";
     import Button, { Icon, Label } from "@smui/button";
-    import { accessLevel, userName } from "../../stores";
+    import { accessLevel, startPage, userName } from "../../stores";
     import { accessLevels } from "../constants";
 
     let menu: Menu;
@@ -62,7 +62,7 @@
             </Item>
             <Item
                 on:SMUI:action={() => {
-                    pushRoute("/dashboard");
+                    pushRoute($startPage);
                 }}
             >
                 <div class="menu-item">

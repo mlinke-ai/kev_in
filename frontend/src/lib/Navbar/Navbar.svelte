@@ -2,7 +2,7 @@
     import NavbarLink from "./NavbarLink.svelte";
     import { link } from "svelte-spa-router";
     import { navbarConfig } from "./config";
-    import { accessLevel } from "../../stores";
+    import { accessLevel, startPage } from "../../stores";
     import { accessLevels } from "../constants";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
@@ -18,7 +18,7 @@
 
 {#if ready}
     <nav class="navbar-container" in:blur={{ duration: 2000 }}>
-        <a class="navbar-icon" href={"/"} use:link>
+        <a class="navbar-icon" href={$startPage} use:link>
             <img src={navbarConfig.logo.src} alt={navbarConfig.logo.alt} />
         </a>
         <ul class="navbar-links">

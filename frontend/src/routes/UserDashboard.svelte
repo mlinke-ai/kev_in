@@ -82,16 +82,19 @@
   function setUserProgress() {
     userProgress = Math.floor((solvedExercises / totalExercises) * 100);
     console.log(solvedExercises);
+    //@ts-ignore
     r.style.setProperty("--userProgress", userProgress + "%");
   }
 
   function setTotalExercises() {
+    //@ts-ignore
     r.style.setProperty("--totalExercises", totalExercises + "px");
   }
 
   function setSolvedExercises() {
     solvedExercises = totalExercises / 3;
     //just for testcases
+    //@ts-ignore
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
 

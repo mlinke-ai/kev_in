@@ -21,7 +21,7 @@ The GET method is used to retrieve exercise data based on attributes. This metho
 
 ### Access
 
-Python `requests`:  
+Python `requests`:
 
 ```python
 requests.request("GET", "http://<address>:<port>/exercise?<URLarguments>")
@@ -49,9 +49,9 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 | `exercise_id` | `int` | optional | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
 | `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
 | `exercise_description` | `string` | optional | `This is a good Test example!` | The description of the exercise
-| `exercise_type` | `int` | optional | `SyntaxExercise` | The type of the exercise: `1` for GapTextExercise, `2` for SyntaxExercise, `3` for ParsonsPuzzleExercise, `4` for FindTheBugExercise, `5` for DocumentationExercise, `6` for OutputExercise, `7` for ProgrammingExercise|
+| `exercise_type` | `int` | optional | `2` | The type of the exercise: `1` for GapTextExercise, `2` for SyntaxExercise, `3` for ParsonsPuzzleExercise, `4` for FindTheBugExercise, `5` for DocumentationExercise, `6` for OutputExercise, `7` for ProgrammingExercise|
 | `exercise_content` | `dict` | optional | `{"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}` | A JSON dict or object, containing the content of the exercise. The encoding is `exercise_type`-specific. |
-| `exercise_offset` | `int` | optional | `1` | The lowest index to return when a page is requested. |
+| `exercise_page` | `int` | optional | `1` | The page of the query result. Default value is 1. |
 | `exercise_limit` | `int` | optional | `1` | The size of a page. If a page is requested and `user_limit` is not set `config.MAX_ITEMS_RETURNED` gets used as default value. |
 | `exercise_language` | `int` | optional | `Python` | Programming Language of the exercise. `1` for Python, `2` for Java |
 | `exercise_details` | `bool` | optional | `true` | Query the system for advanced exercise details. |
@@ -65,16 +65,40 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 === "200"
 
-    The response is a dictionary of JSON object. The solution ID is mapped to all solution attributes.
+    The response is a dictionary of JSON object. `"data"` is mapped to the query result as a list. `"meta"` is mapped to the meta data.
+
+    Response structure:
+    | Field | Description |
+    |:--|:--|
+    | `"data"` | A list of the elements returned by the query ordered by `exercise_id`. |
+    | `"next_page"` | The index of the next page. If there is no next page this value will be `null`. |
+    | `"next_url"` | The URL to request the next page. If there is no next page this value will be `null`. |
+    | `"page_size"` | The number of elements in the current page. |
+    | `"pages"` | The number of pages. |
+    | `"prev_page"` | The index of the previous page. If the is no previous page this value will be `null`. |
+    | `"prev_url"` | The URL to request the previous page. If there is no previous page this value will be `null`. |
+    | `"total"` | The total number of elements which match the query. Basically the sum of all page sizes. |
 
     ```JSON
     {
-        "1": {
-            "exercise_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]},
-            "exercise_description": "This is a good Test example!",
-            "exercise_id": 1,
-            "exercise_title": "MyExercise",
-            "exercise_type": "ParsonsPuzzleExercise"
+        "data": [
+            {
+                "exercise_id": 70,
+                "exercise_language_name": "Python",
+                "exercise_language_value": 1,
+                "exercise_title": "ProgrammingExercise9",
+                "exercise_type_name": "ProgrammingExercise",
+                "exercise_type_value": 7
+            }
+        ],
+        "meta": {
+            "next_page": null,
+            "next_url": null,
+            "page_size": 1,
+            "pages": 1,
+            "prev_page": null,
+            "prev_url": null,
+            "total": 1
         }
     }
     ```

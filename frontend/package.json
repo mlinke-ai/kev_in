@@ -30,6 +30,7 @@
     "vite": "^3.2.3"
   },
   "dependencies": {
+    "@jridgewell/sourcemap-codec": "^1.4.14",
     "@mdi/js": "^7.0.96",
     "@smui-extra/badge": "^7.0.0-beta.0",
     "@smui/button": "^7.0.0-beta.0",
