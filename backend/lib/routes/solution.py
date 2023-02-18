@@ -46,10 +46,10 @@ class SolutionResource(Resource):
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
         parser.add_argument(
-            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", location="args"
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument(
-            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", location="args"
+            "solution_duration", type=lambda x: datetime.timedelta(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
