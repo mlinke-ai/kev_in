@@ -1,49 +1,33 @@
 <script>
-    import UiCard from "../../common/UICard.svelte";
-  
-    // let initHeight = 0;
+  import UiCard from "../../common/UICard.svelte";
+  import Textfield from "@smui/textfield";
 
-    export let blankPositions;
-    export let textPieces;
-    export let userEntries;
+  export let textPieces;
+  export let userEntries;
+</script>
 
-    // let myTestVAR;
-    // console.log(myTestVAR)
-  </script>
-  
-  
-  <UiCard icon="extension" title="Puzzle">
-    <div class="blanks-text-container">
-        {#each textPieces as piece}
-            {#if piece == "_"}
-                <input type="text"> 
-                <!-- bind:value={} -->
-            {:else}
-                {piece}
-            {/if}
-        {/each}
-    </div>
+<UiCard icon="extension" title="Puzzle">
+  <div class="blanks-text-container">
+    {#each textPieces as piece, i}
+      {#if piece == "_"}
+        <Textfield bind:value={userEntries[(i - 1) / 2]} class="textfield"/>
+      {:else}
+        {piece}
+      {/if}
+    {/each}
+  </div>
+</UiCard>
 
-    <!-- <div class="lists-container" bind:clientHeight={myTestVAR}>
-      <div class="list">
-        <HorizontalList bind:items={itemsLeft} height={((myTestVAR)-(myTestVAR)*0.125).toString()}/>
-      </div>
-      <div class="list">
-        <HorizontalList bind:items={itemsRight} height={((myTestVAR)-(myTestVAR)*0.125).toString()}/>
-      </div>
-    </div> -->
-  </UiCard>
-  
-  <style>
-    .blanks-text-container{
-      /* margin: 1rem;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      height: 100%; */
-    }
-    /* .list{
-      flex: 1;
-    } */
-  
-  </style>
+<style>
+  .blanks-text-container {
+    height: 70vh;
+    width: 100%;
+    overflow: scroll;
+    padding: 1vh;
+    line-height: 200%;
+    font-size: large;
+  }
+  * :global(.textfield) {
+    height: min-content;
+  }
+</style>

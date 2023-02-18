@@ -1,9 +1,6 @@
 <script>
-    import { dndzone } from "svelte-dnd-action";
     import Page from "../lib/common/Page.svelte";
     import BlanksCard from "../lib//Excercises/FillInBlanks/BlanksCard.svelte";
-    import { userName } from "../stores";
-
     import TaskCard from "../lib/Excercises/TaskCard.svelte";
     import StatusBar from "../lib/Excercises/StatusBar.svelte";
     import { accessLevels } from "../lib/constants";
@@ -34,6 +31,7 @@
 
 
     function submit() {
+        console.log(userEntries);
         // solution = {
         //   solution_exercise: exerciseData.exercise_id,
         //   solution_date: getCurrentTimestamp(),
@@ -92,7 +90,7 @@
             <TaskCard />
         </div>
         <div class="blanks-area">
-            <BlanksCard bind:blankPositions bind:textPieces bind:userEntries />
+            <BlanksCard bind:textPieces bind:userEntries />
         </div>
         <StatusBar {reset} {submit} bind:elapsedTime />
     </div>
@@ -107,7 +105,7 @@
         grid-template-rows: 1.5fr 8fr 0.5fr;
         grid-template-areas:
             "head head"
-            "task puzzle"
+            "task blanks"
             "status status";
         gap: 1%;
         padding: 1rem 1rem 0.5rem 1rem;
@@ -127,11 +125,9 @@
     }
     .task-area {
         grid-area: task;
-        overflow: auto;
     }
     .blanks-area {
         grid-area: blanks;
         display: flex;
-        overflow: hidden;
     }
 </style>
