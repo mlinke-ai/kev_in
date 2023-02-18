@@ -139,9 +139,9 @@ class Server:
                 )
                 db_engine.session.add(solution)
                 solution = SolutionModel(
-                    solution_user=1,
+                    solution_user=i%2+1,
                     solution_exercise=i+1,
-                    solution_date=datetime.datetime.now(),
+                    solution_date=datetime.datetime.fromtimestamp(1234567890),
                     solution_duration=datetime.timedelta(minutes=5*i, seconds=5*i),
                     solution_correct=False,
                     solution_pending=i == 6,
