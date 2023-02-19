@@ -1,0 +1,38 @@
+export enum accessLevels {
+    undefined = -1,
+    default = 0,
+    user = 1,
+    admin = 2,
+    sadmin = 3
+};
+
+export enum startPages {
+    default = "/#",
+    user = "#/user-dashboard",
+    admin = "#/admin-dashboard",
+    sadmin = "#/admin-dashboard"
+}
+
+export enum userRoles {
+    undefined = "Undefined",
+    default = "Default",
+    user = "User",
+    admin = "Admin",
+    sadmin = "SAdmin"
+}
+
+export enum messages {
+    neutral = 0,
+    success = 1,
+    warning = 2,
+    error = 3
+}
+
+export enum languages {
+    python = "Python",
+    java = "Java"
+}
+
+export const passwordLength = 8;
+
+export const dashboardPage = "/admin-dashboard"
