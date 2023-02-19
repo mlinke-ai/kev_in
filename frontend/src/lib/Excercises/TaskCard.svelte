@@ -1,10 +1,18 @@
 <script>
     import UiCard from "../common/UICard.svelte";
-</script>
+    import showdown from "showdown";
+
+    export let markdownSourceCode = "";
+
+    let converter = new showdown.Converter();
+    converter.setOption("tables", "true");
+    converter.setFlavor("github");
+    let renderedMD = converter.makeHtml(markdownSourceCode);
+  </script>
 
 <UiCard icon="school" title="Task">
     <div class="task-container">
-        <slot />
+      {@html renderedMD}
     </div>
 </UiCard>
 
@@ -21,6 +29,6 @@
         color: #7cfc00;
         padding: 1rem;
         font-family: "Roboto Mono";
-        overflow: scroll;
+        overflow: auto;
     }
 </style>

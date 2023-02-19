@@ -32,9 +32,7 @@
       <h3>{exerciseData.exercise_title}</h3>
     </div>
     <div class="task-area">
-      <TaskCard>
-        {exerciseData.exercise_description}
-      </TaskCard>
+      <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
     </div>
     <div class="code-area">
       <CodingCard bind:content language={exerciseData.exercise_language} />
