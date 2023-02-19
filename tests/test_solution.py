@@ -180,7 +180,7 @@ class SolutionTest(unittest.TestCase):
 
     def test_get_non_existing_by_date(self) -> None:
         
-        arg = 0
+        arg = 237459832 #hopefully this date does not exist in the database
         r = requests.request(
             "GET",
             f"http://127.0.0.1:5000/solution?solution_date={arg}",
@@ -518,7 +518,7 @@ def multiply(x, y):
             "POST",
             "http://127.0.0.1:5000/solution",
             json={
-                "solution_exercise": 3,
+                "solution_exercise": 7,
                 "solution_date": 123456789,
                 "solution_duration": 524,
                 "solution_content": {"code":
@@ -540,57 +540,269 @@ def multiply(x, y):
     # --- PUT ---
 
     def test_change_existing(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 3,
+                "solution_exercise": 5,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_correct": False,
+                "solution_pending": True,
+                "solution_content": {"list": ["Hello", "World", "is", "this", "exercise", "first", "the"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_change_non_existing(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": -1,
+                "solution_date": 123456789
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 404)
 
     def test_change_as_user(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_date": 3425234
+            },
+            headers={"Cookie": f"{SolutionTest.userCookie}"}
+        )
+        self.assertEqual(r.status_code, 403)
 
     def test_change_as_admin(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_date": 3425234
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_change_without_token(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_date": 3425234
+            },
+            headers={"Cookie": f"key=value"}
+        )
+        self.assertEqual(r.status_code, 401)
 
     def test_change_to_empty_user(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_user": -1
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 400)
 
     def test_change_to_empty_exercise(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_user": -1
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 400)
 
     def test_change_to_date_in_past(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_date": 0
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_change_to_negative_duration(self) -> None:
-        pass
-
-    def test_change_pending(self) -> None:
-        pass
-
-    def test_change_to_empty_content(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_duration": -534
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_change_to_malformed_content(self) -> None:
-        pass
+        
+        r = requests.request(
+            "PUT",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": 1,
+                "solution_content": {}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 200)
 
     # --- DELETE ---
 
-    def test_delete_existing(self) -> None:
-        pass
+    def test_delete_as_admin(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            id = r.json()["solution_id"]
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            self.fail("Failed to create exercise")
+
+        r = requests.request(
+            "DELETE",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": id
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 200)
 
     def test_delete_non_existing(self) -> None:
-        pass
+        
+        r = requests.request(
+            "DELETE",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": -1
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        self.assertEqual(r.status_code, 404)
 
-    def test_delete_as_user(self) -> None:
-        pass
+    def test_delete_own_as_user(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.userCookie}"}
+        )
+        try:
+            id = r.json()["solution_id"]
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            self.fail("Failed to create exercise")
 
-    def test_delete_as_admin(self) -> None:
-        pass
+        r = requests.request(
+            "DELETE",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": id
+            },
+            headers={"Cookie": f"{SolutionTest.userCookie}"}
+        )
+        self.assertEqual(r.status_code, 200)
+
+    def test_delete_other_as_user(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            id = r.json()["solution_id"]
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            self.fail("Failed to create exercise")
+
+        r = requests.request(
+            "DELETE",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": id
+            },
+            headers={"Cookie": f"{SolutionTest.userCookie}"}
+        )
+        self.assertEqual(r.status_code, 403)
 
     def test_delete_without_token(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.userCookie}"}
+        )
+        try:
+            id = r.json()["solution_id"]
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            self.fail("Failed to create exercise")
+
+        r = requests.request(
+            "DELETE",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_id": id
+            },
+            headers={"Cookie": f"key=value"}
+        )
+        self.assertEqual(r.status_code, 401)
 
 
 if __name__ == "__main__":
