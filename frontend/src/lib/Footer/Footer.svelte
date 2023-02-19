@@ -8,7 +8,7 @@
   }
 </script>
 
-<!-- 
+<!--
   The Footer is a component. Just put it on the bottom of you html body.
   It contains:
   - copyright information
@@ -47,5 +47,8 @@
     width: 100%;
     height: 50px;
     border-radius: 8rem;
+
+    position: fixed;
+    bottom: 0;
   }
 </style>
