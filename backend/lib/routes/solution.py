@@ -249,7 +249,7 @@ class SolutionResource(Resource):
 
         # check for access
         is_admin, auth, user_id = utils.authorize(
-            cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
+            cookies=request.cookies, method="DELETE", endpoint="solution", resourceId=args["solution_id"]
         )
         if auth == None:
             return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
