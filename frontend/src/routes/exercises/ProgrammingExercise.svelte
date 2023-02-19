@@ -37,7 +37,7 @@
       </TaskCard>
     </div>
     <div class="code-area">
-      <CodingCard bind:content language={exerciseData.exercise_language} />
+      <CodingCard bind:content language={exerciseData.exercise_language_type} />
     </div>
     <div class="output-area">
       <OutputCard />
