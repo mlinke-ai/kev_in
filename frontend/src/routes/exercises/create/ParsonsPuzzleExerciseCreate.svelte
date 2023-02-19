@@ -6,7 +6,7 @@
   import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
   import { each } from "svelte/internal";
   import UiCard from "../../../lib/common/UICard.svelte";
-  import { accessLevels } from "../../../lib/constants";
+  import { accessLevels } from "../../../lib/common/types";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];

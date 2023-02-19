@@ -4,7 +4,7 @@
   import CodingCard from "../../lib/Excercises/Programming/CodingCard.svelte";
   import OutputCard from "../../lib/Excercises/Programming/OutputCard.svelte";
   import StatusBar from "../../lib/Excercises/StatusBar.svelte";
-  import type { ProgrammingExerciseType } from "../../lib/Excercises/exercise";
+  import type { ProgrammingExerciseType } from "../../lib/Excercises/types";
   import { submitSolution, getCurrentTimestamp, SolutionPostProgramming } from "../../lib/Excercises/solution";
 
   let elapsedTime = 0;
@@ -35,7 +35,7 @@
       <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
     </div>
     <div class="code-area">
-      <CodingCard bind:content language={exerciseData.exercise_language} />
+      <CodingCard bind:content language={exerciseData.exercise_language_type} />
     </div>
     <div class="output-area">
       <OutputCard />

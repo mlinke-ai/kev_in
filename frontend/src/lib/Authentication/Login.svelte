@@ -3,7 +3,7 @@
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
   import Message from "../common/Message/Message.svelte";
-  import { messages } from "../constants";
+  import { messages } from "../common/types";
   import PasswordInput from "./PasswordInput.svelte";
   import { login } from "./user";
 
