@@ -493,7 +493,7 @@ class SolutionTest(unittest.TestCase):
             "POST",
             "http://127.0.0.1:5000/solution",
             json={
-                "solution_exercise": 3,
+                "solution_exercise": 7,
                 "solution_date": 123456789,
                 "solution_duration": 524,
                 "solution_content": {"code":

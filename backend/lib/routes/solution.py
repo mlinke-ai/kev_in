@@ -145,7 +145,9 @@ class SolutionResource(Resource):
 
         # evaluate solution attempt
         correct, pending = eval_solution(args["solution_content"], args["solution_exercise"])
-
+        if correct == None:
+            return utils.makeResponseNewCookie(dict(message=f"Unkown Exercise"), 400, request.cookies)
+        
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element

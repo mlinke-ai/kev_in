@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from json import JSONDecodeError, loads
+from sqlalchemy.exc import NoResultFound
 
 from backend.lib.core.config import ExerciseType
 from backend.lib.interfaces.database import ExerciseModel
@@ -14,7 +15,7 @@ from .sandboxes.pyenv.pysandbox import ExecutePython
 def eval_solution(
         solution_content: dict,
         exercise_id: int
-) -> (bool, bool):
+) -> tuple[bool | None, bool]:
     """
     Evaluates if a provided solution attempt is correct.
 
@@ -27,12 +28,16 @@ def eval_solution(
             
     """
 
-    exercise: ExerciseModel = (
+    try:
+        exercise: ExerciseModel = (
         ExerciseModel
             .query
             .filter_by(exercise_id=exercise_id)
             .one()
-    )
+        )
+    except NoResultFound:
+        return None, False
+
     try:
         sample_sol = loads(exercise.exercise_solution)
         sample_exc = loads(exercise.exercise_content)
@@ -55,7 +60,7 @@ def eval_solution(
         return True, False
 
     elif exercise.exercise_type == ExerciseType.DocumentationExercise:
-        return True, False
+        return False, True
 
     elif exercise.exercise_type == ExerciseType.OutputExercise:
         return True, False
@@ -63,48 +68,6 @@ def eval_solution(
     elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
         return Evaluator.evaluate_user_code(solution_content, exercise.exercise_language.name,
                                             sample_sol, sample_exc['code']), False
-
-
-def eval_solution(solution_content: dict, exercise_id: int) -> tuple[bool, bool]:
-    """
-    Evaluates if a provided solution attempt is correct.
-
-    Args:
-        solution_content :class:`dict`:
-            The user input form the solution attempt. This should be a JSON
-            object.
-        exercise_id :class:`int`
-            The id form the exercise, the solution attempt is about.
-
-    """
-
-    exercise: ExerciseModel = ExerciseModel.query.filter_by(exercise_id=exercise_id).one()
-    try:
-        sample_sol = loads(exercise.exercise_solution)
-    except (JSONDecodeError, TypeError):
-        return False, False
-
-    if exercise.exercise_type == ExerciseType.GapTextExercise:
-        return True, False
-
-    elif exercise.exercise_type == ExerciseType.SyntaxExercise:
-        return True, False
-
-    elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
-        return (Evaluator.evaluate_ppe(solution_content, sample_sol), False)
-
-    elif exercise.exercise_type == ExerciseType.FindTheBugExercise:
-        return True, False
-
-    elif exercise.exercise_type == ExerciseType.DocumentationExercise:
-        return True, False
-
-    elif exercise.exercise_type == ExerciseType.OutputExercise:
-        return True, False
-
-    elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
-        return True, False
-
 
 class Evaluator:
     @staticmethod
