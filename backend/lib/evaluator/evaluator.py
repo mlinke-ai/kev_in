@@ -14,7 +14,7 @@ from .sandboxes.pyenv.pysandbox import ExecutePython
 def eval_solution(
         solution_content: dict,
         exercise_id: int
-) -> tuple[bool, bool]:
+) -> (bool, bool):
     """
     Evaluates if a provided solution attempt is correct.
 
@@ -36,7 +36,6 @@ def eval_solution(
     try:
         sample_sol = loads(exercise.exercise_solution)
         sample_exc = loads(exercise.exercise_content)
-        sample_lag = loads(exercise.exercise_language)
     except (JSONDecodeError, TypeError):
         return False, False
 
@@ -62,8 +61,8 @@ def eval_solution(
         return True, False
 
     elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
-        return Evaluator.evaluate_user_code(solution_content, sample_lag.name,
-                                            sample_sol, sample_exc), False
+        return Evaluator.evaluate_user_code(solution_content, exercise.exercise_language.name,
+                                            sample_sol, sample_exc['code']), False
 
 
 class Evaluator:
@@ -75,34 +74,32 @@ class Evaluator:
         pass
 
     @staticmethod
-    def evaluate_user_code(user_input: dict, language: str, sample_sol: dict, sample_exc: dict) -> bool:
+    def evaluate_user_code(user_input: dict, language: str, sample_sol: dict, func_head: str) -> bool:
         """
         Description: Execute and evaluate untrusted user code.
 
-        Args:
+        :arg:
             user_input: { 'code': "user code in string format" }
-            language: "python" or "java"
+            language: "Python" or "Java"
             sample_sol: {   "0": [[<params>],[<result>]],
                             "1": [[<params>],[<result>]],
                             ...
                             "n": [[<params>],[<result>]]
                         }
-            sample_exc: {   "code": "<sample_code>",
-                            "func": "<function_name>"
-                        }
+            func_head: "head of function which should be tested"
 
-        Return:
+        :return:
             Dictionary as a result log possible:
             {'Correct': ""} or if false
             {'Incorrect': "E.g. some errors, exceptions, or wrong result information"}
             Currently implemented only boolean.
         """
 
-        if language == "python":
+        if language == "Python":
             pySandbox = ExecutePython()
             arg_list = [args[0] for args in sample_sol.values()]
             result_log = pySandbox.exec_untrusted_code(user_input['code'],
-                                                       sample_exc['code'], *arg_list)
+                                                       func_head, *arg_list)
 
             if result_log["RESULTLOG"]:
                 # successful execution of user code
@@ -126,7 +123,7 @@ class Evaluator:
                     # return {"False": result_log["EXECUTELOG"]["ERROR"]}
                     return False
 
-        elif language == "java":
+        elif language == "Java":
             # return {"Incorrect": "Not implemented yet"}
             return False
         else:

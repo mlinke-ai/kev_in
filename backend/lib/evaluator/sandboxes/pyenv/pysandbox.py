@@ -41,12 +41,12 @@ class ExecutePython:
         """
         Description: Executed user code in restricted environment.
 
-        Args:
+        :arg:
             user_code: String containing user code.
             user_func: Function inside user_code to execute and return value.
             *args_list: Nested list of arguments passed to the user function.
 
-        Return:
+        :return:
         {'COMPILERLOG': {'ERROR': (), 'WARNINGS': []}, 'EXECUTELOG': {'ERROR': ()},
                                 'RESULTLOG': {'0': [['arg0'], ['solution0']], ...}}
 
