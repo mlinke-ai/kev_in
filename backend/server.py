@@ -104,14 +104,26 @@ class Server:
                 for j in range(7):
                     if j == 2:
                         content = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+                        solution = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+                    elif j == 6:
+                        content = {"func": "multiply", "code": "def multiply(x, y):\r\npass"}
+                        solution = {
+                            "0": [[0, 0], [0]],
+                            "1": [[1, 0], [0]],
+                            "2": [[1, 2], [2]],
+                            "3": [[2, 2], [4]],
+                            "4": [[6, 7], [42]],
+                            "5": [[-4, 5], [-20]],
+                        }
                     else:
                         content = {}
+                        solution = {}
                     exercise = ExerciseModel(
                         exercise_title=f"{config.ExerciseType(j + 1).name}{i}",
                         exercise_description=f"Dummy {config.ExerciseType(j + 1).name} number {i}",
                         exercise_type=config.ExerciseType(j + 1),
                         exercise_content=json.dumps(content),
-                        exercise_solution=json.dumps(content),
+                        exercise_solution=json.dumps(solution),
                         exercise_language=config.ExerciseLanguage.Python,
                     )
                     db_engine.session.add(exercise)
