@@ -21,6 +21,9 @@ import unittest
 import requests
 
 class SolutionTest(unittest.TestCase):
+
+    toDelete = []
+
     @classmethod
     def setUpClass(cls) -> None:
         #log in into sadmin
@@ -43,7 +46,14 @@ class SolutionTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        pass
+        
+        for id in cls.toDelete:
+            requests.request(
+                "DELETE",
+                "http://127.0.0.1:5000/solution",
+                json={"solution_id": id},
+                headers={"Cookie": f"{cls.adminCookie}"},
+            )
 
     # --- GET ---
 
@@ -260,31 +270,272 @@ class SolutionTest(unittest.TestCase):
     # --- POST ---
 
     def test_create_as_user(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 1,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.userCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["message"], "Successfully submitted solution")
 
     def test_create_as_admin(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["message"], "Successfully submitted solution")
 
     def test_create_without_token(self) -> None:
-        pass
-
-    def test_create_without_user_id(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"key=value"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 401)
+        self.assertEqual(r.json()["message"], "Login required")
 
     def test_create_without_exercise_id(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 400)
+        self.assertIn("solution_exercise", r.json()["message"])
 
     def test_create_with_date_in_past(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 0,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["message"], "Successfully submitted solution")
 
     def test_create_with_negative_duration(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": -524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["message"], "Successfully submitted solution")
 
     def test_create_with_empty_content(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 400)
+        self.assertIn("solution_content", r.json()["message"])
 
     def test_create_with_malformed_content(self) -> None:
-        pass
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["message"], "Successfully submitted solution")
+        self.assertEqual(r.json()["solution_correct"], False)
+
+    def test_create_with_non_existing_exercise(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": -1,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 400)
+
+    def test_create_right_parsons_puzzle(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["solution_correct"], True)
+
+    def test_create_wrong_parsons_puzzle(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"list": ["Hello", "World", "is", "this", "exercise", "first", "the"]}
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["solution_correct"], False)
+
+    def test_create_right_coding_exercise(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"code":
+"""
+def multiply(x, y):
+    return x*y
+"""          
+                }
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["solution_correct"], True)
+
+    def test_create_wrong_coding_exercise(self) -> None:
+        
+        r = requests.request(
+            "POST",
+            "http://127.0.0.1:5000/solution",
+            json={
+                "solution_exercise": 3,
+                "solution_date": 123456789,
+                "solution_duration": 524,
+                "solution_content": {"code":
+"""
+def multiply(x, y):
+    return x+y
+"""          
+                }
+            },
+            headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["solution_correct"], False)
 
     # --- PUT ---
 
