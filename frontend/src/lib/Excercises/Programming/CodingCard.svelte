@@ -47,7 +47,7 @@
     height: 55vh;
     width: 100%;
     position: relative;
-    overflow: scroll;
+    overflow: auto;
   }
   #editor {
     position: absolute;
