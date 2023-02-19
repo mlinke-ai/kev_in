@@ -33,7 +33,7 @@ export interface ParsonsPuzzleExerciseType extends ExerciseType {
 
 export const getExercise = async (
   exerciseID: number
-): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType> => {
+): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType | undefined> => {
   try {
     const response = await fetch(
       `/exercise?exercise_id=${exerciseID}&exercise_limit=1&exercise_details=true`,
@@ -43,10 +43,10 @@ export const getExercise = async (
       }
     );
     if (!response.ok) {
-      throw new Error();
+      throw new Error(`HTTP Error ${response.status}`)
     }
-    return await response.json().then((data) => data.data[0]); // Last index should be exerciseID, not 0
+    return await response.json().then((data) => data.data[0]);
   } catch (error) {
-    throw new Error();
+    throw new Error(error)
   }
 };
