@@ -9,7 +9,7 @@
 
   import { each } from "svelte/internal";
   import { accessLevel } from "../../stores";
-  import { accessLevels } from "../../lib/constants";
+  import { accessLevels } from "../../lib/common/types";
   import { link } from "svelte-spa-router";
 
   let exercises = [];

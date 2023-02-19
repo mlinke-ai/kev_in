@@ -1,7 +1,7 @@
 <script lang="ts">
   import Snackbar, { Label, Actions } from "@smui/snackbar";
   import IconButton from "@smui/icon-button";
-  import { messages } from "../../constants";
+  import { messages } from "../types";
   import { onMount } from "svelte";
 
   export let message;

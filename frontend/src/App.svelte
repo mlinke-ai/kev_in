@@ -5,7 +5,7 @@
   import { getUser, storeUser } from "./lib/Authentication/user";
   import { accessLevel } from "./stores";
   import AcceptCookies from "./lib/AcceptCookies/AcceptCookies.svelte";
-  import { accessLevels } from "./lib/constants";
+  import { accessLevels } from "./lib/common/types";
 
   const prepareApp = async () => {
     const user = await getUser();

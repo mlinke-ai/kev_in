@@ -7,7 +7,7 @@
   import { userName, userMail, accessLevel } from "../stores"
   import Page from "../lib/common/Page.svelte";
   import { push } from "svelte-spa-router";
-  import { accessLevels, passwordLength } from "../lib/constants"
+  import { accessLevels, passwordLength } from "../lib/common/types"
   
   let email = "";
   let emailRegEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;  

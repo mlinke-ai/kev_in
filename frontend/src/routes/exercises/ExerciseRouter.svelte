@@ -1,13 +1,12 @@
 <script lang="ts">
-  import { exercises } from "../../lib/constants";
   import {
+    exercises,
     ProgrammingExerciseType,
-    getExercise,
     ParsonsPuzzleExerciseType,
-  } from "../../lib/Excercises/exercise";
+  } from "../../lib/Excercises/types";
+  import { getExercise } from "../../lib/Excercises/exercise";
   import ProgrammingExercise from "./ProgrammingExercise.svelte";
   import ParsonsPuzzleExercise from "./ParsonsPuzzleExercise.svelte";
-  import Error from "../Error.svelte";
 
   export let params: { exerciseID: number };
   let exerciseID = params.exerciseID;
