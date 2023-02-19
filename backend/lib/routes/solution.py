@@ -46,10 +46,10 @@ class SolutionResource(Resource):
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
         parser.add_argument(
-            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", location="args"
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument(
-            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", location="args"
+            "solution_duration", type=lambda x: datetime.timedelta(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
@@ -145,7 +145,9 @@ class SolutionResource(Resource):
 
         # evaluate solution attempt
         correct, pending = eval_solution(args["solution_content"], args["solution_exercise"])
-
+        if correct == None:
+            return utils.makeResponseNewCookie(dict(message=f"Unkown Exercise"), 400, request.cookies)
+        
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
@@ -247,7 +249,7 @@ class SolutionResource(Resource):
 
         # check for access
         is_admin, auth, user_id = utils.authorize(
-            cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
+            cookies=request.cookies, method="DELETE", endpoint="solution", resourceId=args["solution_id"]
         )
         if auth == None:
             return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
