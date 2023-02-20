@@ -8,7 +8,7 @@ from RestrictedPython import limited_builtins, utility_builtins, safe_builtins
 from RestrictedPython import CompileResult, compile_restricted_exec, utility_builtins
 
 from inspect import getmembers, isfunction
-import timeout_decorator
+from wrapt_timeout_decorator import *
 
 
 __all__ = ["ExecutePython"]
@@ -129,7 +129,7 @@ class ExecutePython:
         }
         return self.__exec_byte_code(restricted_globals, restricted_locals, *args_list)
 
-    @timeout_decorator.timeout(3.0, timeout_exception=TimeoutError)  # seconds
+    @timeout(3, timeout_exception=TimeoutError, use_signals=True)
     def __exec_byte_code(self, restricted_globals: dict, restricted_locals: dict, *args_list: list) -> dict:
 
         if self.__compile_result.code is None:  # in case it's 'None', but should never become true.
