@@ -82,7 +82,6 @@ export function storeUser(user: GetUser) {
   userName.set(user.user_name);
   userMail.set(user.user_mail);
   accessLevel.set(level);
-  console.log(getStartPage(level))
   startPage.set(getStartPage(level))
 }
 
