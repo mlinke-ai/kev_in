@@ -88,6 +88,9 @@ class SolutionResource(Resource):
             query, page=args["solution_page"], per_page=args["solution_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
 
+        if solutions.total == 0:
+            return utils.makeResponseNewCookie({}, 204, request.cookies)
+
         response = dict(data=list(), meta=dict())
         for solution in solutions.items:
             # check for access for every resource, if client has no access for a certain resource the enpoint

@@ -107,6 +107,10 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 	}
 	```
 
+=== "204"
+
+	The database query yielded no results with the given parameters. The response body is empty.
+
 === "400"
 
 	The `user_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.

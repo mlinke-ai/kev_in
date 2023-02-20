@@ -87,6 +87,9 @@ class UserResource(Resource):
             query, page=args["user_page"], per_page=args["user_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
 
+        if users.total == 0:
+            return utils.makeResponseNewCookie({}, 204, request.cookies)
+
         response = dict(data=list(), meta=dict())
         for user in users.items:
             response["data"].append(user.to_json())
@@ -96,8 +99,7 @@ class UserResource(Resource):
         response["meta"]["next_url"] = utils.get_url(request.url, user_page=users.next_num) if users.has_next else None
         response["meta"]["prev_url"] = utils.get_url(request.url, user_page=users.prev_num) if users.has_prev else None
 
-        return make_response(jsonify(response), 200)
-        # return utils.makeResponseNewCookie(response, 200, request.cookie)
+        return utils.makeResponseNewCookie(response, 200, request.cookies)
 
     def post(self) -> Response:
         """
