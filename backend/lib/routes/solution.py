@@ -92,13 +92,13 @@ class SolutionResource(Resource):
         for solution in solutions.items:
             # check for access for every resource, if client has no access for a certain resource the enpoint
             # immediately returns 401 or 403
-            # _, auth, _ = utils.authorize(
-            #     cookies=request.cookies, method="GET", endpoint="user", resourceId=solution.solution_id
-            # )
-            # if auth == None:
-            #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-            # elif not auth:
-            #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+            _, auth, _ = utils.authorize(
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=solution.solution_id
+            )
+            if auth == None:
+                return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+            elif not auth:
+                return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
             response["data"].append(solution.to_json())
         response["meta"]["total"] = solutions.total
         response["meta"]["next_page"] = solutions.next_num
@@ -112,8 +112,7 @@ class SolutionResource(Resource):
         response["meta"]["page_size"] = len(solutions.items)
         response["meta"]["pages"] = solutions.pages
 
-        return make_response(jsonify(response), 200)
-        # return utils.makeResponseNewCookie(response, 200, request.cookies)
+        return utils.makeResponseNewCookie(response, 200, request.cookies)
 
     def post(self) -> Response:
         """
