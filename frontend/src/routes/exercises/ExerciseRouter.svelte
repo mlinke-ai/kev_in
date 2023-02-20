@@ -17,8 +17,7 @@
 
   async function get() {
     try {
-      getExercise(exerciseID).then((data) => {
-      exerciseData = data;
+      exerciseData = await getExercise(exerciseID);
       switch (exerciseData.exercise_type_name) {
         case exercises.parsonsPuzzle:
           exerciseComponent = ParsonsPuzzleExercise;
@@ -27,9 +26,9 @@
           exerciseComponent = ProgrammingExercise;
           break;
       }
-    });
     } catch (err) {
-      throw err
+      console.error(err);
+      throw err;
     }
   }
 </script>
