@@ -15,7 +15,15 @@ export const login = async (email: string, password: string) => {
   });
 
   if (response.status == 200) {
-    storeUser(<GetUser>await getUser());
+    let userData = await response.json()
+    let user: GetUser = {
+      user_id: userData.user_id,
+      user_mail: userData.user_mail,
+      user_name: userData.user_name,
+      user_role_name: userData.user_role_name,
+      user_role_value: userData.user_role_value
+    } 
+    storeUser(user);
     window.location.replace(getStore(startPage))
     return true;
   } else if (response.status == 401) {
@@ -77,7 +85,7 @@ export function getStartPage(level: accessLevels): startPages {
 
 // function to store user data
 export function storeUser(user: GetUser) {
-  let level: number = getAccessLevel(user.user_role);
+  let level: number = getAccessLevel(user.user_role_name);
   userID.set(user.user_id);
   userName.set(user.user_name);
   userMail.set(user.user_mail);
@@ -90,7 +98,8 @@ export function resetUser() {
   const user: GetUser = {
     user_id: 0,
     user_name: "",
-    user_role: "Default",
+    user_role_name: "Default",
+    user_role_value: 0,
     user_mail: ""
   }
   storeUser(user)
