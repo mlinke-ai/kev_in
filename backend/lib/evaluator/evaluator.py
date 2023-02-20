@@ -67,7 +67,7 @@ def eval_solution(
 
     elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
         return Evaluator.evaluate_user_code(solution_content, exercise.exercise_language.name,
-                                            sample_sol, sample_exc['code']), False
+                                            sample_sol, sample_exc['func']), False
 
 class Evaluator:
     @staticmethod
