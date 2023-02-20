@@ -53,7 +53,7 @@ class ExecutePython:
         Example
         Args:
             user_code: "def multiply(x,y):\r\n  return x*y"
-            user_func: "def multiply(x,y):\r\n  pass"
+            user_func: "multiply"
             *args_list: [[0,0], [1,0], [2,2], [3,3]]
 
         Return:
@@ -74,11 +74,11 @@ class ExecutePython:
         """
 
         # Extract function name from function head by using regular expression.
-        matchObject = re.search("(?<=def.).[a-z|A-Z|_]+[^\(]", user_func)
-        if matchObject:
-            user_func = matchObject.group(0)
-        else:
-            raise ValueError("User function does not have the form 'def fun(..):'")
+        # matchObject = re.search("(?<=def.).[a-z|A-Z|_]+[^\(]", user_func)
+        # if matchObject:
+        #    user_func = matchObject.group(0)
+        # else:
+        #    raise ValueError("User function does not have the form 'def fun(..):'")
 
         # Create usercode.py where user code is stored.
         f = open("usercode.py", "w")

@@ -35,7 +35,7 @@ fibonacci_py = {
                  "n < 0:\r\n        return\r\n\r\n    # Check if n is 0\r\n    # then it will return 0\r\n    elif n "
                  "== 0:\r\n        return 0\r\n\r\n    # Check if n is 1,2\r\n    # it will return 1\r\n    elif n == "
                  "1 or n == 2:\r\n        return 1\r\n\r\n    else:\r\n        return fib(n - 1) + fib(n - 2)"},
-    "function_head": "def fib(s):",
+    "function_head": "fib",
     "language": "Python",
     "exercise_solution": {"0": [[0], [0]], "1": [[1], [1]], "2": [[7], [13]]},
     "expected": True,
@@ -59,7 +59,7 @@ fibonacci_py_wrong = {
                 "n < 0:\r\n        return\r\n\r\n    # Check if n is 0\r\n    # then it will return 0\r\n    elif n "
                 "== 0:\r\n        return 0\r\n\r\n    # Check if n is 1,2\r\n    # it will return 1\r\n    elif n == "
                 "1 or n == 2:\r\n        return 1\r\n\r\n    else:\r\n        return fib(n - 1)"},
-    "function_head": "def fib(s):",
+    "function_head": "fib",
     "language": "Python",
     "exercise_solution": {"0": ([0], [0]), "1": ([1], [1]), "2": ([7], [13])},
     "expected": False,
