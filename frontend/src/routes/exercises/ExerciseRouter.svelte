@@ -16,7 +16,8 @@
   let exercisePromise = get();
 
   async function get() {
-    getExercise(exerciseID).then((data) => {
+    try {
+      getExercise(exerciseID).then((data) => {
       exerciseData = data;
       switch (exerciseData.exercise_type_name) {
         case exercises.parsonsPuzzle:
@@ -27,6 +28,9 @@
           break;
       }
     });
+    } catch (err) {
+      throw err
+    }
   }
 </script>
 
@@ -36,4 +40,5 @@
   <svelte:component this={exerciseComponent} {exerciseData} />
 {:catch error}
   <!-- TODO: Error Handling -->
+  {error}
 {/await}

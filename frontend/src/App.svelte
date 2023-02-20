@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import Navbar from "./lib/Navbar/Navbar.svelte";
   import Router from "svelte-spa-router";
   import routes from "./routes/";
@@ -6,6 +6,7 @@
   import { accessLevel } from "./stores";
   import AcceptCookies from "./lib/AcceptCookies/AcceptCookies.svelte";
   import { accessLevels } from "./lib/common/types";
+
 
   const prepareApp = async () => {
     const user = await getUser();

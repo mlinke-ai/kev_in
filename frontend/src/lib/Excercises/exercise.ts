@@ -2,7 +2,7 @@ import type { ProgrammingExerciseType, ParsonsPuzzleExerciseType } from "./types
 
 export const getExercise = async (
   exerciseID: number
-): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType | undefined> => {
+): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType | null> => {
   try {
     const response = await fetch(
       `/exercise?exercise_id=${exerciseID}&exercise_limit=1&exercise_details=true`,
@@ -12,10 +12,10 @@ export const getExercise = async (
       }
     );
     if (!response.ok) {
-      throw new Error(`HTTP Error ${response.status}`)
+      throw `HTTP Error ${response.status}`
     }
     return await response.json().then((data) => data.data[0]);
-  } catch (error) {
-    throw new Error(error)
+  } catch (err) {
+    throw err
   }
 };
