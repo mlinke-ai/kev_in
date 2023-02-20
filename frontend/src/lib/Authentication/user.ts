@@ -1,13 +1,7 @@
 import { userID, userName, userMail, accessLevel, startPage } from "../../stores";
-import { accessLevels, startPages, userRoles } from "../constants";
+import { accessLevels, startPages, userRoles } from "../common/types";
 import { get as getStore } from "svelte/store";
-
-interface GetUser {
-  user_id: number;
-  user_mail: string;
-  user_name: string;
-  user_role: string;
-}
+import type { GetUser } from "./types"
 
 // function to send login data to the server
 export const login = async (email: string, password: string) => {

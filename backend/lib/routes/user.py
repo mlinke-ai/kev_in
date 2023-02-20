@@ -64,12 +64,7 @@ class UserResource(Resource):
 
             user_obj = UserModel.query.filter_by(user_id=id).one()
 
-            result = dict(
-                user_id=int(user_obj.user_id),
-                user_name=str(user_obj.user_name),
-                user_mail=str(user_obj.user_mail),
-                user_role=user_obj.user_role.name,
-            )
+            result = user_obj.to_json()
             return utils.makeResponseNewCookie(result, 200, request.cookies)
 
         args = parser.parse_args()

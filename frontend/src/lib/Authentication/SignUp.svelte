@@ -4,7 +4,7 @@
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
-  import { messages, passwordLength } from "../constants";
+  import { messages, passwordLength } from "../common/types";
   import { login } from "./user";
   import Message from "../common/Message/Message.svelte";
 

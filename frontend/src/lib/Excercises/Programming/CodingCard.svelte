@@ -7,7 +7,7 @@
   import "brace/mode/java";
   import "brace/theme/gob";
   import { onMount } from "svelte";
-  import { languages } from "../../constants";
+  import { languages } from "../../common/types";
 
   let editor;
   let modes = ["ace/mode/python", "ace/mode/java"];
@@ -47,7 +47,7 @@
     height: 55vh;
     width: 100%;
     position: relative;
-    overflow: scroll;
+    overflow: auto;
   }
   #editor {
     position: absolute;

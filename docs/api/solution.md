@@ -327,6 +327,7 @@ Arguments are constructed as dictionaries or JSON objects.
     {
         "message": "Solution with solution_id 1 does not exist"
     }
+    ```
 
 ## DELETE
 

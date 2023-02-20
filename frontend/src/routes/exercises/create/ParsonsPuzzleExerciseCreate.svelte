@@ -3,10 +3,10 @@
   import Page from "../../../lib/common/Page.svelte";
   import Textfield from "@smui/textfield";
   import IconButton from '@smui/icon-button';
-  import TaskCard from "../../../lib/Excercises/TaskCard.svelte";
+  import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
   import { each } from "svelte/internal";
   import UiCard from "../../../lib/common/UICard.svelte";
-  import { accessLevels } from "../../../lib/constants";
+  import { accessLevels } from "../../../lib/common/types";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
@@ -14,6 +14,7 @@
   let itemsRight = [];
 
   let exerciseTitle = "";
+  let exerciseDescription = "";
 
   function newPuzzlePiece(){
     itemsLeft = [...itemsLeft, {id: itemsLeft.length + 1, name: ""}]
@@ -37,7 +38,7 @@
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           exercise_title: exerciseTitle,
-          exercise_description: "My PPE Description",
+          exercise_description: exerciseDescription,
           exercise_type: 3,
           exercise_content: {
             list: itemsLeft.map(item => item.name)
@@ -76,7 +77,7 @@
       <Textfield variant="filled" bind:value={exerciseTitle} label="Exercise Title" required style="width: 100%"/>
     </div>
     <div class="task-area">
-      <TaskCard />
+      <TaskCardCreation bind:description={exerciseDescription} />
     </div>
     <div class="creation-area">
       {#each itemsLeft as item(item.id)}
@@ -119,7 +120,6 @@
   }
   .task-area {
     grid-area: task;
-    overflow: auto;
   }
   .creation-area {
     grid-area: creation-area;

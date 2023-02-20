@@ -3,13 +3,13 @@
   import PuzzleCard from "../../lib/Excercises/ParsonsPuzzle/PuzzleCard.svelte";
   import TaskCard from "../../lib/Excercises/TaskCard.svelte";
   import StatusBar from "../../lib/Excercises/StatusBar.svelte";
-  import { accessLevels } from "../../lib/constants";
+  import { accessLevels } from "../../lib/common/types";
   import {
     SolutionPostParsonsPuzzle,
     submitSolution,
     getCurrentTimestamp
   } from "../../lib/Excercises/solution";
-  import type { ParsonsPuzzleExerciseType } from "../../lib/Excercises/exercise";
+  import type { ParsonsPuzzleExerciseType } from "../../lib/Excercises/types";
 
   export let exerciseData: ParsonsPuzzleExerciseType;
 
@@ -58,7 +58,7 @@
       <h3>{exerciseData.exercise_title}</h3>
     </div>
     <div class="task-area">
-      <TaskCard />
+      <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
     </div>
     <div class="puzzle-area">
       <PuzzleCard bind:itemsLeft bind:itemsRight />
