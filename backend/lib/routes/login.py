@@ -5,8 +5,7 @@ from flask import Response, jsonify, make_response, current_app
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
-from backend.lib.core import config
-from backend.lib.interfaces.database import db_engine
+from backend.lib.interfaces.database import UserModel
 import hashlib
 import jwt
 
@@ -42,28 +41,24 @@ class LoginResource(Resource):
         parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
         parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
         args = parser.parse_args(strict=True)
+
         # hash the password with sha-256
         args["user_pass"] = hashlib.sha256(bytes(args["user_pass"], encoding="utf-8")).hexdigest()
-        # load the user table
-        user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
-        # compose a query to select the requested element
-        query = (
-            db_engine.select(user_table)
-            .select_from(user_table)
-            .where(user_table.c.user_mail == args["user_mail"])
-            .where(user_table.c.user_pass == args["user_pass"])
-        )
-        result = dict()
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
+
         try:
-            user = selection.one()
+            user: UserModel = (
+            UserModel
+                .query
+                .filter_by(user_mail=args["user_mail"], user_pass=args["user_pass"])
+                .one()
+            )
         except sqlalchemy.exc.NoResultFound:
             result = dict(message="Incorrect user name or password")
             return make_response(jsonify(result), 401)
         else:
-            token = jwt.encode({"user_id": user[0]}, current_app.config["JWT_SECRET"])
-            result = dict(message=f"Welcome {user.user_name}!")
+            token = jwt.encode({"user_id": user.user_id}, current_app.config["JWT_SECRET"])
+            result=user.to_json()
+            result["message"]=f"Welcome {user.user_name}!"
             response = make_response(jsonify(result), 200)
             response.set_cookie("token", token, max_age=3600, httponly=True)
             return response

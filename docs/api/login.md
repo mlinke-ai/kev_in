@@ -59,7 +59,12 @@ Arguments are constructed as dictionaries or JSON objects.
 
     ```JSON
     {
-        "message": "Welcome John Doe!"
+        "message": "Welcome John Doe!",
+        "user_id": 3,
+        "user_mail": "johnDoe@example.com",
+        "user_name": "John Doe",
+        "user_role_name": "User",
+        "user_role_value": 3
     }
     ```
 

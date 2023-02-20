@@ -46,7 +46,17 @@ class LoginTest(unittest.TestCase):
         )
 
         self.assertIn("Set-Cookie", r.headers)  # cookie with JWT should be returned
-        self.assertDictEqual({"message": f"Welcome {LoginTest.user_name}!"}, r.json())
+        self.assertDictEqual(
+            {
+                "message": f"Welcome {LoginTest.user_name}!",
+                "user_id": 1,
+                "user_mail": "sadmin@example.com",
+                "user_name": "sadmin",
+                "user_role_name": "SAdmin",
+                "user_role_value": 1
+            },
+            r.json()
+            )
         self.assertEqual(200, r.status_code)
 
     def test_login_fail(self) -> None:
