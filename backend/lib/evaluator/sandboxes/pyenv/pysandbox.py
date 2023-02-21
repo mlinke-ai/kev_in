@@ -10,7 +10,6 @@ from RestrictedPython import CompileResult, compile_restricted_exec, utility_bui
 from inspect import getmembers, isfunction
 from wrapt_timeout_decorator import *
 
-
 __all__ = ["ExecutePython"]
 _FORBIDDEN_MODULES = frozenset(
     (
@@ -26,6 +25,17 @@ def _safe_import(*name: tuple):
     if user_import in _FORBIDDEN_MODULES:
         raise ImportError(f"Don't even think about using {user_import!r}")
     return __import__(user_import)
+
+
+# Allow 'wrapt_timeout_decorator' only on Linux
+def timeout_pysandbox(timeout_decorator_func, os_name: str):
+    def decorator(func):
+        if os_name == 'nt':
+            return func  # without decorator
+        # timeout decorator included
+        return timeout_decorator_func(func)
+
+    return decorator
 
 
 class ExecutePython:
@@ -129,7 +139,7 @@ class ExecutePython:
         }
         return self.__exec_byte_code(restricted_globals, restricted_locals, *args_list)
 
-    @timeout(3, timeout_exception=TimeoutError, use_signals=True)
+    @timeout_pysandbox(timeout(3, timeout_exception=TimeoutError), os.name)
     def __exec_byte_code(self, restricted_globals: dict, restricted_locals: dict, *args_list: list) -> dict:
 
         if self.__compile_result.code is None:  # in case it's 'None', but should never become true.
