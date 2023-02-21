@@ -10,6 +10,7 @@
   import { accessLevel } from "../stores";
   import { accessLevels, dashboardPage } from "../lib/common/types";
   import { replace as replaceRoute } from "svelte-spa-router";
+  import ThemeSelector from "../lib/Theming/ThemeSelector.svelte";
 
   let open = false;
   if ($accessLevel != accessLevels.default) {
@@ -17,7 +18,8 @@
   }
 </script>
 
-<Page title="Home">
+<Page title="Home" slideTransition={true}>
+  <ThemeSelector />
   <header>
     <h3>Your best choice to learn how to code.</h3>
     <hr />

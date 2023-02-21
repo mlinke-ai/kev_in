@@ -99,7 +99,7 @@
   //getSolvedExercises();
 </script>
 
-<Page>
+<Page slideTransition={true}>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
