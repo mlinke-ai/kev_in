@@ -146,7 +146,7 @@ class SolutionResource(Resource):
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # evaluate solution attempt
-        correct, pending = eval_solution(args["solution_content"], args["solution_exercise"])
+        correct, pending, eval_message = eval_solution(args["solution_content"], args["solution_exercise"])
         if correct == None:
             return utils.makeResponseNewCookie(dict(message=f"Unkown Exercise"), 400, request.cookies)
         
@@ -187,6 +187,7 @@ class SolutionResource(Resource):
             solution_correct=bool(row[5]),  # db reponds with 0 or 1 sometimes
             solution_pending=bool(row[6]),
             solution_content=json.loads(row[7]),
+            evaluator_message=eval_message
         )
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 

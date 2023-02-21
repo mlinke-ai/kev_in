@@ -15,7 +15,7 @@ from .sandboxes.pyenv.pysandbox import ExecutePython
 def eval_solution(
         solution_content: dict,
         exercise_id: int
-) -> tuple[bool | None, bool]:
+) -> tuple[bool | None, bool, str]:
     """
     Evaluates if a provided solution attempt is correct.
 
@@ -25,7 +25,14 @@ def eval_solution(
             object.
         exercise_id :class:`int`
             The id form the exercise, the solution attempt is about.
-            
+
+    Returns:
+        A Tuple of class :class:`tuple[bool | None, bool]`
+        (solution_correct, solution_pending, eval_message). solution_correct
+        stores, whether a solution is correct (if `None` the corresponding
+        exercise does not exist), solution_pending_stores whether a solution has
+        to be evaluated by an admin, eval_message contains a message from the
+        evaluator.
     """
 
     try:
@@ -36,38 +43,43 @@ def eval_solution(
             .one()
         )
     except NoResultFound:
-        return None, False
+        return None, False, "Unknown exercise"
 
     try:
         sample_sol = loads(exercise.exercise_solution)
         sample_exc = loads(exercise.exercise_content)
     except (JSONDecodeError, TypeError):
-        return False, False
+        return False, False, "Evaluation error due to missformed Content"
+    
+    eval_log: tuple[bool, str]
 
     if exercise.exercise_type == ExerciseType.GapTextExercise:
-        return True, False
+        return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.SyntaxExercise:
-        return True, False
+        return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
-        return (
-            Evaluator.evaluate_ppe(solution_content, sample_sol),
-            False
-        )
-
+            eval_log = Evaluator.evaluate_ppe(solution_content, sample_sol)
+            return eval_log[0], False, eval_log[1]
+        
     elif exercise.exercise_type == ExerciseType.FindTheBugExercise:
-        return True, False
+        return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.DocumentationExercise:
-        return False, True
+        return False, True, "An Andmin has to review this Solution"
 
     elif exercise.exercise_type == ExerciseType.OutputExercise:
-        return True, False
+        return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
-        return Evaluator.evaluate_user_code(solution_content, exercise.exercise_language.name,
-                                            sample_sol, sample_exc['func']), False
+        eval_log = Evaluator.evaluate_user_code(
+            solution_content,
+            exercise.exercise_language.name,
+            sample_sol,
+            sample_exc['func']
+            )
+        return eval_log[0], False, eval_log[1]
 
 class Evaluator:
     @staticmethod
@@ -77,7 +89,7 @@ class Evaluator:
         pass
 
     @staticmethod
-    def evaluate_user_code(user_input: dict, language: str, sample_sol: dict, func_head: str) -> bool:
+    def evaluate_user_code(user_input: dict, language: str, sample_sol: dict, func_head: str) -> tuple[bool, str]:
         """
         Description: Execute and evaluate untrusted user code.
 
@@ -109,31 +121,31 @@ class Evaluator:
                 if result_log["RESULTLOG"] == sample_sol:
                     # user code correct
                     # return {"Correct": ""}
-                    return True
+                    return True, "Successfully passed all Tests"
                 else:
                     # user code not correct
                     # return {"Incorrect": "Expected results do not equal results."}
-                    return False
+                    return False, "Some Test cases failed"
 
             # Errors, Exceptions when executing user code
             else:
                 if len(result_log["COMPILERLOG"]["ERROR"]) != 0:
                     # interpreter error
                     # return {"False": result_log["COMPILERLOG"]["ERROR"]}
-                    return False
+                    return False, result_log["COMPILERLOG"]["ERROR"]
                 else:
                     # execution error
                     # return {"False": result_log["EXECUTELOG"]["ERROR"]}
-                    return False
+                    return False, result_log["EXECUTELOG"]["ERROR"]
 
         elif language == "Java":
             # return {"Incorrect": "Not implemented yet"}
-            return False
+            return False, "Java Sandbox is not supported yet"
         else:
-            return False
+            return False, "Usupported Language value"
 
     @staticmethod
-    def evaluate_ppe(user_input: dict, sample_solution: dict) -> bool:
+    def evaluate_ppe(user_input: dict, sample_solution: dict) -> tuple[bool, str]:
         """
         Evaluates, if solution for a parsons puzzle exercise is right. Expected
         solution format is:
@@ -146,6 +158,9 @@ class Evaluator:
             t1 = user_input["list"]
             t2 = sample_solution["list"]
         except KeyError:
-            return False  # wrong format somewhere
+            return False, "Wrong JSON-data-format for ParsonsPuzzle in exercise or solution"
 
-        return t1 == t2
+        if t1 == t2:
+            return True, "Correctly ordered all pieces"
+        else:
+            return False, "Wrong order of pieces"
