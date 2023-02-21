@@ -48,7 +48,7 @@ class ExerciseModel(db_engine.Model):
                 exercise_type_name=self.exercise_type.name,
                 exercise_type_value=self.exercise_type.value,
                 exercise_content=json.loads(self.exercise_content),
-                exercise_solution=json.loads(self.exercise_solution if is_admin else {}),
+                exercise_solution=json.loads(self.exercise_solution) if is_admin else "",
                 exercise_language_name=self.exercise_language.name,
                 exercise_language_value=self.exercise_language.value,
             )
