@@ -182,18 +182,21 @@ Arguments are constructed as dictionaries or JSON objects.
 
 === "201"
 
-    The response is a dictionary or JSON object, together with the HTTP status 201. All attributes of the created exercise will be shown, together with a response message.
+    The response is a dictionary or JSON object, together with the HTTP status 201. All attributes of the created exercise will be shown, together with a response message. The attribute evaluator_message shows a list of strings with all response messages from the automatic solution evaluation.
     ```JSON
     {
+        "evaluator_message": [
+            "Successfully passed all Tests"
+        ],
         "message": "Successfully submitted solution",
-        "solution_correct": true,
-        "solution_date": "2023-01-11 15:16:25",
-        "solution_duration": "122 days, 0:00:00",
-        "solution_exercise": 1,
-        "solution_id": 2,
-        "solution_user": 1,
-        "solution_pending": false,
         "solution_content": <...>
+        "solution_correct": true,
+        "solution_date": "Sun, 05 Feb 2023 19:32:30 GMT",
+        "solution_duration": 524,
+        "solution_exercise": 7,
+        "solution_id": 15,
+        "solution_pending": false,
+        "solution_user": 1
     }
     ```
 
