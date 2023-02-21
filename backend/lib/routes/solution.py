@@ -166,29 +166,19 @@ class SolutionResource(Resource):
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        subquery = (
-            db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id))
-            .select_from(solution_table)
-            .scalar_subquery()
+        query = (db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id))
+                .select_from(solution_table)
         )
-        query = db_engine.select("*").select_from(solution_table).where(solution_table.c.solution_id == subquery)
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
-        # load the selection into the response data
-        result = dict()
-        row = selection.fetchone()
-        result = dict(
-            message="Successfully submitted solution",
-            solution_id=row[0],
-            solution_user=row[1],
-            solution_exercise=row[2],
-            solution_date=row[3],
-            solution_duration=row[4],
-            solution_correct=bool(row[5]),  # db reponds with 0 or 1 sometimes
-            solution_pending=bool(row[6]),
-            solution_content=json.loads(row[7]),
-            evaluator_message=eval_message
+        max_id = db_engine.session.execute(query).fetchone()[0]
+        sol = (
+        SolutionModel
+            .query
+            .filter_by(solution_id=max_id)
+            .one()
         )
+        result = sol.to_json()
+        result["evaluator_message"] = eval_message
+        result["message"] = "Successfully submitted solution"
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 
     def put(self) -> Response:
