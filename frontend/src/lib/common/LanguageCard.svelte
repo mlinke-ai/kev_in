@@ -17,7 +17,6 @@
 >
   <Card
     class="language-card"
-    variant="outlined"
     on:mouseenter={() => (showText = true)}
     on:mouseleave={() => (showText = false)}
     on:mouseenter={() => (blurMedia = true)}
