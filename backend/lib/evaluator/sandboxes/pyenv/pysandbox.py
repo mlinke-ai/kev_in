@@ -44,7 +44,7 @@ class ExecutePython:
     def __check_timeout_on_windows(timeout_value, thread_for_windows: threading.Thread, exception: Type[BaseException]):
         """Executed by main thread, which observes the execution time of worker thread."""
         sleep_time = 0
-        while thread_for_windows.isAlive():
+        while thread_for_windows.is_alive():
             sleep_time = sleep_time + 1
             time.sleep(1)
             if sleep_time == timeout_value:
