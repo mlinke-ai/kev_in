@@ -13,7 +13,7 @@ pp_correct = {
         {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]},
     "exercise_solution":
         {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]},
-    "expected": (True, ['Correctly ordered all pieces'])
+    "expected": (True, 'Correctly ordered all pieces')
 }
 
 pp_wrong = {
@@ -21,7 +21,7 @@ pp_wrong = {
         {"list": ["World", "Hello", "this", "is", "the", "first", "exercise"]},
     "exercise_solution":
         {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]},
-    "expected": (False, ['Wrong order of pieces'])
+    "expected": (False, 'Wrong order of pieces')
 }
 
 # TEST CASES EVALUATE PARSONS PUZZLE END
@@ -38,7 +38,7 @@ fibonacci_py = {
     "function_head": "fib",
     "language": "Python",
     "exercise_solution": {"0": [[0], [0]], "1": [[1], [1]], "2": [[7], [13]]},
-    "expected": (True, ['Successfully passed all Tests'])
+    "expected": (True, 'Successfully passed all Tests')
 }
 
 # Calculate fibonacci with recursion in Java (Correct program).
@@ -49,7 +49,7 @@ fibonacci_java = {
     "function_head": "fib",
     "language": "Java",
     "exercise_solution": {"0": ([0], [0]), "1": ([1], [1]), "2": ([7], [13])},
-    "expected": (True, ['Successfully passed all Tests'])
+    "expected": (True, 'Successfully passed all Tests')
 }
 
 # Calculate fibonacci with recursion in Python (Incorrect program).
@@ -62,7 +62,7 @@ fibonacci_py_wrong = {
     "function_head": "fib",
     "language": "Python",
     "exercise_solution": {"0": ([0], [0]), "1": ([1], [1]), "2": ([7], [13])},
-    "expected": (False, ['Some Test cases failed'])
+    "expected": (False, 'Some Test cases failed')
 }
 
 # Calculate fibonacci with recursion in Java (Incorrect program).
@@ -73,7 +73,7 @@ fibonacci_java_wrong = {
     "function_head": "fib",
     "language": "Java",
     "exercise_solution": {"0": ([0], [0]), "1": ([1], [1]), "2": ([7], [13])},
-    "expected": (False, ["Some Tests failed."])
+    "expected": (False, "Some Tests failed.")
 }
 
 
