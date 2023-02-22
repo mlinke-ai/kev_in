@@ -34,7 +34,7 @@ export interface ParsonsPuzzleExerciseType extends ExerciseType {
 // export interface FillInBlanksExerciseType extends ExerciseType {
 //   exercise_content: {
 //     text: String;
-//     blankPos: Array<BigInteger>;
+//     blankPos: Array<int>; // welcher integer?
 //   };
 //   exercise_solution: {
 //     userEntries: Array<string>;

@@ -16,6 +16,12 @@ export interface SolutionPostParsonsPuzzle extends SolutionPost {
   };
 }
 
+// export interface FillInBlanksExerciseType extends SolutionPost {
+//   solution_content: {
+//     list: Array<string>;
+//   };
+// }
+
 export const submitSolution = async (solution: SolutionPostProgramming | SolutionPostParsonsPuzzle) => {
   try {
     const response = await fetch("/solution", {
