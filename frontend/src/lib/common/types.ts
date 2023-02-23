@@ -7,7 +7,7 @@ export enum accessLevels {
 };
 
 export enum startPages {
-    default = "/#",
+    default = "#/",
     user = "#/user-dashboard",
     admin = "#/admin-dashboard",
     sadmin = "#/admin-dashboard"

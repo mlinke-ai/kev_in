@@ -13,7 +13,7 @@
   import { Svg } from "@smui/common";
   import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { accessLevels } from "../lib/constants";
+  import { accessLevels } from "../lib/common/types";
   import { userName } from "../stores";
   import { userID } from "../stores";
 
@@ -74,16 +74,19 @@
   function setUserProgress() {
     userProgress = Math.floor((solvedExercises / totalExercises) * 100);
     console.log(solvedExercises);
+    // @ts-ignore
     r.style.setProperty("--userProgress", userProgress + "%");
   }
 
   function setTotalExercises() {
+    // @ts-ignore
     r.style.setProperty("--totalExercises", totalExercises + "px");
   }
 
   function setSolvedExercises() {
     //solvedExercises = Math.floor(totalExercises / 3);
     //just for testcases, remove if getSolvedExercises() works properly
+    // @ts-ignore
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
 
