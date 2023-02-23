@@ -13,22 +13,26 @@
   import { link } from "svelte-spa-router";
 
   let exercises = [];
-  let currentExercise = 1;
-  let maxDisplayedExercises = 20;
+  let exercisesData;
+  let exercisesMeta;
+  let nextExerciseUrl = "/exercise?exercise_offset=1&exercise_page=1";
+  //let maxDisplayedExercises = 20;
   let exercisesLoaded = false;
 
   let isAdmin = $accessLevel > accessLevels.user;
 
   const getExercises = async () => {
-    fetch(`/exercise?exercise_offset=${currentExercise}`, {
+    fetch(`${nextExerciseUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
           console.log(data);
-          exercises = Object.values(data);
-          console.log(exercises);
-          currentExercise += maxDisplayedExercises;
+          exercisesData = Object.values(data);
+          exercises = exercisesData[0];
+          exercisesMeta = exercisesData[1];
+          nextExerciseUrl = exercisesMeta.next_url;
+          console.log(nextExerciseUrl);
           exercisesLoaded = true;
         });
       } else if (response.status === 400) {
@@ -46,8 +50,8 @@
   getExercises();
 
   function showLastExercises() {
-    currentExercise -= maxDisplayedExercises;
-    exercisesLoaded = true;
+    // currentExercise -= maxDisplayedExercises;
+    // exercisesLoaded = true;
     getExercises();
   }
 
@@ -113,11 +117,11 @@
               #{exercise.exercise_id}
               {exercise.exercise_title}
             </a>
-            <p>
+            <!-- <p>
               {exercise.exercise_description}
-            </p>
+            </p> -->
             <p>
-              {exercise.exercise_type}
+              {exercise.exercise_type_name}
             </p>
 
             {#if isAdmin}
@@ -125,12 +129,15 @@
                 <a href="/#/error">
                   <!-- please add link to edit this exercise-->
                   <IconButton>
-                    <Icon component={Svg} viewBox="0 0 24 24">
+                    <Icon class="material-icons">
+                      edit
+                    </Icon>
+                    <!-- <Icon component={Svg} viewBox="0 0 24 24">
                       <path
                         fill="outlined"
                         d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
                       />
-                    </Icon>
+                    </Icon> -->
                   </IconButton>
                 </a>
               </div>
@@ -144,7 +151,7 @@
     <Button>Back to dashboard</Button>
   </a>
 
-  {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
+  <!-- {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
     <div class="list-exercises-buttons">
       <Button on:click={getExercises}>more users</Button>
     </div>
@@ -157,7 +164,7 @@
       <Button on:click={getExercises}>more users</Button>
       <Button on:click={showLastExercises}>last users</Button>
     </div>
-  {/if}
+  {/if} -->
   <!-- does not work properly yet, needs total number of exercises from backend-->
 </Page>
 
