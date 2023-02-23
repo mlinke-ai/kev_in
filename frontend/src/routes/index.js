@@ -3,6 +3,8 @@ import Dashboard from "./Dashboard.svelte"
 import Error from "./Error.svelte"
 import CodeSandbox from "./exercises/ProgrammingExercise.svelte"
 import AdminDashboard from "./AdminDashboard.svelte"
+import UserDashboard from "./UserDashboard.svelte"
+import Solutions from "./Solutions.svelte"
 import Exercises from "./exercises/Exercises.svelte"
 import Users from "./Users.svelte"
 import AddUser from "./AddUser.svelte"
@@ -18,7 +20,9 @@ export default {
     "/ppecreation": ParsonsPuzzleExerciseCreate,
     "/sandbox": CodeSandbox,
     "/admin-dashboard": AdminDashboard,
+    "/user-dashboard": UserDashboard,
     "/exercises": Exercises,
+    "/solutions": Solutions,
     "/exercises/:exerciseID": ExerciseRouter,
     "/users": Users,
     "/adduser": AddUser,

@@ -9,24 +9,21 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
-  import Button, { Label } from "@smui/button";
+  import Button, { Label, Icon } from "@smui/button";
+  import { Svg } from "@smui/common";
   import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../lib/AnimatedSVG/ExerciseSVG.svelte";
+  import { accessLevels } from "../lib/constants";
   import { userName } from "../stores";
-  //import { userID } from "../stores";
+  import { userID } from "../stores";
 
   //display exercise progress
   let totalExercises = 100;
   let solvedExercises = 50;
   console.log(solvedExercises);
   let userProgress;
-  //let userProgress = (solvedExercises / totalExercises);
   let r = document.querySelector(":root");
   let statsLoaded = false;
-
-  let myName = $userName;
-  //let myID = 1;
-  //later change to $userID
 
   // function myFunction_get() {
   //   let rs = getComputedStyle(r);
@@ -44,7 +41,25 @@
           totalExercises = Object.values(data).length;
           console.log(solvedExercises);
           console.log(totalExercises);
-          //getSolvedExercises(); following function calls might be removed if this is activated
+          getSolvedExercises();
+        });
+      } else {
+        alert("Oops an Error occured. " + response.status);
+      }
+    });
+  };
+
+  const getSolvedExercises = async () => {
+    fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
+      //?solution_user=${$userID}&solution_correct=true
+      //to get the number of all correct solutions of the user with id ${me}
+      method: "GET",
+    }).then((response) => {
+      if (response.status === 200) {
+        response.json().then((data) => {
+          statsLoaded = false;
+          console.log(data);
+          solvedExercises = Object.values(data).length;
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();
@@ -55,29 +70,6 @@
       }
     });
   };
-
-  // const getSolvedExercises = async () => {
-  //   fetch(`/solution`, {
-  //     //?solution_user=${myID}&solution_correct=true
-  //     //to get the number of all correct solutions of the user with id ${me}
-  //     method: "GET",
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       response.json().then((data) => {
-  //         statsLoaded = false;
-  //         console.log(data);
-  //         solvedExercises = Object.values(data).length;
-  //         setTotalExercises();
-  //         setSolvedExercises();
-  //         setUserProgress();
-  //         statsLoaded = true;
-  //       });
-  //     } else {
-  //       alert("Oops an Error occured. " + response.status);
-  //     }
-  //   });
-  // };
-  //responses error 500
 
   function setUserProgress() {
     userProgress = Math.floor((solvedExercises / totalExercises) * 100);
@@ -90,21 +82,20 @@
   }
 
   function setSolvedExercises() {
-    solvedExercises = totalExercises / 3;
-    //just for testcases
+    //solvedExercises = Math.floor(totalExercises / 3);
+    //just for testcases, remove if getSolvedExercises() works properly
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
 
   getTotalExercises();
-  //getSolvedExercises();
 </script>
 
-<Page>
+<Page requiredAccessLevel={accessLevels.admin}>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
       <h2 style="padding: 20px; font-family: monospace;">
-        Welcome to your dashboard, {myName}!
+        Welcome to your dashboard, {$userName}!
       </h2>
     </div>
 
@@ -119,7 +110,7 @@
             <Card>
               <GroupSvg />
             </Card>
-            <div class="label">List all users</div>
+            <div class="label">list all users</div>
           </a>
         </div>
 
@@ -128,7 +119,7 @@
             <Card>
               <ExerciseSvg />
             </Card>
-            <div class="label">List all exercises</div>
+            <div class="label">list all exercises</div>
           </a>
         </div>
       </div>
@@ -143,14 +134,56 @@
 
           <p>Total</p>
           <div class="container">
-            <div class="progress total">{userProgress}% </div>
+            <div class="progress total">{userProgress}%</div>
           </div>
         {/if}
       </div>
     </div>
 
     <!--  Footer -->
-    <div class="footer-outside" />
+    <div class="footer-outside">
+      <div class="add-exercise">
+        <Card>
+          <a href="/#/error">
+            <!-- TODO: add menu for choosing which exercise to add? -->
+            <div class="display-button">
+              <div class="display-icon">
+                <Icon class="material-icons">library_add</Icon>
+              </div>
+              <div class="label-icon">add exercise</div>
+            </div>
+          </a>
+        </Card>
+      </div>
+
+      <div class="add-user">
+        <Card>
+          <a href="/#/adduser">
+            <div class="display-button">
+              <div class="display-icon">
+                <Icon class="material-icons">library_add</Icon>
+              </div>
+              <div class="label-icon">add user</div>
+            </div>
+          </a>
+        </Card>
+      </div>
+
+      <div class="own-solutions">
+        <Card>
+          <a href="/#/solutions">
+            <div class="display-button">
+              <div class="display-icon">
+                <Icon class="material-icons">
+                  fact_check
+                </Icon>
+              </div>
+              <div class="label-icon">Show own solutions</div>
+            </div>
+          </a>
+        </Card>
+      </div>
+    </div>
   </div>
 </Page>
 
@@ -169,7 +202,7 @@
 
   .container {
     width: 100%;
-    background-color: rgba(0,20,17,1);
+    background-color: rgba(0, 20, 17, 1);
     //rgba(0,20,17,1)
   }
 
@@ -191,21 +224,22 @@
 
   .header-outside {
     grid-area: header;
-    width: auto;
-    height: fit-content;
+    font-family: monospace;
+    // width: auto;
+    // height: fit-content;
   }
 
   .menu-outside {
     grid-area: menu;
   }
+
   .main-outside {
     display: flex;
-    width: fit-content;
     align-content: center;
     grid-area: main;
   }
+
   .right-outside {
-    width: auto;
     align-content: center;
     grid-area: right;
     padding: 15px;
@@ -213,14 +247,19 @@
   }
 
   .footer-outside {
+    gap: 10px;
+    align-content: center;
+    padding: 20px;
     grid-area: footer;
   }
 
   .grid-container-outside {
+    display: flex;
     display: grid;
     grid-template-areas:
-      "header header header"
-      "main right right";
+      "header header header header"
+      "main main right right"
+      "footer footer footer footer";
     gap: 10px;
     background-color: transparent;
     padding: 10px;
@@ -229,19 +268,18 @@
   .grid-container-outside > div {
     background-color: rgb(0, 57, 49);
     font-size: 30px;
-    width: 100%;
     display: flex;
   }
 
   .left-inside {
-    width: 300px;
+    width: 350px;
     height: auto;
     align-content: center;
     grid-area: left;
   }
 
   .right-inside {
-    width: 300px;
+    width: 350px;
     height: auto;
     align-content: center;
     grid-area: right;
@@ -249,10 +287,11 @@
 
   .grid-container-inside {
     display: grid;
+    display: flex;
     grid-template-areas: "left right";
     gap: 10px;
     background-color: transparent;
-    padding: 10px;
+    padding: 20px;
   }
 
   .grid-container-inside > div {
@@ -261,11 +300,58 @@
   }
 
   .label {
-    align-content: center;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+      sans-serif;
+    align-self: center;
     padding: 5px;
   }
 
-  /* // .box{
-  //   width: 3fr;
-  // } */
+  .label-icon {
+    float: left;
+    color: #5382a1;
+    font-size: 18pt;
+    font-family: monospace;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 5px 15px 0px 0px;
+  }
+
+  .display-icon {
+    color: #5382a1;
+    float: left;
+    width: 50px;
+    height: 50px;
+    margin-left: 10px;
+  }
+
+  .display-button {
+    width: fit-content;
+    margin: 10px;
+  }
+
+  .display-button-2 {
+    font-size: 20pt;
+    align-items: center;
+    width: fit-content;
+    margin: 10px;
+  }
+
+  .add-exercise {
+    width: fit-content;
+    float: right;
+    align-items: center;
+  }
+
+  .add-user {
+    width: fit-content;
+    float: right;
+    align-items: center;
+  }
+
+  .own-solutions {
+    width: fit-content;
+    float: right;
+    align-items: center;
+  }
 </style>
