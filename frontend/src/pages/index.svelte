@@ -6,13 +6,12 @@
   import { blur } from "svelte/transition";
   import Dialog from "@smui/dialog";
   import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
-  import { accessLevel } from "../stores";
+  import { accessLevel, startPage } from "../stores";
   import { accessLevels, dashboardPage } from "../lib/common/types";
-  import { replace as replaceRoute } from "svelte-spa-router";
 
   let open = false;
   if ($accessLevel != accessLevels.default) {
-    replaceRoute(dashboardPage);
+    history.pushState({}, null, `#${$startPage}`)
   }
 </script>
 

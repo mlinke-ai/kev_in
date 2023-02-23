@@ -1,11 +1,11 @@
 
 /**
  * @roxi/routify 2.18.11
- * File generated Thu Feb 23 2023 14:20:52 GMT+0100 (Mitteleuropäische Normalzeit)
+ * File generated Thu Feb 23 2023 14:39:10 GMT+0100 (Mitteleuropäische Normalzeit)
  */
 
 export const __version = "2.18.11"
-export const __timestamp = "2023-02-23T13:20:52.618Z"
+export const __timestamp = "2023-02-23T13:39:10.811Z"
 
 //buildRoutes
 import { buildClientTree } from "@roxi/routify/runtime/buildRoutes"
@@ -30,9 +30,9 @@ export const _tree = {
       "children": [
         {
           "isPage": true,
-          "path": "/admin/Exercises",
-          "id": "_admin_Exercises",
-          "component": () => import('../src/pages/admin/Exercises.svelte').then(m => m.default)
+          "path": "/admin/exercises",
+          "id": "_admin_exercises",
+          "component": () => import('../src/pages/admin/exercises.svelte').then(m => m.default)
         },
         {
           "isIndex": true,
@@ -43,15 +43,15 @@ export const _tree = {
         },
         {
           "isPage": true,
-          "path": "/admin/Solutions",
-          "id": "_admin_Solutions",
-          "component": () => import('../src/pages/admin/Solutions.svelte').then(m => m.default)
+          "path": "/admin/solutions",
+          "id": "_admin_solutions",
+          "component": () => import('../src/pages/admin/solutions.svelte').then(m => m.default)
         },
         {
           "isPage": true,
-          "path": "/admin/Users",
-          "id": "_admin_Users",
-          "component": () => import('../src/pages/admin/Users.svelte').then(m => m.default)
+          "path": "/admin/users",
+          "id": "_admin_users",
+          "component": () => import('../src/pages/admin/users.svelte').then(m => m.default)
         }
       ],
       "isLayout": true,
@@ -74,9 +74,9 @@ export const _tree = {
           "children": [
             {
               "isPage": true,
-              "path": "/exercises/create/ParsonsPuzzleExerciseCreate",
-              "id": "_exercises_create_ParsonsPuzzleExerciseCreate",
-              "component": () => import('../src/pages/exercises/create/ParsonsPuzzleExerciseCreate.svelte').then(m => m.default)
+              "path": "/exercises/create/parsonspuzzle",
+              "id": "_exercises_create_parsonspuzzle",
+              "component": () => import('../src/pages/exercises/create/parsonspuzzle.svelte').then(m => m.default)
             }
           ],
           "isLayout": true,
