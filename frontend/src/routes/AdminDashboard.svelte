@@ -1,5 +1,7 @@
-<script>
+<script lang="ts">
   import Page from "../lib/common/Page.svelte";
+  import Menu from "@smui/menu";
+  import List, { Item, Separator, Text } from "@smui/list";
   import Card, {
     Content,
     PrimaryAction,
@@ -9,6 +11,7 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
+  import LanguageCard from "../lib/common/LanguageCard.svelte";
   import Button, { Label, Icon } from "@smui/button";
   import { Svg } from "@smui/common";
   import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
@@ -16,6 +19,7 @@
   import { accessLevels } from "../lib/common/types";
   import { userName } from "../stores";
   import { userID } from "../stores";
+  
 
   //display exercise progress
   let totalExercises = 100;
@@ -91,6 +95,8 @@
   }
 
   getTotalExercises();
+
+  let menu: Menu;
 </script>
 
 <Page requiredAccessLevel={accessLevels.admin}>
@@ -110,19 +116,21 @@
       <div class="grid-container-inside">
         <div class="left-inside">
           <a href="/#/users">
-            <Card>
+            <LanguageCard
+            title=".list all users">
               <GroupSvg />
-            </Card>
-            <div class="label">list all users</div>
+            </LanguageCard>
+            <div class="label"></div>
           </a>
         </div>
 
         <div class="right-inside">
           <a href="/#/exercises">
-            <Card>
+            <LanguageCard
+            title=".list all exercises">
               <ExerciseSvg />
-            </Card>
-            <div class="label">list all exercises</div>
+            </LanguageCard>
+            <div class="label"></div>
           </a>
         </div>
       </div>
@@ -147,15 +155,49 @@
     <div class="footer-outside">
       <div class="add-exercise">
         <Card>
-          <a href="/#/error">
+          <div class="pointer" on:mousedown={() => menu.setOpen(true)}>
             <!-- TODO: add menu for choosing which exercise to add? -->
-            <div class="display-button">
+            <div class="display-button-menu">
               <div class="display-icon">
                 <Icon class="material-icons">library_add</Icon>
               </div>
               <div class="label-icon">add exercise</div>
             </div>
-          </a>
+          </div>
+
+          <Menu bind:this={menu}>
+            <List style="width: fit-content">
+              <a href="/#/ppecreation">
+                <Item class="add-exercise-item">
+                  <Icon class="material-icons add-exercise-item-icon"
+                    >extension</Icon
+                  >
+                  <p style="width: 175px; padding-left: 10px;">Parsons Puzzle</p>
+                </Item>
+              </a>
+              <a href="/error">
+                <Item class="add-exercise-item">
+                  <Icon class="material-icons add-exercise-item-icon"
+                    >border_color</Icon
+                  >
+                  <p style="width: 175px;  padding-left: 10px;">
+                    Fill in the Blanks
+                  </p>
+                  <!-- please insert link to create a fill in the blank exercise here -->
+                </Item>
+              </a>
+              <a href="/error">
+                <Item class="add-exercise-item">
+                  <Icon class="material-icons add-exercise-item-icon">code</Icon
+                  >
+                  <p style="width: 175px;  padding-left: 10px;">
+                    Free Coding Exercise
+                  </p>
+                  <!-- please insert link to create a free coding exercise here -->
+                </Item>
+              </a>
+            </List>
+          </Menu>
         </Card>
       </div>
 
@@ -177,9 +219,7 @@
           <a href="/#/solutions">
             <div class="display-button">
               <div class="display-icon">
-                <Icon class="material-icons">
-                  fact_check
-                </Icon>
+                <Icon class="material-icons">fact_check</Icon>
               </div>
               <div class="label-icon">Show own solutions</div>
             </div>
@@ -275,15 +315,13 @@
   }
 
   .left-inside {
-    width: 350px;
-    height: auto;
+    padding: 10px;
     align-content: center;
     grid-area: left;
   }
 
   .right-inside {
-    width: 350px;
-    height: auto;
+    padding: 10px;
     align-content: center;
     grid-area: right;
   }
@@ -292,9 +330,7 @@
     display: grid;
     display: flex;
     grid-template-areas: "left right";
-    gap: 10px;
     background-color: transparent;
-    padding: 20px;
   }
 
   .grid-container-inside > div {
@@ -333,12 +369,21 @@
     margin: 10px;
   }
 
-  .display-button-2 {
-    font-size: 20pt;
-    align-items: center;
+  .display-button-menu {
     width: fit-content;
     margin: 10px;
   }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  // .display-button-2 {
+  //   font-size: 20pt;
+  //   align-items: center;
+  //   width: fit-content;
+  //   margin: 10px;
+  // }
 
   .add-exercise {
     width: fit-content;
@@ -357,4 +402,6 @@
     float: right;
     align-items: center;
   }
+
+  
 </style>
