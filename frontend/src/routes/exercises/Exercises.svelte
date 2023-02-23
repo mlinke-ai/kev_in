@@ -8,7 +8,7 @@
   import { Svg } from "@smui/common";
 
   import { each } from "svelte/internal";
-  import { accessLevel } from "../../stores";
+  import { accessLevel, startPage } from "../../stores";
   import { accessLevels } from "../../lib/common/types";
   import { link } from "svelte-spa-router";
 
@@ -18,10 +18,6 @@
   let exercisesLoaded = false;
 
   let isAdmin = $accessLevel > accessLevels.user;
-<<<<<<< HEAD:frontend/src/routes/Exercises.svelte
-=======
-  console.log(isAdmin);
->>>>>>> develop:frontend/src/routes/exercises/Exercises.svelte
 
   const getExercises = async () => {
     fetch(`/exercise?exercise_offset=${currentExercise}`, {
@@ -78,14 +74,18 @@
         <List style="width: fit-content">
           <a use:link href="/error">
             <Item class="add-exercise-item">
-              <Icon class="material-icons add-exercise-item-icon">extension</Icon>
+              <Icon class="material-icons add-exercise-item-icon"
+                >extension</Icon
+              >
               <p style="width: 175px;">Parsons Puzzle</p>
               <!-- please insert link to create a free coding exercise here -->
             </Item>
           </a>
           <a use:link href="/error">
             <Item class="add-exercise-item">
-              <Icon class="material-icons add-exercise-item-icon">border_color</Icon>
+              <Icon class="material-icons add-exercise-item-icon"
+                >border_color</Icon
+              >
               <p style="width: 175px;">Fill in the Blanks</p>
               <!-- please insert link to create a free coding exercise here -->
             </Item>
@@ -108,13 +108,8 @@
     <div class="grid-container">
       {#each exercises as exercise}
         <div class="grid-item">
-<<<<<<< HEAD:frontend/src/routes/Exercises.svelte
-            <a href="/#/error">
-=======
           <Card>
             <a use:link href={`/exercises/${exercise.exercise_id}`}>
->>>>>>> develop:frontend/src/routes/exercises/Exercises.svelte
-              <!-- please add link to display this exercise-->
               #{exercise.exercise_id}
               {exercise.exercise_title}
             </a>
@@ -140,31 +135,14 @@
                 </a>
               </div>
             {/if}
-<<<<<<< HEAD:frontend/src/routes/Exercises.svelte
-=======
           </Card>
->>>>>>> develop:frontend/src/routes/exercises/Exercises.svelte
         </div>
       {/each}
     </div>
   {/if}
-
-  {#if isAdmin}
-    <a href="/#/admin-dashboard">
-      <Button>Back to dashboard</Button>
-    </a>
-  {:else}
-<<<<<<< HEAD:frontend/src/routes/Exercises.svelte
-  <a href="/#/user-dashboard">
+  <a use:link href={$startPage}>
     <Button>Back to dashboard</Button>
   </a>
-=======
-    <a href="/#/admin-dashboard">
-      <!-- add link to normal user-dashboard -->
-      <Button>Back to dashboard</Button>
-    </a>
->>>>>>> develop:frontend/src/routes/exercises/Exercises.svelte
-  {/if}
 
   {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
     <div class="list-exercises-buttons">

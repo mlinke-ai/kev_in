@@ -15,7 +15,7 @@
   import { userName } from "../stores";
   import { userID } from "../stores";
   import SolutionsSvg from "../lib/AnimatedSVG/SolutionsSVG.svelte";
-  import { accessLevels } from "../lib/constants";
+  import { accessLevels } from "../lib/common/types";
 
   //display exercise progress
   let totalExercises = 100;

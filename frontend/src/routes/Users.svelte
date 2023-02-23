@@ -6,7 +6,7 @@
   import { Label, Svg } from "@smui/common";
   import { each } from "svelte/internal";
   import { accessLevel } from "../stores";
-  import { accessLevels } from "../lib/constants";
+  import { accessLevels } from "../lib/common/types";
 
   let currentUser = 1;
   let maxDisplayedUsers = 20;
