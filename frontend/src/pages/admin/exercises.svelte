@@ -7,7 +7,6 @@
   import IconButton, { Icon } from "@smui/icon-button";
   import { Svg } from "@smui/common";
 
-  import { each } from "svelte/internal";
   import { accessLevel, startPage } from "../../stores";
   import { accessLevels } from "../../lib/common/types";
   import { link } from "svelte-spa-router";
@@ -59,7 +58,7 @@
   //this item needs ts (does not work with js)
 </script>
 
-<Page requiredAccessLevel={accessLevels.user}>
+<Page>
   <h1>Exercises</h1>
 
   {#if isAdmin}

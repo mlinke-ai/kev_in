@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Page from "../lib/common/Page.svelte";
+  import Page from "../../lib/common/Page.svelte";
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
   import Card, {
@@ -11,14 +11,14 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
-  import LanguageCard from "../lib/common/LanguageCard.svelte";
+  import LanguageCard from "../../lib/common/LanguageCard.svelte";
   import Button, { Label, Icon } from "@smui/button";
   import { Svg } from "@smui/common";
-  import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
-  import ExerciseSvg from "../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { accessLevels } from "../lib/common/types";
-  import { userName } from "../stores";
-  import { userID } from "../stores";
+  import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
+  import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
+  import { accessLevels } from "../../lib/common/types";
+  import { userName } from "../../stores";
+  import { userID } from "../../stores";
   
 
   //display exercise progress
@@ -108,7 +108,7 @@
   let menu: Menu;
 </script>
 
-<Page requiredAccessLevel={accessLevels.admin}>
+<Page>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">

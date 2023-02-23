@@ -1,12 +1,12 @@
 <script>
-  import Page from "../lib/common/Page.svelte";
+  import Page from "../../lib/common/Page.svelte";
   import Button from "@smui/button/src/Button.svelte";
 
   import IconButton, { Icon } from "@smui/icon-button";
   import { Label, Svg } from "@smui/common";
   import { each } from "svelte/internal";
-  import { accessLevel } from "../stores";
-  import { accessLevels } from "../lib/common/types";
+  import { accessLevel } from "../../stores";
+  import { accessLevels } from "../../lib/common/types";
 
   let currentUser = 1;
   let maxDisplayedUsers = 20;
@@ -51,7 +51,7 @@
   }
 </script>
 
-<Page requiredAccessLevel={accessLevels.admin}>
+<Page>
 
   <h1>Users</h1>
 

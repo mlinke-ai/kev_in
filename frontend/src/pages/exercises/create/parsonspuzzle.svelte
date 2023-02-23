@@ -71,7 +71,7 @@
   
 </script>
 
-<Page title="Create PPE" fullwidth={true} requiredAccessLevel={accessLevels.admin}>
+<Page title="Create PPE" fullwidth={true}>
   <div class="exercise-container">
     <div class="header-area">
       <Textfield variant="filled" bind:value={exerciseTitle} label="Exercise Title" required style="width: 100%"/>

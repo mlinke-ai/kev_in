@@ -5,11 +5,13 @@
     ParsonsPuzzleExerciseType,
   } from "../../lib/Excercises/types";
   import { getExercise } from "../../lib/Excercises/exercise";
-  import ProgrammingExercise from "./ProgrammingExercise.svelte";
-  import ParsonsPuzzleExercise from "./ParsonsPuzzleExercise.svelte";
+  import ProgrammingExercise from "../../lib/Excercises/Programming/ProgrammingExercise.svelte";
+  import ParsonsPuzzleExercise from "../../lib/Excercises/ParsonsPuzzle/ParsonsPuzzleExercise.svelte";
 
-  export let params: { exerciseID: number };
-  let exerciseID = params.exerciseID;
+  export let exerciseID: any;
+  exerciseID = exerciseID as unknown as number;
+
+  console.log(exerciseID);
 
   let exerciseData: ProgrammingExerciseType | ParsonsPuzzleExerciseType;
   let exerciseComponent;
@@ -18,18 +20,18 @@
   async function get() {
     try {
       getExercise(exerciseID).then((data) => {
-      exerciseData = data;
-      switch (exerciseData.exercise_type_name) {
-        case exercises.parsonsPuzzle:
-          exerciseComponent = ParsonsPuzzleExercise;
-          break;
-        case exercises.programming:
-          exerciseComponent = ProgrammingExercise;
-          break;
-      }
-    });
+        exerciseData = data;
+        switch (exerciseData.exercise_type_name) {
+          case exercises.parsonsPuzzle:
+            exerciseComponent = ParsonsPuzzleExercise;
+            break;
+          case exercises.programming:
+            exerciseComponent = ProgrammingExercise;
+            break;
+        }
+      });
     } catch (err) {
-      throw err
+      throw err;
     }
   }
 </script>
