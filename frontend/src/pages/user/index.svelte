@@ -1,5 +1,5 @@
 <script>
-  import Page from "../lib/common/Page.svelte";
+  import Page from "../../lib/common/Page.svelte";
   import Card, {
     Content,
     PrimaryAction,
@@ -10,12 +10,12 @@
     ActionIcons,
   } from "@smui/card";
   import Button, { Label } from "@smui/button";
-  import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
-  import ExerciseSvg from "../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { userName } from "../stores";
-  import { userID } from "../stores";
-  import SolutionsSvg from "../lib/AnimatedSVG/SolutionsSVG.svelte";
-  import { accessLevels } from "../lib/common/types";
+  import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
+  import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
+  import { userName } from "../../stores";
+  import { userID } from "../../stores";
+  import SolutionsSvg from "../../lib/AnimatedSVG/SolutionsSVG.svelte";
+  import { accessLevels } from "../../lib/common/types";
 
   //display exercise progress
   let totalExercises = 100;
@@ -102,7 +102,7 @@
   //getSolvedExercises();
 </script>
 
-<Page requiredAccessLevel={accessLevels.user}>
+<Page>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">

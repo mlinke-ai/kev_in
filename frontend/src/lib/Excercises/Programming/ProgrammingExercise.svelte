@@ -1,11 +1,11 @@
 <script lang="ts">
-  import Page from "../../lib/common/Page.svelte";
-  import TaskCard from "../../lib/Excercises/TaskCard.svelte";
-  import CodingCard from "../../lib/Excercises/Programming/CodingCard.svelte";
-  import OutputCard from "../../lib/Excercises/Programming/OutputCard.svelte";
-  import StatusBar from "../../lib/Excercises/StatusBar.svelte";
-  import type { ProgrammingExerciseType } from "../../lib/Excercises/types";
-  import { submitSolution, getCurrentTimestamp, SolutionPostProgramming } from "../../lib/Excercises/solution";
+  import Page from "../../common/Page.svelte";
+  import TaskCard from "../TaskCard.svelte";
+  import CodingCard from "./CodingCard.svelte";
+  import OutputCard from "./OutputCard.svelte";
+  import StatusBar from "../StatusBar.svelte";
+  import type { ProgrammingExerciseType } from "../types";
+  import { submitSolution, getCurrentTimestamp, SolutionPostProgramming } from "../solution";
 
   let elapsedTime = 0;
   export let exerciseData: ProgrammingExerciseType;
@@ -45,7 +45,7 @@
 </Page>
 
 <style lang="scss">
-  @use "../../variables" as vars;
+  @use "../../../variables" as vars;
 
   * {
     box-sizing: border-box;

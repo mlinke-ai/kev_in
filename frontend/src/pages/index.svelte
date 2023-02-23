@@ -6,7 +6,6 @@
   import { blur } from "svelte/transition";
   import Dialog from "@smui/dialog";
   import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
-  import Footer from "../lib/Footer/Footer.svelte";
   import { accessLevel } from "../stores";
   import { accessLevels, dashboardPage } from "../lib/common/types";
   import { replace as replaceRoute } from "svelte-spa-router";
@@ -61,9 +60,6 @@
     <AuthDialog />
   </Dialog>
 </Page>
-
-<Footer />
-
 
 <style lang="scss">
   header {
