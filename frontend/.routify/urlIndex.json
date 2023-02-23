@@ -1,9 +1,11 @@
 [
   "/admin/exercises",
   "/admin/index",
+  "/admin/index_backup",
   "/admin/solutions",
   "/admin/users",
   "/exercises/create/parsonspuzzle",
   "/index",
-  "/user/index"
+  "/user/index",
+  "/user/index_backup"
 ]

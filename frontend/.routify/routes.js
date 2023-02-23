@@ -1,11 +1,11 @@
 
 /**
  * @roxi/routify 2.18.11
- * File generated Thu Feb 23 2023 14:39:10 GMT+0100 (Mitteleuropäische Normalzeit)
+ * File generated Thu Feb 23 2023 16:15:38 GMT+0100 (Mitteleuropäische Normalzeit)
  */
 
 export const __version = "2.18.11"
-export const __timestamp = "2023-02-23T13:39:10.811Z"
+export const __timestamp = "2023-02-23T15:15:38.537Z"
 
 //buildRoutes
 import { buildClientTree } from "@roxi/routify/runtime/buildRoutes"
@@ -40,6 +40,12 @@ export const _tree = {
           "path": "/admin/index",
           "id": "_admin_index",
           "component": () => import('../src/pages/admin/index.svelte').then(m => m.default)
+        },
+        {
+          "isPage": true,
+          "path": "/admin/index_backup",
+          "id": "_admin_index_backup",
+          "component": () => import('../src/pages/admin/index_backup.svelte').then(m => m.default)
         },
         {
           "isPage": true,
@@ -108,6 +114,12 @@ export const _tree = {
           "path": "/user/index",
           "id": "_user_index",
           "component": () => import('../src/pages/user/index.svelte').then(m => m.default)
+        },
+        {
+          "isPage": true,
+          "path": "/user/index_backup",
+          "id": "_user_index_backup",
+          "component": () => import('../src/pages/user/index_backup.svelte').then(m => m.default)
         }
       ],
       "isLayout": true,
