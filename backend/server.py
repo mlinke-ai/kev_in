@@ -2,18 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import hashlib
+import json
 import secrets
 import string
 import json
+import datetime
 
 from flask import Flask, Response, send_from_directory
 from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config
-from backend.lib.interfaces import ExerciseModel, UserModel, db_engine
-from backend.lib.routes import (ExerciseResource, LoginResource,
-                                LogoutResource, SolutionResource, UserResource)
+from backend.lib.interfaces import ExerciseModel, UserModel, SolutionModel, db_engine
+from backend.lib.routes import ExerciseResource, LoginResource, LogoutResource, SolutionResource, UserResource
 
 
 class Server:
@@ -29,11 +30,12 @@ class Server:
             self._sadmin_check()
             self._tuser_check()
             self._gen_exercises()
+            self._gen_solutions()
         self.api = Api(self.app)
-        self.api.add_resource(ExerciseResource, "/exercise")
+        self.api.add_resource(ExerciseResource, "/exercise", endpoint="exercise")
         self.api.add_resource(LoginResource, "/login")
-        self.api.add_resource(UserResource, "/user")
-        self.api.add_resource(SolutionResource, "/solution")
+        self.api.add_resource(UserResource, "/user", endpoint="user")
+        self.api.add_resource(SolutionResource, "/solution", endpoint="solution")
         self.api.add_resource(LogoutResource, "/logout")
 
     def _base(self) -> Response:
@@ -65,7 +67,7 @@ class Server:
         else:
             print("exactly one sadmin")
 
-    def _tuser_check(self) -> None:
+    def _tuser_check(self) -> None: #TODO should be removed for production
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == config.TUSER_NAME)
         selection = db_engine.session.execute(query)
@@ -91,7 +93,7 @@ class Server:
         alphabet = string.ascii_letters + string.digits + "!@#$%^&*()_"
         return "".join(secrets.choice(alphabet) for _ in range(64))
 
-    def _gen_exercises(self) -> None:
+    def _gen_exercises(self) -> None: #TODO should be removed for production
         # create some dummy exercises with different types
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(sqlalchemy.func.count()).select_from(exercise_table)
@@ -102,19 +104,64 @@ class Server:
                 for j in range(7):
                     if j == 2:
                         content = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+                        solution = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
+                    elif j == 6:
+                        content = {"func": "multiply", "code": "def multiply(x, y):\r\npass"}
+                        solution = {
+                            "0": [[0, 0], [0]],
+                            "1": [[1, 0], [0]],
+                            "2": [[1, 2], [2]],
+                            "3": [[2, 2], [4]],
+                            "4": [[6, 7], [42]],
+                            "5": [[-4, 5], [-20]],
+                        }
                     else:
                         content = {}
+                        solution = {}
                     exercise = ExerciseModel(
                         exercise_title=f"{config.ExerciseType(j + 1).name}{i}",
                         exercise_description=f"Dummy {config.ExerciseType(j + 1).name} number {i}",
                         exercise_type=config.ExerciseType(j + 1),
                         exercise_content=json.dumps(content),
-                        exercise_solution=json.dumps(content),
+                        exercise_solution=json.dumps(solution),
                         exercise_language=config.ExerciseLanguage.Python,
                     )
                     db_engine.session.add(exercise)
         else:
             print("found enough exercises")
+        db_engine.session.commit()
+
+    def _gen_solutions(self) -> None: #TODO should be removed for production
+        # create some dummy solutions: two for the first seven exercises (true and false)
+        solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
+        query = db_engine.select(sqlalchemy.func.count()).select_from(solution_table)
+        selection = db_engine.session.execute(query)
+        if selection.first()[0] < 50:
+            print("create dummy solutions")
+            for i in range(7):
+                content = {"solution": "some JSON"}
+                solution = SolutionModel(
+                    solution_user=1,
+                    solution_exercise=i+1,
+                    solution_date=datetime.datetime.now(),
+                    solution_duration=datetime.timedelta(minutes=3*i, seconds=3*i),
+                    solution_correct=not i==6,
+                    solution_pending=i == 6,
+                    solution_content=json.dumps(content)
+                )
+                db_engine.session.add(solution)
+                solution = SolutionModel(
+                    solution_user=i%2+1,
+                    solution_exercise=i+1,
+                    solution_date=datetime.datetime.fromtimestamp(1234567890),
+                    solution_duration=datetime.timedelta(minutes=5*i, seconds=5*i),
+                    solution_correct=False,
+                    solution_pending=i == 6,
+                    solution_content=json.dumps(content)
+                )
+                db_engine.session.add(solution)
+        else:
+            print("found enough solutions")
         db_engine.session.commit()
 
     def run(self, debug: bool = False, host: bool = False) -> None:

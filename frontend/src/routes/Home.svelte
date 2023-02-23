@@ -8,7 +8,7 @@
   import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
   import Footer from "../lib/Footer/Footer.svelte";
   import { accessLevel } from "../stores";
-  import { accessLevels, dashboardPage } from "../lib/constants";
+  import { accessLevels, dashboardPage } from "../lib/common/types";
   import { replace as replaceRoute } from "svelte-spa-router";
 
   let open = false;

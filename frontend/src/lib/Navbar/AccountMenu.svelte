@@ -5,8 +5,8 @@
     import { logout } from "../Authentication/user";
     import { push as pushRoute } from "svelte-spa-router";
     import Button, { Icon, Label } from "@smui/button";
-    import { accessLevel, userName } from "../../stores";
-    import { accessLevels } from "../constants";
+    import { accessLevel, startPage, userName } from "../../stores";
+    import { accessLevels } from "../common/types";
 
     let menu: Menu;
     let anchor: HTMLDivElement;
@@ -62,8 +62,7 @@
             </Item>
             <Item
                 on:SMUI:action={() => {
-                    pushRoute("/admin-dashboard");
-                    //add variable if user is common user or admin
+                    pushRoute($startPage);
                 }}
             >
                 <div class="menu-item">

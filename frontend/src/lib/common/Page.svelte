@@ -1,16 +1,16 @@
 <!-- Skeletton component for all pages to provide 
     unified transitions, title naming and basic access control 
 -->
-<script>
+<script lang="ts">
   import { blur } from "svelte/transition";
   import { accessLevel } from "../../stores";
-  import { accessLevels } from "../constants";
+  import { accessLevels } from "./types";
   import { replace as replaceRoute } from "svelte-spa-router";
   import { renderNavbar } from "../../stores";
 
   export let transition = true;
   export let title = "";
-  export let requiredAccessLevel = accessLevels.default;
+  export let requiredAccessLevel: accessLevels = accessLevels.default;
   export let fullwidth = false;
 
   $renderNavbar = !fullwidth;
@@ -48,6 +48,7 @@
         rgba(0, 57, 49, 1) 0%,
         rgba(0, 20, 17, 1) 100%
       );
+      overflow: overlay;
     }
     .page {
       margin: 0rem 0rem 0rem 0rem;
@@ -58,6 +59,7 @@
   <style>
     body {
       margin: 0;
+      overflow: overlay;
     }
     .page {
       margin: 7rem 5rem 7rem 5rem;
