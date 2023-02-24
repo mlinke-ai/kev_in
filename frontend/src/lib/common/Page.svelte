@@ -6,15 +6,12 @@
   import { accessLevel } from "../../stores";
   import { accessLevels } from "./types";
   import { replace as replaceRoute } from "svelte-spa-router";
-  import { renderNavbar } from "../../stores";
 
   export let blurTransition = true;
   export let slideTransition = false;
   export let title = "";
   export let requiredAccessLevel: accessLevels = accessLevels.default;
   export let fullwidth = false;
-
-  $renderNavbar = !fullwidth;
 
   if ($accessLevel < requiredAccessLevel) {
     replaceRoute("/");
