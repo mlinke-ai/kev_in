@@ -20,9 +20,13 @@
   <Tooltip style="z-index: 999;">{tooltip}</Tooltip>
 </Wrapper>
 
-<style>
+<style lang="scss">
   :global(.theme-select-fab) {
-    scale: 0.8;
+    // scale: 0.8;
+    min-width: 2rem;
+    min-height: 2rem;
+    max-width: 2rem;
+    max-height: 2rem;
   }
   :global(.selected) {
     border: 2px solid white;
