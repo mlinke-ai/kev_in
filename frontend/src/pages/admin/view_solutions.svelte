@@ -10,31 +10,37 @@
   import { each } from "svelte/internal";
   import { accessLevel } from "../../stores";
   import { accessLevels } from "../../lib/common/types";
+  import { exercises } from "../../lib/Excercises/types";
 
   let solutions = [];
-  let currentSolution = 1;
-  let maxDisplayedSolutions = 20;
+  let solutionsData;
+  let solutionsMeta;
+  const maxDisplayed = 18;
+  let currentSolutionsUrl = `/solution?solution_offset=1&solution_limit=${maxDisplayed}`;
+  let prevSolutionsUrl;
+  let nextSolutionsUrl;
   let solutionsLoaded = false;
 
-  let isAdmin = $accessLevel > accessLevels.user;
-  console.log(isAdmin);
+  //let isAdmin = $accessLevel > accessLevels.user;
 
   const getSolutions = async () => {
-    fetch(`/solution?solution_offset=${currentSolution}`, {
+    fetch(`${currentSolutionsUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
-          console.log(data);
           solutions = Object.values(data);
-          console.log(solutions);
-          currentSolution += maxDisplayedSolutions;
+          solutionsData = solutions[0];
+          solutionsMeta = solutions[1];
+          nextSolutionsUrl = solutionsMeta.next_url;
+          prevSolutionsUrl = solutionsMeta.prev_url;
+
           solutionsLoaded = true;
         });
-      } else if (response.status === 400) {
-        alert(this.message);
+      } else if (response.status === 204) {
+        alert("No one has a solution handed in yet :(");
       } else if (response.status === 403) {
-        alert(this.message);
+        alert(response.status);
       } else if (response.status === 500) {
         alert("Oops an Error occured. Please try again.");
       } else {
@@ -46,66 +52,64 @@
   getSolutions();
 
   function showLastSolutions() {
-    currentSolution -= maxDisplayedSolutions;
-    solutionsLoaded = true;
+    solutionsLoaded = false;
+    currentSolutionsUrl = prevSolutionsUrl;
     getSolutions();
   }
+
+  function showNextSolutions() {
+    solutionsLoaded = false;
+    currentSolutionsUrl = nextSolutionsUrl;
+    getSolutions();
+  }
+
 </script>
 
-<Page requiredAccessLevel={accessLevels.user}>
+<Page>
   <h1>Solutions</h1>
 
   <p>Look at all solutions you've handed in.</p>
 
   {#if solutionsLoaded}
     <div class="grid-container">
-      {#each solutions as solution}
+      {#each solutionsData as solution}
         <div class="grid-item">
           <Card>
             <a href="/#/error">
               <!-- please add link to display this solution-->
-              #{solution.solution_id}
-              {solution.solution_exercise}
+              {#if solution.solution_correct}
+              {solution.solution_id}
+              {exercises[solution.solution_exercise]}
+              {/if}
             </a>
             <p>
               {solution.solution_date}{solution.solution_duration}
             </p>
-            <p>
-              needs to be evaluated: {solution.solution_pending}
-              is correct: {solution.solution_correct}
-
-            </p>
+            <p id=""></p>
           </Card>
         </div>
       {/each}
     </div>
   {/if}
 
-  {#if isAdmin}
-  <a href="/#/admin-dashboard">
+  <a href="/#/admin">
     <Button>Back to dashboard</Button>
   </a>
-  {:else}
-  <a href="/#/user-dashboard">
-    <Button>Back to dashboard</Button>
-  </a>
-  {/if}
 
-  {#if solutions.length > maxDisplayedSolutions && currentSolution == 1}
+  {#if prevSolutionsUrl == null && nextSolutionsUrl != null}
     <div class="list-solutions-buttons">
-      <Button on:click={getSolutions}>more users</Button>
+      <Button on:click={showNextSolutions}>more solutions</Button>
     </div>
-  {:else if solutions.length > maxDisplayedSolutions && solutions.length <= currentSolution + maxDisplayedSolutions - 1}
+  {:else if prevSolutionsUrl != null && nextSolutionsUrl == null}
     <div class="list-solutions-buttons">
-      <Button on:click={showLastSolutions}>last users</Button>
+      <Button on:click={showLastSolutions}>last solutions</Button>
     </div>
-  {:else if solutions.length > maxDisplayedSolutions && currentSolution != 1}
+  {:else if prevSolutionsUrl != null && nextSolutionsUrl != null}
     <div class="list-solutions-buttons">
-      <Button on:click={getSolutions}>more users</Button>
-      <Button on:click={showLastSolutions}>last users</Button>
+      <Button on:click={showLastSolutions}>last solutions</Button>
+      <Button on:click={showNextSolutions}>more solutions</Button>
     </div>
   {/if}
-  <!-- does not work properly yet, needs total number of exercises from backend-->
 </Page>
 
 <style>

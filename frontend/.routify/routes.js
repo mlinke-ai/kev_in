@@ -1,11 +1,11 @@
 
 /**
  * @roxi/routify 2.18.11
- * File generated Thu Feb 23 2023 16:15:38 GMT+0100 (Mitteleuropäische Normalzeit)
+ * File generated Fri Feb 24 2023 15:20:13 GMT+0100 (Mitteleuropäische Normalzeit)
  */
 
 export const __version = "2.18.11"
-export const __timestamp = "2023-02-23T15:15:38.537Z"
+export const __timestamp = "2023-02-24T14:20:13.904Z"
 
 //buildRoutes
 import { buildClientTree } from "@roxi/routify/runtime/buildRoutes"
@@ -29,12 +29,6 @@ export const _tree = {
       "isDir": true,
       "children": [
         {
-          "isPage": true,
-          "path": "/admin/exercises",
-          "id": "_admin_exercises",
-          "component": () => import('../src/pages/admin/exercises.svelte').then(m => m.default)
-        },
-        {
           "isIndex": true,
           "isPage": true,
           "path": "/admin/index",
@@ -49,15 +43,21 @@ export const _tree = {
         },
         {
           "isPage": true,
-          "path": "/admin/solutions",
-          "id": "_admin_solutions",
-          "component": () => import('../src/pages/admin/solutions.svelte').then(m => m.default)
+          "path": "/admin/view_exercises",
+          "id": "_admin_view_exercises",
+          "component": () => import('../src/pages/admin/view_exercises.svelte').then(m => m.default)
         },
         {
           "isPage": true,
-          "path": "/admin/users",
-          "id": "_admin_users",
-          "component": () => import('../src/pages/admin/users.svelte').then(m => m.default)
+          "path": "/admin/view_solutions",
+          "id": "_admin_view_solutions",
+          "component": () => import('../src/pages/admin/view_solutions.svelte').then(m => m.default)
+        },
+        {
+          "isPage": true,
+          "path": "/admin/view_users",
+          "id": "_admin_view_users",
+          "component": () => import('../src/pages/admin/view_users.svelte').then(m => m.default)
         }
       ],
       "isLayout": true,
