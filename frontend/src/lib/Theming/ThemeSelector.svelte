@@ -8,7 +8,7 @@
   function select(index) {
     if (index != $selectedThemeIndex) {
       $selectedThemeIndex = index;
-      setTheme(themes[index], true);
+      setTheme(index, true);
     }
   }
 </script>
@@ -67,7 +67,7 @@
     min-height: 2rem;
     max-width: 2rem;
     max-height: 2rem;
-    background-color: transparent;
+    background-color: var(--mdc-theme-primary);
     margin-left: auto;
   }
 </style>
