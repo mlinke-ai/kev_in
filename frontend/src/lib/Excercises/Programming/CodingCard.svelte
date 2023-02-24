@@ -36,6 +36,10 @@
     });
   });
 
+  export function focus() {
+    editor.focus();
+  }
+
   export function reset(content: string) {
     editor.setValue(content, 1);
   }

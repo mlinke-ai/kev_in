@@ -14,7 +14,8 @@
   let solution: SolutionPostProgramming;
   let solutionResponse: SolutionGet;
   let serverMessage = "";
-  let resetEditor;
+  let resetEditor: (content: string) => void;
+  let focusEditor: () => void;
 
   async function submit() {
     solution = {
@@ -30,7 +31,7 @@
     if (solutionResponse.solution_correct) {
       // Do something cool
     } else {
-      
+      focusEditor()
     }
   }
   function reset() {
@@ -46,7 +47,7 @@
       <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
     </div>
     <div class="code-area">
-      <CodingCard bind:content bind:reset={resetEditor} language={exerciseData.exercise_language_type} />
+      <CodingCard bind:content bind:focus={focusEditor} bind:reset={resetEditor} language={exerciseData.exercise_language_type} />
     </div>
     <div class="output-area">
       <OutputCard message={serverMessage}/>
