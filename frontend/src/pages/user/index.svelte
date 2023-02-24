@@ -44,11 +44,6 @@
           reqMeta = Object.values(data);
           totalExercises = reqMeta[1].total;
           getSolvedExercises(); 
-          //following function calls might be removed if this is activated
-          // setTotalExercises();
-          // setSolvedExercises();
-          // setUserProgress();
-          // statsLoaded = true;
         });
       } else {
         alert("Oops an Error occured. " + response.status);
@@ -58,8 +53,6 @@
 
   const getSolvedExercises = async () => {
     fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
-      //?solution_user=${$userID}&solution_correct=true
-      //to get the number of all correct solutions of the user with id ${$userID}
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
@@ -87,7 +80,6 @@
       }
     });
   };
-  //responses error 204
 
   function setUserProgress() {
     userProgress = Math.floor((solvedExercises / totalExercises) * 100);
@@ -109,7 +101,6 @@
   }
 
   getTotalExercises();
-  //getSolvedExercises();
 </script>
 
 <Page>
@@ -129,7 +120,7 @@
     <div class="main-outside">
       <div class="grid-container-inside">
         <div class="left-inside">
-          <a href="/#/exercises">
+          <a href="/#/admin/view_exercises">
             <!-- <LanguageCard
             title="list all exercises">
               <ExerciseSvg />
@@ -143,7 +134,7 @@
         </div>
 
         <div class="right-inside">
-          <a href="/#/solutions">
+          <a href="/#/user/my_solutions">
             <!-- <LanguageCard
             title="list my solutions">
               <SolutionsSvg/>
@@ -171,7 +162,7 @@
           </div>
         {/if}
         {#if noCorrectExercise}
-        <p>Haven't solved any exercises yet correctly. :(</p>
+        <p>Haven't solved any exercises correctly (yet). :(</p>
         {/if}
       </div>
     </div>
