@@ -1,15 +1,15 @@
 <script lang="ts">
-  import Page from "../../lib/common/Page.svelte";
-  import PuzzleCard from "../../lib/Excercises/ParsonsPuzzle/PuzzleCard.svelte";
-  import TaskCard from "../../lib/Excercises/TaskCard.svelte";
-  import StatusBar from "../../lib/Excercises/StatusBar.svelte";
-  import { accessLevels } from "../../lib/common/types";
+  import Page from "../../common/Page.svelte";
+  import PuzzleCard from "./PuzzleCard.svelte";
+  import TaskCard from "../TaskCard.svelte";
+  import StatusBar from "../StatusBar.svelte";
+  import { accessLevels } from "../../common/types";
   import {
     SolutionPostParsonsPuzzle,
     submitSolution,
     getCurrentTimestamp
-  } from "../../lib/Excercises/solution";
-  import type { ParsonsPuzzleExerciseType } from "../../lib/Excercises/types";
+  } from "../solution";
+  import type { ParsonsPuzzleExerciseType } from "../types";
 
   export let exerciseData: ParsonsPuzzleExerciseType;
 
@@ -68,7 +68,7 @@
 </Page>
 
 <style lang="scss">
-  @use "../../variables" as vars;
+  @use "../../../variables" as vars;
 
   .exercise-container {
     display: grid;

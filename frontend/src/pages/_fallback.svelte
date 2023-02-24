@@ -6,12 +6,11 @@
   import Page from "../lib/common/Page.svelte";
 
   import { startPage } from "../stores";
-  import { replace as replaceRoute } from "svelte-spa-router";
 
   export const params=""
 
   function goToStartPage(){
-    replaceRoute($startPage);
+    history.pushState({}, null, `#${$startPage}`);
   }
 </script>
 

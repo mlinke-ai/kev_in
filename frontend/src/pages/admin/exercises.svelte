@@ -7,8 +7,7 @@
   import IconButton, { Icon } from "@smui/icon-button";
   import { Svg } from "@smui/common";
 
-  import { each } from "svelte/internal";
-  import { accessLevel } from "../../stores";
+  import { accessLevel, startPage } from "../../stores";
   import { accessLevels } from "../../lib/common/types";
   import { link } from "svelte-spa-router";
 
@@ -18,7 +17,6 @@
   let exercisesLoaded = false;
 
   let isAdmin = $accessLevel > accessLevels.user;
-  console.log(isAdmin);
 
   const getExercises = async () => {
     fetch(`/exercise?exercise_offset=${currentExercise}`, {
@@ -27,7 +25,6 @@
       if (response.status === 200) {
         response.json().then((data) => {
           console.log(data);
-          //exercises = [];
           exercises = Object.values(data);
           console.log(exercises);
           currentExercise += maxDisplayedExercises;
@@ -76,14 +73,18 @@
         <List style="width: fit-content">
           <a use:link href="/error">
             <Item class="add-exercise-item">
-              <Icon class="material-icons add-exercise-item-icon">extension</Icon>
+              <Icon class="material-icons add-exercise-item-icon"
+                >extension</Icon
+              >
               <p style="width: 175px;">Parsons Puzzle</p>
               <!-- please insert link to create a free coding exercise here -->
             </Item>
           </a>
           <a use:link href="/error">
             <Item class="add-exercise-item">
-              <Icon class="material-icons add-exercise-item-icon">border_color</Icon>
+              <Icon class="material-icons add-exercise-item-icon"
+                >border_color</Icon
+              >
               <p style="width: 175px;">Fill in the Blanks</p>
               <!-- please insert link to create a free coding exercise here -->
             </Item>
@@ -108,7 +109,6 @@
         <div class="grid-item">
           <Card>
             <a use:link href={`/exercises/${exercise.exercise_id}`}>
-              <!-- please add link to display this exercise-->
               #{exercise.exercise_id}
               {exercise.exercise_title}
             </a>
@@ -139,17 +139,9 @@
       {/each}
     </div>
   {/if}
-
-  {#if isAdmin}
-    <a href="/#/admin-dashboard">
-      <Button>Back to dashboard</Button>
-    </a>
-  {:else}
-    <a href="/#/admin-dashboard">
-      <!-- add link to normal user-dashboard -->
-      <Button>Back to dashboard</Button>
-    </a>
-  {/if}
+  <a use:link href={$startPage}>
+    <Button>Back to dashboard</Button>
+  </a>
 
   {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
     <div class="list-exercises-buttons">
@@ -181,6 +173,7 @@
   }
 
   .grid-item {
+    word-break: break-all;
     width: minmax(350px, 1fr);
     background-color: #001a16;
     padding: 10px;

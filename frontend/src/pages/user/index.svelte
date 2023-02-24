@@ -1,20 +1,11 @@
 <script>
-  import Page from "../lib/common/Page.svelte";
-  import Card, {
-    Content,
-    PrimaryAction,
-    Media,
-    MediaContent,
-    Actions,
-    ActionButtons,
-    ActionIcons,
-  } from "@smui/card";
-  import Button, { Label } from "@smui/button";
-  import GroupSvg from "../lib/AnimatedSVG/GroupSVG.svelte";
-  import ExerciseSvg from "../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { userName } from "../stores";
-  //import { userID } from "../stores";
-
+  import Page from "../../lib/common/Page.svelte";
+  import Card from "@smui/card";
+  import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
+  import { userName } from "../../stores";
+  import { userID } from "../../stores";
+  import SolutionsSvg from "../../lib/AnimatedSVG/SolutionsSVG.svelte";
+  
   //display exercise progress
   let totalExercises = 100;
   let solvedExercises = 50;
@@ -24,9 +15,6 @@
   let r = document.querySelector(":root");
   let statsLoaded = false;
 
-  let myName = $userName;
-  //let myID = 1;
-  //later change to $userID
 
   // function myFunction_get() {
   //   let rs = getComputedStyle(r);
@@ -44,7 +32,30 @@
           totalExercises = Object.values(data).length;
           console.log(solvedExercises);
           console.log(totalExercises);
-          //getSolvedExercises(); following function calls might be removed if this is activated
+          getSolvedExercises(); 
+          //following function calls might be removed if this is activated
+          // setTotalExercises();
+          // setSolvedExercises();
+          // setUserProgress();
+          // statsLoaded = true;
+        });
+      } else {
+        alert("Oops an Error occured. " + response.status);
+      }
+    });
+  };
+
+  const getSolvedExercises = async () => {
+    fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
+      //?solution_user=${$userID}&solution_correct=true
+      //to get the number of all correct solutions of the user with id ${$userID}
+      method: "GET",
+    }).then((response) => {
+      if (response.status === 200) {
+        response.json().then((data) => {
+          statsLoaded = false;
+          console.log(data);
+          solvedExercises = Object.values(data).length;
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();
@@ -55,43 +66,24 @@
       }
     });
   };
-
-  // const getSolvedExercises = async () => {
-  //   fetch(`/solution`, {
-  //     //?solution_user=${myID}&solution_correct=true
-  //     //to get the number of all correct solutions of the user with id ${me}
-  //     method: "GET",
-  //   }).then((response) => {
-  //     if (response.status === 200) {
-  //       response.json().then((data) => {
-  //         statsLoaded = false;
-  //         console.log(data);
-  //         solvedExercises = Object.values(data).length;
-  //         setTotalExercises();
-  //         setSolvedExercises();
-  //         setUserProgress();
-  //         statsLoaded = true;
-  //       });
-  //     } else {
-  //       alert("Oops an Error occured. " + response.status);
-  //     }
-  //   });
-  // };
   //responses error 500
 
   function setUserProgress() {
     userProgress = Math.floor((solvedExercises / totalExercises) * 100);
     console.log(solvedExercises);
+    //@ts-ignore
     r.style.setProperty("--userProgress", userProgress + "%");
   }
 
   function setTotalExercises() {
+    //@ts-ignore
     r.style.setProperty("--totalExercises", totalExercises + "px");
   }
 
   function setSolvedExercises() {
-    solvedExercises = totalExercises / 3;
+    solvedExercises = Math.floor(totalExercises / 3);
     //just for testcases
+    //@ts-ignore
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
 
@@ -104,7 +96,7 @@
     <!--  Header -->
     <div class="header-outside">
       <h2 style="padding: 20px; font-family: monospace;">
-        Welcome to your dashboard, {myName}!
+        Welcome to your dashboard, {$userName}!
       </h2>
     </div>
 
@@ -115,20 +107,20 @@
     <div class="main-outside">
       <div class="grid-container-inside">
         <div class="left-inside">
-          <a href="/#/users">
-            <Card>
-              <GroupSvg />
-            </Card>
-            <div class="label">List all users</div>
-          </a>
-        </div>
-
-        <div class="right-inside">
           <a href="/#/exercises">
             <Card>
               <ExerciseSvg />
             </Card>
-            <div class="label">List all exercises</div>
+            <div class="label">list all exercises</div>
+          </a>
+        </div>
+
+        <div class="right-inside">
+          <a href="/#/solutions">
+            <Card>
+              <SolutionsSvg/>
+            </Card>
+            <div class="label">list my solutions</div>
           </a>
         </div>
       </div>

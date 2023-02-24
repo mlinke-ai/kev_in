@@ -10,12 +10,7 @@
   export let blurTransition = true;
   export let slideTransition = false;
   export let title = "";
-  export let requiredAccessLevel: accessLevels = accessLevels.default;
   export let fullwidth = false;
-
-  if ($accessLevel < requiredAccessLevel) {
-    replaceRoute("/");
-  }
 </script>
 
 <svelte:head>
