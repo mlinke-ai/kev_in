@@ -19,7 +19,6 @@
 </script>
 
 <Page title="Home" slideTransition={true}>
-  <ThemeSelector />
   <header>
     <h3>Your best choice to learn how to code.</h3>
     <hr />
