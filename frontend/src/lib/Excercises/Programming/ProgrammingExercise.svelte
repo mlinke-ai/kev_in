@@ -6,12 +6,15 @@
   import StatusBar from "../StatusBar.svelte";
   import type { ProgrammingExerciseType } from "../types";
   import { submitSolution, getCurrentTimestamp, SolutionPostProgramming, SolutionGet } from "../solution";
-  let elapsedTime = 0;
+  
   export let exerciseData: ProgrammingExerciseType;
+
+  let elapsedTime = 0;
   let content: string = exerciseData.exercise_content.code;
   let solution: SolutionPostProgramming;
   let solutionResponse: SolutionGet;
   let serverMessage = "";
+  let resetEditor;
 
   async function submit() {
     solution = {
@@ -30,7 +33,9 @@
       
     }
   }
-  function reset() {}
+  function reset() {
+    resetEditor(exerciseData.exercise_content.code);
+  }
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
@@ -41,7 +46,7 @@
       <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
     </div>
     <div class="code-area">
-      <CodingCard bind:content language={exerciseData.exercise_language_type} />
+      <CodingCard bind:content bind:reset={resetEditor} language={exerciseData.exercise_language_type} />
     </div>
     <div class="output-area">
       <OutputCard message={serverMessage}/>

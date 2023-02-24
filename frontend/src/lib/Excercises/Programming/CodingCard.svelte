@@ -31,9 +31,14 @@
       fontSize: 25,
       fontFamily: "Roboto Mono",
     });
-    editor.session.on('change', () => {content = editor.getValue()});
+    editor.session.on("change", () => {
+      content = editor.getValue();
+    });
+  });
 
-});
+  export function reset(content: string) {
+    editor.setValue(content, 1);
+  }
 </script>
 
 <UiCard icon="code" title="Coding">
