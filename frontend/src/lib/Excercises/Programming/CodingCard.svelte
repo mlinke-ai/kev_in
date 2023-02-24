@@ -28,7 +28,7 @@
     editor.setValue(content, 1);
     editor.setOptions({
       showPrintMargin: false,
-      fontSize: 18,
+      fontSize: 25,
       fontFamily: "Roboto Mono",
     });
     editor.session.on('change', () => {content = editor.getValue()});
