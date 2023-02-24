@@ -15,4 +15,4 @@ wip/
 frontend/.routify
 frontend/node_modules/
 frontend/dist
-frontend/src/static
+frontend/src/static/*
