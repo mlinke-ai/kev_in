@@ -2,15 +2,15 @@
     unified transitions, title naming and basic access control 
 -->
 <script lang="ts">
-  import { blur } from "svelte/transition";
+  import { blur, slide } from "svelte/transition";
+  import { accessLevel } from "../../stores";
+  import { accessLevels } from "./types";
   import { replace as replaceRoute } from "svelte-spa-router";
-  import { renderNavbar } from "../../stores";
 
-  export let transition = true;
+  export let blurTransition = true;
+  export let slideTransition = false;
   export let title = "";
   export let fullwidth = false;
-
-  $renderNavbar = !fullwidth;
 </script>
 
 <svelte:head>
@@ -20,9 +20,12 @@
     <title>Kev.In</title>
   {/if}
 </svelte:head>
-
-{#if transition}
-  <div class="page" in:blur={{ duration: 250 }}>
+{#if slideTransition}
+  <div class="page" in:slide={{ duration: 500 }}>
+    <slot />
+  </div>
+{:else if blurTransition}
+  <div class="page" in:blur={{ duration: 500 }}>
     <slot />
   </div>
 {:else}
