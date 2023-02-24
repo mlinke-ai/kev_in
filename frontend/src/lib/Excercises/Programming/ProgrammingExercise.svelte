@@ -36,7 +36,6 @@
 <Page title="Coding Sandbox" fullwidth={true}>
   <div class="sandbox-container">
     <div class="header-area">
-      <h3>{exerciseData.exercise_title}</h3>
     </div>
     <div class="task-area">
       <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
@@ -60,7 +59,7 @@
   .sandbox-container {
     display: grid;
     grid-template-columns: 3fr 9fr;
-    grid-template-rows: 1.5fr 8fr 2fr 0.5fr;
+    grid-template-rows: .5fr 9fr 2fr 0.5fr;
     grid-template-areas:
       "head head"
       "task code"
@@ -78,9 +77,6 @@
   }
   .header-area {
     grid-area: head;
-    h3 {
-      color: vars.$primaryDark;
-    }
   }
   .task-area {
     grid-area: task;
