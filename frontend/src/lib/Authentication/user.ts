@@ -31,7 +31,7 @@ export const login = async (email: string, password: string) => {
       user_role_value: userData.user_role_value,
     };
     storeUser(user);
-    history.pushState({}, null, `#${getStore(startPage)}`)
+    history.pushState({}, "", `#${getStore(startPage)}`)
     return true;
   } else if (response.status == 401) {
     return false;
@@ -42,7 +42,7 @@ export const login = async (email: string, password: string) => {
 export const logout = async () => {
   await fetch("/logout", { method: "POST" }).then(() => {
     resetUser();
-    history.pushState({}, null, `#${getStore(startPage)}`)
+    history.pushState({}, "", `#${getStore(startPage)}`)
   });
 };
 
