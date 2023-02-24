@@ -8,7 +8,11 @@ notes.md
 __pycache__/
 instance/
 .vscode/
-node_modules/
 tex/
 .idea/
 wip/
+
+frontend/.routify
+frontend/node_modules/
+frontend/dist
+frontend/src/static
