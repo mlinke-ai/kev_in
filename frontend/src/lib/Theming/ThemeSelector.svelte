@@ -1,13 +1,15 @@
 <script lang="ts">
   import Fab, { Icon } from "@smui/fab";
   import Tooltip, { Wrapper } from "@smui/tooltip";
-  import { selectedThemeIndex } from "../../stores";
   import ThemeButton from "./ThemeButton.svelte";
-  import { themes, setTheme } from "./themes";
+  import { themes, setTheme, getTheme } from "./themes";
+
+  let currentTheme = getTheme();
 
   function select(index) {
-    if (index != $selectedThemeIndex) {
-      $selectedThemeIndex = index;
+    if (index != currentTheme) {
+      localStorage.setItem("preferredTheme", index)
+      currentTheme = index;
       setTheme(index, true);
     }
   }
@@ -20,7 +22,7 @@
         on:click={() => select(index)}
         color={theme.dark["mdc-theme-primary"]}
         tooltip={theme.name}
-        selected={index === $selectedThemeIndex}
+        selected={index == currentTheme}
       />
     {/each}
   </div>
@@ -56,10 +58,6 @@
     cursor: drag;
     -ms-overflow-style: none;
     scrollbar-width: none;
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
   }
   :global(.theme-mode-button) {
     // scale: 0.8;

@@ -1,5 +1,9 @@
 import { ThemeInterface } from "./types";
 
+export function getTheme() {
+  return (localStorage.getItem("preferredTheme") as unknown as number)
+}
+
 export function setTheme(index: number, darkMode?: boolean) {
   let theme: ThemeInterface = themes[index]
   if (darkMode) {
