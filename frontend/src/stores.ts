@@ -9,4 +9,4 @@ export const userMail = writable("");
 export const startPage = writable("#/")
 
 // UI
-export const selectedThemeIndex = writable(0)
+export const selectedThemeIndex = writable(1)
