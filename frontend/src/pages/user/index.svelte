@@ -1,5 +1,5 @@
 <script>
-  import Page from "../../lib/common/Page.svelte";
+  import Page from "../../lib/Common/Page.svelte";
   import Card from "@smui/card";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
   import { userName } from "../../stores";

@@ -1,7 +1,7 @@
 <!-- Component to show output of code run on the server -->
 
 <script>
-    import UiCard from "../../common/UICard.svelte";
+    import UiCard from "../../Common/UICard.svelte";
 </script>
 
 <UiCard icon="terminal" title="Output">

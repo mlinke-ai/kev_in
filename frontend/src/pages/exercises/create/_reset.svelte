@@ -1,6 +1,6 @@
 <script>
     import { redirect } from "@roxi/routify";
-    import { accessLevels } from "../../../lib/common/types";
+    import { accessLevels } from "../../../lib/Common/types";
     import { accessLevel, startPage } from "../../../stores";
   
     if ($accessLevel < accessLevels.admin) {

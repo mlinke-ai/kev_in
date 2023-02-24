@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Page from "../../common/Page.svelte";
+  import Page from "../../Common/Page.svelte";
   import PuzzleCard from "./PuzzleCard.svelte";
   import TaskCard from "../TaskCard.svelte";
   import StatusBar from "../StatusBar.svelte";
-  import { accessLevels } from "../../common/types";
+  import { accessLevels } from "../../Common/types";
   import {
     SolutionPostParsonsPuzzle,
     submitSolution,

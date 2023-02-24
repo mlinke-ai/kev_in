@@ -1,12 +1,12 @@
 <script>
   import Button from "@smui/button/src/Button.svelte";
-  import Page from "../../../lib/common/Page.svelte";
+  import Page from "../../../lib/Common/Page.svelte";
   import Textfield from "@smui/textfield";
   import IconButton from '@smui/icon-button';
   import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
   import { each } from "svelte/internal";
-  import UiCard from "../../../lib/common/UICard.svelte";
-  import { accessLevels } from "../../../lib/common/types";
+  import UiCard from "../../../lib/Common/UICard.svelte";
+  import { accessLevels } from "../../../lib/Common/types";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Page from "../../common/Page.svelte";
+  import Page from "../../Common/Page.svelte";
   import TaskCard from "../TaskCard.svelte";
   import CodingCard from "./CodingCard.svelte";
   import OutputCard from "./OutputCard.svelte";

@@ -6,7 +6,7 @@
   import { push as pushRoute } from "svelte-spa-router";
   import Button, { Icon, Label } from "@smui/button";
   import { accessLevel, startPage, userName } from "../../stores";
-  import { accessLevels } from "../common/types";
+  import { accessLevels } from "../Common/types";
   import ThemeSelector from "../Theming/ThemeSelector.svelte";
 
   let menu: Menu;

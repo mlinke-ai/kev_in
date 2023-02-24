@@ -1,4 +1,4 @@
-import type { languages } from "../common/types";
+import type { languages } from "../Common/types";
 
 export enum exercises {
   gapText = 1,

@@ -2,8 +2,8 @@
 <script>
   import Button from "@smui/button";
   import Textfield from "@smui/textfield";
-  import Message from "../common/Message/Message.svelte";
-  import { messages } from "../common/types";
+  import Message from "../Common/Message/Message.svelte";
+  import { messages } from "../Common/types";
   import PasswordInput from "./PasswordInput.svelte";
   import { login } from "./user";
 

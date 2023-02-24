@@ -1,13 +1,13 @@
 <script>
   import Button, { Label } from "@smui/button";
   import { PythonSvg, JavaSvg } from "../lib/AnimatedSVG";
-  import Page from "../lib/common/Page.svelte";
-  import LanguageCard from "../lib/common/LanguageCard.svelte";
+  import Page from "../lib/Common/Page.svelte";
+  import LanguageCard from "../lib/Common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
   import Dialog from "@smui/dialog";
   import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
   import { accessLevel, startPage } from "../stores";
-  import { accessLevels, dashboardPage } from "../lib/common/types";
+  import { accessLevels, dashboardPage } from "../lib/Common/types";
 
   let open = false;
   if ($accessLevel != accessLevels.default) {

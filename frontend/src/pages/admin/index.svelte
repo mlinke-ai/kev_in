@@ -1,5 +1,5 @@
 <script>
-  import Page from "../../lib/common/Page.svelte";
+  import Page from "../../lib/Common/Page.svelte";
   import Card, {
     Content,
     PrimaryAction,
@@ -13,7 +13,7 @@
   import { Svg } from "@smui/common";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { accessLevels } from "../../lib/common/types";
+  import { accessLevels } from "../../lib/Common/types";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
 

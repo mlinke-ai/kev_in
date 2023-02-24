@@ -1,13 +1,13 @@
 <!-- Component that provides an editor with syntax highlighting for
      Java and Python using ace -->
 <script lang="ts">
-  import UiCard from "../../common/UICard.svelte";
+  import UiCard from "../../Common/UICard.svelte";
   import * as ace from "brace";
   import "brace/mode/python";
   import "brace/mode/java";
   import "brace/theme/gob";
   import { onMount } from "svelte";
-  import { languages } from "../../common/types";
+  import { languages } from "../../Common/types";
 
   let editor;
   let modes = ["ace/mode/python", "ace/mode/java"];
