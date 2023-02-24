@@ -49,7 +49,6 @@
           title="Java."
           description="Oracle Java is the #1 programming language and development
       platform."
-          disabled={true}
         >
           <JavaSvg delayAnimation={750} />
         </LanguageCard>
