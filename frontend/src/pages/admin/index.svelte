@@ -93,7 +93,7 @@
   getTotalExercises();
 </script>
 
-<Page>
+<Page title="Admin - Dashboard" slideTransition={true}>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
