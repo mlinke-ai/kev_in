@@ -6,8 +6,6 @@
   import StatusBar from "../StatusBar.svelte";
   import type { ProgrammingExerciseType } from "../types";
   import { submitSolution, getCurrentTimestamp, SolutionPostProgramming, SolutionGet } from "../solution";
-  import SolutionView from "../../Solutions/SolutionView.svelte";
-
   let elapsedTime = 0;
   export let exerciseData: ProgrammingExerciseType;
   let content: string = exerciseData.exercise_content.code;
