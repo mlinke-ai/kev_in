@@ -1,5 +1,6 @@
 <script lang="ts">
   import Fab, { Icon } from "@smui/fab";
+  import { SecondaryText } from "@smui/list";
   import Tooltip, { Wrapper } from "@smui/tooltip";
   import ThemeButton from "./ThemeButton.svelte";
   import { themes, setTheme, getTheme } from "./themes";
@@ -8,7 +9,7 @@
 
   function select(index) {
     if (index != currentTheme) {
-      localStorage.setItem("preferredTheme", index)
+      localStorage.setItem("preferredTheme", index);
       currentTheme = index;
       setTheme(index, true);
     }
@@ -16,30 +17,37 @@
 </script>
 
 <div class="theme-container">
-  <div class="theme-scroll-area">
-    {#each themes as theme, index}
-      <ThemeButton
-        on:click={() => select(index)}
-        color={theme.dark["mdc-theme-primary"]}
-        tooltip={theme.name}
-        selected={index == currentTheme}
-      />
-    {/each}
+  <SecondaryText>Select theme</SecondaryText>
+  <div class="theme-buttons">
+    <div class="theme-scroll-area">
+      {#each themes as theme, index}
+        <ThemeButton
+          on:click={() => select(index)}
+          color={theme.dark["mdc-theme-primary"]}
+          tooltip={theme.name}
+          selected={index == currentTheme}
+        />
+      {/each}
+    </div>
+    <Wrapper>
+      <Fab on:click class="theme-mode-button" mini>
+        <Icon style="color: white" class="material-icons">dark_mode</Icon>
+      </Fab>
+      <Tooltip style="z-index: 999;">Can't toggle darkmode</Tooltip>
+    </Wrapper>
   </div>
-  <Wrapper>
-    <Fab on:click class="theme-mode-button" mini>
-      <Icon style="color: white" class="material-icons">dark_mode</Icon>
-    </Fab>
-    <Tooltip style="z-index: 999;">Can't toggle darkmode</Tooltip>
-  </Wrapper>
 </div>
 
 <style lang="scss">
   .theme-container {
     display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+  }
+  .theme-buttons {
+    display: flex;
     align-items: center;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
     gap: 0.5rem;
   }
   .theme-scroll-area {
