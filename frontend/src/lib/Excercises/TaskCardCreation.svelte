@@ -20,8 +20,8 @@
       left: 0;
       margin: 0 0.5rem 0.5rem 0.5rem;
       border-radius: 0.5rem;
-      background-color: black;
-      color: #7cfc00;
+      background-color: var(--console-background);;
+      color: var(--console-color);;
       padding: 1rem;
       font-family: "Roboto Mono";
       overflow: auto;

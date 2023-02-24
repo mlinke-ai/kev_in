@@ -22,8 +22,8 @@
         margin: 0 0.5rem 0.5rem 0.5rem;
         padding: 1rem;
         border-radius: 0.5rem;
-        background-color: black;
-        color: #7cfc00;
+        color: var(--console-color);
+        background-color: var(--console-background);
         font-family: "Roboto Mono";
     }
 </style>
