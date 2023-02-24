@@ -3,7 +3,7 @@
     import { link } from "svelte-spa-router";
     import { navbarConfig } from "./config";
     import { accessLevel, startPage } from "../../stores";
-    import { accessLevels } from "../common/types";
+    import { accessLevels } from "../Common/types";
     import { onMount } from "svelte";
     import { blur } from "svelte/transition";
     import AccountMenu from "./AccountMenu.svelte";

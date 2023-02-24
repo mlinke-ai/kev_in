@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Page from "../../lib/common/Page.svelte";
+  import Page from "../../lib/Common/Page.svelte";
   import Card from "@smui/card";
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
@@ -8,7 +8,7 @@
   import { Svg } from "@smui/common";
 
   import { accessLevel, startPage } from "../../stores";
-  import { accessLevels } from "../../lib/common/types";
+  import { accessLevels } from "../../lib/Common/types";
   import { link } from "svelte-spa-router";
 
   let exercises = [];

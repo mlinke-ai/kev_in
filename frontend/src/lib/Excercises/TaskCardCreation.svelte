@@ -1,5 +1,5 @@
 <script>
-  import UiCard from "../common/UICard.svelte";
+  import UiCard from "../Common/UICard.svelte";
   import Textfield from '@smui/textfield';
 
   export let description = ""

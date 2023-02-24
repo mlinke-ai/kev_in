@@ -1,6 +1,6 @@
 <script>
   import { redirect } from "@roxi/routify";
-  import { accessLevels } from "../../lib/common/types";
+  import { accessLevels } from "../../lib/Common/types";
   import Navbar from "../../lib/Navbar/Navbar.svelte";
   import { accessLevel, startPage } from "../../stores";
 

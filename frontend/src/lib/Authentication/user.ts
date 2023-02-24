@@ -5,7 +5,7 @@ import {
   accessLevel,
   startPage,
 } from "../../stores";
-import { accessLevels, startPages, userRoles } from "../common/types";
+import { accessLevels, startPages, userRoles } from "../Common/types";
 import { get as getStore } from "svelte/store";
 import type { GetUser } from "./types";
 import { redirect } from "@roxi/routify";
