@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "routify -b && vite",
     "build": "routify -b && vite build",
     "preview": "vite preview",
     "prepare": "npm run smui-theme-light && npm run smui-theme-dark",
