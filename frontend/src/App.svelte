@@ -3,6 +3,10 @@
   import { Router } from "@roxi/routify";
   import { routes } from "../.routify/routes";
   import CircularProgress from "@smui/circular-progress";
+  import { setTheme } from "./lib/Theming/themes";
+  import { selectedThemeIndex } from "./stores";
+
+  setTheme($selectedThemeIndex, true)
 </script>
 
 {#await prepareApp()}
