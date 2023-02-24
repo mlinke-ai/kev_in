@@ -4,9 +4,14 @@
   import { routes } from "../.routify/routes";
   import CircularProgress from "@smui/circular-progress";
   import { setTheme } from "./lib/Theming/themes";
-  import { selectedThemeIndex } from "./stores";
 
-  setTheme($selectedThemeIndex, true)
+  let preferredTheme: number = localStorage.getItem("preferredTheme") as unknown as number
+  if (preferredTheme == undefined) {
+    preferredTheme = 1
+    localStorage.setItem("preferredTheme", preferredTheme)
+  }
+
+  setTheme(preferredTheme, true)
 </script>
 
 {#await prepareApp()}
