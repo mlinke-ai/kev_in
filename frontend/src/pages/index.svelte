@@ -8,11 +8,8 @@
   import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
   import { accessLevel, startPage } from "../stores";
   import { accessLevels, dashboardPage } from "../lib/common/types";
-<<<<<<< HEAD:frontend/src/routes/Home.svelte
   import { replace as replaceRoute } from "svelte-spa-router";
   import ThemeSelector from "../lib/Theming/ThemeSelector.svelte";
-=======
->>>>>>> origin/develop:frontend/src/pages/index.svelte
 
   let open = false;
   if ($accessLevel != accessLevels.default) {
