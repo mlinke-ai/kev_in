@@ -13,7 +13,7 @@
 
   let open = false;
   if ($accessLevel != accessLevels.default) {
-    history.pushState({}, null, `#${$startPage}`)
+    history.pushState({}, null, `#${$startPage}`);
   }
 </script>
 
@@ -43,7 +43,7 @@
           description="Worldwide beloved and broadly used high-level programming
     language."
         >
-          <PythonSvg/>
+          <PythonSvg />
         </LanguageCard>
       </div>
       <div in:blur={{ delay: 500, duration: 500 }}>
@@ -51,6 +51,7 @@
           title="Java."
           description="Oracle Java is the #1 programming language and development
       platform."
+          disabled={true}
         >
           <JavaSvg delayAnimation={750} />
         </LanguageCard>
