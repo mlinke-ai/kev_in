@@ -5,14 +5,17 @@
   import OutputCard from "./OutputCard.svelte";
   import StatusBar from "../StatusBar.svelte";
   import type { ProgrammingExerciseType } from "../types";
-  import { submitSolution, getCurrentTimestamp, SolutionPostProgramming } from "../solution";
+  import { submitSolution, getCurrentTimestamp, SolutionPostProgramming, SolutionGet } from "../solution";
+  import SolutionView from "../../Solutions/SolutionView.svelte";
 
   let elapsedTime = 0;
   export let exerciseData: ProgrammingExerciseType;
   let content: string = exerciseData.exercise_content.code;
   let solution: SolutionPostProgramming;
+  let solutionResponse: SolutionGet;
+  let serverMessage = "";
 
-  function submit() {
+  async function submit() {
     solution = {
       solution_exercise: exerciseData.exercise_id,
       solution_date: getCurrentTimestamp(),
@@ -21,7 +24,13 @@
         code: content
       }
     }
-    submitSolution(solution);
+    solutionResponse = await submitSolution(solution);
+    serverMessage = `Server>> ${solutionResponse.evaluator_message}`;
+    if (solutionResponse.solution_correct) {
+      // Do something cool
+    } else {
+      
+    }
   }
   function reset() {}
 </script>
@@ -38,7 +47,7 @@
       <CodingCard bind:content language={exerciseData.exercise_language_type} />
     </div>
     <div class="output-area">
-      <OutputCard />
+      <OutputCard message={serverMessage}/>
     </div>
     <StatusBar bind:elapsedTime {reset} {submit} />
   </div>

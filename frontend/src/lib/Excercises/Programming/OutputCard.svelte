@@ -1,12 +1,14 @@
 <!-- Component to show output of code run on the server -->
 
-<script>
+<script lang="ts">
     import UiCard from "../../Common/UICard.svelte";
+
+    export let message: String;
 </script>
 
 <UiCard icon="terminal" title="Output">
     <div class="output-container">
-        Server>>
+        {message}
     </div>
 </UiCard>
 
