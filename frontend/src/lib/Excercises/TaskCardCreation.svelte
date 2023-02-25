@@ -31,9 +31,10 @@
     width: 99%;
     background-color: transparent;
     height: 98%;
-    color: white;
+    color: var(--console-color);
     border: none;
     resize: none;
+    font-size: 1.5rem;;
   }
 
   .input:focus {
