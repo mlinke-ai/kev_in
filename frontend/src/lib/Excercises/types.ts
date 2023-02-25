@@ -50,3 +50,22 @@ export interface ParsonsPuzzleExerciseType extends ExerciseType {
     list: Array<string>;
   };
 }
+
+export interface PostExerciseType {
+  exercise_title: string;
+  exercise_description: string;
+  exercise_type: exercises;
+  exercise_content: any;
+  exercise_language: number; 
+  exercise_solution: any;
+}
+
+export interface ProgrammingPostExerciseType extends PostExerciseType {
+  exercise_content: {
+    code: string;
+    func: string;
+  };
+  exercise_solution: {
+    [key: string]: [Array<number>, Array<number>];
+  }
+}
