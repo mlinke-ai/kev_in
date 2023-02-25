@@ -15,7 +15,7 @@
   let exerciseTitle = "";
   let exerciseDescription = "";
 
-  let open = false;
+  let openExit = false;
 
   function newPuzzlePiece(){
     itemsLeft = [...itemsLeft, {id: itemsLeft.length + 1, name: ""}]
@@ -90,7 +90,7 @@
       <Button variant="raised" on:click={newPuzzlePiece}>Add a new Puzzle Piece</Button>
     </div>
     <div class="status-bar">
-      <Button variant ="outlined" on:click={()=>{open=true}}>
+      <Button variant ="outlined" on:click={()=>{openExit=true}}>
         <Icon class="material-icons">arrow_back</Icon>
         <Label>Back to Overview</Label>
       </Button>
@@ -103,7 +103,7 @@
       </div>
     </div>
   </div>
-  <ExitDialog bind:open={open}/>
+  <ExitDialog bind:open={openExit}/>
 </Page>
 
 <style lang="scss">
