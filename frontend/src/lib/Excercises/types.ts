@@ -3,11 +3,11 @@ import type { languages } from "../Common/types";
 export enum exercises {
   gapText = 1,
   syntax = 2,
-  parsonsPuzzle = "ParsonsPuzzleExercise",
+  parsonsPuzzle = 3,
   findTheBug = 4,
   documentation = 5,
   output = 6,
-  programming = "ProgrammingExercise",
+  programming = 7,
 }
 
 interface ExerciseType {
