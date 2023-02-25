@@ -9,8 +9,6 @@
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
-  let itemsLeftOriginal = [];
-  let itemsRight = [];
 
   let exerciseTitle = "";
   let exerciseDescription = "";
@@ -28,6 +26,12 @@
       itemsLeft[k]["id"] --;
     }
     itemsLeft = itemsLeft
+  }
+
+  function reset(){
+    itemsLeft = [{id: 1, name: ""}];
+    exerciseDescription = "";
+    exerciseTitle = "";
   }
 
 
@@ -95,7 +99,7 @@
         <Label>Back to Overview</Label>
       </Button>
       <div>
-        <Button variant="outlined">
+        <Button variant="outlined" on:click={reset}>
           <Icon class="material-icons">restart_alt</Icon>
           <Label>Reset</Label>
         </Button>
