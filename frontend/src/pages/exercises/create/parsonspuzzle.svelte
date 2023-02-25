@@ -4,9 +4,8 @@
   import Textfield from "@smui/textfield";
   import IconButton from '@smui/icon-button';
   import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
-  import { each } from "svelte/internal";
-  import UiCard from "../../../lib/Common/UICard.svelte";
-  import { accessLevels } from "../../../lib/Common/types";
+  import ExitDialog from "../../../lib/Excercises/ExitDialog.svelte";
+  import { Icon, Label } from "@smui/button";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
@@ -15,6 +14,8 @@
 
   let exerciseTitle = "";
   let exerciseDescription = "";
+
+  let open = false;
 
   function newPuzzlePiece(){
     itemsLeft = [...itemsLeft, {id: itemsLeft.length + 1, name: ""}]
@@ -89,13 +90,20 @@
       <Button variant="raised" on:click={newPuzzlePiece}>Add a new Puzzle Piece</Button>
     </div>
     <div class="status-bar">
-      PPE - Creation
+      <Button variant ="outlined" on:click={()=>{open=true}}>
+        <Icon class="material-icons">arrow_back</Icon>
+        <Label>Back to Overview</Label>
+      </Button>
       <div>
-        <Button variant="outlined">Reset</Button>
+        <Button variant="outlined">
+          <Icon class="material-icons">restart_alt</Icon>
+          <Label>Reset</Label>
+        </Button>
         <Button variant="raised" on:click={submitExercise}>Submit new Exercise</Button>
       </div>
     </div>
   </div>
+  <ExitDialog bind:open={open}/>
 </Page>
 
 <style lang="scss">
@@ -131,7 +139,6 @@
   }
   .status-bar {
     grid-area: status;
-    color: vars.$consoleColor;
     font-family: "Roboto Mono";
     display: flex;
     align-items: center;
