@@ -3,9 +3,6 @@
 -->
 <script lang="ts">
   import { blur, slide } from "svelte/transition";
-  import { accessLevel } from "../../stores";
-  import { accessLevels } from "./types";
-  import { replace as replaceRoute } from "svelte-spa-router";
 
   export let blurTransition = true;
   export let slideTransition = false;
@@ -38,12 +35,7 @@
   <style>
     body {
       margin: 0;
-      background: rgb(0, 57, 49);
-      background: radial-gradient(
-        circle,
-        rgba(0, 57, 49, 1) 0%,
-        rgba(0, 20, 17, 1) 100%
-      );
+      background: var(--mdc-theme-background);
       overflow: overlay;
     }
     .page {

@@ -1,43 +1,53 @@
 <script lang="ts">
   import Fab, { Icon } from "@smui/fab";
+  import { SecondaryText } from "@smui/list";
   import Tooltip, { Wrapper } from "@smui/tooltip";
-  import { selectedThemeIndex } from "../../stores";
   import ThemeButton from "./ThemeButton.svelte";
-  import { themes, setTheme } from "./themes";
+  import { themes, setTheme, getTheme } from "./themes";
+
+  let currentTheme = getTheme();
 
   function select(index) {
-    if (index != $selectedThemeIndex) {
-      $selectedThemeIndex = index;
-      setTheme(themes[index], true);
+    if (index != currentTheme) {
+      localStorage.setItem("preferredTheme", index);
+      currentTheme = index;
+      setTheme(index, true);
     }
   }
 </script>
 
 <div class="theme-container">
-  <div class="theme-scroll-area">
-    {#each themes as theme, index}
-      <ThemeButton
-        on:click={() => select(index)}
-        color={theme.dark["mdc-theme-primary"]}
-        tooltip={theme.name}
-        selected={index === $selectedThemeIndex}
-      />
-    {/each}
+  <SecondaryText>Select theme</SecondaryText>
+  <div class="theme-buttons">
+    <div class="theme-scroll-area">
+      {#each themes as theme, index}
+        <ThemeButton
+          on:click={() => select(index)}
+          color={theme.dark["mdc-theme-primary"]}
+          tooltip={theme.name}
+          selected={index == currentTheme}
+        />
+      {/each}
+    </div>
+    <Wrapper>
+      <Fab on:click class="theme-mode-button" mini>
+        <Icon style="color: white" class="material-icons">dark_mode</Icon>
+      </Fab>
+      <Tooltip style="z-index: 999;">Can't toggle darkmode</Tooltip>
+    </Wrapper>
   </div>
-  <Wrapper>
-    <Fab on:click class="theme-mode-button" mini>
-      <Icon style="color: white" class="material-icons">dark_mode</Icon>
-    </Fab>
-    <Tooltip style="z-index: 999;">Can't toggle darkmode</Tooltip>
-  </Wrapper>
 </div>
 
 <style lang="scss">
   .theme-container {
     display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+  }
+  .theme-buttons {
+    display: flex;
     align-items: center;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
     gap: 0.5rem;
   }
   .theme-scroll-area {
@@ -56,10 +66,6 @@
     cursor: drag;
     -ms-overflow-style: none;
     scrollbar-width: none;
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
   }
   :global(.theme-mode-button) {
     // scale: 0.8;
@@ -67,7 +73,7 @@
     min-height: 2rem;
     max-width: 2rem;
     max-height: 2rem;
-    background-color: transparent;
+    background-color: var(--mdc-theme-primary);
     margin-left: auto;
   }
 </style>

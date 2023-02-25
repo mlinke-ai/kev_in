@@ -3,11 +3,11 @@ import type { languages } from "../Common/types";
 export enum exercises {
   gapText = 1,
   syntax = 2,
-  parsonsPuzzle = "ParsonsPuzzleExercise",
+  parsonsPuzzle = 3,
   findTheBug = 4,
   documentation = 5,
   output = 6,
-  programming = "ProgrammingExercise",
+  programming = 7,
 }
 
 interface ExerciseType {
@@ -49,4 +49,23 @@ export interface ParsonsPuzzleExerciseType extends ExerciseType {
   exercise_solution: {
     list: Array<string>;
   };
+}
+
+export interface PostExerciseType {
+  exercise_title: string;
+  exercise_description: string;
+  exercise_type: exercises;
+  exercise_content: any;
+  exercise_language: number; 
+  exercise_solution: any;
+}
+
+export interface ProgrammingPostExerciseType extends PostExerciseType {
+  exercise_content: {
+    code: string;
+    func: string;
+  };
+  exercise_solution: {
+    [key: string]: [Array<number>, Array<number>];
+  }
 }

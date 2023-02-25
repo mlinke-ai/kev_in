@@ -5,14 +5,19 @@
   import OutputCard from "./OutputCard.svelte";
   import StatusBar from "../StatusBar.svelte";
   import type { ProgrammingExerciseType } from "../types";
-  import { submitSolution, getCurrentTimestamp, SolutionPostProgramming } from "../solution";
+  import { submitSolution, getCurrentTimestamp, SolutionPostProgramming, SolutionGet } from "../solution";
+  
+  export let exerciseData: ProgrammingExerciseType;
 
   let elapsedTime = 0;
-  export let exerciseData: ProgrammingExerciseType;
   let content: string = exerciseData.exercise_content.code;
   let solution: SolutionPostProgramming;
+  let solutionResponse: SolutionGet;
+  let serverMessage = "";
+  let resetEditor: (content: string) => void;
+  let focusEditor: () => void;
 
-  function submit() {
+  async function submit() {
     solution = {
       solution_exercise: exerciseData.exercise_id,
       solution_date: getCurrentTimestamp(),
@@ -21,24 +26,31 @@
         code: content
       }
     }
-    submitSolution(solution);
+    solutionResponse = await submitSolution(solution);
+    serverMessage = `Server>> ${solutionResponse.evaluator_message}`;
+    if (solutionResponse.solution_correct) {
+      // Do something cool
+    } else {
+      focusEditor()
+    }
   }
-  function reset() {}
+  function reset() {
+    resetEditor(exerciseData.exercise_content.code);
+  }
 </script>
 
 <Page title="Coding Sandbox" fullwidth={true}>
   <div class="sandbox-container">
     <div class="header-area">
-      <h3>{exerciseData.exercise_title}</h3>
     </div>
     <div class="task-area">
       <TaskCard markdownSourceCode={exerciseData.exercise_description}/>
     </div>
     <div class="code-area">
-      <CodingCard bind:content language={exerciseData.exercise_language_type} />
+      <CodingCard bind:content bind:focus={focusEditor} bind:reset={resetEditor} language={exerciseData.exercise_language_type} />
     </div>
     <div class="output-area">
-      <OutputCard />
+      <OutputCard message={serverMessage}/>
     </div>
     <StatusBar bind:elapsedTime {reset} {submit} />
   </div>
@@ -53,7 +65,7 @@
   .sandbox-container {
     display: grid;
     grid-template-columns: 3fr 9fr;
-    grid-template-rows: 1.5fr 8fr 2fr 0.5fr;
+    grid-template-rows: .5fr 9fr 2fr 0.5fr;
     grid-template-areas:
       "head head"
       "task code"
@@ -71,9 +83,6 @@
   }
   .header-area {
     grid-area: head;
-    h3 {
-      color: vars.$primaryDark;
-    }
   }
   .task-area {
     grid-area: task;

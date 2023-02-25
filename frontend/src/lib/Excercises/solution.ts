@@ -16,7 +16,29 @@ export interface SolutionPostParsonsPuzzle extends SolutionPost {
   };
 }
 
-export const submitSolution = async (solution: SolutionPostProgramming | SolutionPostParsonsPuzzle) => {
+export interface SolutionGet {
+  evaluator_message: string;
+  message: string;
+  solution_correct: boolean;
+  solution_date: string;
+  solution_duration: number;
+  solution_exercise: number;
+  solution_id: number;
+  solution_pending: boolean;
+  solution_user: number;
+  solution_content?: unknown;
+}
+
+export interface SolutionGetProgramming extends SolutionGet {
+  solution_content: {
+    code: string;
+    func: string;
+  };
+}
+
+export const submitSolution = async (
+  solution: SolutionPostProgramming | SolutionPostParsonsPuzzle
+):Promise<SolutionGet | null> => {
   try {
     const response = await fetch("/solution", {
       method: "POST",
@@ -25,15 +47,15 @@ export const submitSolution = async (solution: SolutionPostProgramming | Solutio
         solution_exercise: solution.solution_exercise,
         solution_date: solution.solution_date,
         solution_duration: solution.solution_duration,
-        solution_content: solution.solution_content
+        solution_content: solution.solution_content,
       }),
     });
     if (!response.ok) {
-      
+      throw `HTTP Error ${response.status}`
     }
-    await response.json().then((data) => console.log(data));
-  } catch (error) {
-    console.error(error);
+    return await response.json().then((data) => data);
+  } catch (err) {
+    throw err
   }
 };
 

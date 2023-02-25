@@ -1,6 +1,11 @@
 import { ThemeInterface } from "./types";
 
-export function setTheme(theme: ThemeInterface, darkMode?: boolean) {
+export function getTheme() {
+  return (localStorage.getItem("preferredTheme") as unknown as number)
+}
+
+export function setTheme(index: number, darkMode?: boolean) {
+  let theme: ThemeInterface = themes[index]
   if (darkMode) {
     for (const variable in theme.dark) {
       if (theme.dark[variable]) {
@@ -59,7 +64,7 @@ export let themes: Array<ThemeInterface> = [
       "mdc-theme-on-primary": null,
       "mdc-theme-on-secondary": null,
       "mdc-theme-on-surface": null,
-      "console-color": "#7cfc00",
+      "console-color": "blue",
       "console-background": "#000",
     },
     dark: {
@@ -70,7 +75,7 @@ export let themes: Array<ThemeInterface> = [
       "mdc-theme-on-primary": null,
       "mdc-theme-on-secondary": null,
       "mdc-theme-on-surface": null,
-      "console-color": "#7cfc00",
+      "console-color": "blue",
       "console-background": "#000",
     },
   },

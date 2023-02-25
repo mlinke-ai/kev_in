@@ -29,6 +29,7 @@
     max-height: 2rem;
   }
   :global(.selected) {
+    // maybe comment this out
     border: 2px solid white;
   }
 </style>

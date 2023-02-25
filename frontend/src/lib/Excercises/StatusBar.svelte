@@ -56,7 +56,7 @@
   @use "../../variables" as vars;
   .status-bar {
     grid-area: status;
-    color: vars.$consoleColor;
+    color: var(--console-color);
     font-family: "Roboto Mono";
     display: flex;
     align-items: center;
