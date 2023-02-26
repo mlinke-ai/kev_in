@@ -6,6 +6,9 @@
   import StatusBar from "../StatusBar.svelte";
   import type { ProgrammingExerciseType } from "../types";
   import { submitSolution, getCurrentTimestamp, SolutionPostProgramming, SolutionGet } from "../solution";
+  import Dialog, { Title, Content, Actions } from '@smui/dialog';
+  import Button, { Label, Icon } from '@smui/button';
+  import { startPage } from "../../../stores";
   
   export let exerciseData: ProgrammingExerciseType;
 
@@ -16,6 +19,9 @@
   let serverMessage = "";
   let resetEditor: (content: string) => void;
   let focusEditor: () => void;
+
+  let errorMessage;
+  let openCorrectDialog = false;
 
   async function submit() {
     solution = {
@@ -29,8 +35,10 @@
     solutionResponse = await submitSolution(solution);
     serverMessage = `Server>> ${solutionResponse.evaluator_message}`;
     if (solutionResponse.solution_correct) {
-      // Do something cool
-    } else {
+      openCorrectDialog = true;
+    }
+    else{
+      errorMessage.open()
       focusEditor()
     }
   }
@@ -54,6 +62,24 @@
     </div>
     <StatusBar bind:elapsedTime {reset} {submit} />
   </div>
+  <Dialog
+  bind:open = {openCorrectDialog}
+  scrimClickAction=""
+  escapeKeyAction=""
+  aria-labelledby="mandatory-title"
+  aria-describedby="mandatory-content"
+>
+  <Title id="mandatory-title">Congratulations!</Title>
+  <Content id="mandatory-content">
+    You solved that task correctly!
+  </Content>
+  <Actions>
+    <Button variant ="outlined" on:click={()=>{history.pushState({}, null, `#${$startPage}`)}}>
+      <Icon class="material-icons">arrow_back</Icon>
+      <Label>Return to Overview</Label>
+    </Button>
+  </Actions>
+</Dialog>
 </Page>
 
 <style lang="scss">
