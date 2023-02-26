@@ -19,6 +19,7 @@
   import { accessLevels } from "../../lib/Common/types";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
+  import Tooltip, { Wrapper } from "@smui/tooltip";
 
   //display exercise progress
   let reqMeta;
@@ -182,7 +183,7 @@
 
           <Menu bind:this={menu}>
             <List style="width: fit-content">
-              <a href="/#/admin/exercises/create/parsonspuzzle">
+              <a href="/exercises/create/parsonspuzzle">
                 <Item class="add-exercise-item">
                   <Icon class="material-icons add-exercise-item-icon"
                     >extension</Icon
@@ -190,25 +191,24 @@
                   <p style="width: 175px; padding-left: 10px;">Parsons Puzzle</p>
                 </Item>
               </a>
-              <a href="/error">
-                <Item class="add-exercise-item">
+              <Wrapper>
+                <Item class="add-exercise-item" disabled>
                   <Icon class="material-icons add-exercise-item-icon"
                     >border_color</Icon
                   >
                   <p style="width: 175px;  padding-left: 10px;">
                     Fill in the Blanks
                   </p>
-                  <!-- please insert link to create a fill in the blank exercise here -->
                 </Item>
-              </a>
-              <a href="/error">
+                <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
+              </Wrapper>
+              <a href="/exercises/create/programming">
                 <Item class="add-exercise-item">
                   <Icon class="material-icons add-exercise-item-icon">code</Icon
                   >
                   <p style="width: 175px;  padding-left: 10px;">
                     Free Coding Exercise
                   </p>
-                  <!-- please insert link to create a free coding exercise here -->
                 </Item>
               </a>
             </List>
@@ -218,7 +218,7 @@
 
       <div class="add-user">
         <Card>
-          <a href="/#/error">
+          <a href="#/admin/add_user">
              <!-- please insert link to create a new user here -->
             <div class="display-button">
               <div class="display-icon">
