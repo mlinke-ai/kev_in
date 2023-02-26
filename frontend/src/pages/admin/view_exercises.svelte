@@ -14,14 +14,16 @@
   let exercises = [];
   let exercisesData;
   let exercisesMeta;
-  let nextExerciseUrl = "/exercise?exercise_offset=1&exercise_page=1";
-  //let maxDisplayedExercises = 20;
+  const maxDisplayed = 18;
+  let currentExerciseUrl = `/exercise?exercise_offset=1&exercise_limit=${maxDisplayed}`;
+  let nextExerciseUrl = null;
+  let prevExerciseUrl = null;
   let exercisesLoaded = false;
 
   let isAdmin = $accessLevel > accessLevels.user;
 
   const getExercises = async () => {
-    fetch(`${nextExerciseUrl}`, {
+    fetch(`${currentExerciseUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
@@ -31,13 +33,14 @@
           exercises = exercisesData[0];
           exercisesMeta = exercisesData[1];
           nextExerciseUrl = exercisesMeta.next_url;
-          console.log(nextExerciseUrl);
+          prevExerciseUrl = exercisesMeta.prev_url;
+          console.log(prevExerciseUrl);
           exercisesLoaded = true;
         });
+      } else if (response.status === 204) {
+        alert("No exercises in database. Please create some. Error: " + response.status);
       } else if (response.status === 400) {
-        alert(this.message);
-      } else if (response.status === 403) {
-        alert(this.message);
+        alert("Error: " + response.status + "\n Page limit not in range");
       } else if (response.status === 500) {
         alert("Oops an Error occured. Please try again.");
       } else {
@@ -49,8 +52,12 @@
   getExercises();
 
   function showLastExercises() {
-    // currentExercise -= maxDisplayedExercises;
-    // exercisesLoaded = true;
+    currentExerciseUrl = prevExerciseUrl;
+    getExercises();
+  }
+
+  function showNextExercises(){
+    currentExerciseUrl = nextExerciseUrl;
     getExercises();
   }
 
@@ -75,13 +82,12 @@
 
       <Menu bind:this={menu}>
         <List style="width: fit-content">
-          <a use:link href="/error">
+          <a use:link href="/admin/exercises/create/parsonspuzzle">
             <Item class="add-exercise-item">
               <Icon class="material-icons add-exercise-item-icon"
                 >extension</Icon
               >
               <p style="width: 175px;">Parsons Puzzle</p>
-              <!-- please insert link to create a free coding exercise here -->
             </Item>
           </a>
           <a use:link href="/error">
@@ -90,7 +96,7 @@
                 >border_color</Icon
               >
               <p style="width: 175px;">Fill in the Blanks</p>
-              <!-- please insert link to create a free coding exercise here -->
+              <!-- please insert link to create a fill in the blank exercise here -->
             </Item>
           </a>
           <a use:link href="/error">
@@ -131,12 +137,6 @@
                     <Icon class="material-icons">
                       edit
                     </Icon>
-                    <!-- <Icon component={Svg} viewBox="0 0 24 24">
-                      <path
-                        fill="outlined"
-                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                      />
-                    </Icon> -->
                   </IconButton>
                 </a>
               </div>
@@ -150,21 +150,20 @@
     <Button>Back to dashboard</Button>
   </a>
 
-  <!-- {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
+  {#if prevExerciseUrl == null && nextExerciseUrl != null}
     <div class="list-exercises-buttons">
-      <Button on:click={getExercises}>more users</Button>
+      <Button on:click={showNextExercises}>more exercises</Button>
     </div>
-  {:else if exercises.length > maxDisplayedExercises && exercises.length <= currentExercise + maxDisplayedExercises - 1}
+  {:else if prevExerciseUrl != null && nextExerciseUrl == null}
     <div class="list-exercises-buttons">
-      <Button on:click={showLastExercises}>last users</Button>
+      <Button on:click={showLastExercises}>last exercises</Button>
     </div>
-  {:else if exercises.length > maxDisplayedExercises && currentExercise != 1}
+  {:else if prevExerciseUrl != null && nextExerciseUrl != null}
     <div class="list-exercises-buttons">
-      <Button on:click={getExercises}>more users</Button>
-      <Button on:click={showLastExercises}>last users</Button>
+      <Button on:click={showLastExercises}>last exercises</Button>
+      <Button on:click={showNextExercises}>more exercises</Button>
     </div>
-  {/if} -->
-  <!-- does not work properly yet, needs total number of exercises from backend-->
+  {/if}
 </Page>
 
 <style>

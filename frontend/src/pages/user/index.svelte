@@ -9,7 +9,7 @@
   //display exercise progress
   let totalExercises;
   let solvedExercises;
-  console.log(solvedExercises);
+  let reqMeta;
   let userProgress;
   let r = document.querySelector(":root");
   let noCorrectExercise;
@@ -29,9 +29,8 @@
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          totalExercises = Object.values(data).length;
-          console.log(solvedExercises);
-          console.log(totalExercises);
+          reqMeta = Object.values(data);
+          totalExercises = reqMeta[1].total;
           getSolvedExercises(); 
           //following function calls might be removed if this is activated
           // setTotalExercises();
@@ -55,7 +54,8 @@
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          solvedExercises = Object.values(data).length;
+          reqMeta= Object.values(data);
+          solvedExercises = reqMeta[1].total
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();

@@ -21,6 +21,7 @@
   import { userID } from "../../stores";
 
   //display exercise progress
+  let reqMeta;
   let totalExercises = 100;
   let solvedExercises = 50;
   console.log(solvedExercises);
@@ -41,9 +42,8 @@
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          totalExercises = Object.values(data).length;
-          console.log(solvedExercises);
-          console.log(totalExercises);
+          reqMeta = Object.values(data);
+          totalExercises = reqMeta[1].total;
           getSolvedExercises();
         });
       } else {
@@ -54,15 +54,14 @@
 
   const getSolvedExercises = async () => {
     fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
-      //?solution_user=${$userID}&solution_correct=true
-      //to get the number of all correct solutions of the user with id ${me}
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          solvedExercises = Object.values(data).length;
+          reqMeta = Object.values(data);
+          solvedExercises = reqMeta[1].total;
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();
@@ -111,7 +110,7 @@
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
-      <h2 style="padding: 20px; font-family: monospace;">
+      <h2 style="padding: 20px 20px 0px 20px; font-family: monospace;">
         Welcome to your dashboard, {$userName}!
       </h2>
       <p style="padding: 0px 20px; font-family: monospace;">What do you want to do?</p>
@@ -124,7 +123,7 @@
     <div class="main-outside">
       <div class="grid-container-inside">
         <div class="left-inside">
-          <a href="/#/users">
+          <a href="/#/admin/view_users">
             <!-- <LanguageCard
             title=".list all users">
               <GroupSvg />
@@ -138,7 +137,7 @@
         </div>
 
         <div class="right-inside">
-          <a href="/#/admin/exercises">
+          <a href="/#/admin/view_exercises">
             <!-- <LanguageCard
             title=".list all exercises">
               <ExerciseSvg />
@@ -183,7 +182,7 @@
 
           <Menu bind:this={menu}>
             <List style="width: fit-content">
-              <a href="/#/ppecreation">
+              <a href="/#/admin/exercises/create/parsonspuzzle">
                 <Item class="add-exercise-item">
                   <Icon class="material-icons add-exercise-item-icon"
                     >extension</Icon
@@ -219,7 +218,8 @@
 
       <div class="add-user">
         <Card>
-          <a href="/#/adduser">
+          <a href="/#/error">
+             <!-- please insert link to create a new user here -->
             <div class="display-button">
               <div class="display-icon">
                 <Icon class="material-icons">library_add</Icon>
@@ -232,12 +232,12 @@
 
       <div class="own-solutions">
         <Card>
-          <a href="/#/solutions">
+          <a href="/#/admin/view_solutions">
             <div class="display-button">
               <div class="display-icon">
                 <Icon class="material-icons">fact_check</Icon>
               </div>
-              <div class="label-icon">Show own solutions</div>
+              <div class="label-icon">Show all solutions</div>
             </div>
           </a>
         </Card>
