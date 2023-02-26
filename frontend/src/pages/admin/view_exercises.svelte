@@ -20,6 +20,8 @@
   let prevExerciseUrl = null;
   let exercisesLoaded = false;
 
+  enum exerciseIcons{border_color, abc, extension, bug_report, assignment, terminal, code};
+
   let isAdmin = $accessLevel > accessLevels.user;
 
   const getExercises = async () => {
@@ -119,25 +121,30 @@
         <div class="grid-item">
           <Card>
             <a use:link href={`/exercises/${exercise.exercise_id}`}>
-              #{exercise.exercise_id}
-              {exercise.exercise_title}
-            </a>
-            <!-- <p>
+            <div class="card-grid">
+              <div class="card-grid-icon">
+                  <Icon class="material-icons" style="transform: scale(2)">
+                    {exerciseIcons[exercise.exercise_type_value -1]}
+                  </Icon>
+              </div>
+              <div class="card-grid-title">
+                #{exercise.exercise_id}
+                {exercise.exercise_title}
+              </div>
+            
+            <p class="card-grid-description">
               {exercise.exercise_description}
-            </p> -->
-            <p>
-              {exercise.exercise_type_name}
             </p>
+          </div>
+        </a>
 
             {#if isAdmin}
               <div style="display: flex; align-items: center;">
                 <a href="/#/error">
                   <!-- please add link to edit this exercise-->
-                  <IconButton>
                     <Icon class="material-icons">
                       edit
                     </Icon>
-                  </IconButton>
                 </a>
               </div>
             {/if}
@@ -185,6 +192,29 @@
     padding: 10px;
     font-size: 30px;
     text-align: center;
+  }
+
+  .card-grid{
+    display: grid;
+    grid-template-areas: 
+    "left right right"
+    "main main main";
+  }
+
+  .card-grid-icon{
+    width: fit-content;
+    padding:10px;
+    grid-area: left;
+  }
+
+  .card-grid-title{
+    padding: 10px;
+    grid-area: right;
+  }
+
+  .card-grid-description{
+    padding: 10px;
+    grid: main;
   }
 
   .add-exercise {

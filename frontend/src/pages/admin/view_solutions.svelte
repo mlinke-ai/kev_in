@@ -62,7 +62,6 @@
     currentSolutionsUrl = nextSolutionsUrl;
     getSolutions();
   }
-
 </script>
 
 <Page>
@@ -77,15 +76,18 @@
           <Card>
             <a href="/#/error">
               <!-- please add link to display this solution-->
-              {#if solution.solution_correct}
-              {solution.solution_id}
-              {exercises[solution.solution_exercise]}
-              {/if}
+
+              #{solution.solution_id}
             </a>
             <p>
-              {solution.solution_date}{solution.solution_duration}
+              Handed in: {solution.solution_date}
             </p>
-            <p id=""></p>
+
+            {#if solution.solution_correct}
+              <Icon class="material-icons">check</Icon>
+            {:else}
+              <Icon class="material-icons">clear</Icon>
+            {/if}
           </Card>
         </div>
       {/each}
