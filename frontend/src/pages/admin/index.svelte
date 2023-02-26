@@ -138,7 +138,7 @@
         </div>
 
         <div class="right-inside">
-          <a href="/#/exercises">
+          <a href="/#/admin/exercises">
             <!-- <LanguageCard
             title=".list all exercises">
               <ExerciseSvg />
