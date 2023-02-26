@@ -68,6 +68,15 @@
           setUserProgress();
           statsLoaded = true;
         });
+      } else if (response.status === 204){
+        //no correct solved exercises by new user
+        statsLoaded = false;
+        //noCorrectExercise = true;
+        solvedExercises = 0;
+        setTotalExercises();
+        setSolvedExercises();
+        setUserProgress();
+        statsLoaded = true;
       } else {
         alert("Oops an Error occured. " + response.status);
       }
@@ -105,6 +114,7 @@
       <h2 style="padding: 20px; font-family: monospace;">
         Welcome to your dashboard, {$userName}!
       </h2>
+      <p style="padding: 0px 20px; font-family: monospace;">What do you want to do?</p>
     </div>
 
     <!--  Menu -->
@@ -115,21 +125,29 @@
       <div class="grid-container-inside">
         <div class="left-inside">
           <a href="/#/users">
-            <LanguageCard
+            <!-- <LanguageCard
             title=".list all users">
               <GroupSvg />
-            </LanguageCard>
-            <div class="label"></div>
+            </LanguageCard> -->
+            <!-- replace Card with languageCard, if it's modified to display diffrent width -->
+            <Card>
+              <GroupSvg />
+            </Card>
+            <div class="label">list all users</div>
           </a>
         </div>
 
         <div class="right-inside">
           <a href="/#/exercises">
-            <LanguageCard
+            <!-- <LanguageCard
             title=".list all exercises">
               <ExerciseSvg />
-            </LanguageCard>
-            <div class="label"></div>
+            </LanguageCard> -->
+            <!-- replace Card with languageCard, if it's modified to display diffrent width -->
+            <Card>
+              <ExerciseSvg />
+            </Card>
+            <div class="label">list all exercises</div>
           </a>
         </div>
       </div>
@@ -138,7 +156,7 @@
     <!--  Right -->
     <div class="right-outside">
       <div class="box">
-        <h4>Solved Exercieses:</h4>
+        <h4>Solved Exercises:</h4>
         {#if statsLoaded}
           <p>{solvedExercises} out of {totalExercises}</p>
 
@@ -155,7 +173,6 @@
       <div class="add-exercise">
         <Card>
           <div class="pointer" on:mousedown={() => menu.setOpen(true)}>
-            <!-- TODO: add menu for choosing which exercise to add? -->
             <div class="display-button-menu">
               <div class="display-icon">
                 <Icon class="material-icons">library_add</Icon>
@@ -276,12 +293,13 @@
   }
 
   .main-outside {
-    display: flex;
+   
     align-content: center;
     grid-area: main;
   }
 
   .right-outside {
+    
     align-content: center;
     grid-area: right;
     padding: 15px;
@@ -289,6 +307,7 @@
   }
 
   .footer-outside {
+    display: flex;
     gap: 10px;
     align-content: center;
     padding: 20px;
@@ -310,16 +329,19 @@
   .grid-container-outside > div {
     background-color: rgb(0, 57, 49);
     font-size: 30px;
-    display: flex;
   }
 
   .left-inside {
+    width: 350px;
+    //rm if languagecard has been modified
     padding: 10px;
     align-content: center;
     grid-area: left;
   }
 
   .right-inside {
+    width: 350px;
+    //rm if languagecard has been modified
     padding: 10px;
     align-content: center;
     grid-area: right;
