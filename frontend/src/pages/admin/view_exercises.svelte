@@ -10,30 +10,40 @@
   import { accessLevel, startPage } from "../../stores";
   import { accessLevels } from "../../lib/Common/types";
   import { link } from "svelte-spa-router";
+  import Tooltip, { Wrapper } from "@smui/tooltip";
 
   let exercises = [];
-  let currentExercise = 1;
-  let maxDisplayedExercises = 20;
+  let exercisesData;
+  let exercisesMeta;
+  const maxDisplayed = 18;
+  let currentExerciseUrl = `/exercise?exercise_offset=1&exercise_limit=${maxDisplayed}`;
+  let nextExerciseUrl = null;
+  let prevExerciseUrl = null;
   let exercisesLoaded = false;
+
+  enum exerciseIcons{border_color, abc, extension, bug_report, assignment, terminal, code};
 
   let isAdmin = $accessLevel > accessLevels.user;
 
   const getExercises = async () => {
-    fetch(`/exercise?exercise_offset=${currentExercise}`, {
+    fetch(`${currentExerciseUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
           console.log(data);
-          exercises = Object.values(data);
-          console.log(exercises);
-          currentExercise += maxDisplayedExercises;
+          exercisesData = Object.values(data);
+          exercises = exercisesData[0];
+          exercisesMeta = exercisesData[1];
+          nextExerciseUrl = exercisesMeta.next_url;
+          prevExerciseUrl = exercisesMeta.prev_url;
+          console.log(prevExerciseUrl);
           exercisesLoaded = true;
         });
+      } else if (response.status === 204) {
+        alert("No exercises in database. Please create some. Error: " + response.status);
       } else if (response.status === 400) {
-        alert(this.message);
-      } else if (response.status === 403) {
-        alert(this.message);
+        alert("Error: " + response.status + "\n Page limit not in range");
       } else if (response.status === 500) {
         alert("Oops an Error occured. Please try again.");
       } else {
@@ -45,8 +55,12 @@
   getExercises();
 
   function showLastExercises() {
-    currentExercise -= maxDisplayedExercises;
-    exercisesLoaded = true;
+    currentExerciseUrl = prevExerciseUrl;
+    getExercises();
+  }
+
+  function showNextExercises(){
+    currentExerciseUrl = nextExerciseUrl;
     getExercises();
   }
 
@@ -71,29 +85,29 @@
 
       <Menu bind:this={menu}>
         <List style="width: fit-content">
-          <a use:link href="/error">
+          <a href="../exercises/create/parsonspuzzle">
             <Item class="add-exercise-item">
               <Icon class="material-icons add-exercise-item-icon"
                 >extension</Icon
               >
               <p style="width: 175px;">Parsons Puzzle</p>
-              <!-- please insert link to create a free coding exercise here -->
             </Item>
           </a>
-          <a use:link href="/error">
-            <Item class="add-exercise-item">
+          <Wrapper>
+            <Item class="add-exercise-item" disabled>
               <Icon class="material-icons add-exercise-item-icon"
                 >border_color</Icon
               >
-              <p style="width: 175px;">Fill in the Blanks</p>
-              <!-- please insert link to create a free coding exercise here -->
+              <p style="width: 175px;  padding-left: 10px;">
+                Fill in the Blanks
+              </p>
             </Item>
-          </a>
-          <a use:link href="/error">
+            <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
+          </Wrapper>
+          <a href="../exercises/create/programming">
             <Item class="add-exercise-item">
               <Icon class="material-icons add-exercise-item-icon">code</Icon>
               <p style="width: 175px;">Free Coding Exercise</p>
-              <!-- please insert link to create a free coding exercise here -->
             </Item>
           </a>
         </List>
@@ -101,36 +115,36 @@
     </div>
   {/if}
 
-  <p>This is a placeholder site for listing all exercises.</p>
-
   {#if exercisesLoaded}
     <div class="grid-container">
       {#each exercises as exercise}
         <div class="grid-item">
           <Card>
             <a use:link href={`/exercises/${exercise.exercise_id}`}>
-              #{exercise.exercise_id}
-              {exercise.exercise_title}
-            </a>
-            <p>
+            <div class="card-grid">
+              <div class="card-grid-icon">
+                  <Icon class="material-icons" style="transform: scale(2)">
+                    {exerciseIcons[exercise.exercise_type_value -1]}
+                  </Icon>
+              </div>
+              <div class="card-grid-title">
+                #{exercise.exercise_id}
+                {exercise.exercise_title}
+              </div>
+            
+            <p class="card-grid-description">
               {exercise.exercise_description}
             </p>
-            <p>
-              {exercise.exercise_type}
-            </p>
+          </div>
+        </a>
 
             {#if isAdmin}
               <div style="display: flex; align-items: center;">
                 <a href="/#/error">
                   <!-- please add link to edit this exercise-->
-                  <IconButton>
-                    <Icon component={Svg} viewBox="0 0 24 24">
-                      <path
-                        fill="outlined"
-                        d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-                      />
+                    <Icon class="material-icons">
+                      edit
                     </Icon>
-                  </IconButton>
                 </a>
               </div>
             {/if}
@@ -143,21 +157,20 @@
     <Button>Back to dashboard</Button>
   </a>
 
-  {#if exercises.length > maxDisplayedExercises && currentExercise == 1}
+  {#if prevExerciseUrl == null && nextExerciseUrl != null}
     <div class="list-exercises-buttons">
-      <Button on:click={getExercises}>more users</Button>
+      <Button on:click={showNextExercises}>more exercises</Button>
     </div>
-  {:else if exercises.length > maxDisplayedExercises && exercises.length <= currentExercise + maxDisplayedExercises - 1}
+  {:else if prevExerciseUrl != null && nextExerciseUrl == null}
     <div class="list-exercises-buttons">
-      <Button on:click={showLastExercises}>last users</Button>
+      <Button on:click={showLastExercises}>last exercises</Button>
     </div>
-  {:else if exercises.length > maxDisplayedExercises && currentExercise != 1}
+  {:else if prevExerciseUrl != null && nextExerciseUrl != null}
     <div class="list-exercises-buttons">
-      <Button on:click={getExercises}>more users</Button>
-      <Button on:click={showLastExercises}>last users</Button>
+      <Button on:click={showLastExercises}>last exercises</Button>
+      <Button on:click={showNextExercises}>more exercises</Button>
     </div>
   {/if}
-  <!-- does not work properly yet, needs total number of exercises from backend-->
 </Page>
 
 <style>
@@ -179,6 +192,29 @@
     padding: 10px;
     font-size: 30px;
     text-align: center;
+  }
+
+  .card-grid{
+    display: grid;
+    grid-template-areas: 
+    "left right right"
+    "main main main";
+  }
+
+  .card-grid-icon{
+    width: fit-content;
+    padding:10px;
+    grid-area: left;
+  }
+
+  .card-grid-title{
+    padding: 10px;
+    grid-area: right;
+  }
+
+  .card-grid-description{
+    padding: 10px;
+    grid: main;
   }
 
   .add-exercise {

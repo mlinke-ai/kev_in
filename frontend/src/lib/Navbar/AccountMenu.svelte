@@ -8,6 +8,7 @@
   import { accessLevel, startPage, userName } from "../../stores";
   import { accessLevels } from "../Common/types";
   import ThemeSelector from "../Theming/ThemeSelector.svelte";
+  import Tooltip, { Wrapper } from "@smui/tooltip";
 
   let menu: Menu;
   let anchor: HTMLDivElement;
@@ -46,16 +47,20 @@
     anchorCorner="BOTTOM_LEFT"
   >
     <List>
+      <Wrapper>
       <Item
+        disabled
         on:SMUI:action={() => {
           pushRoute("/profile");
         }}
       >
         <div class="menu-item">
-          <Icon style="color: white;" class="material-icons">person</Icon>
+          <Icon style="color: grey" class="material-icons">person</Icon>
           <Text>Profile</Text>
         </div>
       </Item>
+      <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
+    </Wrapper>
       <Item
         on:SMUI:action={() => {
           pushRoute($startPage);

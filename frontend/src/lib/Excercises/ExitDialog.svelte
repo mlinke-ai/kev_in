@@ -4,6 +4,7 @@
   import { getStartPage } from '../Authentication/user';
   import { redirect } from '@roxi/routify';
   import { startPage } from "../../stores";
+  import AcceptCookies from '../AcceptCookies/AcceptCookies.svelte';
 
   export let open = false;
 </script>
@@ -22,7 +23,7 @@
     <Button variant="raised">
       <Label>No</Label>
     </Button>
-    <Button variant="outlined" on:click={() => {history.pushState({}, null, `#${$startPage}`)}}>
+    <Button variant="outlined" on:click={() => window.history.back()}>
       <Label>Yes</Label>
     </Button>
   </Actions>

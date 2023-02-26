@@ -8,27 +8,33 @@
   import { accessLevel } from "../../stores";
   import { accessLevels } from "../../lib/Common/types";
 
-  let currentUser = 1;
-  let maxDisplayedUsers = 20;
+  const maxDisplayed = 18;
+  let currentUserUrl = `/user?user_offset=1&user_limit=${maxDisplayed}`;
+  let prevUsersUrl;
+  let nextUsersUrl;
   let usersLoaded = false;
   let users = [];
+  let usersData;
+  let usersMeta;
 
   const getUsers = async () => {
-    await fetch(`/user?user_offset=${currentUser}`, {
+    await fetch(`${currentUserUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status == 200) {
         response.json().then((data) => {
-          console.log(data);
           users = Object.values(data);
-          console.log(users);
-          currentUser += maxDisplayedUsers;
+          usersData = users[0];
+          usersMeta = users[1];
+          prevUsersUrl = usersMeta.prev_url;
+          nextUsersUrl = usersMeta.next_url;
+          console.log(prevUsersUrl);
           usersLoaded = true;
         });
       } else if (response.status == 400) {
-        alert(this.message);
+        alert(response.status);
       } else if (response.status == 403) {
-        alert(this.message);
+        alert(response.status);
       } else if (response.status == 500) {
         alert("Oops an Error occured. Please try again.");
       } else {
@@ -40,12 +46,13 @@
   getUsers();
 
   function showNextUsers() {
+    currentUserUrl = nextUsersUrl;
     usersLoaded = false;
     getUsers();
   }
 
   function showLastUsers() {
-    currentUser -= maxDisplayedUsers;
+    currentUserUrl = prevUsersUrl;
     usersLoaded = false;
     getUsers();
   }
@@ -56,7 +63,8 @@
   <h1>Users</h1>
 
   <div class="add-user-icon">
-    <a href="/#/adduser">
+    <a href="/#/error">
+      <!-- add link for adding a new user -->
     <Button>
       <Icon component={Svg} viewBox="0 0 24 24">
         <path
@@ -73,7 +81,7 @@
 
   {#if usersLoaded}
     <div class="grid-container">
-      {#each users as user}
+      {#each usersData as user}
         <div class="grid-item">
           
             <div class="display-icon">
@@ -103,25 +111,25 @@
     </div>
   {/if}
 
-  <a href="/#/admin-dashboard">
+  <a href="/#/admin">
     <Button>Back to dashboard</Button>
   </a>
 
-  {#if users.length > maxDisplayedUsers && currentUser == 0}
+  {#if prevUsersUrl == null && nextUsersUrl != null}
     <div class="list-users-buttons">
       <Button on:click={showNextUsers}>more users</Button>
     </div>
-  {:else if users.length > maxDisplayedUsers && users.length <= currentUser + maxDisplayedUsers - 1}
+  {:else if prevUsersUrl != null && nextUsersUrl == null}
     <div class="list-users-buttons">
       <Button on:click={showLastUsers}>last users</Button>
     </div>
-  {:else if users.length > maxDisplayedUsers && currentUser != 0}
+  {:else if prevUsersUrl != null && nextUsersUrl != null}
     <div class="list-users-buttons">
-      <Button on:click={showNextUsers}>more users</Button>
       <Button on:click={showLastUsers}>last users</Button>
+      <Button on:click={showNextUsers}>more users</Button>
     </div>
   {/if}
-<!-- does not work properly yet, needs total number of users from backend-->
+
 </Page>
 
 <style lang="scss">

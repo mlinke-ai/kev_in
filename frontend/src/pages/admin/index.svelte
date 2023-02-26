@@ -1,5 +1,7 @@
-<script>
+<script lang="ts">
   import Page from "../../lib/Common/Page.svelte";
+  import Menu from "@smui/menu";
+  import List, { Item, Separator, Text } from "@smui/list";
   import Card, {
     Content,
     PrimaryAction,
@@ -9,6 +11,7 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
+  import LanguageCard from "../../lib/Common/LanguageCard.svelte";
   import Button, { Label, Icon } from "@smui/button";
   import { Svg } from "@smui/common";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
@@ -16,8 +19,10 @@
   import { accessLevels } from "../../lib/Common/types";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
+  import Tooltip, { Wrapper } from "@smui/tooltip";
 
   //display exercise progress
+  let reqMeta;
   let totalExercises = 100;
   let solvedExercises = 50;
   console.log(solvedExercises);
@@ -38,9 +43,8 @@
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          totalExercises = Object.values(data).length;
-          console.log(solvedExercises);
-          console.log(totalExercises);
+          reqMeta = Object.values(data);
+          totalExercises = reqMeta[1].total;
           getSolvedExercises();
         });
       } else {
@@ -51,20 +55,28 @@
 
   const getSolvedExercises = async () => {
     fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
-      //?solution_user=${$userID}&solution_correct=true
-      //to get the number of all correct solutions of the user with id ${me}
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          solvedExercises = Object.values(data).length;
+          reqMeta = Object.values(data);
+          solvedExercises = reqMeta[1].total;
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();
           statsLoaded = true;
         });
+      } else if (response.status === 204){
+        //no correct solved exercises by new user
+        statsLoaded = false;
+        //noCorrectExercise = true;
+        solvedExercises = 0;
+        setTotalExercises();
+        setSolvedExercises();
+        setUserProgress();
+        statsLoaded = true;
       } else {
         alert("Oops an Error occured. " + response.status);
       }
@@ -91,15 +103,18 @@
   }
 
   getTotalExercises();
+
+  let menu: Menu;
 </script>
 
 <Page title="Admin - Dashboard" slideTransition={true}>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
-      <h2 style="padding: 20px; font-family: monospace;">
+      <h2 style="padding: 20px 20px 0px 20px; font-family: monospace;">
         Welcome to your dashboard, {$userName}!
       </h2>
+      <p style="padding: 0px 20px; font-family: monospace;">What do you want to do?</p>
     </div>
 
     <!--  Menu -->
@@ -109,7 +124,12 @@
     <div class="main-outside">
       <div class="grid-container-inside">
         <div class="left-inside">
-          <a href="/#/users">
+          <a href="/#/admin/view_users">
+            <!-- <LanguageCard
+            title=".list all users">
+              <GroupSvg />
+            </LanguageCard> -->
+            <!-- replace Card with languageCard, if it's modified to display diffrent width -->
             <Card>
               <GroupSvg />
             </Card>
@@ -118,7 +138,12 @@
         </div>
 
         <div class="right-inside">
-          <a href="/#/exercises">
+          <a href="/#/admin/view_exercises">
+            <!-- <LanguageCard
+            title=".list all exercises">
+              <ExerciseSvg />
+            </LanguageCard> -->
+            <!-- replace Card with languageCard, if it's modified to display diffrent width -->
             <Card>
               <ExerciseSvg />
             </Card>
@@ -131,7 +156,7 @@
     <!--  Right -->
     <div class="right-outside">
       <div class="box">
-        <h4>Solved Exercieses:</h4>
+        <h4>Solved Exercises:</h4>
         {#if statsLoaded}
           <p>{solvedExercises} out of {totalExercises}</p>
 
@@ -147,21 +172,54 @@
     <div class="footer-outside">
       <div class="add-exercise">
         <Card>
-          <a href="/#/error">
-            <!-- TODO: add menu for choosing which exercise to add? -->
-            <div class="display-button">
+          <div class="pointer" on:mousedown={() => menu.setOpen(true)}>
+            <div class="display-button-menu">
               <div class="display-icon">
                 <Icon class="material-icons">library_add</Icon>
               </div>
               <div class="label-icon">add exercise</div>
             </div>
-          </a>
+          </div>
+
+          <Menu bind:this={menu}>
+            <List style="width: fit-content">
+              <a href="/exercises/create/parsonspuzzle">
+                <Item class="add-exercise-item">
+                  <Icon class="material-icons add-exercise-item-icon"
+                    >extension</Icon
+                  >
+                  <p style="width: 175px; padding-left: 10px;">Parsons Puzzle</p>
+                </Item>
+              </a>
+              <Wrapper>
+                <Item class="add-exercise-item" disabled>
+                  <Icon class="material-icons add-exercise-item-icon"
+                    >border_color</Icon
+                  >
+                  <p style="width: 175px;  padding-left: 10px;">
+                    Fill in the Blanks
+                  </p>
+                </Item>
+                <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
+              </Wrapper>
+              <a href="/exercises/create/programming">
+                <Item class="add-exercise-item">
+                  <Icon class="material-icons add-exercise-item-icon">code</Icon
+                  >
+                  <p style="width: 175px;  padding-left: 10px;">
+                    Free Coding Exercise
+                  </p>
+                </Item>
+              </a>
+            </List>
+          </Menu>
         </Card>
       </div>
 
       <div class="add-user">
         <Card>
-          <a href="/#/adduser">
+          <a href="#/admin/add_user">
+             <!-- please insert link to create a new user here -->
             <div class="display-button">
               <div class="display-icon">
                 <Icon class="material-icons">library_add</Icon>
@@ -174,14 +232,12 @@
 
       <div class="own-solutions">
         <Card>
-          <a href="/#/solutions">
+          <a href="/#/admin/view_solutions">
             <div class="display-button">
               <div class="display-icon">
-                <Icon class="material-icons">
-                  fact_check
-                </Icon>
+                <Icon class="material-icons">fact_check</Icon>
               </div>
-              <div class="label-icon">Show own solutions</div>
+              <div class="label-icon">Show all solutions</div>
             </div>
           </a>
         </Card>
@@ -237,12 +293,13 @@
   }
 
   .main-outside {
-    display: flex;
+   
     align-content: center;
     grid-area: main;
   }
 
   .right-outside {
+    
     align-content: center;
     grid-area: right;
     padding: 15px;
@@ -250,6 +307,7 @@
   }
 
   .footer-outside {
+    display: flex;
     gap: 10px;
     align-content: center;
     padding: 20px;
@@ -271,19 +329,20 @@
   .grid-container-outside > div {
     background-color: rgb(0, 57, 49);
     font-size: 30px;
-    display: flex;
   }
 
   .left-inside {
     width: 350px;
-    height: auto;
+    //rm if languagecard has been modified
+    padding: 10px;
     align-content: center;
     grid-area: left;
   }
 
   .right-inside {
     width: 350px;
-    height: auto;
+    //rm if languagecard has been modified
+    padding: 10px;
     align-content: center;
     grid-area: right;
   }
@@ -292,9 +351,7 @@
     display: grid;
     display: flex;
     grid-template-areas: "left right";
-    gap: 10px;
     background-color: transparent;
-    padding: 20px;
   }
 
   .grid-container-inside > div {
@@ -333,12 +390,21 @@
     margin: 10px;
   }
 
-  .display-button-2 {
-    font-size: 20pt;
-    align-items: center;
+  .display-button-menu {
     width: fit-content;
     margin: 10px;
   }
+
+  .pointer {
+    cursor: pointer;
+  }
+
+  // .display-button-2 {
+  //   font-size: 20pt;
+  //   align-items: center;
+  //   width: fit-content;
+  //   margin: 10px;
+  // }
 
   .add-exercise {
     width: fit-content;
@@ -357,4 +423,6 @@
     float: right;
     align-items: center;
   }
+
+  
 </style>

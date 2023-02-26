@@ -8,6 +8,8 @@
   import { login } from "./user";
   import Message from "../Common/Message/Message.svelte";
 
+  export let autoLogin = true
+
   let email = "";
   let emailRegEx =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -48,7 +50,11 @@
       }),
     }).then((response) => {
       if (response.status == 201) {
-        login(email, password);
+        if (autoLogin)
+          login(email, password);
+        else
+          alert(`Created new user '${username}'`)
+          window.history.back()
       } else if (response.status == 401) {
         document.getElementById("email-input").focus();
         failMessage.open();
