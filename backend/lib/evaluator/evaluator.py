@@ -54,7 +54,8 @@ def eval_solution(
     eval_log: tuple[bool, str]
 
     if exercise.exercise_type == ExerciseType.GapTextExercise:
-        return True, False, "Evaluation not implemented yet"
+        eval_log = Evaluator.evaluate_gap_text(solution_content, sample_sol)
+        return eval_log[0], False, eval_log[1]
 
     elif exercise.exercise_type == ExerciseType.SyntaxExercise:
         return True, False, "Evaluation not implemented yet"
@@ -157,6 +158,27 @@ class Evaluator:
         try:
             t1 = user_input["list"]
             t2 = sample_solution["list"]
+        except KeyError:
+            return False, "Wrong JSON-data-format for ParsonsPuzzle in exercise or solution"
+
+        if t1 == t2:
+            return True, "Correctly ordered all pieces"
+        else:
+            return False, "Wrong order of pieces"
+        
+    @staticmethod
+    def evaluate_gap_text(user_input: dict, sample_solution: dict) -> tuple[bool, str]:
+        """
+        Evaluates, if solution for a parsons puzzle exercise is right. Expected
+        solution format is:
+        {
+            "gap_entries": ["item1", "item2", ...]
+        }
+        """
+
+        try:
+            t1 = user_input["gap_entries"]
+            t2 = sample_solution["gap_entries"]
         except KeyError:
             return False, "Wrong JSON-data-format for ParsonsPuzzle in exercise or solution"
 
