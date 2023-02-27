@@ -537,6 +537,46 @@ def multiply(x, y):
         self.assertEqual(r.status_code, 201)
         self.assertEqual(r.json()["solution_correct"], False)
 
+    def test_create_right_gap_text_exercise(self) -> None:
+
+        r = requests.request(
+        "POST",
+        "http://127.0.0.1:5000/solution",
+        json={
+            "solution_exercise": 1,
+            "solution_date": 123456789,
+            "solution_duration": 524,
+            "solution_content": {"gap_entries": ["1", "2", "3"]}
+        },
+        headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["solution_correct"], True)
+
+    def test_create_wrong_gap_text_exercise(self) -> None:
+
+        r = requests.request(
+        "POST",
+        "http://127.0.0.1:5000/solution",
+        json={
+            "solution_exercise": 1,
+            "solution_date": 123456789,
+            "solution_duration": 524,
+            "solution_content": {"gap_entries": ["1", "no clue", "3"]}
+        },
+        headers={"Cookie": f"{SolutionTest.adminCookie}"}
+        )
+        try:
+            SolutionTest.toDelete.append(r.json()["solution_id"])
+        except KeyError:
+            pass
+        self.assertEqual(r.status_code, 201)
+        self.assertEqual(r.json()["solution_correct"], False)
+
     # --- PUT ---
 
     def test_change_existing(self) -> None:

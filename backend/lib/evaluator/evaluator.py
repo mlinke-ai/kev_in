@@ -180,9 +180,9 @@ class Evaluator:
             t1 = user_input["gap_entries"]
             t2 = sample_solution["gap_entries"]
         except KeyError:
-            return False, "Wrong JSON-data-format for ParsonsPuzzle in exercise or solution"
+            return False, "Wrong JSON-data-format for GapText in exercise or solution"
 
         if t1 == t2:
-            return True, "Correctly ordered all pieces"
+            return True, "Correctly filled all gaps"
         else:
-            return False, "Wrong order of pieces"
+            return False, "Some gaps were not correctly filled"
