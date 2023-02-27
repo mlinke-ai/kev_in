@@ -6,7 +6,7 @@
   export let userEntries;
 </script>
 
-<UiCard icon="extension" title="Puzzle">
+<UiCard icon="article" title="Fill in the Blanks">
   <div class="blanks-text-container">
     {#each textPieces as piece, i}
       {#if piece == "_"}
@@ -21,12 +21,14 @@
 <style>
   .blanks-text-container {
     height: 70vh;
-    width: 100%;
+    width: 70vw;
     overflow: scroll;
     padding: 1vh;
+    padding-left: 1.25rem;
     line-height: 200%;
     font-size: large;
   }
+
   * :global(.textfield) {
     height: min-content;
   }

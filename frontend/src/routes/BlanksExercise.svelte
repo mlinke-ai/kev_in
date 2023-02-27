@@ -1,51 +1,50 @@
-<script>
+<script lang="ts">
     import Page from "../lib/common/Page.svelte";
     import BlanksCard from "../lib//Excercises/FillInBlanks/BlanksCard.svelte";
     import TaskCard from "../lib/Excercises/TaskCard.svelte";
     import StatusBar from "../lib/Excercises/StatusBar.svelte";
     import { accessLevels } from "../lib/constants";
+    import type { FillInBlanksExerciseType } from "../lib/Excercises/exercise";
     import {
-        // SolutionPostParsonsPuzzle,
+        SolutionPostFillInBlanks,
         submitSolution,
         getCurrentTimestamp,
     } from "../lib/Excercises/solution";
 
 
-    // TODO fix this by adapting the Statusbar (bind)
     let elapsedTime = 0;
+    let solution: SolutionPostFillInBlanks;
 
     // export let exerciseData: FillInBlanksExerciseType;
     let exerciseData = {
+        exercise_id: 0,
         exercise_title: "Exercise",
         exercise_content: {
             text: "Lorem ipsum dolor  amet, consectetur adipiscing elit. Aliquam magna , pretium ut nibh a,  porttitor nisl. Pellentesque ornare, odio  suscipit eleifend, elit nibh fermentum. Sed auctor sollicitudin dolor, ut tincidunt diam elementum non. Phasellus ut velit at sem  porttitor a eget ante.",
             blankPos: [18, 68, 89, 132, 263],
         },
     };
+    let blankPositions = exerciseData.exercise_content.blankPos;
+    let text = exerciseData.exercise_content.text;
 
     let userEntries = [];
     let textPieces = [];
     
-    let blankPositions = exerciseData.exercise_content.blankPos;
-    let text = exerciseData.exercise_content.text;
-
-
     function submit() {
         console.log(userEntries);
-        // solution = {
-        //   solution_exercise: exerciseData.exercise_id,
-        //   solution_date: getCurrentTimestamp(),
-        //   solution_duration: elapsedTime,
-        //   solution_content: {
-        //     list: itemsRight.map(item => item.name)
-        //   }
-        // }
-        // submitSolution(solution);
+        solution = {
+          solution_exercise: exerciseData.exercise_id,
+          solution_date: getCurrentTimestamp(),
+          solution_duration: elapsedTime,
+          solution_content: {
+            list: userEntries,
+          }
+        }
+        submitSolution(solution);
     }
 
     function reset() {
-        // itemsLeft = itemsLeftOriginal.slice();
-        // itemsRight = [];
+        prepareGapText();
     }
 
     function prepareGapText() {
@@ -64,12 +63,12 @@
                 textPieces[2 * i + 1] = "_";
             }
         }
-        console.log(text);
-        console.log(blankNum);
-        console.log(textPieces);
+        // console.log(text);
+        // console.log(blankNum);
+        // console.log(textPieces);
     }
     prepareGapText();
-    // getExercise();
+
     // Assumptions for the format of the text and blank posisions:
     // - text as plain one line string
     // - blanks are just insertet into text without modifying the text -> all spaces surounding the blanks have to be there

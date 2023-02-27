@@ -31,15 +31,15 @@ export interface ParsonsPuzzleExerciseType extends ExerciseType {
   };
 }
 
-// export interface FillInBlanksExerciseType extends ExerciseType {
-//   exercise_content: {
-//     text: String;
-//     blankPos: Array<int>; // welcher integer?
-//   };
-//   exercise_solution: {
-//     userEntries: Array<string>;
-//   };
-// }
+export interface FillInBlanksExerciseType extends ExerciseType {
+  exercise_content: {
+    text: String;
+    blankPos: Int32Array; // welcher integer?
+  };
+  exercise_solution: {
+    userEntries: Array<string>;
+  };
+}
 
 export const getExercise = async (
   exerciseID: number
