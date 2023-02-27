@@ -7,6 +7,25 @@ from parameterized import parameterized
 
 from backend.lib.evaluator import Evaluator
 
+# TEST CASES EVALUATE GAP TEXT START
+gt_correct = {
+    "solution_content":
+        {"gap_entries": ["a", "b", "c"]},
+    "exercise_solution":
+        {"gap_entries": ["a", "b", "c"]},
+    "expected": (True, 'Correctly filled all gaps')
+}
+
+gt_wrong = {
+    "solution_content":
+        {"gap_entries": ["a", "b", "c"]},
+    "exercise_solution":
+        {"gap_entries": ["a", "no clue", "c"]},
+    "expected": (False, 'Some gaps were not correctly filled')
+}
+
+# TEST CASES EVALUATE GAP TEXT END
+#
 # TEST CASES EVALUATE PARSONS PUZZLE START
 pp_correct = {
     "solution_content":
@@ -80,9 +99,17 @@ fibonacci_java_wrong = {
 # TEST CASES EVALUATE USER CODE END
 
 class EvaluatorTest(unittest.TestCase):
-    def test_evaluate_gap_text(self) -> None:
+    @parameterized.expand([[gt_correct], [gt_wrong]])
+    def test_evaluate_gap_text(self, input_data) -> None:
         """Tests whether solutions for gap text exercises get correctly evaluated"""
-        pass
+        user_input = input_data["solution_content"]
+        exercise_solution = input_data["exercise_solution"]
+        expected = input_data["expected"]
+
+        result = Evaluator.evaluate_gap_text(user_input, exercise_solution)
+
+        self.assertIsNot(result, None)
+        self.assertEqual(result, expected)
 
     def test_evaluate_syntax(self) -> None:
         """Tests whether solutions for syntax error exercises get correctly evaluated"""
