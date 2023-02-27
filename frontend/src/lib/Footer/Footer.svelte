@@ -48,7 +48,8 @@
     height: 50px;
     border-radius: 8rem;
 
-    position: fixed;
+    /* use fixed position so that it sticks to the bottom of the screen*/
+    /* position: fixed;*/
     bottom: 0;
   }
 </style>
