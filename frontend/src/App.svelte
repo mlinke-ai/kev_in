@@ -1,31 +1,39 @@
-<script>
-  import Navbar from "./lib/Navbar/Navbar.svelte";
-  import Router from "svelte-spa-router";
-  import routes from "./routes/";
-  import { getUser, storeUser } from "./lib/Authentication/user";
-  import { accessLevel } from "./stores";
-  import AcceptCookies from "./lib/AcceptCookies/AcceptCookies.svelte";
-  import { accessLevels } from "./lib/constants";
+<script lang="ts">
+  import { prepareApp } from "./lib/Authentication/user";
+  import { Router } from "@roxi/routify";
+  import { routes } from "../.routify/routes";
+  import CircularProgress from "@smui/circular-progress";
+  import { setTheme } from "./lib/Theming/themes";
 
-  const prepareApp = async () => {
-    const user = await getUser();
-    console.log(user)
-    if(user) {
-      storeUser(user)
-    } else {
-      $accessLevel = accessLevels.default;
-    }
+  let preferredTheme: number = localStorage.getItem("preferredTheme") as unknown as number
+  if (preferredTheme == undefined) {
+    preferredTheme = 1
+    localStorage.setItem("preferredTheme", preferredTheme)
   }
+
+  setTheme(preferredTheme, true)
 </script>
 
-<svelte:window
-  on:load={() => {
-    prepareApp();
-  }}
-/>
+{#await prepareApp()}
+  <div class="loader">
+    <CircularProgress
+      style="width: 150px; height: 150px"
+      class="circular-progress"
+      indeterminate
+    />
+  </div>
+{:then}
+  <Router config={{ useHash: true, dynamicImports: false }} {routes} />
+{/await}
 
-{#if $accessLevel >= 0}
-  <Navbar />
-  <Router {routes} />
-  <AcceptCookies />
-{/if}
+<style>
+  .loader {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>

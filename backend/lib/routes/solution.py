@@ -46,10 +46,10 @@ class SolutionResource(Resource):
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
         parser.add_argument(
-            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(x), help="{error_msg}", location="args"
+            "solution_date", type=lambda x: datetime.datetime.fromtimestamp(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument(
-            "solution_duration", type=lambda x: datetime.timedelta(x), help="{error_msg}", location="args"
+            "solution_duration", type=lambda x: datetime.timedelta(int(x)), help="{error_msg}", location="args"
         )
         parser.add_argument("solution_correct", type=bool, help="{error_msg}", location="args")
         parser.add_argument("solution_pending", type=bool, help="{error_msg}", location="args")
@@ -88,17 +88,20 @@ class SolutionResource(Resource):
             query, page=args["solution_page"], per_page=args["solution_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
 
+        if solutions.total == 0:
+            return utils.makeResponseNewCookie({}, 204, request.cookies)
+
         response = dict(data=list(), meta=dict())
         for solution in solutions.items:
             # check for access for every resource, if client has no access for a certain resource the enpoint
             # immediately returns 401 or 403
-            # _, auth, _ = utils.authorize(
-            #     cookies=request.cookies, method="GET", endpoint="user", resourceId=solution.solution_id
-            # )
-            # if auth == None:
-            #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-            # elif not auth:
-            #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
+            _, auth, _ = utils.authorize(
+                cookies=request.cookies, method="GET", endpoint="user", resourceId=solution.solution_id
+            )
+            if auth == None:
+                return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+            elif not auth:
+                return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
             response["data"].append(solution.to_json())
         response["meta"]["total"] = solutions.total
         response["meta"]["next_page"] = solutions.next_num
@@ -112,8 +115,7 @@ class SolutionResource(Resource):
         response["meta"]["page_size"] = len(solutions.items)
         response["meta"]["pages"] = solutions.pages
 
-        return make_response(jsonify(response), 200)
-        # return utils.makeResponseNewCookie(response, 200, request.cookies)
+        return utils.makeResponseNewCookie(response, 200, request.cookies)
 
     def post(self) -> Response:
         """
@@ -144,8 +146,10 @@ class SolutionResource(Resource):
             return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         # evaluate solution attempt
-        correct, pending = eval_solution(args["solution_content"], args["solution_exercise"])
-
+        correct, pending, eval_message = eval_solution(args["solution_content"], args["solution_exercise"])
+        if correct == None:
+            return utils.makeResponseNewCookie(dict(message=f"Unkown Exercise"), 400, request.cookies)
+        
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
@@ -162,28 +166,19 @@ class SolutionResource(Resource):
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        subquery = (
-            db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id))
-            .select_from(solution_table)
-            .scalar_subquery()
+        query = (db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id))
+                .select_from(solution_table)
         )
-        query = db_engine.select("*").select_from(solution_table).where(solution_table.c.solution_id == subquery)
-        # execute the query and store the selection
-        selection = db_engine.session.execute(query)
-        # load the selection into the response data
-        result = dict()
-        row = selection.fetchone()
-        result = dict(
-            message="Successfully submitted solution",
-            solution_id=row[0],
-            solution_user=row[1],
-            solution_exercise=row[2],
-            solution_date=row[3],
-            solution_duration=row[4],
-            solution_correct=bool(row[5]),  # db reponds with 0 or 1 sometimes
-            solution_pending=bool(row[6]),
-            solution_content=json.loads(row[7]),
+        max_id = db_engine.session.execute(query).fetchone()[0]
+        sol = (
+        SolutionModel
+            .query
+            .filter_by(solution_id=max_id)
+            .one()
         )
+        result = sol.to_json()
+        result["evaluator_message"] = eval_message
+        result["message"] = "Successfully submitted solution"
         return utils.makeResponseNewCookie(result, 201, request.cookies)
 
     def put(self) -> Response:
@@ -247,7 +242,7 @@ class SolutionResource(Resource):
 
         # check for access
         is_admin, auth, user_id = utils.authorize(
-            cookies=request.cookies, method="POST", endpoint="exercise", resourceId=args["solution_id"]
+            cookies=request.cookies, method="DELETE", endpoint="solution", resourceId=args["solution_id"]
         )
         if auth == None:
             return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)

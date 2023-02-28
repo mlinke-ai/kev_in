@@ -124,7 +124,7 @@ class UserTest(unittest.TestCase):
             "http://127.0.0.1:5000/user?user_id=-1",
             headers=UserTest.sadmin_header,
         )
-        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 204)
         self.assertEqual(r.json(), {})
 
     def test_get_non_existing_by_name(self) -> None:
@@ -133,7 +133,7 @@ class UserTest(unittest.TestCase):
             "http://127.0.0.1:5000/user?user_name=nuser",
             headers=UserTest.sadmin_header,
         )
-        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 204)
         self.assertEqual(r.json(), {})
 
     def test_get_non_existing_by_mail(self) -> None:
@@ -142,7 +142,7 @@ class UserTest(unittest.TestCase):
             "http://127.0.0.1:5000/user?user_mail=nuser@example.com",
             headers=UserTest.sadmin_header,
         )
-        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 204)
         self.assertEqual(r.json(), {})
 
     def test_get_non_existing_by_role(self) -> None:

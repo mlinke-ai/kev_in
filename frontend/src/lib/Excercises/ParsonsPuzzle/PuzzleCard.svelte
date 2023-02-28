@@ -1,6 +1,6 @@
 <script>
   import HorizontalList from "./horizontalList.svelte";
-  import UiCard from "../../common/UICard.svelte";
+  import UiCard from "../../Common/UICard.svelte";
 
   let initHeight = 0;
 

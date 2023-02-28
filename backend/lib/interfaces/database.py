@@ -3,6 +3,7 @@
 # TODO: is nullable=False applicable somewhere?
 
 import json
+import random
 
 import flask_sqlalchemy
 
@@ -47,8 +48,8 @@ class ExerciseModel(db_engine.Model):
                 exercise_description=self.exercise_description,
                 exercise_type_name=self.exercise_type.name,
                 exercise_type_value=self.exercise_type.value,
-                exercise_content=json.loads(self.exercise_content),
-                exercise_solution=json.loads(self.exercise_solution if is_admin else ""),
+                exercise_content=prepareExerciseContent(json.loads(self.exercise_content), self.exercise_type),
+                exercise_solution=json.loads(self.exercise_solution) if is_admin else "",
                 exercise_language_name=self.exercise_language.name,
                 exercise_language_value=self.exercise_language.value,
             )
@@ -87,3 +88,39 @@ class SolutionModel(db_engine.Model):
             solution_pending=self.solution_pending,
             solution_content=json.loads(self.solution_content),
         )
+
+
+#moved this from utils.py to database.py because I cannot import utils here (circular import)
+#maybe we can find a better place for this
+def prepareExerciseContent(exerciseContent: dict, exerciseType: config.ExerciseType) -> dict:
+    """
+    Before sending out the exercise content via GET, some preperations have to be done for some exercise types. This
+    method implements these preperations.
+    """
+
+    newContent = exerciseContent
+
+    if exerciseType == config.ExerciseType.ParsonsPuzzleExercise:
+        newContent = _randomizePPEContent(exerciseContent)
+
+    if newContent == None:
+        return exerciseContent  # preperation failed, just returns default exerciseContent
+    return newContent
+
+
+def _randomizePPEContent(content: dict[str, list]) -> dict[str, list] | None:
+    """
+    Takes the `exercise_content` argument from a parsons puzzle exercise and randomizes the list, which is stored
+    under the "list" key.
+    """
+
+    try:
+        data = content["list"]
+    except KeyError:
+        return None
+    if not isinstance(data, list):
+        return None
+    random.shuffle(data)
+    content["list"] = data
+
+    return content

@@ -5,5 +5,5 @@ mkdocs
 PyJWT
 RestrictedPython
 py4j
-timeout_decorator
 parameterized
+wrapt_timeout_decorator

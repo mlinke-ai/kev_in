@@ -59,12 +59,11 @@ class ExerciseResource(Resource):
         )
 
         # check for access
-        # is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
-        # if auth == None:
-        #     return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
-        # elif not auth:
-        #     return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
-        is_admin = True
+        is_admin, auth, user_id = utils.authorize(cookies=request.cookies, method="GET", endpoint="exercise")
+        if auth == None:
+            return utils.makeResponseNewCookie(dict(message="Login required"), 401, request.cookies)
+        elif not auth:
+            return utils.makeResponseNewCookie(dict(message="No Access"), 403, request.cookies)
 
         args = parser.parse_args()
 
@@ -87,6 +86,9 @@ class ExerciseResource(Resource):
             query, page=args["exercise_page"], per_page=args["exercise_limit"], max_per_page=config.MAX_ITEMS_RETURNED
         )
 
+        if exercises.total == 0:
+            return utils.makeResponseNewCookie({}, 204, request.cookies)
+
         response = dict(data=list(), meta=dict())
         for exercise in exercises.items:
             response["data"].append(exercise.to_json(details=args["exercise_details"], is_admin=is_admin))
@@ -102,8 +104,7 @@ class ExerciseResource(Resource):
         response["meta"]["page_size"] = len(exercises.items)
         response["meta"]["pages"] = exercises.pages
 
-        return make_response(jsonify(response), 200)
-        # return utils.makeResponseNewCookie(response, 200, request.cookies)
+        return utils.makeResponseNewCookie(response, 200, request.cookies)
 
     def post(self) -> Response:
         """

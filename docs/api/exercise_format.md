@@ -155,3 +155,83 @@ Note: When getting this via GET, the pieces will be randomized.
     }
 }
 ```
+
+## Gap Text Exercise
+### exercise_content
+```JSON
+{
+    "text": "<exercise text>",
+    "gap_positions": [
+        <pos 1>,
+        <pos 2>,
+        ...
+        <pos n>
+    ]
+}
+```
+
+**example:**
+```JSON
+"exercise_content": {
+        "text": "This is a long code where something is missing, with some gaps.",
+        "gap_positions": [
+            3,
+            44,
+            56
+        ]
+    }
+```
+`text` should be the exercsie text which should have the gaps inside.
+`gap_positions` should be a list of ints, with the char position of all gaps.
+
+### exercise_solution
+```JSON
+{
+    "gap_entries": [
+        "<gap 1>",
+        "<gap 2>",
+        ...
+        "<gap n>"
+    ]
+}
+```
+`gap_entries` should be the a list of strings with the right gap fillings in the order of gap location.
+
+**example:**
+```JSON
+"exercise_solution": {
+        "gap_entries": [
+            "These",
+            "are",
+            "the",
+            "gap",
+            "entries"
+        ]
+    }
+```
+
+### solution_content
+```JSON
+{
+    "gap_entries": [
+        "<gap 1>",
+        "<gap 2>",
+        ...
+        "<gap n>"
+    ]
+}
+```
+`gap_entries` should be the a list of strings with the right gap fillings in the order of gap location.
+
+**example:**
+```JSON
+"exercise_solution": {
+        "gap_entries": [
+            "These",
+            "are",
+            "the",
+            "gap",
+            "entries"
+        ]
+    }
+```

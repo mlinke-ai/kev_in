@@ -2,18 +2,20 @@
 # -*- coding: utf-8 -*-
 
 from json import JSONDecodeError, loads
+from sqlalchemy.exc import NoResultFound
 
 from backend.lib.core.config import ExerciseType
 from backend.lib.interfaces.database import ExerciseModel
 
 from .sandboxes.pyenv.pysandbox import ExecutePython
 
+
 # from .sandboxes.javaenv.javasandbox import ExecuteJava
 
 def eval_solution(
         solution_content: dict,
         exercise_id: int
-        ) -> tuple[bool, bool]:
+) -> tuple[bool | None, bool, str]:
     """
     Evaluates if a provided solution attempt is correct.
 
@@ -23,85 +25,62 @@ def eval_solution(
             object.
         exercise_id :class:`int`
             The id form the exercise, the solution attempt is about.
-            
+
+    Returns:
+        A Tuple of class :class:`tuple[bool | None, bool, str]`
+        (solution_correct, solution_pending, eval_message). solution_correct
+        stores, whether a solution is correct (if `None` the corresponding
+        exercise does not exist), solution_pending_stores whether a solution has
+        to be evaluated by an admin, eval_message contains a message from the
+        evaluator.
     """
-    
-    exercise: ExerciseModel = (
+
+    try:
+        exercise: ExerciseModel = (
         ExerciseModel
-        .query
-        .filter_by(exercise_id=exercise_id)
-        .one()
-    )
-    try:
-        sample_sol = loads(exercise.exercise_solution)
-    except (JSONDecodeError, TypeError):
-        return False, False
-    
-    if exercise.exercise_type == ExerciseType.GapTextExercise:
-        return True, False
-    
-    elif exercise.exercise_type == ExerciseType.SyntaxExercise:
-        return True, False
-    
-    elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
-        return (
-            Evaluator.evaluate_ppe(solution_content, sample_sol),
-            False
+            .query
+            .filter_by(exercise_id=exercise_id)
+            .one()
         )
-    
-    elif exercise.exercise_type == ExerciseType.FindTheBugExercise:
-        return True, False
-    
-    elif exercise.exercise_type == ExerciseType.DocumentationExercise:
-        return True, False
-    
-    elif exercise.exercise_type == ExerciseType.OutputExercise:
-        return True, False
-    
-    elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
-        return True, False
+    except NoResultFound:
+        return None, False, "Unknown exercise"
 
-
-def eval_solution(solution_content: dict, exercise_id: int) -> tuple[bool, bool]:
-    """
-    Evaluates if a provided solution attempt is correct.
-
-    Args:
-        solution_content :class:`dict`:
-            The user input form the solution attempt. This should be a JSON
-            object.
-        exercise_id :class:`int`
-            The id form the exercise, the solution attempt is about.
-
-    """
-
-    exercise: ExerciseModel = ExerciseModel.query.filter_by(exercise_id=exercise_id).one()
     try:
         sample_sol = loads(exercise.exercise_solution)
+        sample_exc = loads(exercise.exercise_content)
     except (JSONDecodeError, TypeError):
-        return False, False
+        return False, False, "Evaluation error due to missformed Content"
+    
+    eval_log: tuple[bool, str]
 
     if exercise.exercise_type == ExerciseType.GapTextExercise:
-        return True, False
+        eval_log = Evaluator.evaluate_gap_text(solution_content, sample_sol)
+        return eval_log[0], False, eval_log[1]
 
     elif exercise.exercise_type == ExerciseType.SyntaxExercise:
-        return True, False
+        return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
-        return (Evaluator.evaluate_ppe(solution_content, sample_sol), False)
-
+            eval_log = Evaluator.evaluate_ppe(solution_content, sample_sol)
+            return eval_log[0], False, eval_log[1]
+        
     elif exercise.exercise_type == ExerciseType.FindTheBugExercise:
-        return True, False
+        return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.DocumentationExercise:
-        return True, False
+        return False, True, "An Andmin has to review this Solution"
 
     elif exercise.exercise_type == ExerciseType.OutputExercise:
-        return True, False
+        return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
-        return True, False
-
+        eval_log = Evaluator.evaluate_user_code(
+            solution_content,
+            exercise.exercise_language.name,
+            sample_sol,
+            sample_exc['func']
+            )
+        return eval_log[0], False, eval_log[1]
 
 class Evaluator:
     @staticmethod
@@ -110,58 +89,67 @@ class Evaluator:
         # Get user func from head e.g. "def func(someArg, ...,)->None:" -> "func"
         pass
 
-    # TODO function name required "user_func"
     @staticmethod
-    def evaluate_user_code(user_code: str, user_func: str, language: str, **args_result_dict: dict) -> dict:
+    def evaluate_user_code(user_input: dict, language: str, sample_sol: dict, func_head: str) -> tuple[bool, str]:
         """
         Description: Execute and evaluate untrusted user code.
 
-        Args:
-            user_code: String containing user code.
-            user_func: Function inside user_code to execute. E.g. "def fibonacci(n):"
-            language: "python" or "java"
-            **args_result_dict: Dictionary {'1': ([Arg1, Arg2,.., Argn], [Result]), \
-                                            '2': ([Args], [Result]), ..}
-                                            e.g. {'1': ([2, 2, 2], [8])}
-                                            Dictionary with input args and expected result.
-        Return:
-            Dictionary as a result log:
+        :arg:
+            user_input: { 'code': "user code in string format" }
+            language: "Python" or "Java"
+            sample_sol: {   "0": [[<params>],[<result>]],
+                            "1": [[<params>],[<result>]],
+                            ...
+                            "n": [[<params>],[<result>]]
+                        }
+            func_head: "head of function which should be tested"
+
+        :return:
+            Dictionary as a result log possible:
             {'Correct': ""} or if false
             {'Incorrect': "E.g. some errors, exceptions, or wrong result information"}
+            Currently implemented only boolean.
         """
-        if language == "python":
+
+        if language == "Python":
             pySandbox = ExecutePython()
-            arg_list = [args[0] for args in args_result_dict.values()]
-            result_log = pySandbox.exec_untrusted_code(user_code, user_func, *arg_list)
+            arg_list = [args[0] for args in sample_sol.values()]
+            result_log = pySandbox.exec_untrusted_code(user_input['code'],
+                                                       func_head, *arg_list)
 
             if result_log["RESULTLOG"]:
                 # successful execution of user code
-                if result_log["RESULTLOG"] == args_result_dict:
+                if result_log["RESULTLOG"] == sample_sol:
                     # user code correct
-                    return {"Correct": ""}
+                    # return {"Correct": ""}
+                    return True, "Successfully passed all Tests"
                 else:
                     # user code not correct
-                    return {"Incorrect": "Expected results do not equal results."}
+                    # return {"Incorrect": "Expected results do not equal results."}
+                    return False, "Some Test cases failed"
 
             # Errors, Exceptions when executing user code
             else:
                 if len(result_log["COMPILERLOG"]["ERROR"]) != 0:
                     # interpreter error
-                    return {"False": result_log["COMPILERLOG"]["ERROR"]}
+                    # return {"False": result_log["COMPILERLOG"]["ERROR"]}
+                    return False, str(result_log["COMPILERLOG"]["ERROR"][0])
                 else:
                     # execution error
-                    return {"False": result_log["EXECUTELOG"]["ERROR"]}
+                    # return {"False": result_log["EXECUTELOG"]["ERROR"]}
+                    return False, str(result_log["EXECUTELOG"]["ERROR"][0])
 
-        elif language == "java":
-            return {"Incorrect": "Not implemented yet"}
+        elif language == "Java":
+            # return {"Incorrect": "Not implemented yet"}
+            return False, "Java Sandbox is not supported yet"
         else:
-            return dict()
+            return False, "Usupported Language value"
 
     @staticmethod
-    def evaluate_ppe(user_input: dict, sample_solution: dict) -> bool:
+    def evaluate_ppe(user_input: dict, sample_solution: dict) -> tuple[bool, str]:
         """
         Evaluates, if solution for a parsons puzzle exercise is right. Expected
-        solurion format is:
+        solution format is:
         {
             "list": ["item1", "item2", ...]
         }
@@ -171,6 +159,30 @@ class Evaluator:
             t1 = user_input["list"]
             t2 = sample_solution["list"]
         except KeyError:
-            return False  # wrong format somewhere
+            return False, "Wrong JSON-data-format for ParsonsPuzzle in exercise or solution"
 
-        return t1 == t2
+        if t1 == t2:
+            return True, "Correctly ordered all pieces"
+        else:
+            return False, "Wrong order of pieces"
+        
+    @staticmethod
+    def evaluate_gap_text(user_input: dict, sample_solution: dict) -> tuple[bool, str]:
+        """
+        Evaluates, if solution for a parsons puzzle exercise is right. Expected
+        solution format is:
+        {
+            "gap_entries": ["item1", "item2", ...]
+        }
+        """
+
+        try:
+            t1 = user_input["gap_entries"]
+            t2 = sample_solution["gap_entries"]
+        except KeyError:
+            return False, "Wrong JSON-data-format for GapText in exercise or solution"
+
+        if t1 == t2:
+            return True, "Correctly filled all gaps"
+        else:
+            return False, "Some gaps were not correctly filled"

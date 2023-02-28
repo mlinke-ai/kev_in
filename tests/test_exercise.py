@@ -18,7 +18,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import unittest
+
 import requests
+
 
 class ExerciseTest(unittest.TestCase):
     """
@@ -75,7 +77,7 @@ class ExerciseTest(unittest.TestCase):
         )
         cls.exercise_id = r.json()["exercise_id"]
 
-        #generate additional dummy exercises
+        # generate additional dummy exercises
         for i in range(20):
             r = requests.request(
                 "POST",
@@ -91,7 +93,7 @@ class ExerciseTest(unittest.TestCase):
                 headers={
                     "Content-Type": "application/json",
                     "Cookie": f"{ExerciseTest.adminCookie}",
-                }
+                },
             )
             ExerciseTest.exercise_id_list.append(r.json()["exercise_id"])
 
@@ -109,7 +111,7 @@ class ExerciseTest(unittest.TestCase):
         )
         cls.exercise_id = None
 
-        #delete dummy exercises
+        # delete dummy exercises
         for i in range(20):
             r = requests.request(
                 "DELETE",
@@ -120,7 +122,7 @@ class ExerciseTest(unittest.TestCase):
                 headers={
                     "Content-Type": "application/json",
                     "Cookie": f"{ExerciseTest.adminCookie}",
-                }
+                },
             )
 
     # ------------------------------HTTP-GET-----------------------------
@@ -141,7 +143,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["data"][0]["exercise_id"], arg)
 
     def test_get_existing_by_title(self) -> None:
-
         arg = ExerciseTest.exercise_title
         r = requests.request(
             "GET",
@@ -152,7 +153,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["data"][0]["exercise_title"], arg)
 
     def test_get_existing_by_type(self) -> None:
-
         arg = ExerciseTest.exercise_type
         r = requests.request(
             "GET",
@@ -163,7 +163,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["data"][0]["exercise_type_value"], arg)
 
     def test_get_existing_by_description(self) -> None:
-
         arg = ExerciseTest.exercise_description
         r = requests.request(
             "GET",
@@ -174,7 +173,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["data"][0]["exercise_description"], arg)
 
     def test_get_existing_by_content(self) -> None:
-
         arg = ExerciseTest.exercise_content
         r = requests.request(
             "GET",
@@ -185,7 +183,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["data"][0]["exercise_content"], arg)
 
     def test_get_existing_by_solution(self) -> None:
-
         arg = ExerciseTest.exercise_solution
         r = requests.request(
             "GET",
@@ -196,7 +193,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["data"][0]["exercise_solution"], arg)
 
     def test_get_existing_by_language(self) -> None:
-
         arg = ExerciseTest.exercise_language
         r = requests.request(
             "GET",
@@ -207,7 +203,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(r.json()["data"][0]["exercise_language_value"], arg)
 
     def test_get_paging(self) -> None:
-
         r = requests.request(
             "GET",
             f"http://127.0.0.1:5000/exercise?exercise_page=2",
@@ -218,7 +213,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertNotEqual(r.json()["meta"]["prev_url"], None)
 
     def test_get_limit(self) -> None:
-
         arg = 4
         r = requests.request(
             "GET",
@@ -229,7 +223,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertEqual(len(r.json()["data"]), arg)
 
     def test_get_details_false(self) -> None:
-
         r = requests.request(
             "GET",
             f"http://127.0.0.1:5000/exercise?exercise_details=false",
@@ -241,7 +234,6 @@ class ExerciseTest(unittest.TestCase):
         self.assertNotIn("exercise_solution", r.json()["data"][0])
 
     def test_get_details_true(self) -> None:
-
         r = requests.request(
             "GET",
             f"http://127.0.0.1:5000/exercise?exercise_details=true",
@@ -269,10 +261,10 @@ class ExerciseTest(unittest.TestCase):
             headers={"Cookie": f"{ExerciseTest.adminCookie}"},
         )
         # HTTP status 200 and empty JSON
-        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 204)
         self.assertEqual(r.json()["data"], [])
 
-    def test_get_existing_user(self) -> None:
+    def test_get_user(self) -> None:
         """
         Query the System for an existing exercise with HTTP-GET by id as logged in user.
         The system should return HTTP-status 200 and the attributes of the exercise in JSON format.
@@ -286,7 +278,7 @@ class ExerciseTest(unittest.TestCase):
         )
         self.assertEqual(r.status_code, 200)
 
-    def test_get_existing_no_login(self) -> None:
+    def test_get_no_login(self) -> None:
         """
         Query the System for an existing exercise with HTTP-GET by id as logged out client (no token in cookie).
         The system should return HTTP-status 401 and an error message.

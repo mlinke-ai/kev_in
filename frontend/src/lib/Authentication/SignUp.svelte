@@ -4,9 +4,11 @@
   import Textfield from "@smui/textfield";
   import HelperText from "@smui/textfield/helper-text";
   import PasswordInput from "./PasswordInput.svelte";
-  import { messages, passwordLength } from "../constants";
+  import { messages, passwordLength } from "../Common/types";
   import { login } from "./user";
-  import Message from "../common/Message/Message.svelte";
+  import Message from "../Common/Message/Message.svelte";
+
+  export let autoLogin = true
 
   let email = "";
   let emailRegEx =
@@ -48,7 +50,11 @@
       }),
     }).then((response) => {
       if (response.status == 201) {
-        login(email, password);
+        if (autoLogin)
+          login(email, password);
+        else
+          alert(`Created new user '${username}'`)
+          window.history.back()
       } else if (response.status == 401) {
         document.getElementById("email-input").focus();
         failMessage.open();

@@ -1,9 +1,13 @@
 <script>
   import Button from "@smui/button/src/Button.svelte";
-  import { Icon } from "@smui/common";
+  import { Icon, Label } from "@smui/button";
+  import ExitDialog from "./ExitDialog.svelte";
+
   export let reset;
   export let submit;
   export let elapsedTime = 0;
+
+  let openExit = false;
 
   let startTime = 0;
   let intervallID;
@@ -39,7 +43,10 @@
 </script>
 
 <div class="status-bar">
-  Getting Started - Attempt 1
+  <Button variant ="outlined" on:click={()=>{openExit=true}}>
+    <Icon class="material-icons">arrow_back</Icon>
+    <Label>Back to Overview</Label>
+  </Button>
   <div>
     <Button variant="outlined" on:click={() => {reset(); resetTimer(); startTimer()}}>Reset</Button>
     <Button variant="raised" on:click={submit}>
@@ -51,12 +58,13 @@
     <Icon class="material-icons">access_time</Icon>
   </div>
 </div>
+<ExitDialog bind:open={openExit}/>
 
 <style lang="scss">
   @use "../../variables" as vars;
   .status-bar {
     grid-area: status;
-    color: vars.$consoleColor;
+    color: var(--console-color);
     font-family: "Roboto Mono";
     display: flex;
     align-items: center;

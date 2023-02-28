@@ -1,35 +1,4 @@
-import type { languages, exercises } from "../constants";
-
-interface ExerciseType {
-  exercise_id: number,
-  exercise_title: string,
-  exercise_description: string,
-  exercise_type_name: string,
-  exercise_type_value: exercises,
-  exercise_language_type: languages,
-  exercise_language_name: string,
-  exercise_content: object,
-  exercise_solution: object
-}
-
-export interface ProgrammingExerciseType extends ExerciseType {
-  exercise_content: {
-    code: string;
-    func: string;
-  };
-  exercise_solution: {
-    key: [params: Array<number>, result: Array<number>];
-  };
-}
-
-export interface ParsonsPuzzleExerciseType extends ExerciseType {
-  exercise_content: {
-    list: Array<string>;
-  };
-  exercise_solution: {
-    list: Array<string>;
-  };
-}
+import type { ProgrammingExerciseType, ParsonsPuzzleExerciseType, PostExerciseType } from "./types"
 
 export interface FillInBlanksExerciseType extends ExerciseType {
   exercise_content: {
@@ -43,7 +12,7 @@ export interface FillInBlanksExerciseType extends ExerciseType {
 
 export const getExercise = async (
   exerciseID: number
-): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType> => {
+): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType | null> => {
   try {
     const response = await fetch(
       `/exercise?exercise_id=${exerciseID}&exercise_limit=1&exercise_details=true`,
@@ -53,10 +22,28 @@ export const getExercise = async (
       }
     );
     if (!response.ok) {
-      throw new Error();
+      throw `HTTP Error ${response.status}`
     }
-    return await response.json().then((data) => data.data[0]); // Last index should be exerciseID, not 0
-  } catch (error) {
-    throw new Error();
+    return await response.json().then((data) => data.data[0]);
+  } catch (err) {
+    throw err
+  }
+};
+
+export const postExercise = async (exercise: PostExerciseType) => {
+  try {
+    const response = await fetch("/exercise",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(exercise)//exercise as unknown as BodyInit
+      }
+    );
+    if (!response.ok) {
+      throw `HTTP Error ${response.status}`
+    }
+    console.log("Created!")
+  } catch (err) {
+    throw err
   }
 };

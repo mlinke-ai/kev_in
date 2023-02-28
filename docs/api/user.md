@@ -103,9 +103,14 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 		"user_id": 1,
 		"user_name": "John Doe",
 		"user_mail": "john.doe@example.com",
-		"user_role": "User"
+		"user_role_name": "User",
+        "user_role_value": 3
 	}
 	```
+
+=== "204"
+
+	The database query yielded no results with the given parameters. The response body is empty.
 
 === "400"
 

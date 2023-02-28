@@ -1,13 +1,14 @@
-import { userID, userName, userMail, accessLevel, startPage } from "../../stores";
-import { accessLevels, startPages, userRoles } from "../constants";
+import {
+  userID,
+  userName,
+  userMail,
+  accessLevel,
+  startPage,
+} from "../../stores";
+import { accessLevels, startPages, userRoles } from "../Common/types";
 import { get as getStore } from "svelte/store";
-
-interface GetUser {
-  user_id: number;
-  user_mail: string;
-  user_name: string;
-  user_role: string;
-}
+import type { GetUser } from "./types";
+import { redirect } from "@roxi/routify";
 
 // function to send login data to the server
 export const login = async (email: string, password: string) => {
@@ -21,8 +22,16 @@ export const login = async (email: string, password: string) => {
   });
 
   if (response.status == 200) {
-    storeUser(<GetUser>await getUser());
-    window.location.replace(getStore(startPage))
+    let userData = await response.json();
+    let user: GetUser = {
+      user_id: userData.user_id,
+      user_mail: userData.user_mail,
+      user_name: userData.user_name,
+      user_role_name: userData.user_role_name,
+      user_role_value: userData.user_role_value,
+    };
+    storeUser(user);
+    history.pushState({}, "", `#${getStore(startPage)}`)
     return true;
   } else if (response.status == 401) {
     return false;
@@ -32,8 +41,8 @@ export const login = async (email: string, password: string) => {
 // function to make the server log out the client
 export const logout = async () => {
   await fetch("/logout", { method: "POST" }).then(() => {
-    resetUser()
-    window.location.replace(getStore(startPage));
+    resetUser();
+    history.pushState({}, "", `#${getStore(startPage)}`)
   });
 };
 
@@ -71,33 +80,43 @@ export function getAccessLevel(user_role: string): number {
 export function getStartPage(level: accessLevels): startPages {
   switch (level) {
     case accessLevels.user:
-      return startPages.user
+      return startPages.user;
     case accessLevels.admin:
-      return startPages.admin
+      return startPages.admin;
     case accessLevels.sadmin:
-      return startPages.sadmin
+      return startPages.sadmin;
     default:
-      return startPages.default
+      return startPages.default;
   }
 }
 
 // function to store user data
 export function storeUser(user: GetUser) {
-  let level: number = getAccessLevel(user.user_role);
+  let level: number = getAccessLevel(user.user_role_name);
   userID.set(user.user_id);
   userName.set(user.user_name);
   userMail.set(user.user_mail);
   accessLevel.set(level);
-  console.log(getStartPage(level))
-  startPage.set(getStartPage(level))
+  console.log(getStartPage(level));
+  startPage.set(getStartPage(level));
 }
 
 export function resetUser() {
   const user: GetUser = {
     user_id: 0,
     user_name: "",
-    user_role: "Default",
-    user_mail: ""
-  }
-  storeUser(user)
+    user_role_name: "Default",
+    user_role_value: 0,
+    user_mail: "",
+  };
+  storeUser(user);
 }
+
+export const prepareApp = async () => {
+  const user = await getUser();
+  if (user) {
+    storeUser(user);
+  } else {
+    resetUser();
+  }
+};
