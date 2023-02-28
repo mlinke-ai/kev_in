@@ -16,6 +16,12 @@ export interface SolutionPostParsonsPuzzle extends SolutionPost {
   };
 }
 
+export interface SolutionPostFillInBlanks extends SolutionPost {
+  solution_content: {
+    list: Array<string>;
+  };
+}
+
 export interface SolutionGet {
   evaluator_message: string;
   message: string;

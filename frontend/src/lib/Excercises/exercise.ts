@@ -1,5 +1,15 @@
 import type { ProgrammingExerciseType, ParsonsPuzzleExerciseType, PostExerciseType } from "./types"
 
+export interface FillInBlanksExerciseType extends ExerciseType {
+  exercise_content: {
+    text: String;
+    blankPos: Int32Array; // welcher integer?
+  };
+  exercise_solution: {
+    userEntries: Array<string>;
+  };
+}
+
 export const getExercise = async (
   exerciseID: number
 ): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType | null> => {
