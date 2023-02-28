@@ -51,6 +51,8 @@ class UserResource(Resource):
         Returns:
             Response: A HTTP response with all elements selected by the query in JSON or an error message.
         """
+        token = verify_jwt_in_request()
+
         args = self.get_parser.parse_args()
 
         query = db.select(UserModel).order_by(UserModel.user_id)
@@ -89,6 +91,8 @@ class UserResource(Resource):
         Returns:
             Response: A HTTP response with the newly created user.
         """
+        token = verify_jwt_in_request(optional=True)
+
         args = self.post_parser.parse_args(strict=True)
 
         if args["user_name"] == "":
@@ -119,8 +123,7 @@ class UserResource(Resource):
         Returns:
             Response: A HTTP response with the new user attributes.
         """
-        # TODO: remove `optional` after debugging
-        token = verify_jwt_in_request(optional=True)
+        token = verify_jwt_in_request()
 
         args = self.put_parser.parse_args(strict=True)
 
@@ -158,9 +161,10 @@ class UserResource(Resource):
         Returns:
             Response: A HTTP response with a success message.
         """
-        # TODO: revoke token after self delete
         token = verify_jwt_in_request()
+
         args = self.delete_parser.parse_args(strict=True)
+
         query = db.select(UserModel).filter_by(user_id=args["user_id"])
         user = db.one_or_404(query, description="An user with this ID does not exist.")
         db.session.delete(user)
