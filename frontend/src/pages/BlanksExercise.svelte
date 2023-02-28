@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Page from "../lib/common/Page.svelte";
-    import BlanksCard from "../lib//Excercises/FillInBlanks/BlanksCard.svelte";
+    import Page from "../lib/Common/Page.svelte";
+    import BlanksCard from "../lib/Excercises/FillInBlanks/BlanksCard.svelte";
     import TaskCard from "../lib/Excercises/TaskCard.svelte";
     import StatusBar from "../lib/Excercises/StatusBar.svelte";
-    import { accessLevels } from "../lib/constants";
+    import { accessLevels } from "../lib/Common/types";
     import type { FillInBlanksExerciseType } from "../lib/Excercises/exercise";
     import {
         SolutionPostFillInBlanks,
@@ -78,7 +78,6 @@
 <Page
     title="Fill in the Blanks Exercise"
     fullwidth={true}
-    requiredAccessLevel={accessLevels.undefined}
 >
     <!-- TODO change requiredAccessLevel to accessLevels.user -->
     <div class="exercise-container">
