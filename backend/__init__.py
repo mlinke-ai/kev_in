@@ -9,8 +9,10 @@ from flask_restful import Api
 
 from backend.config import configure_app
 from backend.database.models import db
+from backend.routes.exercise import ExerciseResource
 from backend.routes.login import LoginResource
 from backend.routes.logout import LogoutResource
+from backend.routes.solution import SolutionResource
 from backend.routes.user import UserResource
 from backend.utils import refresh_token, revoked_token_check
 
@@ -48,6 +50,8 @@ def create_app(config: dict | str = dict()):
     app.after_request(refresh_token)
     api = Api(app)
     api.add_resource(UserResource, "/user", endpoint="user")
+    api.add_resource(ExerciseResource, "/exercise", endpoint="exercise")
+    api.add_resource(SolutionResource, "/solution", endpoint="solution")
     api.add_resource(LoginResource, "/login", endpoint="login")
     api.add_resource(LogoutResource, "/logout", endpoint="logout")
     return app
