@@ -11,6 +11,39 @@ from backend.utils import get_url, user_id_from_token
 
 
 class UserResource(Resource):
+    def __init__(self) -> None:
+        # create a parser for the GET request data
+        self.get_parser = reqparse.RequestParser()
+        self.get_parser.add_argument("user_id", type=int, help="{error_msg}", location="args")
+        self.get_parser.add_argument("user_name", type=str, help="{error_msg}", location="args")
+        self.get_parser.add_argument("user_mail", type=str, help="{error_msg}", location="args")
+        self.get_parser.add_argument(
+            "user_role", type=lambda x: UserRole(int(x)), default=UserRole.User, help="{error_msg}", location="args"
+        )
+        self.get_parser.add_argument("user_page", type=int, default=1, help="{error_msg}", location="args")
+        self.get_parser.add_argument(
+            "user_limit",
+            type=int,
+            default=current_app.config["MAX_ITEMS_RETURNED"],
+            help="{error_msg}",
+            location="args",
+        )
+        # create a parser for the POST request data
+        self.post_parser = reqparse.RequestParser()
+        self.post_parser.add_argument("user_name", type=str, help="{error_msg}", required=True)
+        self.post_parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
+        self.post_parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
+        # create a parser for the PUT request data
+        self.put_parser = reqparse.RequestParser()
+        self.put_parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
+        self.put_parser.add_argument("user_name", type=str, help="{error_msg}")
+        self.put_parser.add_argument("user_mail", type=str, help="{error_msg}")
+        self.put_parser.add_argument("user_pass", type=str, help="{error_msg}")
+        self.put_parser.add_argument("user_role", type=lambda x: UserRole(int(x)), help="{error_msg}")
+        # create a parser for the DELETE request data
+        self.delete_parser = reqparse.RequestParser()
+        self.delete_parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
+
     def get(self) -> Response:
         """
         Implementation of the HTTP GET method. Use this method to query the system for users
@@ -18,24 +51,7 @@ class UserResource(Resource):
         Returns:
             Response: A HTTP response with all elements selected by the query in JSON or an error message.
         """
-        # create a parser for the request data and parse the request
-        parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, help="{error_msg}", location="args")
-        parser.add_argument("user_name", type=str, help="{error_msg}", location="args")
-        parser.add_argument("user_mail", type=str, help="{error_msg}", location="args")
-        parser.add_argument(
-            "user_role", type=lambda x: UserRole(int(x)), default=UserRole.User, help="{error_msg}", location="args"
-        )
-        parser.add_argument("user_page", type=int, default=1, help="{error_msg}", location="args")
-        parser.add_argument(
-            "user_limit",
-            type=int,
-            default=current_app.config["MAX_ITEMS_RETURNED"],
-            help="{error_msg}",
-            location="args",
-        )
-
-        args = parser.parse_args()
+        args = self.get_parser.parse_args()
 
         query = db.select(UserModel).order_by(UserModel.user_id)
         if args["user_id"] is not None:
@@ -66,13 +82,14 @@ class UserResource(Resource):
         return make_response(jsonify(response), 200)
 
     def post(self) -> Response:
-        # create a parser for the request data and parse the request
-        parser = reqparse.RequestParser()
-        parser.add_argument("user_name", type=str, help="{error_msg}", required=True)
-        parser.add_argument("user_pass", type=str, help="{error_msg}", required=True)
-        parser.add_argument("user_mail", type=str, help="{error_msg}", required=True)
+        """
+        Implementation of the HTTP POST method. Use this method to create a user.
+        This method ensures uniqueness of the user.
 
-        args = parser.parse_args(strict=True)
+        Returns:
+            Response: A HTTP response with the newly created user.
+        """
+        args = self.post_parser.parse_args(strict=True)
 
         if args["user_name"] == "":
             return make_response(jsonify(dict(message="user_name must not be empty")), 400)
@@ -95,16 +112,17 @@ class UserResource(Resource):
             return response
 
     def put(self) -> Response:
+        """
+        Implementation of the HTTP PUT method. Use this method to change user attributes.
+        This method ensures uniqueness of the user.
+
+        Returns:
+            Response: A HTTP response with the new user attributes.
+        """
         # TODO: remove `optional` after debugging
         token = verify_jwt_in_request(optional=True)
-        parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
-        parser.add_argument("user_name", type=str, help="{error_msg}")
-        parser.add_argument("user_mail", type=str, help="{error_msg}")
-        parser.add_argument("user_pass", type=str, help="{error_msg}")
-        parser.add_argument("user_role", type=lambda x: UserRole(int(x)), help="{error_msg}")
 
-        args = parser.parse_args(strict=True)
+        args = self.put_parser.parse_args(strict=True)
 
         if args["user_name"] == "":
             return make_response(jsonify(dict(message="user_name must not be empty")), 400)
@@ -134,11 +152,15 @@ class UserResource(Resource):
             return make_response(jsonify(dict(message="Changed properties successfully")), 200)
 
     def delete(self) -> Response:
+        """
+        Implementation of the HTTP DELETE method. Use this method to delete a user.
+
+        Returns:
+            Response: A HTTP response with a success message.
+        """
         # TODO: revoke token after self delete
         token = verify_jwt_in_request()
-        parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, help="{error_msg}", required=True)
-        args = parser.parse_args(strict=True)
+        args = self.delete_parser.parse_args(strict=True)
         query = db.select(UserModel).filter_by(user_id=args["user_id"])
         user = db.one_or_404(query, description="An user with this ID does not exist.")
         db.session.delete(user)
