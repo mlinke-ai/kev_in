@@ -1,8 +1,8 @@
-import type { ProgrammingExerciseType, ParsonsPuzzleExerciseType, PostExerciseType } from "./types"
+import type { ExerciseGet, ExercisePost } from "./types"
 
 export const getExercise = async (
   exerciseID: number
-): Promise<ProgrammingExerciseType | ParsonsPuzzleExerciseType | null> => {
+): Promise<ExerciseGet | null> => {
   try {
     const response = await fetch(
       `/exercise?exercise_id=${exerciseID}&exercise_limit=1&exercise_details=true`,
@@ -20,7 +20,7 @@ export const getExercise = async (
   }
 };
 
-export const postExercise = async (exercise: PostExerciseType) => {
+export const postExercise = async (exercise: ExercisePost) => {
   try {
     const response = await fetch("/exercise",
       {
