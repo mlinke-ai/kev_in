@@ -1,4 +1,9 @@
-import type { ExerciseGet, ExercisePost, SolutionGet, SolutionPost } from "../types"
+import type {
+  ExerciseGet,
+  ExercisePost,
+  SolutionGet,
+  SolutionPost,
+} from "../types";
 
 export interface ExerciseGetProgramming extends ExerciseGet {
   exercise_content: {
@@ -21,14 +26,14 @@ export interface ExercisePostProgramming extends ExercisePost {
 }
 
 export interface SolutionGetProgramming extends SolutionGet {
-    solution_content: {
-      code: string;
-      func: string;
-    };
-  }
+  solution_content: {
+    code: string;
+    func: string;
+  };
+}
 
 export interface SolutionPostProgramming extends SolutionPost {
-    solution_content: {
-      code: string;
-    };
-  }
+  solution_content: {
+    code: string;
+  };
+}
