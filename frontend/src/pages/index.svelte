@@ -1,21 +1,21 @@
 <script>
   import Button, { Label } from "@smui/button";
   import { PythonSvg, JavaSvg } from "../lib/AnimatedSVG";
-  import Page from "../lib/common/Page.svelte";
-  import LanguageCard from "../lib/common/LanguageCard.svelte";
+  import Page from "../lib/Common/Page.svelte";
+  import LanguageCard from "../lib/Common/LanguageCard.svelte";
   import { blur } from "svelte/transition";
   import Dialog from "@smui/dialog";
   import AuthDialog from "../lib/Authentication/AuthDialog.svelte";
   import { accessLevel, startPage } from "../stores";
-  import { accessLevels, dashboardPage } from "../lib/common/types";
+  import { accessLevels, dashboardPage } from "../lib/Common/types";
 
   let open = false;
   if ($accessLevel != accessLevels.default) {
-    history.pushState({}, null, `#${$startPage}`)
+    history.pushState({}, null, `#${$startPage}`);
   }
 </script>
 
-<Page title="Home">
+<Page title="Home" slideTransition={true}>
   <header>
     <h3>Your best choice to learn how to code.</h3>
     <hr />
@@ -35,16 +35,16 @@
   </header>
   <main>
     <div class="language-cards-area">
-      <div in:blur={{ duration: 500 }}>
+      <div in:blur={{ delay: 250, duration: 500 }}>
         <LanguageCard
           title="Python."
           description="Worldwide beloved and broadly used high-level programming
     language."
         >
-          <PythonSvg/>
+          <PythonSvg />
         </LanguageCard>
       </div>
-      <div in:blur={{ delay: 500, duration: 500 }}>
+      <div in:blur={{ delay: 750, duration: 500 }}>
         <LanguageCard
           title="Java."
           description="Oracle Java is the #1 programming language and development
@@ -55,7 +55,7 @@
       </div>
     </div>
   </main>
-  <Dialog bind:open class="auth-dialog">
+  <Dialog bind:open class="dialog">
     <AuthDialog />
   </Dialog>
 </Page>

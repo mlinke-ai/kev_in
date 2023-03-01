@@ -1,4 +1,14 @@
-import type { ProgrammingExerciseType, ParsonsPuzzleExerciseType } from "./types"
+import type { ProgrammingExerciseType, ParsonsPuzzleExerciseType, PostExerciseType } from "./types"
+
+export interface FillInBlanksExerciseType extends ExerciseType {
+  exercise_content: {
+    text: String;
+    blankPos: Int32Array; // welcher integer?
+  };
+  exercise_solution: {
+    userEntries: Array<string>;
+  };
+}
 
 export const getExercise = async (
   exerciseID: number
@@ -15,6 +25,24 @@ export const getExercise = async (
       throw `HTTP Error ${response.status}`
     }
     return await response.json().then((data) => data.data[0]);
+  } catch (err) {
+    throw err
+  }
+};
+
+export const postExercise = async (exercise: PostExerciseType) => {
+  try {
+    const response = await fetch("/exercise",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(exercise)//exercise as unknown as BodyInit
+      }
+    );
+    if (!response.ok) {
+      throw `HTTP Error ${response.status}`
+    }
+    console.log("Created!")
   } catch (err) {
     throw err
   }

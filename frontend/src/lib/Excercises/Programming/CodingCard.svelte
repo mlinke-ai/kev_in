@@ -1,13 +1,13 @@
 <!-- Component that provides an editor with syntax highlighting for
      Java and Python using ace -->
 <script lang="ts">
-  import UiCard from "../../common/UICard.svelte";
+  import UiCard from "../../Common/UICard.svelte";
   import * as ace from "brace";
   import "brace/mode/python";
   import "brace/mode/java";
   import "brace/theme/gob";
   import { onMount } from "svelte";
-  import { languages } from "../../common/types";
+  import { languages } from "../../Common/types";
 
   let editor;
   let modes = ["ace/mode/python", "ace/mode/java"];
@@ -28,12 +28,21 @@
     editor.setValue(content, 1);
     editor.setOptions({
       showPrintMargin: false,
-      fontSize: 18,
+      fontSize: 25,
       fontFamily: "Roboto Mono",
     });
-    editor.session.on('change', () => {content = editor.getValue()});
+    editor.session.on("change", () => {
+      content = editor.getValue();
+    });
+  });
 
-});
+  export function focus() {
+    editor.focus();
+  }
+
+  export function reset(content: string) {
+    editor.setValue(content, 1);
+  }
 </script>
 
 <UiCard icon="code" title="Coding">

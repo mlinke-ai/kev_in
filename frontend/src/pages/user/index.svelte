@@ -1,5 +1,5 @@
 <script>
-  import Page from "../../lib/common/Page.svelte";
+  import Page from "../../lib/Common/Page.svelte";
   import Card, {
     Content,
     PrimaryAction,
@@ -9,14 +9,13 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
-  import LanguageCard from "../../lib/common/LanguageCard.svelte";
+  //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
   import Button, { Label } from "@smui/button";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
   import SolutionsSvg from "../../lib/AnimatedSVG/SolutionsSVG.svelte";
-  import { accessLevels } from "../../lib/common/types";
 
   //display exercise progress
   let totalExercises;
@@ -103,7 +102,7 @@
   getTotalExercises();
 </script>
 
-<Page>
+<Page slideTransition={true}>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">

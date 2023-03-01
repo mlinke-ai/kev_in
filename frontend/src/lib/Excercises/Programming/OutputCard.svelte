@@ -1,12 +1,14 @@
 <!-- Component to show output of code run on the server -->
 
-<script>
-    import UiCard from "../../common/UICard.svelte";
+<script lang="ts">
+    import UiCard from "../../Common/UICard.svelte";
+
+    export let message: String;
 </script>
 
 <UiCard icon="terminal" title="Output">
     <div class="output-container">
-        Server>>
+        {message}
     </div>
 </UiCard>
 
@@ -20,8 +22,8 @@
         margin: 0 0.5rem 0.5rem 0.5rem;
         padding: 1rem;
         border-radius: 0.5rem;
-        background-color: black;
-        color: #7cfc00;
+        color: var(--console-color);
+        background-color: var(--console-background);
         font-family: "Roboto Mono";
     }
 </style>

@@ -11,8 +11,6 @@
   export let exerciseID: any;
   exerciseID = exerciseID as unknown as number;
 
-  console.log(exerciseID);
-
   let exerciseData: ProgrammingExerciseType | ParsonsPuzzleExerciseType;
   let exerciseComponent;
   let exercisePromise = get();
@@ -21,7 +19,7 @@
     try {
       getExercise(exerciseID).then((data) => {
         exerciseData = data;
-        switch (exerciseData.exercise_type_name) {
+        switch (exerciseData.exercise_type_value) {
           case exercises.parsonsPuzzle:
             exerciseComponent = ParsonsPuzzleExercise;
             break;

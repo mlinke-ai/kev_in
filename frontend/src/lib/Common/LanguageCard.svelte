@@ -1,5 +1,4 @@
 <!-- Component for animated language cards with media background -->
-
 <script>
   import Card, { Media } from "@smui/card/";
   import Ripple from "@smui/ripple";
@@ -7,21 +6,29 @@
 
   export let title = "";
   export let description = "";
+  export let disabled = false;
 
   let showText = false;
   let blurMedia = false;
+
+  if (disabled) {
+    title = "COMING SOON!";
+    description = "";
+    blurMedia = true;
+  }
 </script>
 
-<div
-  use:Ripple={{ surface: true, color: "primary", unbounded: true }}
->
+<div use:Ripple={{ surface: true, color: "primary", unbounded: true }}>
   <Card
     class="language-card"
-    variant="outlined"
     on:mouseenter={() => (showText = true)}
     on:mouseleave={() => (showText = false)}
-    on:mouseenter={() => (blurMedia = true)}
-    on:mouseleave={() => (blurMedia = false)}
+    on:mouseenter={() => {
+      if (!disabled) blurMedia = true;
+    }}
+    on:mouseleave={() => {
+      if (!disabled) blurMedia = false;
+    }}
   >
     <Media>
       <div class:blur={blurMedia} class:unblur={!blurMedia}>
@@ -78,13 +85,13 @@
       -webkit-filter: blur(0px);
     }
     100% {
-      -webkit-filter: blur(.5rem);
+      -webkit-filter: blur(0.5rem);
     }
   }
 
   @keyframes unblur {
     0% {
-      -webkit-filter: blur(.5rem);
+      -webkit-filter: blur(0.5rem);
     }
     100% {
       -webkit-filter: blur(0px);

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Page from "../../lib/common/Page.svelte";
+  import Page from "../../lib/Common/Page.svelte";
   import Card from "@smui/card";
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
@@ -8,8 +8,9 @@
   import { Svg } from "@smui/common";
 
   import { accessLevel, startPage } from "../../stores";
-  import { accessLevels } from "../../lib/common/types";
+  import { accessLevels } from "../../lib/Common/types";
   import { link } from "svelte-spa-router";
+  import Tooltip, { Wrapper } from "@smui/tooltip";
 
   let exercises = [];
   let exercisesData;
@@ -84,7 +85,7 @@
 
       <Menu bind:this={menu}>
         <List style="width: fit-content">
-          <a use:link href="/admin/exercises/create/parsonspuzzle">
+          <a href="../exercises/create/parsonspuzzle">
             <Item class="add-exercise-item">
               <Icon class="material-icons add-exercise-item-icon"
                 >extension</Icon
@@ -92,28 +93,27 @@
               <p style="width: 175px;">Parsons Puzzle</p>
             </Item>
           </a>
-          <a use:link href="/error">
-            <Item class="add-exercise-item">
+          <Wrapper>
+            <Item class="add-exercise-item" disabled>
               <Icon class="material-icons add-exercise-item-icon"
                 >border_color</Icon
               >
-              <p style="width: 175px;">Fill in the Blanks</p>
-              <!-- please insert link to create a fill in the blank exercise here -->
+              <p style="width: 175px;  padding-left: 10px;">
+                Fill in the Blanks
+              </p>
             </Item>
-          </a>
-          <a use:link href="/error">
+            <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
+          </Wrapper>
+          <a href="../exercises/create/programming">
             <Item class="add-exercise-item">
               <Icon class="material-icons add-exercise-item-icon">code</Icon>
               <p style="width: 175px;">Free Coding Exercise</p>
-              <!-- please insert link to create a free coding exercise here -->
             </Item>
           </a>
         </List>
       </Menu>
     </div>
   {/if}
-
-  <p>This is a placeholder site for listing all exercises.</p>
 
   {#if exercisesLoaded}
     <div class="grid-container">

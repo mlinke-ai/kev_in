@@ -102,7 +102,10 @@ class Server:
             print("create dummy exercises")
             for i in range(10):
                 for j in range(7):
-                    if j == 2:
+                    if j == 0:
+                        content = {"text": "Dummy Text", "gap_positions": [1,2,3]}
+                        solution = {"gap_entries": ["1", "2", "3"]}
+                    elif j == 2:
                         content = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
                         solution = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
                     elif j == 6:

@@ -1,5 +1,5 @@
 <script>
-  import UiCard from "../common/UICard.svelte";
+  import UiCard from "../Common/UICard.svelte";
   import Textfield from '@smui/textfield';
 
   export let description = ""
@@ -20,8 +20,8 @@
       left: 0;
       margin: 0 0.5rem 0.5rem 0.5rem;
       border-radius: 0.5rem;
-      background-color: black;
-      color: #7cfc00;
+      background-color: var(--console-background);;
+      color: var(--console-color);;
       padding: 1rem;
       font-family: "Roboto Mono";
       overflow: auto;
@@ -31,9 +31,10 @@
     width: 99%;
     background-color: transparent;
     height: 98%;
-    color: white;
+    color: var(--console-color);
     border: none;
     resize: none;
+    font-size: 1.5rem;;
   }
 
   .input:focus {

@@ -1,10 +1,12 @@
 <script>
-  import Page from "../../lib/common/Page.svelte";
+  import Page from "../../lib/Common/Page.svelte";
   import Button from "@smui/button/src/Button.svelte";
 
   import IconButton, { Icon } from "@smui/icon-button";
   import { Label, Svg } from "@smui/common";
   import { each } from "svelte/internal";
+  import { accessLevel } from "../../stores";
+  import { accessLevels } from "../../lib/Common/types";
 
   const maxDisplayed = 18;
   let currentUserUrl = `/user?user_offset=1&user_limit=${maxDisplayed}`;

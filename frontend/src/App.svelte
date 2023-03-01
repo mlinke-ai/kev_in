@@ -3,6 +3,15 @@
   import { Router } from "@roxi/routify";
   import { routes } from "../.routify/routes";
   import CircularProgress from "@smui/circular-progress";
+  import { setTheme } from "./lib/Theming/themes";
+
+  let preferredTheme: number = localStorage.getItem("preferredTheme") as unknown as number
+  if (preferredTheme == undefined) {
+    preferredTheme = 1
+    localStorage.setItem("preferredTheme", preferredTheme)
+  }
+
+  setTheme(preferredTheme, true)
 </script>
 
 {#await prepareApp()}

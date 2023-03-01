@@ -1,20 +1,19 @@
 <script>
   import Button from "@smui/button/src/Button.svelte";
-  import Page from "../../../lib/common/Page.svelte";
+  import Page from "../../../lib/Common/Page.svelte";
   import Textfield from "@smui/textfield";
   import IconButton from '@smui/icon-button';
   import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
-  import { each } from "svelte/internal";
-  import UiCard from "../../../lib/common/UICard.svelte";
-  import { accessLevels } from "../../../lib/common/types";
+  import ExitDialog from "../../../lib/Excercises/ExitDialog.svelte";
+  import { Icon, Label } from "@smui/button";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
-  let itemsLeftOriginal = [];
-  let itemsRight = [];
 
   let exerciseTitle = "";
   let exerciseDescription = "";
+
+  let openExit = false;
 
   function newPuzzlePiece(){
     itemsLeft = [...itemsLeft, {id: itemsLeft.length + 1, name: ""}]
@@ -27,6 +26,12 @@
       itemsLeft[k]["id"] --;
     }
     itemsLeft = itemsLeft
+  }
+
+  function reset(){
+    itemsLeft = [{id: 1, name: ""}];
+    exerciseDescription = "";
+    exerciseTitle = "";
   }
 
 
@@ -89,13 +94,20 @@
       <Button variant="raised" on:click={newPuzzlePiece}>Add a new Puzzle Piece</Button>
     </div>
     <div class="status-bar">
-      PPE - Creation
+      <Button variant ="outlined" on:click={()=>{openExit=true}}>
+        <Icon class="material-icons">arrow_back</Icon>
+        <Label>Back to Overview</Label>
+      </Button>
       <div>
-        <Button variant="outlined">Reset</Button>
+        <Button variant="outlined" on:click={reset}>
+          <Icon class="material-icons">restart_alt</Icon>
+          <Label>Reset</Label>
+        </Button>
         <Button variant="raised" on:click={submitExercise}>Submit new Exercise</Button>
       </div>
     </div>
   </div>
+  <ExitDialog bind:open={openExit}/>
 </Page>
 
 <style lang="scss">
@@ -131,7 +143,6 @@
   }
   .status-bar {
     grid-area: status;
-    color: vars.$consoleColor;
     font-family: "Roboto Mono";
     display: flex;
     align-items: center;

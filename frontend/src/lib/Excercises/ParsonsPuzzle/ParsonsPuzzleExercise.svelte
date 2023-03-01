@@ -1,19 +1,27 @@
 <script lang="ts">
-  import Page from "../../common/Page.svelte";
+  import Page from "../../Common/Page.svelte";
   import PuzzleCard from "./PuzzleCard.svelte";
   import TaskCard from "../TaskCard.svelte";
   import StatusBar from "../StatusBar.svelte";
-  import { accessLevels } from "../../common/types";
+  import { accessLevels } from "../../Common/types";
   import {
     SolutionPostParsonsPuzzle,
     submitSolution,
     getCurrentTimestamp
   } from "../solution";
   import type { ParsonsPuzzleExerciseType } from "../types";
+  import Message from "../../Common/Message/Message.svelte";
+  import { messages } from "../../Common/types";
+  import Dialog, { Title, Content, Actions } from '@smui/dialog';
+  import Button, { Label, Icon } from '@smui/button';
+  import { startPage } from "../../../stores";
 
   export let exerciseData: ParsonsPuzzleExerciseType;
 
   let solution: SolutionPostParsonsPuzzle;
+
+  let errorMessage;
+  let openCorrectDialog = false;
 
   let itemsLeft = [];
   let itemsLeftOriginal = [];
@@ -39,7 +47,21 @@
         list: itemsRight.map(item => item.name)
       }
     }
-    submitSolution(solution);
+    try{
+      submitSolution(solution).then((data) =>{
+        console.log(data)
+        if (data.solution_correct){
+          openCorrectDialog = true;
+          console.log("Congratulations!")
+        }
+        else{
+          errorMessage.open()
+        }
+      });
+    }
+    catch (err) {
+      alert(err.toString())
+    }
   }
 
   function reset() {
@@ -51,7 +73,6 @@
 <Page
   title="Parsons Puzzle Exercise"
   fullwidth={true}
-  requiredAccessLevel={accessLevels.user}
 >
   <div class="exercise-container">
     <div class="header-area">
@@ -65,6 +86,29 @@
     </div>
     <StatusBar {reset} {submit} bind:elapsedTime />
   </div>
+  <Message
+  bind:message={errorMessage}
+  content={"Wrong Answer, please try again..."}
+  type={messages.error}
+  />
+  <Dialog
+  bind:open = {openCorrectDialog}
+  scrimClickAction=""
+  escapeKeyAction=""
+  aria-labelledby="mandatory-title"
+  aria-describedby="mandatory-content"
+>
+  <Title id="mandatory-title">Congratulations!</Title>
+  <Content id="mandatory-content">
+    You solved that task correctly!
+  </Content>
+  <Actions>
+    <Button variant ="outlined" on:click={()=>{history.pushState({}, null, `#${$startPage}`)}}>
+      <Icon class="material-icons">arrow_back</Icon>
+      <Label>Return to Overview</Label>
+    </Button>
+  </Actions>
+</Dialog>
 </Page>
 
 <style lang="scss">
