@@ -6,10 +6,10 @@
     import { accessLevels } from "../lib/Common/types";
     import type { FillInBlanksExerciseType } from "../lib/Excercises/exercise";
     import {
-        SolutionPostFillInBlanks,
         submitSolution,
         getCurrentTimestamp,
     } from "../lib/Excercises/solution";
+  import type { SolutionPostFillInBlanks } from "../lib/Excercises/FillInBlanks/types";
 
 
     let elapsedTime = 0;
