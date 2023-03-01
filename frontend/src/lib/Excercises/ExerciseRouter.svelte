@@ -1,31 +1,21 @@
 <script lang="ts">
-  import { exercises, ExerciseGet } from "./types";
+  import type { ExerciseGet } from "./types";
   import { getExercise } from "./exercise";
-  import ProgrammingExercise from "./Programming/Programming.svelte";
-  import ParsonsPuzzleExercise from "../../lib/Excercises/ParsonsPuzzle/ParsonsPuzzleExercise.svelte";
-  import type { ExerciseGetProgramming } from "./Programming/types";
   import type { ComponentType } from "svelte";
-
+  import Message from "../Common/Message/Message.svelte";
+  import { messages } from "../Common/types";
   export let exerciseID: number;
 
   let exerciseData: ExerciseGet;
   let exerciseComponent: ComponentType;
   let exercisePromise = get();
+  let errorMsg = Message
 
   async function get() {
     try {
       getExercise(exerciseID).then((data) => {
         exerciseData = data;
-        switch (exerciseData.exercise_type_value) {
-          case exercises.parsonsPuzzle:
-            exerciseData = exerciseData;
-            exerciseComponent = ParsonsPuzzleExercise;
-            break;
-          case exercises.programming:
-            exerciseData = exerciseData as ExerciseGetProgramming;
-            exerciseComponent = ProgrammingExercise;
-            break;
-        }
+        import(`./${exerciseData.exercise_type_name}/${exerciseData.exercise_type_name}.svelte`).then((component) => exerciseComponent = component.default)
       });
     } catch (err) {
       throw err;
@@ -38,6 +28,5 @@
 {:then _}
   <svelte:component this={exerciseComponent} {exerciseData} />
 {:catch error}
-  <!-- TODO: Error Handling -->
-  {error}
+  <Message bind:message={errorMsg} content={error} type={messages.error} autoOpen={true}/>
 {/await}
