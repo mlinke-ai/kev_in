@@ -19,8 +19,6 @@
   let nextSolutionsUrl;
   let solutionsLoaded = false;
 
-  //let isAdmin = $accessLevel > accessLevels.user;
-
   const getSolutions = async () => {
     fetch(`${currentSolutionsUrl}`, {
       method: "GET",

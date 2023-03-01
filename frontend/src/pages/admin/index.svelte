@@ -1,9 +1,5 @@
 <script lang="ts">
-<<<<<<< HEAD
-  import Page from "../../lib/common/Page.svelte";
-=======
   import Page from "../../lib/Common/Page.svelte";
->>>>>>> 61b2a944e9735b0335bde7d851c58f631aa83441
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
   import Card, {
@@ -15,11 +11,7 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
-<<<<<<< HEAD
-  import LanguageCard from "../../lib/common/LanguageCard.svelte";
-=======
-  import LanguageCard from "../../lib/Common/LanguageCard.svelte";
->>>>>>> 61b2a944e9735b0335bde7d851c58f631aa83441
+  //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
   import Button, { Label, Icon } from "@smui/button";
   import { Svg } from "@smui/common";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
@@ -27,11 +19,7 @@
   import { accessLevels } from "../../lib/Common/types";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
-<<<<<<< HEAD
-  
-=======
   import Tooltip, { Wrapper } from "@smui/tooltip";
->>>>>>> 61b2a944e9735b0335bde7d851c58f631aa83441
 
   //display exercise progress
   let reqMeta;
