@@ -1,6 +1,5 @@
 <script>
-  import Button from "@smui/button/src/Button.svelte";
-  import { Icon, Label } from "@smui/button";
+  import Button, { Icon, Label } from "@smui/button";
   import ExitDialog from "./ExitDialog.svelte";
 
   export let reset;
