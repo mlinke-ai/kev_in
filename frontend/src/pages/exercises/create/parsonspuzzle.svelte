@@ -3,9 +3,9 @@
   import Page from "../../../lib/Common/Page.svelte";
   import Textfield from "@smui/textfield";
   import IconButton from '@smui/icon-button';
-  import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
   import ExitDialog from "../../../lib/Excercises/ExitDialog.svelte";
   import { Icon, Label } from "@smui/button";
+  import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
 
   let itemsLeft = [];
   $: itemsLeft = [{id: 1, name: ""}];
