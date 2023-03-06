@@ -5,20 +5,21 @@
   import StatusBar from "../StatusBar.svelte";
   import { accessLevels } from "../../Common/types";
   import {
-    SolutionPostParsonsPuzzle,
     submitSolution,
     getCurrentTimestamp
   } from "../solution";
-  import type { ParsonsPuzzleExerciseType } from "../types";
+
+  import type{ SolutionPostPPE } from "./types";
+  import type { ExerciseGetPPE } from "./types";
   import Message from "../../Common/Message/Message.svelte";
   import { messages } from "../../Common/types";
   import Dialog, { Title, Content, Actions } from '@smui/dialog';
   import Button, { Label, Icon } from '@smui/button';
   import { startPage } from "../../../stores";
 
-  export let exerciseData: ParsonsPuzzleExerciseType;
+  export let exerciseData: ExerciseGetPPE;
 
-  let solution: SolutionPostParsonsPuzzle;
+  let solution: SolutionPostPPE;
 
   let errorMessage;
   let openCorrectDialog = false;

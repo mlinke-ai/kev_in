@@ -1,15 +1,13 @@
 <script lang="ts">
-    import Page from "../lib/Common/Page.svelte";
-    import BlanksCard from "../lib/Excercises/FillInBlanks/BlanksCard.svelte";
-    import TaskCard from "../lib/Excercises/TaskCard.svelte";
-    import StatusBar from "../lib/Excercises/StatusBar.svelte";
-    import { accessLevels } from "../lib/Common/types";
-    import type { FillInBlanksExerciseType } from "../lib/Excercises/exercise";
+    import Page from "../../Common/Page.svelte";
+    import BlanksCard from "./BlanksCard.svelte";
+    import TaskCard from "../TaskCard.svelte";
+    import StatusBar from "../StatusBar.svelte";
     import {
-        SolutionPostFillInBlanks,
         submitSolution,
         getCurrentTimestamp,
-    } from "../lib/Excercises/solution";
+    } from "../solution";
+  import type { SolutionPostFillInBlanks } from "./types";
 
 
     let elapsedTime = 0;
@@ -95,7 +93,7 @@
 </Page>
 
 <style lang="scss">
-    @use "../variables" as vars;
+    @use "../../../variables" as vars;
 
     .exercise-container {
         display: grid;

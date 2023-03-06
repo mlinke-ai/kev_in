@@ -1,49 +1,7 @@
-interface SolutionPost {
-  solution_exercise: number;
-  solution_date: number;
-  solution_duration: number;
-}
-
-export interface SolutionPostProgramming extends SolutionPost {
-  solution_content: {
-    code: string;
-  };
-}
-
-export interface SolutionPostParsonsPuzzle extends SolutionPost {
-  solution_content: {
-    list: Array<string>;
-  };
-}
-
-export interface SolutionPostFillInBlanks extends SolutionPost {
-  solution_content: {
-    list: Array<string>;
-  };
-}
-
-export interface SolutionGet {
-  evaluator_message: string;
-  message: string;
-  solution_correct: boolean;
-  solution_date: string;
-  solution_duration: number;
-  solution_exercise: number;
-  solution_id: number;
-  solution_pending: boolean;
-  solution_user: number;
-  solution_content?: unknown;
-}
-
-export interface SolutionGetProgramming extends SolutionGet {
-  solution_content: {
-    code: string;
-    func: string;
-  };
-}
+import { SolutionGet, SolutionPost } from "./types";
 
 export const submitSolution = async (
-  solution: SolutionPostProgramming | SolutionPostParsonsPuzzle
+  solution: SolutionPost
 ):Promise<SolutionGet | null> => {
   try {
     const response = await fetch("/solution", {

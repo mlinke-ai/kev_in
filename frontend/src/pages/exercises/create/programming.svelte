@@ -1,18 +1,16 @@
 <script lang="ts">
   import Button from "@smui/button";
   import Page from "../../../lib/Common/Page.svelte";
-  import CodingCard from "../../../lib/Excercises/Programming/CodingCard.svelte";
+  import CodingCard from "../../../lib/Excercises/ProgrammingExercise/CodingCard.svelte";
   import TaskCardCreation from "../../../lib/Excercises/TaskCardCreation.svelte";
   import Textfield from "@smui/textfield";
-  import TestCaseCard from "../../../lib/Excercises/Programming/create/TestCaseCard.svelte";
-  import type { TestCase } from "../../../lib/Excercises/Programming/create/types";
+  import TestCaseCard from "../../../lib/Excercises/ProgrammingExercise/create/TestCaseCard.svelte";
+  import type { TestCase } from "../../../lib/Excercises/ProgrammingExercise/create/types";
   import {
     exercises,
-    ProgrammingPostExerciseType,
   } from "../../../lib/Excercises/types";
+  import type { ExercisePostProgramming } from "../../../lib/Excercises/ProgrammingExercise/types";
   import { postExercise } from "../../../lib/Excercises/exercise";
-  import UiCard from "../../../lib/Common/UICard.svelte";
-  import ParametersCard from "../../../lib/Excercises/Programming/create/ParametersCard.svelte";
 
   let exerciseTitle = "";
   let exerciseDescription = "";
@@ -22,7 +20,7 @@
   let solution: {
     [key: string]: [Array<number>, Array<number>];
   } = {};
-  let exercise: ProgrammingPostExerciseType;
+  let exercise: ExercisePostProgramming;
 
   function submit() {
     for (let i = 0; i < testCases.length; i++) {

@@ -10,7 +10,17 @@ export enum exercises {
   programming = 7,
 }
 
-interface ExerciseType {
+export enum exerciseIcons {
+  gapText = "",
+  syntax = "",
+  parsonsPuzzle = "extension",
+  findTheBug = "",
+  documentation = "",
+  output = "",
+  programming = "code",
+}
+
+export interface ExerciseGet {
   exercise_id: number;
   exercise_title: string;
   exercise_description: string;
@@ -22,36 +32,7 @@ interface ExerciseType {
   exercise_solution: object;
 }
 
-export enum exerciseIcons {
-  gapText = "",
-  syntax = "",
-  parsonsPuzzle = "extension",
-  findTheBug = "",
-  documentation = "",
-  output = "",
-  programming = "code",
-}
-
-export interface ProgrammingExerciseType extends ExerciseType {
-  exercise_content: {
-    code: string;
-    func: string;
-  };
-  exercise_solution: {
-    key: [params: Array<number>, result: Array<number>];
-  };
-}
-
-export interface ParsonsPuzzleExerciseType extends ExerciseType {
-  exercise_content: {
-    list: Array<string>;
-  };
-  exercise_solution: {
-    list: Array<string>;
-  };
-}
-
-export interface PostExerciseType {
+export interface ExercisePost {
   exercise_title: string;
   exercise_description: string;
   exercise_type: exercises;
@@ -60,12 +41,22 @@ export interface PostExerciseType {
   exercise_solution: any;
 }
 
-export interface ProgrammingPostExerciseType extends PostExerciseType {
-  exercise_content: {
-    code: string;
-    func: string;
-  };
-  exercise_solution: {
-    [key: string]: [Array<number>, Array<number>];
-  }
+export interface SolutionGet {
+  evaluator_message: string;
+  message: string;
+  solution_correct: boolean;
+  solution_date: string;
+  solution_duration: number;
+  solution_exercise: number;
+  solution_id: number;
+  solution_pending: boolean;
+  solution_user: number;
+  solution_content: unknown;
+}
+
+export interface SolutionPost {
+  solution_exercise: number;
+  solution_date: number;
+  solution_duration: number;
+  solution_content: unknown;
 }
