@@ -175,19 +175,19 @@ class SolutionResource(Resource):
 
         query = db.select(SolutionModel).filter_by(solution_id=args["solution_id"])
         solution = db.one_or_404(query, description="A solution with this ID does not exist.")
-        if args["solution_user"]:
+        if args["solution_user"] is not None:
             solution.solution_user = args["solution_user"]
-        if args["solution_exercise"]:
+        if args["solution_exercise"] is not None:
             solution.solution_exercise = args["solution_exercise"]
-        if args["solution_date"]:
+        if args["solution_date"] is not None:
             solution.solution_date = args["solution_date"]
-        if args["solution_duration"]:
+        if args["solution_duration"] is not None:
             solution.solution_duration = args["solution_duration"]
-        if args["solution_correct"]:
+        if args["solution_correct"] is not None:
             solution.solution_correct = args["solution_correct"]
-        if args["solution_pending"]:
+        if args["solution_pending"] is not None:
             solution.solution_pending = args["solution_pending"]
-        if args["solution_content"]:
+        if args["solution_content"] is not None:
             solution.solution_content = args["solution_content"]
         try:
             db.session.commit()

@@ -176,17 +176,17 @@ class ExerciseResource(Resource):
 
         query = db.select(ExerciseModel).filter_by(exercise_id=args["exercise_id"])
         exercise = db.one_or_404(query, description="An exercise with this ID does not exist.")
-        if args["exercise_title"]:
+        if args["exercise_title"] is not None:
             exercise.exercise_title = args["exercise_title"]
-        if args["exercise_description"]:
+        if args["exercise_description"] is not None:
             exercise.exercise_description = args["exercise_description"]
-        if args["exercise_type"]:
+        if args["exercise_type"] is not None:
             exercise.exercise_type = args["exercise_type"]
-        if args["exercise_content"]:
+        if args["exercise_content"] is not None:
             exercise.exercise_content = args["exercise_content"]
-        if args["exercise_solution"]:
+        if args["exercise_solution"] is not None:
             exercise.exercise_solution = args["exercise_solution"]
-        if args["exercise_language"]:
+        if args["exercise_language"] is not None:
             exercise.exercise_language = args["exercise_language"]
         try:
             db.session.commit()

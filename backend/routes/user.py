@@ -144,13 +144,13 @@ class UserResource(Resource):
 
         query = db.select(UserModel).filter_by(user_id=args["user_id"])
         user = db.one_or_404(query, description="An user with this ID does not exist.")
-        if args["user_name"]:
+        if args["user_name"] is not None:
             user.user_name = args["user_name"]
-        if args["user_mail"]:
+        if args["user_mail"] is not None:
             user.user_mail = args["user_mail"]
-        if args["user_pass"]:
+        if args["user_pass"] is not None:
             user.user_pass = args["user_pass"]
-        if args["user_role"]:
+        if args["user_role"] is not None:
             user.user_role = args["user_role"]
         try:
             db.session.commit()
