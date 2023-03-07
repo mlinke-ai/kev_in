@@ -10,14 +10,6 @@ from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, s
 from backend.database.models import BlocklistModel, db
 
 
-def user_id_from_token():
-    pass
-
-
-def user_id_from_token():
-    pass
-
-
 def refresh_token(response: Response) -> Response:
     try:
         exp_timestamp = get_jwt()["exp"]

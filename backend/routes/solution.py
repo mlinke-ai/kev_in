@@ -9,7 +9,7 @@ from flask_restful import Resource, inputs, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.database.models import SolutionModel, UserRole, db
-from backend.utils import get_url, user_id_from_token
+from backend.utils import get_url
 
 
 class SolutionResource(Resource):

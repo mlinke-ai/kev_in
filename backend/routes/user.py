@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from flask import Response, current_app, jsonify, make_response, request
-from flask_jwt_extended import create_access_token, get_jti, get_jwt_identity, set_access_cookies, verify_jwt_in_request
+from flask_jwt_extended import create_access_token, get_jwt_identity, set_access_cookies, verify_jwt_in_request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.database.models import UserModel, UserRole, db
-from backend.utils import get_url, user_id_from_token
+from backend.utils import get_url
 
 
 class UserResource(Resource):
