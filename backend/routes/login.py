@@ -17,7 +17,7 @@ class LoginResource(Resource):
         query = db.select(UserModel).filter_by(user_mail=args["user_mail"])
         user = db.one_or_404(query, description="An user with this mail does not exist.")
         if user.verify(args["user_pass"]):
-            token = create_access_token(identity=user.user_mail)
+            token = create_access_token(identity=user.to_json())
             response = make_response(jsonify(dict(message=f"Welcome {user.user_name}!")), 200)
             set_access_cookies(response, token)
         else:
