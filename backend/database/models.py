@@ -111,7 +111,7 @@ class ExerciseModel(db.Model):
     def __repr__(self) -> str:
         return f"<Exercise id={self.exercise_id} title={self.exercise_title} type={self.exercise_type} language={self.exercise_language}>"
 
-    def to_json(self, details: bool, is_admin: bool) -> dict:
+    def to_json(self, details: bool = False, is_admin: bool = False) -> dict:
         if details:
             return dict(
                 exercise_id=self.exercise_id,
