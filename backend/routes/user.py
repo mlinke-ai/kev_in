@@ -46,7 +46,7 @@ class UserResource(Resource):
 
     def get(self) -> Response:
         """
-        Implementation of the HTTP GET method. Use this method to query the system for users
+        Implementation of the HTTP GET method. Use this method to query the system for users.
 
         Returns:
             Response: A HTTP response with all elements selected by the query in JSON or an error message.
@@ -91,7 +91,7 @@ class UserResource(Resource):
 
     def post(self) -> Response:
         """
-        Implementation of the HTTP POST method. Use this method to create a user.
+        Implementation of the HTTP POST method. Use this method to create an user.
         This method ensures uniqueness of the user.
 
         Returns:
