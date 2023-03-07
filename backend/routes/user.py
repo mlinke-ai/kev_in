@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Response, current_app, jsonify, make_response, request
-from flask_jwt_extended import create_access_token, set_access_cookies, verify_jwt_in_request
+from flask_jwt_extended import create_access_token, get_jti, get_jwt_identity, set_access_cookies, verify_jwt_in_request
 from flask_restful import Resource, reqparse
 from flask_sqlalchemy.query import sqlalchemy
 
@@ -54,6 +54,9 @@ class UserResource(Resource):
         token = verify_jwt_in_request()
 
         args = self.get_parser.parse_args()
+
+        if len(request.url.split("?")) == 1:
+            return make_response(jsonify(get_jwt_identity()), 200)
 
         query = db.select(UserModel).order_by(UserModel.user_id)
         if args["user_id"] is not None:
