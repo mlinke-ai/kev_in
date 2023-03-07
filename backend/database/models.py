@@ -74,7 +74,7 @@ class UserModel(db.Model):
             )
 
     def verify(self, password) -> bool:
-        return self.user_pass == password
+        return self.user_pass == hashlib.sha256(bytes(password, encoding="utf-8")).hexdigest()
 
 
 class ExerciseModel(db.Model):
