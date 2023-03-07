@@ -162,7 +162,7 @@ class UserResource(Resource):
 
     def delete(self) -> Response:
         """
-        Implementation of the HTTP DELETE method. Use this method to delete a user.
+        Implementation of the HTTP DELETE method. Use this method to delete an user.
 
         Returns:
             Response: A HTTP response with a success message.
