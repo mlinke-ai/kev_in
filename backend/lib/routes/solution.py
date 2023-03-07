@@ -42,7 +42,7 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         # define arguments
-        parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_id", type=int, help="{error_msg}", action="append", location="args")
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
         parser.add_argument(
@@ -67,7 +67,7 @@ class SolutionResource(Resource):
 
         query = db_engine.select(SolutionModel).order_by(SolutionModel.solution_id)
         if args["solution_id"]:
-            query = query.where(SolutionModel.solution_id == args["solution_id"])
+            query = query.filter(SolutionModel.solution_id.in_(args["solution_id"]))
         if args["solution_user"]:
             query = query.where(SolutionModel.solution_user == args["solution_user"])
         if args["solution_exercise"]:
@@ -149,7 +149,7 @@ class SolutionResource(Resource):
         correct, pending, eval_message = eval_solution(args["solution_content"], args["solution_exercise"])
         if correct == None:
             return utils.makeResponseNewCookie(dict(message=f"Unkown Exercise"), 400, request.cookies)
-        
+
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
@@ -166,16 +166,9 @@ class SolutionResource(Resource):
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        query = (db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id))
-                .select_from(solution_table)
-        )
+        query = db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id)).select_from(solution_table)
         max_id = db_engine.session.execute(query).fetchone()[0]
-        sol = (
-        SolutionModel
-            .query
-            .filter_by(solution_id=max_id)
-            .one()
-        )
+        sol = SolutionModel.query.filter_by(solution_id=max_id).one()
         result = sol.to_json()
         result["evaluator_message"] = eval_message
         result["message"] = "Successfully submitted solution"
