@@ -1,6 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# TODO: is nullable=False applicable somewhere?
+
+# Kev.in - a coding learning platform
+# Copyright (C) 2022 to 2023  Max Linke and others
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import json
 import random
@@ -90,8 +105,8 @@ class SolutionModel(db_engine.Model):
         )
 
 
-#moved this from utils.py to database.py because I cannot import utils here (circular import)
-#maybe we can find a better place for this
+# moved this from utils.py to database.py because I cannot import utils here (circular import)
+# maybe we can find a better place for this
 def prepareExerciseContent(exerciseContent: dict, exerciseType: config.ExerciseType) -> dict:
     """
     Before sending out the exercise content via GET, some preperations have to be done for some exercise types. This

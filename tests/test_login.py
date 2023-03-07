@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Kev.in - a coding learning platform
-# Copyright (C) 2022  Max Linke
+# Copyright (C) 2022 to 2023  Max Linke and others
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -53,10 +53,10 @@ class LoginTest(unittest.TestCase):
                 "user_mail": "sadmin@example.com",
                 "user_name": "sadmin",
                 "user_role_name": "SAdmin",
-                "user_role_value": 1
+                "user_role_value": 1,
             },
-            r.json()
-            )
+            r.json(),
+        )
         self.assertEqual(200, r.status_code)
 
     def test_login_fail(self) -> None:

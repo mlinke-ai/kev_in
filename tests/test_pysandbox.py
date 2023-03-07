@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Kev.in - a coding learning platform
-# Copyright (C) 2022  Max Linke
+# Copyright (C) 2022 to 2023  Max Linke and others
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -131,7 +131,6 @@ not_executable = {
 
 
 class TestPySandbox(unittest.TestCase):
-
     # Automatically call for every single test we run.
     def setUp(self):
         self.pysandbox_instance = ExecutePython()

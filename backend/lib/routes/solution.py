@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Kev.in - a coding learning platform
-# Copyright (C) 2022  Max Linke
+# Copyright (C) 2022 to 2023  Max Linke and others
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -149,7 +149,7 @@ class SolutionResource(Resource):
         correct, pending, eval_message = eval_solution(args["solution_content"], args["solution_exercise"])
         if correct == None:
             return utils.makeResponseNewCookie(dict(message=f"Unkown Exercise"), 400, request.cookies)
-        
+
         # load the solution table
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         # create a new element
@@ -166,16 +166,9 @@ class SolutionResource(Resource):
         db_engine.session.add(solution)
         db_engine.session.commit()
         # check whether the element was added successfully
-        query = (db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id))
-                .select_from(solution_table)
-        )
+        query = db_engine.select(sqlalchemy.func.max(solution_table.c.solution_id)).select_from(solution_table)
         max_id = db_engine.session.execute(query).fetchone()[0]
-        sol = (
-        SolutionModel
-            .query
-            .filter_by(solution_id=max_id)
-            .one()
-        )
+        sol = SolutionModel.query.filter_by(solution_id=max_id).one()
         result = sol.to_json()
         result["evaluator_message"] = eval_message
         result["message"] = "Successfully submitted solution"

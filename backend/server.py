@@ -1,19 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# Kev.in - a coding learning platform
+# Copyright (C) 2022 to 2023  Max Linke and others
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+import datetime
 import hashlib
 import json
 import secrets
 import string
-import json
-import datetime
 
 from flask import Flask, Response, send_from_directory
 from flask_restful import Api
 from flask_sqlalchemy.query import sqlalchemy
 
 from backend.lib.core import config
-from backend.lib.interfaces import ExerciseModel, UserModel, SolutionModel, db_engine
+from backend.lib.interfaces import ExerciseModel, SolutionModel, UserModel, db_engine
 from backend.lib.routes import ExerciseResource, LoginResource, LogoutResource, SolutionResource, UserResource
 
 
@@ -67,7 +82,7 @@ class Server:
         else:
             print("exactly one sadmin")
 
-    def _tuser_check(self) -> None: #TODO should be removed for production
+    def _tuser_check(self) -> None:  # TODO should be removed for production
         user_table = sqlalchemy.Table(config.USER_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(user_table).select_from(user_table).where(user_table.c.user_name == config.TUSER_NAME)
         selection = db_engine.session.execute(query)
@@ -93,7 +108,7 @@ class Server:
         alphabet = string.ascii_letters + string.digits + "!@#$%^&*()_"
         return "".join(secrets.choice(alphabet) for _ in range(64))
 
-    def _gen_exercises(self) -> None: #TODO should be removed for production
+    def _gen_exercises(self) -> None:  # TODO should be removed for production
         # create some dummy exercises with different types
         exercise_table = sqlalchemy.Table(config.EXERCISE_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(sqlalchemy.func.count()).select_from(exercise_table)
@@ -103,7 +118,7 @@ class Server:
             for i in range(10):
                 for j in range(7):
                     if j == 0:
-                        content = {"text": "Dummy Text", "gap_positions": [1,2,3]}
+                        content = {"text": "Dummy Text", "gap_positions": [1, 2, 3]}
                         solution = {"gap_entries": ["1", "2", "3"]}
                     elif j == 2:
                         content = {"list": ["Hello", "World", "this", "is", "the", "first", "exercise"]}
@@ -134,7 +149,7 @@ class Server:
             print("found enough exercises")
         db_engine.session.commit()
 
-    def _gen_solutions(self) -> None: #TODO should be removed for production
+    def _gen_solutions(self) -> None:  # TODO should be removed for production
         # create some dummy solutions: two for the first seven exercises (true and false)
         solution_table = sqlalchemy.Table(config.SOLUTION_TABLE, db_engine.metadata, autoload=True)
         query = db_engine.select(sqlalchemy.func.count()).select_from(solution_table)
@@ -145,22 +160,22 @@ class Server:
                 content = {"solution": "some JSON"}
                 solution = SolutionModel(
                     solution_user=1,
-                    solution_exercise=i+1,
+                    solution_exercise=i + 1,
                     solution_date=datetime.datetime.now(),
-                    solution_duration=datetime.timedelta(minutes=3*i, seconds=3*i),
-                    solution_correct=not i==6,
+                    solution_duration=datetime.timedelta(minutes=3 * i, seconds=3 * i),
+                    solution_correct=not i == 6,
                     solution_pending=i == 6,
-                    solution_content=json.dumps(content)
+                    solution_content=json.dumps(content),
                 )
                 db_engine.session.add(solution)
                 solution = SolutionModel(
-                    solution_user=i%2+1,
-                    solution_exercise=i+1,
+                    solution_user=i % 2 + 1,
+                    solution_exercise=i + 1,
                     solution_date=datetime.datetime.fromtimestamp(1234567890),
-                    solution_duration=datetime.timedelta(minutes=5*i, seconds=5*i),
+                    solution_duration=datetime.timedelta(minutes=5 * i, seconds=5 * i),
                     solution_correct=False,
                     solution_pending=i == 6,
-                    solution_content=json.dumps(content)
+                    solution_content=json.dumps(content),
                 )
                 db_engine.session.add(solution)
         else:

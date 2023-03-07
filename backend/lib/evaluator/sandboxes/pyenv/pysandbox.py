@@ -1,17 +1,32 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Kev.in - a coding learning platform
+# Copyright (C) 2022 to 2023  Max Linke and others
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import ctypes
 import importlib.util
 import os
 import sys
 import threading
 import time
-from typing import Type
-import ctypes
-
-from RestrictedPython import compile_restricted_exec
-from RestrictedPython import limited_builtins, utility_builtins, safe_builtins
-from RestrictedPython import CompileResult, compile_restricted_exec, utility_builtins
-
 from inspect import getmembers, isfunction
+from typing import Type
+
+from RestrictedPython import CompileResult, compile_restricted_exec, limited_builtins, safe_builtins, utility_builtins
 from wrapt_timeout_decorator import *
 
 __all__ = ["ExecutePython"]
@@ -48,15 +63,16 @@ class ExecutePython:
             sleep_time = sleep_time + 1
             time.sleep(1)
             if sleep_time == timeout_value:
-                ctypes.pythonapi.PyThreadState_SetAsyncExc(ctypes.c_long(thread_for_windows.ident),
-                                                           ctypes.py_object(exception))
+                ctypes.pythonapi.PyThreadState_SetAsyncExc(
+                    ctypes.c_long(thread_for_windows.ident), ctypes.py_object(exception)
+                )
 
     @staticmethod
     def __timeout_user_code_exec(timeout_decorator_func, os_name: str):
         """If Windows OS, we ignore the timeout_decorator function, which is only supported on Linux."""
 
         def timeout_decorator(exec_byte_code):
-            if os.name == 'nt':
+            if os.name == "nt":
                 return exec_byte_code
             # timeout decorator is executed
             return timeout_decorator_func(exec_byte_code)
@@ -147,26 +163,31 @@ class ExecutePython:
             "result": list(),
         }
 
-        if os.name == 'nt':  # multithreading
-            """Untrusted user code is executed not in main thread. The main thread is responsible to check the 
-            execution time of the created worker thread "thread_for_windows". This worker thread executes the 
-            untrusted user code and if the execution time takes to long the main thread will interrupt the worker 
-            thread by throwing a TimeoutError. The worker thread handles this TimeoutError through the exception 
-            "TimeoutError" in __exec_byte_code and finally terminates. Due to the lack of signals on Windows, we 
+        if os.name == "nt":  # multithreading
+            """Untrusted user code is executed not in main thread. The main thread is responsible to check the
+            execution time of the created worker thread "thread_for_windows". This worker thread executes the
+            untrusted user code and if the execution time takes to long the main thread will interrupt the worker
+            thread by throwing a TimeoutError. The worker thread handles this TimeoutError through the exception
+            "TimeoutError" in __exec_byte_code and finally terminates. Due to the lack of signals on Windows, we
              cannot use the warp_timeout_decorator module, which uses signals. We are forced to use multithreading."""
-            thread_for_windows = threading.Thread(target=self.__exec_byte_code,
-                                                  args=(restricted_globals, restricted_locals, *args_list,))
+            thread_for_windows = threading.Thread(
+                target=self.__exec_byte_code,
+                args=(
+                    restricted_globals,
+                    restricted_locals,
+                    *args_list,
+                ),
+            )
             thread_for_windows.start()
             self.__check_timeout_on_windows(5, thread_for_windows, TimeoutError)
             return self.__sandbox_logs
         else:
-            """Since this is not Windows, we can use the default function call and use the timeout decorator as Linux 
-            support signals. """
+            """Since this is not Windows, we can use the default function call and use the timeout decorator as Linux
+            support signals."""
             return self.__exec_byte_code(restricted_globals, restricted_locals, *args_list)
 
     @__timeout_user_code_exec(timeout(4, timeout_exception=TimeoutError), os.name)
     def __exec_byte_code(self, restricted_globals: dict, restricted_locals: dict, *args_list: list) -> dict:
-
         if self.__compile_result.code is None:  # in case it's 'None', but should never become true.
             return self.__sandbox_logs
 

@@ -1,7 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# Kev.in - a coding learning platform
+# Copyright (C) 2022 to 2023  Max Linke and others
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 from json import JSONDecodeError, loads
+
 from sqlalchemy.exc import NoResultFound
 
 from backend.lib.core.config import ExerciseType
@@ -9,13 +26,10 @@ from backend.lib.interfaces.database import ExerciseModel
 
 from .sandboxes.pyenv.pysandbox import ExecutePython
 
-
 # from .sandboxes.javaenv.javasandbox import ExecuteJava
 
-def eval_solution(
-        solution_content: dict,
-        exercise_id: int
-) -> tuple[bool | None, bool, str]:
+
+def eval_solution(solution_content: dict, exercise_id: int) -> tuple[bool | None, bool, str]:
     """
     Evaluates if a provided solution attempt is correct.
 
@@ -36,12 +50,7 @@ def eval_solution(
     """
 
     try:
-        exercise: ExerciseModel = (
-        ExerciseModel
-            .query
-            .filter_by(exercise_id=exercise_id)
-            .one()
-        )
+        exercise: ExerciseModel = ExerciseModel.query.filter_by(exercise_id=exercise_id).one()
     except NoResultFound:
         return None, False, "Unknown exercise"
 
@@ -50,7 +59,7 @@ def eval_solution(
         sample_exc = loads(exercise.exercise_content)
     except (JSONDecodeError, TypeError):
         return False, False, "Evaluation error due to missformed Content"
-    
+
     eval_log: tuple[bool, str]
 
     if exercise.exercise_type == ExerciseType.GapTextExercise:
@@ -61,9 +70,9 @@ def eval_solution(
         return True, False, "Evaluation not implemented yet"
 
     elif exercise.exercise_type == ExerciseType.ParsonsPuzzleExercise:
-            eval_log = Evaluator.evaluate_ppe(solution_content, sample_sol)
-            return eval_log[0], False, eval_log[1]
-        
+        eval_log = Evaluator.evaluate_ppe(solution_content, sample_sol)
+        return eval_log[0], False, eval_log[1]
+
     elif exercise.exercise_type == ExerciseType.FindTheBugExercise:
         return True, False, "Evaluation not implemented yet"
 
@@ -75,12 +84,10 @@ def eval_solution(
 
     elif exercise.exercise_type == ExerciseType.ProgrammingExercise:
         eval_log = Evaluator.evaluate_user_code(
-            solution_content,
-            exercise.exercise_language.name,
-            sample_sol,
-            sample_exc['func']
-            )
+            solution_content, exercise.exercise_language.name, sample_sol, sample_exc["func"]
+        )
         return eval_log[0], False, eval_log[1]
+
 
 class Evaluator:
     @staticmethod
@@ -114,8 +121,7 @@ class Evaluator:
         if language == "Python":
             pySandbox = ExecutePython()
             arg_list = [args[0] for args in sample_sol.values()]
-            result_log = pySandbox.exec_untrusted_code(user_input['code'],
-                                                       func_head, *arg_list)
+            result_log = pySandbox.exec_untrusted_code(user_input["code"], func_head, *arg_list)
 
             if result_log["RESULTLOG"]:
                 # successful execution of user code
@@ -165,7 +171,7 @@ class Evaluator:
             return True, "Correctly ordered all pieces"
         else:
             return False, "Wrong order of pieces"
-        
+
     @staticmethod
     def evaluate_gap_text(user_input: dict, sample_solution: dict) -> tuple[bool, str]:
         """
