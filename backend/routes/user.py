@@ -73,6 +73,9 @@ class UserResource(Resource):
             max_per_page=current_app.config["MAX_ITEMS_RETURNED"],
         )
 
+        if users.total == 0:
+            return make_response(jsonify(dict()), 204)
+
         response = dict(data=list(), meta=dict())
         for user in users.items:
             response["data"].append(user.to_json())

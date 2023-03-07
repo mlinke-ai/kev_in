@@ -302,23 +302,17 @@ class UserTest(BaseTest):
     def test_get_non_existing_by_id(self, client: FlaskClient) -> None:
         user_id = -1
         r = client.get(f"/user?user_id={user_id}", headers=UserTest.user_header)
-        self.assertEqual(r.status_code, 200)
-        self.assertTrue(r.is_json)
-        self.assertNotIn(user_id, [d["user_id"] for d in r.json["data"]])
+        self.assertEqual(r.status_code, 204)
 
     def test_get_non_existing_by_name(self, client: FlaskClient) -> None:
         user_name = "Does Not Exist"
         r = client.get(f"/user?user_name={user_name}", headers=UserTest.user_header)
-        self.assertEqual(r.status_code, 200)
-        self.assertTrue(r.is_json)
-        self.assertNotIn(user_name, [d["user_name"] for d in r.json["data"]])
+        self.assertEqual(r.status_code, 204)
 
     def test_get_non_existing_by_mail(self, client: FlaskClient) -> None:
         user_mail = "does.not.exist@example.com"
         r = client.get(f"/user?user_mail={user_mail}", headers=UserTest.user_header)
-        self.assertEqual(r.status_code, 200)
-        self.assertTrue(r.json)
-        self.assertNotIn(user_mail, [d["user_mail"] for d in r.json["data"]])
+        self.assertEqual(r.status_code, 204)
 
     def test_get_non_existing_by_role(self, client: FlaskClient) -> None:
         user_role = -1
@@ -688,27 +682,21 @@ class AdminTest(BaseTest):
     def test_get_non_existing_by_id(self, client: FlaskClient) -> None:
         user_id = -1
         r = client.get(f"/user?user_id={user_id}&user_role={AdminTest.user_role.value}", headers=AdminTest.admin_header)
-        self.assertEqual(r.status_code, 200)
-        self.assertTrue(r.is_json)
-        self.assertNotIn(user_id, [d["user_id"] for d in r.json["data"]])
+        self.assertEqual(r.status_code, 204)
 
     def test_get_non_existing_by_name(self, client: FlaskClient) -> None:
         user_name = "Does not exist"
         r = client.get(
             f"/user?user_name={user_name}&user_role={AdminTest.user_role.value}", headers=AdminTest.admin_header
         )
-        self.assertEqual(r.status_code, 200)
-        self.assertTrue(r.is_json)
-        self.assertNotIn(user_name, [d["user_name"] for d in r.json["data"]])
+        self.assertEqual(r.status_code, 204)
 
     def test_get_non_existing_by_mail(self, client: FlaskClient) -> None:
         user_mail = "does.not.exist@example.com"
         r = client.get(
             f"/user?user_mail={user_mail}&user_role={AdminTest.user_role.value}", headers=AdminTest.admin_header
         )
-        self.assertEqual(r.status_code, 200)
-        self.assertTrue(r.is_json)
-        self.assertNotIn(user_mail, [d["user_mail"] for d in r.json["data"]])
+        self.assertEqual(r.status_code, 204)
 
     def test_get_non_existing_by_role(self, client: FlaskClient) -> None:
         user_role = -1
