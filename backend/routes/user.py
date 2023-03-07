@@ -14,7 +14,7 @@ class UserResource(Resource):
     def __init__(self) -> None:
         # create a parser for the GET request data
         self.get_parser = reqparse.RequestParser()
-        self.get_parser.add_argument("user_id", type=int, help="{error_msg}", location="args")
+        self.get_parser.add_argument("user_id", type=int, help="{error_msg}", action="append", location="args")
         self.get_parser.add_argument("user_name", type=str, help="{error_msg}", location="args")
         self.get_parser.add_argument("user_mail", type=str, help="{error_msg}", location="args")
         self.get_parser.add_argument(
@@ -60,7 +60,7 @@ class UserResource(Resource):
 
         query = db.select(UserModel).order_by(UserModel.user_id)
         if args["user_id"] is not None:
-            query = query.where(UserModel.user_id == args["user_id"])
+            query = query.filter(UserModel.user_id.in_(args["user_id"]))
         if args["user_name"] is not None:
             query = query.where(UserModel.user_name == args["user_name"])
         if args["user_mail"] is not None:
@@ -113,8 +113,8 @@ class UserResource(Resource):
             db.session.rollback()
             return make_response(dict(message="An user with this mail does already exist"), 409)
         else:
-            token = create_access_token(identity=user.user_mail)
-            response = make_response(jsonify(user.to_json()), 200)
+            token = create_access_token(identity=user.to_json())
+            response = make_response(jsonify(user.to_json()), 201)
             set_access_cookies(response, token)
             return response
 
@@ -168,9 +168,15 @@ class UserResource(Resource):
 
         args = self.delete_parser.parse_args(strict=True)
 
-        query = db.select(UserModel).filter_by(user_id=args["user_id"])
-        user = db.one_or_404(query, description="An user with this ID does not exist.")
-        db.session.delete(user)
-        db.session.commit()
-        response = make_response(jsonify(dict(message="User deleted successfully")), 200)
+        if (
+            get_jwt_identity()["user_id"] == args["user_id"]
+            or get_jwt_identity()["user_role_value"] != UserRole.User.value
+        ):
+            query = db.select(UserModel).filter_by(user_id=args["user_id"])
+            user = db.one_or_404(query, description="An user with this ID does not exist.")
+            db.session.delete(user)
+            db.session.commit()
+            response = make_response(jsonify(dict(message="User deleted successfully")), 200)
+        else:
+            response = make_response(jsonify(dict(message="Users are not authorized to perform this action.")), 403)
         return response
