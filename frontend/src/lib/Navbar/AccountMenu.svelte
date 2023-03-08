@@ -48,10 +48,9 @@
   >
     <List>
       <Wrapper>
-      <Item
-        disabled
+      <Item 
         on:SMUI:action={() => {
-          pushRoute("/profile");
+          pushRoute("/user/profile");
         }}
       >
         <div class="menu-item">
@@ -59,7 +58,6 @@
           <Text>Profile</Text>
         </div>
       </Item>
-      <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
     </Wrapper>
       <Item
         on:SMUI:action={() => {
