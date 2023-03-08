@@ -67,11 +67,13 @@
   getExercises();
 
   function showLastExercises() {
+    exercisesLoaded = false;
     currentExerciseUrl = prevExerciseUrl;
     getExercises();
   }
 
   function showNextExercises() {
+    exercisesLoaded = false;
     currentExerciseUrl = nextExerciseUrl;
     getExercises();
   }
@@ -135,14 +137,11 @@
         <div class="grid-item">
           <Card>
             <div class="card-grid">
-
-              <a use:link href={`/exercises/${exercise.exercise_id}`}>
                 <div class="card-grid-icon">
                   <Icon class="material-icons" style="transform: scale(2)">
                     {exerciseIcons[exercise.exercise_type_value - 1]}
                   </Icon>
                 </div>
-              </a>
               
               <a use:link href={`/exercises/${exercise.exercise_id}`}>
                 <div class="card-grid-title">
@@ -150,20 +149,21 @@
                   {exercise.exercise_title}
                 </div>
               </a>
-
-              <p class="card-grid-description">
-                {exercise.exercise_description}
-              </p>
             </div>
+            <p class="card-grid-description">
+              {exercise.exercise_description}
+            </p>
 
             {#if isAdmin}
-              <div style="display: flex; align-items: center; padding-left: 5px;">
+            <Wrapper>
+              <div style="display: flex; align-items: center; margin-left: 5px;">
                 <a href="/#/error">
                   <!-- please add link to edit this exercise-->
                   <Icon class="material-icons">edit</Icon>
                 </a>
               </div>
               <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
+            </Wrapper>
             {/if}
           </Card>
         </div>
@@ -234,7 +234,7 @@
   .card-grid-description {
     padding: 10px;
     text-align: center;
-    grid: footer;
+    //grid: footer;
   }
 
   .add-exercise {

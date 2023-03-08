@@ -120,9 +120,9 @@
         <div class="grid-item">
           <Card>
 
-            <Icon class="material-icons" style="transform: scale(2)">
+            <!-- <Icon class="material-icons" style="transform: scale(2)">
               {exerciseIcons[exercises[index].exercise_type_value - 1]}
-            </Icon>
+            </Icon> -->
             <a href="/#/error">
               <!-- please add link to display this solution-->
 
