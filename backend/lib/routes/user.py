@@ -37,7 +37,7 @@ class UserResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("user_id", type=int, default=0, help="{error_msg}", location="args")
+        parser.add_argument("user_id", type=int, default=0, help="{error_msg}", action="append", location="args")
         parser.add_argument("user_name", type=str, default="", help="{error_msg}", location="args")
         parser.add_argument("user_mail", type=str, default="", help="{error_msg}", location="args")
         parser.add_argument(
@@ -71,7 +71,7 @@ class UserResource(Resource):
 
         query = db_engine.select(UserModel).order_by(UserModel.user_id)
         if args["user_id"]:
-            query = query.where(UserModel.user_id == args["user_id"])
+            query = query.filter(UserModel.user_id.in_(args["user_id"]))
         if args["user_name"]:
             query = query.where(UserModel.user_name == args["user_name"])
         if args["user_mail"]:
