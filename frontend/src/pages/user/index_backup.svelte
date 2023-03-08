@@ -1,5 +1,5 @@
 <script>
-  import Page from "../../lib/Common/Page.svelte";
+  import Page from "../../lib/common/Page.svelte";
   import Card, {
     Content,
     PrimaryAction,
@@ -9,18 +9,19 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
-  //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
+  import LanguageCard from "../../lib/common/LanguageCard.svelte";
   import Button, { Label } from "@smui/button";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
   import SolutionsSvg from "../../lib/AnimatedSVG/SolutionsSVG.svelte";
+  import { accessLevels } from "../../lib/common/types";
 
   //display exercise progress
   let totalExercises;
   let solvedExercises;
-  let reqMeta;
+  console.log(solvedExercises);
   let userProgress;
   let r = document.querySelector(":root");
   let noCorrectExercise;
@@ -40,9 +41,15 @@
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          reqMeta = Object.values(data);
-          totalExercises = reqMeta[1].total;
+          totalExercises = Object.values(data).length;
+          console.log(solvedExercises);
+          console.log(totalExercises);
           getSolvedExercises(); 
+          //following function calls might be removed if this is activated
+          // setTotalExercises();
+          // setSolvedExercises();
+          // setUserProgress();
+          // statsLoaded = true;
         });
       } else {
         alert("Oops an Error occured. " + response.status);
@@ -52,14 +59,15 @@
 
   const getSolvedExercises = async () => {
     fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
+      //?solution_user=${$userID}&solution_correct=true
+      //to get the number of all correct solutions of the user with id ${$userID}
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          reqMeta= Object.values(data);
-          solvedExercises = reqMeta[1].total
+          solvedExercises = Object.values(data).length;
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();
@@ -79,6 +87,7 @@
       }
     });
   };
+  //responses error 204
 
   function setUserProgress() {
     userProgress = Math.floor((solvedExercises / totalExercises) * 100);
@@ -100,9 +109,10 @@
   }
 
   getTotalExercises();
+  //getSolvedExercises();
 </script>
 
-<Page slideTransition={true}>
+<Page>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
@@ -119,7 +129,7 @@
     <div class="main-outside">
       <div class="grid-container-inside">
         <div class="left-inside">
-          <a href="/#/admin/view_exercises">
+          <a href="/#/exercises">
             <!-- <LanguageCard
             title="list all exercises">
               <ExerciseSvg />
@@ -133,7 +143,7 @@
         </div>
 
         <div class="right-inside">
-          <a href="/#/user/my_solutions">
+          <a href="/#/solutions">
             <!-- <LanguageCard
             title="list my solutions">
               <SolutionsSvg/>
@@ -161,7 +171,7 @@
           </div>
         {/if}
         {#if noCorrectExercise}
-        <p>Haven't solved any exercises correctly (yet). :(</p>
+        <p>Haven't solved any exercises yet correctly. :(</p>
         {/if}
       </div>
     </div>

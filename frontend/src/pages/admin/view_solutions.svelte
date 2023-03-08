@@ -8,11 +8,10 @@
   import { Svg } from "@smui/common";
 
   import { each } from "svelte/internal";
-  import { accessLevel } from "../../stores";
-  import { accessLevels } from "../../lib/Common/types";
   import { exercises } from "../../lib/Excercises/types";
 
   let solutions = [];
+  let exercises = [];
   let solutionsData;
   let solutionsMeta;
   const maxDisplayed = 18;
@@ -21,20 +20,22 @@
   let nextSolutionsUrl;
   let solutionsLoaded = false;
 
-  //let isAdmin = $accessLevel > accessLevels.user;
-
   const getSolutions = async () => {
     fetch(`${currentSolutionsUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
+          console.log(data);
           solutions = Object.values(data);
-          solutionsData = solutions[0];
-          solutionsMeta = solutions[1];
+          console.log(solutions);
+          solutionsData = Object.values(solutions[0]);
+          solutionsMeta = Object.values(solutions[1]);
+          console.log("solutionsData:");
+          console.log(solutionsData);
           nextSolutionsUrl = solutionsMeta.next_url;
           prevSolutionsUrl = solutionsMeta.prev_url;
-
+          getExercisesToSolutions();
           solutionsLoaded = true;
         });
       } else if (response.status === 204) {
@@ -50,6 +51,40 @@
   };
 
   getSolutions();
+
+  function getExercisesToSolutions(){
+    let requestUrl:string = `/exercise?`;
+    console.log(solutionsData.length);
+    solutionsData.forEach(element => {
+      requestUrl += `exercise_id=${element.solution_exercise}&`;
+    });
+    requestUrl = requestUrl.slice(0, -1);
+    getExercises(requestUrl);
+    console.log(exercises.length)
+  }
+
+  const getExercises =async (requestUrl:string) => {
+    fetch(`${requestUrl}`, {
+      method: "GET",
+    }).then((response) => {
+      if (response.status === 200) {
+        response.json().then((data) => {
+        console.log(data);
+        exercises = Object.values(data);
+        console.log(exercises);
+        exercises = exercises[0];
+        console.log("rightDataType?");
+        console.log(exercises);
+        });
+      } else if (response.status === 403) {
+        alert(response.status);
+      } else if (response.status === 500) {
+        alert("Oops an Error occured. Please try again.");
+      } else {
+        alert("Oops an Error occured. " + response.status);
+      }
+    });
+  };
 
   function showLastSolutions() {
     solutionsLoaded = false;
@@ -71,13 +106,14 @@
 
   {#if solutionsLoaded}
     <div class="grid-container">
-      {#each solutionsData as solution}
+      {#each solutionsData as solution, index}
         <div class="grid-item">
           <Card>
             <a href="/#/error">
               <!-- please add link to display this solution-->
 
-              #{solution.solution_id}
+              #{solution.solution_id} - {index}
+              <!-- add ${exercises[index]} if request to backend gives required data -->
             </a>
             <p>
               Handed in: {solution.solution_date}

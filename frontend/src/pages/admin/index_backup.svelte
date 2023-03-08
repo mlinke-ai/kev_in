@@ -1,5 +1,6 @@
+
 <script lang="ts">
-  import Page from "../../lib/Common/Page.svelte";
+  import Page from "../../lib/common/Page.svelte";
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
   import Card, {
@@ -11,18 +12,17 @@
     ActionButtons,
     ActionIcons,
   } from "@smui/card";
-  //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
+  import LanguageCard from "../../lib/common/LanguageCard.svelte";
   import Button, { Label, Icon } from "@smui/button";
   import { Svg } from "@smui/common";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { accessLevels } from "../../lib/Common/types";
+  import { accessLevels } from "../../lib/common/types";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
-  import Tooltip, { Wrapper } from "@smui/tooltip";
+
 
   //display exercise progress
-  let reqMeta;
   let totalExercises = 100;
   let solvedExercises = 50;
   console.log(solvedExercises);
@@ -43,8 +43,9 @@
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          reqMeta = Object.values(data);
-          totalExercises = reqMeta[1].total;
+          totalExercises = Object.values(data).length;
+          console.log(solvedExercises);
+          console.log(totalExercises);
           getSolvedExercises();
         });
       } else {
@@ -55,14 +56,15 @@
 
   const getSolvedExercises = async () => {
     fetch(`/solution?solution_user=${$userID}&solution_correct=true`, {
+      //?solution_user=${$userID}&solution_correct=true
+      //to get the number of all correct solutions of the user with id ${me}
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
           statsLoaded = false;
           console.log(data);
-          reqMeta = Object.values(data);
-          solvedExercises = reqMeta[1].total;
+          solvedExercises = Object.values(data).length;
           setTotalExercises();
           setSolvedExercises();
           setUserProgress();
@@ -107,11 +109,11 @@
   let menu: Menu;
 </script>
 
-<Page title="Admin - Dashboard" slideTransition={true}>
+<Page>
   <div class="grid-container-outside">
     <!--  Header -->
     <div class="header-outside">
-      <h2 style="padding: 20px 20px 0px 20px; font-family: monospace;">
+      <h2 style="padding: 20px; font-family: monospace;">
         Welcome to your dashboard, {$userName}!
       </h2>
       <p style="padding: 0px 20px; font-family: monospace;">What do you want to do?</p>
@@ -124,7 +126,7 @@
     <div class="main-outside">
       <div class="grid-container-inside">
         <div class="left-inside">
-          <a href="/#/admin/view_users">
+          <a href="/#/users">
             <!-- <LanguageCard
             title=".list all users">
               <GroupSvg />
@@ -138,7 +140,7 @@
         </div>
 
         <div class="right-inside">
-          <a href="/#/admin/view_exercises">
+          <a href="/#/exercises">
             <!-- <LanguageCard
             title=".list all exercises">
               <ExerciseSvg />
@@ -183,7 +185,7 @@
 
           <Menu bind:this={menu}>
             <List style="width: fit-content">
-              <a href="/exercises/create/parsonspuzzle">
+              <a href="/#/ppecreation">
                 <Item class="add-exercise-item">
                   <Icon class="material-icons add-exercise-item-icon"
                     >extension</Icon
@@ -191,24 +193,25 @@
                   <p style="width: 175px; padding-left: 10px;">Parsons Puzzle</p>
                 </Item>
               </a>
-              <Wrapper>
-                <Item class="add-exercise-item" disabled>
+              <a href="/error">
+                <Item class="add-exercise-item">
                   <Icon class="material-icons add-exercise-item-icon"
                     >border_color</Icon
                   >
                   <p style="width: 175px;  padding-left: 10px;">
                     Fill in the Blanks
                   </p>
+                  <!-- please insert link to create a fill in the blank exercise here -->
                 </Item>
-                <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
-              </Wrapper>
-              <a href="/exercises/create/programming">
+              </a>
+              <a href="/error">
                 <Item class="add-exercise-item">
                   <Icon class="material-icons add-exercise-item-icon">code</Icon
                   >
                   <p style="width: 175px;  padding-left: 10px;">
                     Free Coding Exercise
                   </p>
+                  <!-- please insert link to create a free coding exercise here -->
                 </Item>
               </a>
             </List>
@@ -218,8 +221,7 @@
 
       <div class="add-user">
         <Card>
-          <a href="#/admin/add_user">
-             <!-- please insert link to create a new user here -->
+          <a href="/#/adduser">
             <div class="display-button">
               <div class="display-icon">
                 <Icon class="material-icons">library_add</Icon>
@@ -232,12 +234,12 @@
 
       <div class="own-solutions">
         <Card>
-          <a href="/#/admin/view_solutions">
+          <a href="/#/solutions">
             <div class="display-button">
               <div class="display-icon">
                 <Icon class="material-icons">fact_check</Icon>
               </div>
-              <div class="label-icon">Show all solutions</div>
+              <div class="label-icon">Show own solutions</div>
             </div>
           </a>
         </Card>
