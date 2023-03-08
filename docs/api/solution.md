@@ -44,7 +44,7 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `solution_id` | `int` | optional | `1` | The ID of the solution. Normally obtained after creating a new solution. |
+| `solution_id` | `int` | optional | `1` | The ID of the solution. Normally obtained after creating a new solution. This argument can be provided multiple times to select multiple solutions. All other arguments still apply. |
 | `solution_user` | `int` | optional | `1` | The ID of the user who provided the solution. |
 | `solution_exercise` | `int` | optional | `1` | The ID of the exercise which the solution was provided for. |
 | `solution_date` | `int` | optional | `1672946590` | The date and time when the solution attempt was started. Encoded as Unix timestamp. As querring for a specific timestamp, the system queries for all solutions which have the same year, month and date `solution_date`. |
