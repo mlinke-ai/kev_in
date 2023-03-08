@@ -7,8 +7,8 @@
 
   let preferredTheme: number = localStorage.getItem("preferredTheme") as unknown as number
   if (preferredTheme == undefined) {
-    preferredTheme = 1
-    localStorage.setItem("preferredTheme", preferredTheme)
+    preferredTheme = 0
+    localStorage.setItem("preferredTheme", preferredTheme.toString())
   }
 
   setTheme(preferredTheme, true)
