@@ -46,7 +46,7 @@ Replace `<URLarguments>` with key value pairs in the form `key=value`(key is the
 
 | Argument | Type | Necessity | Example | Description |
 |---|---|---|---|---|
-| `exercise_id` | `int` | optional | `1` | The ID of the exercise. Normally obtained after creating a new exercise. |
+| `exercise_id` | `int` | optional | `1` | The ID of the exercise. Normally obtained after creating a new exercise. This argument can be provided multiple times to select multiple exercises. All other arguments still apply.|
 | `exercise_title` | `string` | optional | `My Exercise` | The display title of the exercise. |
 | `exercise_description` | `string` | optional | `This is a good Test example!` | The description of the exercise
 | `exercise_type` | `int` | optional | `2` | The type of the exercise: `1` for GapTextExercise, `2` for SyntaxExercise, `3` for ParsonsPuzzleExercise, `4` for FindTheBugExercise, `5` for DocumentationExercise, `6` for OutputExercise, `7` for ProgrammingExercise|

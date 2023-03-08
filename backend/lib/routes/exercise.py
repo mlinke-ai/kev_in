@@ -41,7 +41,7 @@ class ExerciseResource(Resource):
         """
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
-        parser.add_argument("exercise_id", type=int, help="{error_msg}", location="args")
+        parser.add_argument("exercise_id", type=int, help="{error_msg}", action="append", location="args")
         parser.add_argument("exercise_title", type=str, help="{error_msg}", location="args")
         parser.add_argument("exercise_description", type=str, help="{error_msg}", location="args")
         parser.add_argument(
@@ -85,7 +85,7 @@ class ExerciseResource(Resource):
 
         query = db_engine.select(ExerciseModel).order_by(ExerciseModel.exercise_id)
         if args["exercise_id"]:
-            query = query.where(ExerciseModel.exercise_id == args["exercise_id"])
+            query = query.filter(ExerciseModel.exercise_id.in_(args["exercise_id"]))
         if args["exercise_title"]:
             query = query.where(ExerciseModel.exercise_title == args["exercise_title"])
         if args["exercise_description"]:

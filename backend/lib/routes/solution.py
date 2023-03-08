@@ -42,7 +42,7 @@ class SolutionResource(Resource):
         # create a parser for the request data and parse the request
         parser = reqparse.RequestParser()
         # define arguments
-        parser.add_argument("solution_id", type=int, help="{error_msg}", location="args")
+        parser.add_argument("solution_id", type=int, help="{error_msg}", action="append", location="args")
         parser.add_argument("solution_user", type=int, help="{error_msg}", location="args")
         parser.add_argument("solution_exercise", type=int, help="{error_msg}", location="args")
         parser.add_argument(
@@ -67,7 +67,7 @@ class SolutionResource(Resource):
 
         query = db_engine.select(SolutionModel).order_by(SolutionModel.solution_id)
         if args["solution_id"]:
-            query = query.where(SolutionModel.solution_id == args["solution_id"])
+            query = query.filter(SolutionModel.solution_id.in_(args["solution_id"]))
         if args["solution_user"]:
             query = query.where(SolutionModel.solution_user == args["solution_user"])
         if args["solution_exercise"]:
