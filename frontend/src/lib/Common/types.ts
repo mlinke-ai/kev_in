@@ -3,6 +3,14 @@ export interface UICardActionInterface {
   func: () => void;
 }
 
+export interface GetMeta{
+  next_page?: number;
+  next_url?: number;
+  prev_page?: number;
+  prev_url?: number;
+  total?: number;
+}
+
 export enum accessLevels {
   undefined = -1,
   default = 0,

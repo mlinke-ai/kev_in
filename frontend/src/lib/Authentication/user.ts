@@ -5,9 +5,9 @@ import {
   accessLevel,
   startPage,
 } from "../../stores";
-import { accessLevels, startPages, userRoles } from "../Common/types";
+import { accessLevels, GetMeta, startPages, userRoles } from "../Common/types";
 import { get as getStore } from "svelte/store";
-import type { GetUser } from "./types";
+import type { GetUser, GetUserArgs } from "./types";
 import { redirect } from "@roxi/routify";
 
 // function to send login data to the server
@@ -47,13 +47,26 @@ export const logout = async () => {
 };
 
 // function to fetch user data from the server
-export const getUser = async (): Promise<GetUser | null> => {
+export const getUser = async (args?: GetUserArgs): Promise<{data: Array<GetUser>, meta: GetMeta} | null> => {
   try {
-    const response = await fetch("/user", { method: "GET" });
+    let argString = "";
+    if (args){
+      argString = "?";
+      for (const key in args){
+        argString += `${key}=${args[key]}&`
+      }
+      argString = argString.slice(0, -1);
+    }
+    const response = await fetch("/user"+argString, { method: "GET" });
     if (!response.ok) {
       return null;
     }
-    return await response.json();
+    if (args){
+      return await response.json();
+    } else {
+      return {data: [await response.json()], meta:{}};
+    }
+    
   } catch (error) {
     return null;
   }
@@ -115,7 +128,7 @@ export function resetUser() {
 export const prepareApp = async () => {
   const user = await getUser();
   if (user) {
-    storeUser(user);
+    storeUser(user.data[0]);
   } else {
     resetUser();
   }

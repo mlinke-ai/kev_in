@@ -1,8 +1,29 @@
-<script>
+<script lang="ts">
   import Page from "../../lib/Common/Page.svelte";
   import Card from "@smui/card/src/Card.svelte";
   import UserSvg from "../../lib/AnimatedSVG/UserSVG.svelte";
-  import { userID, userName, userMail } from "../../stores";
+  import { userID as uID, userName as uname, userMail as umail } from "../../stores";
+  import { getUser } from "../../lib/Authentication/user";
+  import type { GetUser } from "../../lib/Authentication/types";
+
+  export let userID: number = undefined;
+  let userName: string;
+  let userMail: string;
+
+  async function setUserData() {
+    let userData: GetUser;
+    userData = (await getUser({user_id: userID})).data[0];
+    userName = userData.user_name;
+    userMail = userData.user_mail;
+  }
+
+  if (userID){
+    setUserData();
+  } else {
+    userID = $uID;
+    userName = $uname;
+    userMail = $umail;
+  }
 
   let statsLoaded = false;
   let solvedExercises = 30;
@@ -45,8 +66,8 @@
     </div>
 
     <div class="user-data">
-      Name: ${userName}<br />
-      E-Mail: ${userMail}
+      Name: {userName}<br />
+      E-Mail: {userMail}
     </div>
 
     <div class="user-stats">
