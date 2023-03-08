@@ -1,4 +1,5 @@
-import type { ExerciseGet, ExercisePost } from "./types"
+import type { GetMeta } from "../Common/types";
+import type { ExerciseGet, ExercisePost, GetExerciseArgs } from "./types"
 
 export interface FillInBlanksExerciseType extends ExerciseType {
   exercise_content: {
@@ -29,6 +30,32 @@ export const getExercise = async (
     throw err
   }
 };
+
+export const getExercisesWithArgs = async (
+  args?:GetExerciseArgs): Promise<{data: Array<ExerciseGet>, meta: GetMeta} | null> => {
+    try {
+      let argString = "";
+      if (args){
+        argString = "?";
+        for (const key in args){
+          argString += `${key}=${args[key]}&`
+        }
+        argString = argString.slice(0, -1);
+      }
+      const response = await fetch("/exercise"+argString, { method: "GET" });
+      if (!response.ok) {
+        throw `HTTP Error ${response.status}`;
+      }
+      //if (args){
+        return await response.json();
+      //} else {
+      //  return {data: [await response.json()], meta:{}};
+      //}
+      
+    } catch (error) {
+     throw error;
+    }
+}
 
 export const postExercise = async (exercise: ExercisePost) => {
   try {
