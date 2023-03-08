@@ -261,7 +261,7 @@
 
   .container {
     width: 100%;
-    background-color: rgba(0, 20, 17, 1);
+    background-color: var(--mdc-theme-surface);
     //rgba(0,20,17,1)
   }
 
@@ -274,7 +274,7 @@
 
   .total {
     width: var(--userProgress);
-    background-color: #005f50;
+    background-color: var(--mdc-theme-primary);
   }
   //muster for further progress bars
   // .name {width: percentage; background-color: rgba(0,20,17,1);}
@@ -284,8 +284,6 @@
   .header-outside {
     grid-area: header;
     font-family: monospace;
-    // width: auto;
-    // height: fit-content;
   }
 
   .menu-outside {
@@ -327,7 +325,8 @@
   }
 
   .grid-container-outside > div {
-    background-color: rgb(0, 57, 49);
+    background-color: rgba(190, 190, 170, 0.1);
+    font-family: monospace;
     font-size: 30px;
   }
 
@@ -355,7 +354,7 @@
   }
 
   .grid-container-inside > div {
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
     font-size: 30px;
   }
 
@@ -399,13 +398,6 @@
     cursor: pointer;
   }
 
-  // .display-button-2 {
-  //   font-size: 20pt;
-  //   align-items: center;
-  //   width: fit-content;
-  //   margin: 10px;
-  // }
-
   .add-exercise {
     width: fit-content;
     float: right;
@@ -424,5 +416,4 @@
     align-items: center;
   }
 
-  
 </style>

@@ -11,6 +11,7 @@
   import { accessLevels } from "../../lib/Common/types";
   import { link } from "svelte-spa-router";
   import Tooltip, { Wrapper } from "@smui/tooltip";
+  //import { exerciseIcons } from "../../lib/Excercises/types";
 
   let exercises = [];
   let exercisesData;
@@ -21,7 +22,15 @@
   let prevExerciseUrl = null;
   let exercisesLoaded = false;
 
-  enum exerciseIcons{border_color, abc, extension, bug_report, assignment, terminal, code};
+  enum exerciseIcons {
+    border_color,
+    abc,
+    extension,
+    bug_report,
+    assignment,
+    terminal,
+    code,
+  }
 
   let isAdmin = $accessLevel > accessLevels.user;
 
@@ -41,7 +50,10 @@
           exercisesLoaded = true;
         });
       } else if (response.status === 204) {
-        alert("No exercises in database. Please create some. Error: " + response.status);
+        alert(
+          "No exercises in database. Please create some. Error: " +
+            response.status
+        );
       } else if (response.status === 400) {
         alert("Error: " + response.status + "\n Page limit not in range");
       } else if (response.status === 500) {
@@ -59,7 +71,7 @@
     getExercises();
   }
 
-  function showNextExercises(){
+  function showNextExercises() {
     currentExerciseUrl = nextExerciseUrl;
     getExercises();
   }
@@ -115,44 +127,50 @@
     </div>
   {/if}
 
+  <p>Choose an exercise you want to solve and get started!</p>
+
   {#if exercisesLoaded}
     <div class="grid-container">
       {#each exercises as exercise}
         <div class="grid-item">
           <Card>
-            <a use:link href={`/exercises/${exercise.exercise_id}`}>
             <div class="card-grid">
-              <div class="card-grid-icon">
+
+              <a use:link href={`/exercises/${exercise.exercise_id}`}>
+                <div class="card-grid-icon">
                   <Icon class="material-icons" style="transform: scale(2)">
-                    {exerciseIcons[exercise.exercise_type_value -1]}
+                    {exerciseIcons[exercise.exercise_type_value - 1]}
                   </Icon>
-              </div>
-              <div class="card-grid-title">
-                #{exercise.exercise_id}
-                {exercise.exercise_title}
-              </div>
-            
-            <p class="card-grid-description">
-              {exercise.exercise_description}
-            </p>
-          </div>
-        </a>
+                </div>
+              </a>
+              
+              <a use:link href={`/exercises/${exercise.exercise_id}`}>
+                <div class="card-grid-title">
+                  #{exercise.exercise_id}
+                  {exercise.exercise_title}
+                </div>
+              </a>
+
+              <p class="card-grid-description">
+                {exercise.exercise_description}
+              </p>
+            </div>
 
             {#if isAdmin}
-              <div style="display: flex; align-items: center;">
+              <div style="display: flex; align-items: center; padding-left: 5px;">
                 <a href="/#/error">
                   <!-- please add link to edit this exercise-->
-                    <Icon class="material-icons">
-                      edit
-                    </Icon>
+                  <Icon class="material-icons">edit</Icon>
                 </a>
               </div>
+              <Tooltip style="z-index: 999;">Coming Soon!</Tooltip>
             {/if}
           </Card>
         </div>
       {/each}
     </div>
   {/if}
+
   <a use:link href={$startPage}>
     <Button>Back to dashboard</Button>
   </a>
@@ -173,12 +191,12 @@
   {/if}
 </Page>
 
-<style>
+<style lang="scss">
   .grid-container {
     max-width: 3fr;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
     padding: 10px;
     margin: auto auto;
     grid-auto-rows: auto;
@@ -188,41 +206,41 @@
   .grid-item {
     word-break: break-all;
     width: minmax(350px, 1fr);
-    background-color: #001a16;
+    background-color: var(--mdc-theme-primary);
     padding: 10px;
     font-size: 30px;
     text-align: center;
   }
 
-  .card-grid{
+  .card-grid {
     display: grid;
-    grid-template-areas: 
-    "left right right"
-    "main main main";
+    grid-template-areas:
+      "left right right right"
+      "footer footer footer footer";
   }
 
-  .card-grid-icon{
+  .card-grid-icon {
+    margin: 10px;
     width: fit-content;
-    padding:10px;
+    padding: 10px;
     grid-area: left;
   }
 
-  .card-grid-title{
+  .card-grid-title {
     padding: 10px;
     grid-area: right;
   }
 
-  .card-grid-description{
+  .card-grid-description {
     padding: 10px;
-    grid: main;
+    text-align: center;
+    grid: footer;
   }
 
   .add-exercise {
     float: right;
     align-items: center;
-    /* margin-left: auto; */
     display: flex;
-    width: fit-content;
   }
 
   .list-exercises-buttons {

@@ -20,6 +20,16 @@
   let nextSolutionsUrl;
   let solutionsLoaded = false;
 
+  enum exerciseIcons {
+    border_color,
+    abc,
+    extension,
+    bug_report,
+    assignment,
+    terminal,
+    code,
+  }
+
   const getSolutions = async () => {
     fetch(`${currentSolutionsUrl}`, {
       method: "GET",
@@ -102,13 +112,17 @@
 <Page>
   <h1>Solutions</h1>
 
-  <p>Look at all solutions you've handed in.</p>
+  <p>Look at all solutions anyone has handed in.</p>
 
   {#if solutionsLoaded}
     <div class="grid-container">
       {#each solutionsData as solution, index}
         <div class="grid-item">
           <Card>
+
+            <Icon class="material-icons" style="transform: scale(2)">
+              {exerciseIcons[exercises[index].exercise_type_value - 1]}
+            </Icon>
             <a href="/#/error">
               <!-- please add link to display this solution-->
 
@@ -155,7 +169,7 @@
     max-width: 3fr;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
     padding: 10px;
     margin: auto auto;
     grid-auto-rows: auto;
@@ -165,7 +179,7 @@
   .grid-item {
     word-break: break-all;
     width: minmax(350px, 1fr);
-    background-color: #001a16;
+    background-color: var(--mdc-theme-primary);
     padding: 10px;
     font-size: 30px;
     text-align: center;

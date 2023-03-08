@@ -1,6 +1,7 @@
 <script lang="ts">
   import Page from "../../lib/Common/Page.svelte";
   import Button from "@smui/button/src/Button.svelte";
+  import Card from "@smui/card/src/Card.svelte";
 
   import IconButton, { Icon } from "@smui/icon-button";
   import { Label, Svg } from "@smui/common";
@@ -78,32 +79,32 @@
     </a>
   </div>
 
-  <p>This is a placeholder site for listing all users.</p>
+  <p>Click on the name of a user to display his profile</p>
 
   {#if usersLoaded}
     <div class="grid-container">
       {#each usersData as user}
-       
-          <div class="grid-item">
+        <div class="grid-item">
+          <div class="card">
             <a use:link href={`/admin/user-profile/${user.user_id}`}>
-            <div class="display-icon">
-              <Icon component={Svg} viewBox="0 1 20 20">
-                <path
-                  fill="outlined"
-                  d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-                />
-              </Icon>
-            </div>
-          </a>
+              <div class="display-icon">
+                <Icon component={Svg} viewBox="0 1 20 20">
+                  <path
+                    fill="outlined"
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                  />
+                </Icon>
+              </div>
+            </a>
 
-          <a use:link href={`/admin/user-profile/${user.user_id}`}>
-            <div class="label">
-              #{user.user_id}
-              {user.user_name}
-            </div>
-          </a>
+            <a use:link href={`/admin/user-profile/${user.user_id}`}>
+              <div class="label">
+                #{user.user_id}
+                {user.user_name}
+              </div>
+            </a>
           </div>
-        
+        </div>
       {/each}
     </div>
   {/if}
@@ -133,7 +134,7 @@
     max-width: 3fr;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
     padding: 10px;
     margin: auto auto;
     grid-auto-rows: auto;
@@ -141,10 +142,14 @@
   }
 
   .grid-item {
-    border: #001a16;
     width: 350px;
-    background-color: #001a16;
+    background-color: var(--mdc-theme-primary);
     padding: 10px;
+  }
+
+  .card{
+    height: 120px;
+    background-color: var(--mdc-theme-surface);
   }
 
   .display-icon {

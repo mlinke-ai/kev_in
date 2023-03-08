@@ -186,8 +186,7 @@
 
   .container {
     width: 100%;
-    background-color: rgba(0,20,17,1);
-    //rgba(0,20,17,1)
+    background-color: var(--mdc-theme-surface);
   }
 
   .progress {
@@ -199,11 +198,11 @@
 
   .total {
     width: var(--userProgress);
-    background-color: #005f50;
+    background-color: var(--mdc-theme-primary);
   }
 
   //muster for further progress bars
-  // .name {width: percentage; background-color: rgba(0,20,17,1);}
+  // .name {width: percentage; background-color:var(--mdc-theme-primary);}
 
   // grid
 
@@ -216,7 +215,6 @@
     grid-area: menu;
   }
   .main-outside {
-    display: flex;
     width: fit-content;
     align-content: center;
     grid-area: main;
@@ -226,7 +224,6 @@
     align-content: center;
     grid-area: right;
     padding: 15px;
-    display: flex;
   }
 
   .footer-outside {
@@ -244,10 +241,10 @@
   }
 
   .grid-container-outside > div {
-    background-color: rgb(0, 57, 49);
+    background-color:rgba(190, 190, 170, 0.1);
     font-size: 30px;
     width: 100%;
-    //display: flex;
+    font-family: monospace;
   }
 
   .left-inside {
@@ -275,7 +272,7 @@
   }
 
   .grid-container-inside > div {
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
   }
 
   .label {
