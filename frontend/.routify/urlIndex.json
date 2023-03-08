@@ -1,0 +1,13 @@
+[
+  "/admin/add_user",
+  "/admin/index",
+  "/admin/view_exercises",
+  "/admin/view_solutions",
+  "/admin/view_users",
+  "/exercises/create/parsonspuzzle",
+  "/exercises/create/programming",
+  "/index",
+  "/user/index",
+  "/user/my_solutions",
+  "/user/profile"
+]
