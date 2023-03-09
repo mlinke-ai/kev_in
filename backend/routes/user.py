@@ -141,6 +141,8 @@ class UserResource(Resource):
             return make_response(jsonify(dict(message="user_pass must not be empty")), 400)
         if args["user_role"] == UserRole.SAdmin:
             return make_response(jsonify(dict(message="No Access")), 403)
+        if args["user_role"] == UserRole.Admin and get_jwt_identity()["user_role_value"] == UserRole.User.value:
+            return make_response(jsonify(dict(message="No Access")), 403)
 
         query = db.select(UserModel).filter_by(user_id=args["user_id"])
         user = db.one_or_404(query, description="An user with this ID does not exist.")
@@ -156,7 +158,7 @@ class UserResource(Resource):
             db.session.commit()
         except sqlalchemy.exc.IntegrityError as e:
             db.session.rollback()
-            return make_response(jsonify(dict(message="An error occurred while updating the user")), 409)
+            return make_response(jsonify(dict(message="An user with this mail does already exist")), 409)
         else:
             return make_response(jsonify(dict(message="Changed properties successfully")), 200)
 

@@ -3,6 +3,7 @@ flask_compress
 flask_jwt_extended
 flask_restful
 flask_sqlalchemy
+flask_unittest
 mkdocs
 parameterized
 pre-commit

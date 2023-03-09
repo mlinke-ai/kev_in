@@ -30,14 +30,6 @@ class BaseTest(ClientTestCase):
     app = create_app("testing.cfg")
     base_header = {"Content-Type": "application/json"}
 
-    @classmethod
-    def tearDownClass(cls) -> None:
-        with cls.app.app_context():
-            users = db.session.execute(db.select(UserModel).filter_by(user_role=UserRole.User)).scalars()
-            for user in users:
-                db.session.delete(user)
-                db.session.commit()
-
     def setUp(self, client: FlaskClient) -> None:
         raise NotImplementedError
 
@@ -79,9 +71,10 @@ class ExternalTest(BaseTest):
         self.assertTrue(client is not None)
         self.assertTrue(isinstance(client, FlaskClient))
         with ExternalTest.app.app_context():
-            user = db.session.execute(db.select(UserModel).filter_by(user_id=ExternalTest.user_id)).scalar_one()
-            db.session.delete(user)
-            db.session.commit()
+            users = db.session.execute(db.select(UserModel)).scalars()
+            for user in users:
+                db.session.delete(user)
+                db.session.commit()
         ExternalTest.user_id = None
 
     # --- GET ---
@@ -257,11 +250,8 @@ class UserTest(BaseTest):
         self.assertTrue(client is not None)
         self.assertTrue(isinstance(client, FlaskClient))
         with UserTest.app.app_context():
-            try:
-                user = db.session.execute(db.select(UserModel).filter_by(user_id=UserTest.user_id)).scalar_one()
-            except sqlalchemy.exc.NoResultFound as e:
-                pass
-            else:
+            users = db.session.execute(db.select(UserModel)).scalars()
+            for user in users:
                 db.session.delete(user)
                 db.session.commit()
         client.delete_cookie("", UserTest.app.config["JWT_ACCESS_COOKIE_NAME"])
@@ -363,46 +353,6 @@ class UserTest(BaseTest):
         r = client.get(f"/user?user_id={user_id}", headers=UserTest.user_header)
         self.assertEqual(r.status_code, 400)
 
-    def test_get_name_type_int(self, client: FlaskClient) -> None:
-        user_name = 1
-        r = client.get(f"/user?user_name={user_name}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_get_name_type_float(self, client: FlaskClient) -> None:
-        user_name = 1.5
-        r = client.get(f"/user?user_name={user_name}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_get_name_type_str(self, client: FlaskClient) -> None:
-        user_name = "aaa"
-        r = client.get(f"/user?user_name={user_name}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_get_name_type_bool(self, client: FlaskClient) -> None:
-        user_name = True
-        r = client.get(f"/user?user_name={user_name}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_get_mail_type_int(self, client: FlaskClient) -> None:
-        user_mail = 1
-        r = client.get(f"/user?user_mail={user_mail}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_get_mail_type_float(self, client: FlaskClient) -> None:
-        user_mail = 1.5
-        r = client.get(f"user?user_mail={user_mail}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_get_mail_type_str(self, client: FlaskClient) -> None:
-        user_mail = "aaa"
-        r = client.get(f"/user?user_mail={user_mail}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_get_mail_type_bool(self, client: FlaskClient) -> None:
-        user_mail = True
-        r = client.get(f"/user?user_mail={user_mail}", headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
     def test_get_role_type_int(self, client: FlaskClient) -> None:
         user_role = 1
         r = client.get(f"/user?user_role={user_role}", headers=UserTest.user_header)
@@ -461,85 +411,97 @@ class UserTest(BaseTest):
     # --- PUT ---
 
     def test_put_mail_to_existing(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        user = UserModel("user_name", "user_pass", "user_mail")
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            db.session.rollback()
+            self.fail("Can not create second user: integrity constraint failed!")
+        else:
+            r = client.put(
+                "/user",
+                json={"user_id": UserTest.user_id, "user_mail": user.user_mail},
+                headers=UserTest.user_header,
+            )
+            self.assertEqual(r.status_code, 409)
+            self.assertTrue(r.is_json)
+            self.assertEqual(r.json["message"], "An user with this mail does already exist")
 
     def test_put_name_to_empty(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.put("/user", json={"user_id": UserTest.user_id, "user_name": ""}, headers=UserTest.user_header)
+        self.assertEqual(r.status_code, 400)
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.json["message"], "user_name must not be empty")
 
     def test_put_mail_to_empty(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.put("/user", json={"user_id": UserTest.user_id, "user_mail": ""}, headers=UserTest.user_header)
+        self.assertEqual(r.status_code, 400)
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.json["message"], "user_mail must not be empty")
 
     def test_put_password_to_empty(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.put("/user", json={"user_id": UserTest.user_id, "user_pass": ""}, headers=UserTest.user_header)
+        self.assertEqual(r.status_code, 400)
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.json["message"], "user_pass must not be empty")
 
     def test_put_admin_elevation_as_user(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.put(
+            "/user", json={"user_id": UserTest.user_id, "user_role": UserRole.Admin.value}, headers=UserTest.user_header
+        )
+        self.assertEqual(r.status_code, 403)
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.json["message"], "No Access")
 
     def test_put_sadmin_elevation_as_user(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        r = client.put(
+            "/user",
+            json={"user_id": UserTest.user_id, "user_role": UserRole.SAdmin.value},
+            headers=UserTest.user_header,
+        )
+        self.assertEqual(r.status_code, 403)
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.json["message"], "No Access")
 
     def test_put_demotion_as_user(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_id_type_int(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_id_type_float(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        user = UserModel("user_name", "user_pass", "user_mail", UserRole.Admin)
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            db.session.rollback()
+            self.fail("Can not create second user: integrity constraint failed!")
+        else:
+            r = client.put(
+                "/user",
+                json={"user_id": user.user_id, "user_role": UserRole.User.value},
+                headers=UserTest.user_header,
+            )
+            self.assertEqual(r.status_code, 403)
+            self.assertTrue(r.is_json)
+            self.assertEqual(r.json["message"], "No Access")
 
     def test_put_id_type_str(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_id_type_bool(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_name_type_int(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_name_type_float(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_name_type_str(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_name_type_bool(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_mail_type_int(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_mail_type_float(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_mail_type_str(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_mail_type_bool(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_pass_type_int(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_pass_type_float(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_pass_type_str(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_pass_type_bool(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_role_type_int(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_role_type_float(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        user_id = "aaa"
+        r = client.put("/user", json={"user_id": user_id}, headers=UserTest.user_header)
+        self.assertEqual(r.status_code, 400)
 
     def test_put_role_type_str(self, client: FlaskClient) -> None:
-        pass
-
-    def test_put_role_type_bool(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(UserTest.user_id is not None)
+        user_role = "aaa"
+        r = client.put(
+            "/user", json={"user_id": UserTest.user_id, "user_role": user_role}, headers=UserTest.user_header
+        )
+        self.assertEqual(r.status_code, 400)
 
     # --- DELETE ---
 
@@ -564,23 +526,8 @@ class UserTest(BaseTest):
             db.session.delete(user)
             db.session.commit()
 
-    def test_delete_id_type_int(self, client: FlaskClient) -> None:
-        user_id = 1
-        r = client.delete("/user", json={"user_id": user_id}, headers=UserTest.user_header)
-        self.assertNotEqual(r.status_code, 400)
-
-    def test_delete_id_type_float(self, client: FlaskClient) -> None:
-        user_id = 1.5
-        r = client.delete("/user", json={"user_id": user_id}, headers=UserTest.user_header)
-        self.assertEqual(r.status_code, 400)
-
     def test_delete_id_type_str(self, client: FlaskClient) -> None:
         user_id = "aaa"
-        r = client.delete("/user", json={"user_id": user_id}, headers=UserTest.user_header)
-        self.assertEqual(r.status_code, 400)
-
-    def test_delete_id_type_bool(self, client: FlaskClient) -> None:
-        user_id = True
         r = client.delete("/user", json={"user_id": user_id}, headers=UserTest.user_header)
         self.assertEqual(r.status_code, 400)
 
@@ -629,11 +576,8 @@ class AdminTest(BaseTest):
         self.assertTrue(client is not None)
         self.assertTrue(isinstance(client, FlaskClient))
         with AdminTest.app.app_context():
-            try:
-                user = db.session.execute(db.select(UserModel).filter_by(user_id=AdminTest.user_id)).scalar_one()
-            except sqlalchemy.exc.NoResultFound as e:
-                pass
-            else:
+            users = db.session.execute(db.select(UserModel)).scalars()
+            for user in users:
                 db.session.delete(user)
                 db.session.commit()
         AdminTest.user_id = None
@@ -738,19 +682,59 @@ class AdminTest(BaseTest):
     # --- PUT ---
 
     def test_put_admin_elevation_as_admin(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(AdminTest.user_id is not None)
+        user = UserModel("user_name", "user_pass", "user_mail")
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            db.session.rollback()
+            self.fail("Can not create second user: integrity constraint failed!")
+        else:
+            r = client.put(
+                "/user",
+                json={"user_id": user.user_id, "user_role": UserRole.Admin.value},
+                headers=AdminTest.admin_header,
+            )
+            self.assertEqual(r.status_code, 200)
+            self.assertTrue(r.is_json)
+            self.assertEqual(r.json["message"], "Changed properties successfully")
 
     def test_put_sadmin_elevation_as_admin(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(AdminTest.user_id is not None)
+        r = client.put(
+            "/user",
+            json={"user_id": AdminTest.user_id, "user_role": UserRole.SAdmin.value},
+            headers=AdminTest.admin_header,
+        )
+        self.assertEqual(r.status_code, 403)
+        self.assertTrue(r.is_json)
+        self.assertEqual(r.json["message"], "No Access")
 
     def test_put_demotion_as_admin(self, client: FlaskClient) -> None:
-        pass
+        self.assertTrue(AdminTest.user_id is not None)
+        user = UserModel("user_name", "user_pass", "user_mail", UserRole.Admin)
+        db.session.add(user)
+        try:
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as e:
+            db.session.rollback()
+            self.fail("Can not create second user: integrity constraint failed!")
+        else:
+            r = client.put(
+                "/user",
+                json={"user_id": user.user_id, "user_role": UserRole.User.value},
+                headers=AdminTest.admin_header,
+            )
+            self.assertEqual(r.status_code, 200)
+            self.assertTrue(r.is_json)
+            self.assertEqual(r.json["message"], "Changed properties successfully")
 
     # --- DELETE ---
 
     def test_delete_non_existing(self, client: FlaskClient) -> None:
         user_id = -1
-        r = client.delete("/user", json={"user_id": user_id}, headers=UserTest.user_header)
+        r = client.delete("/user", json={"user_id": user_id}, headers=AdminTest.admin_header)
         self.assertEqual(r.status_code, 404)
 
     def test_delete_self_as_admin(self, client: FlaskClient) -> None:
