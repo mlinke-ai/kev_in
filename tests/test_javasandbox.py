@@ -1,8 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 # Kev.in - a coding learning platform
-# Copyright (C) 2022  Max Linke
+# Copyright (C) 2022 to 2023  Max Linke and others
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,13 +18,11 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import flask_unittest
-from flask_sqlalchemy.query import sqlalchemy
 from flask_unittest import ClientTestCase
 from flask_unittest.case import FlaskClient, unittest
 from parameterized import parameterized
 
 from backend import create_app
-from backend.database.models import UserModel, UserRole, db
 
 
 class BaseTest(ClientTestCase):

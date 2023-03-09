@@ -1,14 +1,28 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+# Kev.in - a coding learning platform
+# Copyright (C) 2022 to 2023  Max Linke and others
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import flask_unittest
-from flask_sqlalchemy.query import sqlalchemy
 from flask_unittest import ClientTestCase
 from flask_unittest.case import FlaskClient, unittest
 from parameterized import parameterized
 
 from backend import create_app
-from backend.database.models import UserModel, UserRole, db
 from backend.evaluator.evaluator import Evaluator
 
 # TEST CASES EVALUATE GAP TEXT START
