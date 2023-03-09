@@ -1,16 +1,20 @@
-FROM python:3.9.1
+FROM python
+FROM node
 
-# FROM alpine:3.7
-# EXPOSE 3031
-# VOLUME /usr/src/app/public
-# WORKDIR /usr/src/app
-# RUN apk add --no-cache uwsgi-python3 python3
-# COPY . .
-# RUN rf -rf public/*
-# RUN pip3 install --no-cache-dir -r requirements.txt
-# CMD [ "uwsgi", "--socket", "0.0.0.0:3031", "--uid", "uwsgi", "--plugins", "python3", "--protocol", "uwsgi", "--wsgi", "main:application" ]
-
-ADD . /app
 WORKDIR /app
-RUN pip install -r requiments.txt
-CMD ["server.py"]
+
+COPY frontend/package.json ./
+COPY frontend/package-log.json ./
+COPY requirements.txt ./
+
+RUN npm install
+RUN npm run build
+RUN python -m pip install -r requirements.txt
+
+COPY . .
+
+ENV port=8000
+
+EXPOSE 8000
+
+CMD ["uwsgi", "--ini", "uwsgi.ini"]
