@@ -58,7 +58,7 @@ npm run build
 
 ### Executing
 
-To run the server bo back to the root folder an run:
+To run the server go back to the root folder an run:
 ```
 python run.py --host --testing --clean
 ```
