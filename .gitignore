@@ -2,10 +2,10 @@
 .coverage
 notes.md
 *.log
+*.db
 
 # directories:
 __pycache__/
-instance/
 .vscode/
 node_modules/
 tex/
