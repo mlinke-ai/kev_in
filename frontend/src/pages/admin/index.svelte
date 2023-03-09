@@ -2,21 +2,11 @@
   import Page from "../../lib/Common/Page.svelte";
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
-  import Card, {
-    Content,
-    PrimaryAction,
-    Media,
-    MediaContent,
-    Actions,
-    ActionButtons,
-    ActionIcons,
-  } from "@smui/card";
+  import Card from "@smui/card";
   //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
   import Button, { Label, Icon } from "@smui/button";
-  import { Svg } from "@smui/common";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { accessLevels } from "../../lib/Common/types";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
   import Tooltip, { Wrapper } from "@smui/tooltip";
@@ -25,15 +15,9 @@
   let reqMeta;
   let totalExercises = 100;
   let solvedExercises = 50;
-  console.log(solvedExercises);
   let userProgress;
   let r = document.querySelector(":root");
   let statsLoaded = false;
-
-  // function myFunction_get() {
-  //   let rs = getComputedStyle(r);
-  //   alert("The value of --blue is: " + rs.getPropertyValue("--userProgress"));
-  // }
 
   const getTotalExercises = async () => {
     fetch(`/exercise`, {
@@ -71,7 +55,6 @@
       } else if (response.status === 204){
         //no correct solved exercises by new user
         statsLoaded = false;
-        //noCorrectExercise = true;
         solvedExercises = 0;
         setTotalExercises();
         setSolvedExercises();
@@ -96,8 +79,6 @@
   }
 
   function setSolvedExercises() {
-    //solvedExercises = Math.floor(totalExercises / 3);
-    //just for testcases, remove if getSolvedExercises() works properly
     // @ts-ignore
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }

@@ -1,13 +1,10 @@
 <script lang="ts">
   import Page from "../../lib/Common/Page.svelte";
   import Button from "@smui/button/src/Button.svelte";
-  import Card from "@smui/card/src/Card.svelte";
 
   import IconButton, { Icon } from "@smui/icon-button";
   import { Label, Svg } from "@smui/common";
   import { each } from "svelte/internal";
-  import { accessLevel } from "../../stores";
-  import { accessLevels } from "../../lib/Common/types";
   import type { GetUser } from "../../lib/Authentication/types";
   import { link } from "svelte-spa-router";
 

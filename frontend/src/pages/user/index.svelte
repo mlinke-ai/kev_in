@@ -1,17 +1,7 @@
 <script>
   import Page from "../../lib/Common/Page.svelte";
-  import Card, {
-    Content,
-    PrimaryAction,
-    Media,
-    MediaContent,
-    Actions,
-    ActionButtons,
-    ActionIcons,
-  } from "@smui/card";
+  import Card from "@smui/card";
   //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
-  import Button, { Label } from "@smui/button";
-  import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
@@ -25,12 +15,6 @@
   let r = document.querySelector(":root");
   let noCorrectExercise;
   let statsLoaded = false;
-
-
-  // function myFunction_get() {
-  //   let rs = getComputedStyle(r);
-  //   alert("The value of --blue is: " + rs.getPropertyValue("--userProgress"));
-  // }
 
   const getTotalExercises = async () => {
     fetch(`/exercise`, {
@@ -93,8 +77,6 @@
   }
 
   function setSolvedExercises() {
-    //solvedExercises = Math.floor(totalExercises / 3);
-    //just for testcases
     //@ts-ignore
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
@@ -234,10 +216,10 @@
     display: grid;
     grid-template-areas:
       "header header header"
-      "main right right";
+      "main right right"
+      "footer footer footer";
     gap: 10px;
     background-color: transparent;
-    padding: 10px;
   }
 
   .grid-container-outside > div {

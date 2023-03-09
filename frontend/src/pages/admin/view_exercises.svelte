@@ -40,13 +40,11 @@
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
-          console.log(data);
           exercisesData = Object.values(data);
           exercises = exercisesData[0];
           exercisesMeta = exercisesData[1];
           nextExerciseUrl = exercisesMeta.next_url;
           prevExerciseUrl = exercisesMeta.prev_url;
-          console.log(prevExerciseUrl);
           exercisesLoaded = true;
         });
       } else if (response.status === 204) {
