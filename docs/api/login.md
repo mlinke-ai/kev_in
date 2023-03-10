@@ -9,9 +9,9 @@ date: 2022-12-23
 
 # Login API
 
-The login route is the endpoint to perform the login authentication process. After the login is performed the client gets a session Cookie.
+The login route is the endpoint to perform the login authentication process. After the login is performed the client gets a session cookie.
 
-After the login Process is done the client has to send the session cookie with every HTTP request until logging out. (the cookie expires after one hour)
+After the login process is done, the client has to send the session cookie with every HTTP request until logging out. (the cookie expires after one hour)
 
 The endpoint can be accessed at `<address>:<port>/login`.
 

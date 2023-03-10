@@ -109,7 +109,7 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 === "400"
 
-	The `user_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.
+	The `exercise_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.
 
 	```JSON
 	{
@@ -311,7 +311,7 @@ Arguments are constructed as dictionaries or JSON objects.
 
 === "200"
 
-    The response is a dictionary or JSON object, Together with HTTP status 200. The response is a message.
+    The response is a dictionary or JSON object, together with HTTP status 200. The response is a message.
 
     ```JSON
     {
