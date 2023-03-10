@@ -109,7 +109,7 @@ NOTE: It is possible that the system returns up to `Config.MAX_ITEMS_RETURNED` i
 
 === "400"
 
-	The `user_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.
+	The `solution_limit` is out of range, e.g. grater then `config.MAX_ITEMS_RETURNED`.
 	```JSON
 	{
 		"message": "Page limit not in range",
@@ -182,7 +182,7 @@ Arguments are constructed as dictionaries or JSON objects.
 
 === "201"
 
-    The response is a dictionary or JSON object, together with the HTTP status 201. All attributes of the created exercise will be shown, together with a response message. The attribute evaluator_message contains a response message from the automatic solution evaluation.
+    The response is a dictionary or JSON object, together with the HTTP status 201. All attributes of the created solution will be shown, together with a response message. The attribute evaluator_message contains a response message from the automatic solution evaluation.
     ```JSON
     {
         "evaluator_message": [
@@ -240,7 +240,7 @@ Arguments are constructed as dictionaries or JSON objects.
 
 ## PUT
 
-The put method is used to change attributes of an existing solutions.
+The put method is used to change attributes of an existing solution.
 
 ### Access
 
