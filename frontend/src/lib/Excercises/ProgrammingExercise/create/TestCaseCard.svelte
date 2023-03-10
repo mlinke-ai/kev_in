@@ -48,8 +48,8 @@
       testCases = [
         ...testCases,
         {
-          input: testValue.split(",").map(function(val){return (val as unknown as number);}),
-          output: testSolution.split(",").map(function(val){return (val as unknown as number);})
+          input: testValue.split(",").map(function(val){return (parseInt(val));}),
+          output: testSolution.split(",").map(function(val){return (parseInt(val));})
         },
       ];
       testValue = "";
