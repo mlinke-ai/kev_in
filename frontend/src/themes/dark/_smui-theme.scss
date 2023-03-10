@@ -1,0 +1,48 @@
+@use 'sass:color';
+
+@use "../../_variables.scss" as vars;
+
+// Svelte Colors! (Dark Theme)
+@use '@material/theme/index' as theme with (
+  $primary: vars.$primaryDark,
+  $secondary: vars.$secondaryDark,
+  $surface: vars.$surfaceDark,
+  $background: vars.$backgroundDark,
+  $error: vars.$errorDark
+);
+
+@use "@material/typography/index" as typography;
+
+@use "@smui/snackbar/style";
+@use "../../lib/Common/Message/snackbars";
+
+@use "../../lib/Authentication/dialog";
+
+
+:root {
+  --mdc-theme-background: rgb(0,57,49);
+}
+body {
+  // background: rgb(0,57,49);
+  background: var(--mdc-theme-background);
+  // background: radial-gradient(circle, rgba(0,57,49,1) 0%, rgba(0,20,17,1) 100%);
+  color: theme.$on-surface;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+a {
+  color: #dddddd;
+  text-decoration: none;
+}
+
+h3 {
+  @include typography.typography("headline3");
+}
+
+h5 {
+  @include typography.typography("headline5");
+}
+
+h6 {
+  @include typography.typography("headline6");
+}
