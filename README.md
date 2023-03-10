@@ -66,5 +66,5 @@ A Flask-server now will be live on the systems IP-address.
 
 ### Common issues
 1. there is an issue on windows Systems treating mime-Types for JS files wrong. 
-If you visit the website and only a green appears, pleas try to execute the
-`mimeTypesFix.reg` file and restart the server.
+If you visit the website and only a green screen appears without any content,
+please try to execute the `mimeTypesFix.reg` file and restart the server.
