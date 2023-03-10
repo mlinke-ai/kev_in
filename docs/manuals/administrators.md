@@ -12,9 +12,10 @@ date: 2022-11-26
 ## Log-In
 If you on the starting page click on the `START NOW` button to log in an
 existing account or to create a new one. By default the Database provides two
-accounts tuser and sadmin (credentials of sadmin can be found in the documentation in
-api/config). Since our Log in system works with cookies, you're able to stay
-logged in even if you close your browser (the cookie disappears after one hour).
+accounts tuser and sadmin (credentials of sadmin can be found in the
+documentation in api/config). Since our Log in system works with cookies, you're
+able to stay logged in even if you close your browser (the cookie disappears
+after one hour).
 
 ## Admin Dashboard
 If you successfully logged in, you should see the admin dashboard. On the first
@@ -53,7 +54,7 @@ At the moment only two Exercise-Types work:
     test cases and the function name of the function that should be executed by
     our system
     - you can add several test cases with input parameters and expected output
-    (at the moment only strings work input and output)
+    (at the moment only integers work input and output)
     - if you are done click `SUBMIT NEW EXERCISE` and return to the base URL
     - you now should see the exercise in the exercise list
 
@@ -62,14 +63,14 @@ The admin dashboard provides the functionality to add new user accounts. Just
 fill in the register form.
 
 ## List Users
-To list all accounts click on the `list all users` button.
+To list all existing accounts click on the `list all users` button.
 
 ## Solve an exercise
 To solve exercises click on the exercise list, chose an exercise and click on
 it. The symbol in the exercise list provides you the exercise type. Now you can
 solve the chosen exercise. The solving time will be measured. If you click on
 `SUBMIT` our system wil automatically evaluate your solution. If you're done
-click `BACK To OVERVIEW`. Your solution attempts can be seen at the solution
+click `BACK To OVERVIEW`. Your solution attempts are displayed at the solution
 list.
 
 ## Show Solutions
