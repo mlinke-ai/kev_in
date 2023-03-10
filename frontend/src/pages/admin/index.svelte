@@ -31,6 +31,11 @@
           totalExercises = reqMeta[1].total;
           getSolvedExercises();
         });
+      }else if(response.status === 204){
+        console.log(
+          "No exercises in database. Please create some. Error: " +
+            response.status
+        );
       } else {
         alert("Oops an Error occured. " + response.status);
       }
@@ -53,7 +58,7 @@
           statsLoaded = true;
         });
       } else if (response.status === 204){
-        //no correct solved exercises by new user
+        //no correct solved exercises by user
         statsLoaded = false;
         solvedExercises = 0;
         setTotalExercises();
