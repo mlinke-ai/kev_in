@@ -31,10 +31,8 @@
           console.log(prevUsersUrl);
           usersLoaded = true;
         });
-      } else if (response.status == 400) {
-        alert(response.status);
-      } else if (response.status == 403) {
-        alert(response.status);
+      } else if (response.status == 204) {
+        console.log("There are no users in database. Error: " + response.status);
       } else if (response.status == 500) {
         alert("Oops an Error occured. Please try again.");
       } else {

@@ -40,7 +40,7 @@
           getExercisesToSolutions();
         });
       } else if (response.status === 204) {
-        alert("No one has a solution handed in yet :(");
+        console.log("No one has handed in a solution yet :(");
       } else if (response.status === 403) {
         alert(response.status);
       } else if (response.status === 500) {
@@ -72,8 +72,8 @@
           exercises = exercises[0];
           orderExercisesToSolutions();
         });
-      } else if (response.status === 403) {
-        alert(response.status);
+      } else if (response.status === 204) {
+        console.log("This error shouldn't occure here. (empty response of GET-request). Error: " + response.status);
       } else if (response.status === 500) {
         alert("Oops an Error occured. Please try again.");
       } else {
@@ -199,6 +199,7 @@
       "left right right"
       "menu main main";
     gap: 2px;
+    padding: 2px;
   }
 
   // .card-grid > div {
@@ -206,6 +207,7 @@
   // }
 
   .card-grid-icon {
+    padding: 10px;
     margin: 10px;
     grid-area: left;
   }

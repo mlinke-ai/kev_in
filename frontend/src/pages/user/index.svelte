@@ -23,11 +23,12 @@
       if (response.status === 200) {
         response.json().then((data) => {
           statsLoaded = false;
-          console.log(data);
           reqMeta = Object.values(data);
           totalExercises = reqMeta[1].total;
           getSolvedExercises(); 
         });
+      }else if(response.status === 204){
+        console.log("No exercises in database yet. Error: " + response.status);
       } else {
         alert("Oops an Error occured. " + response.status);
       }
@@ -50,7 +51,7 @@
           statsLoaded = true;
         });
       } else if (response.status === 204){
-        //no correct solved exercises by new user
+        //case: no correct solved exercises by user
         statsLoaded = false;
         noCorrectExercise = true;
         solvedExercises = 0;

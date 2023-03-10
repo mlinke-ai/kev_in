@@ -50,9 +50,7 @@
 
   async function getTotalExercises() {
     requiredData = (await getExercisesWithArgs({})).meta;
-    console.log(requiredData);
     totalExercises = requiredData.total;
-    console.log(totalExercises);
   }
 
   // async function getSolvedExercises() {
@@ -61,7 +59,7 @@
   //   solvedExercises = requiredData.meta.total;
   //   console.log(solvedExercises);
   // }
-  //to use this function, getSolutionWithArgs needs proper errorhandling
+  //to use this function, getSolutionWithArgs needs proper error handling
 
   const getSolvedExercises = async () => {
     fetch(`/solution?solution_user=${userID}&solution_correct=true`, {
@@ -70,22 +68,15 @@
       if (response.status === 200) {
         response.json().then((data) => {
           statsLoaded = false;
-          console.log(data);
           requiredData = Object.values(data);
           solvedExercises = requiredData[1].total;
-          setTotalExercises();
-          setSolvedExercises();
-          setUserProgress();
-          statsLoaded = true;
+          displayStats();
         });
       } else if (response.status === 204) {
-        //no correct solved exercises by new user
+        //no correct solved exercises by this user
         statsLoaded = false;
         solvedExercises = 0;
-        setTotalExercises();
-        setSolvedExercises();
-        setUserProgress();
-        statsLoaded = true;
+        displayStats();
       } else {
         alert("Oops an Error occured. " + response.status);
       }

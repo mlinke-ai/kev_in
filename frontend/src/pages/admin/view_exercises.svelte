@@ -48,7 +48,7 @@
           exercisesLoaded = true;
         });
       } else if (response.status === 204) {
-        alert(
+        console.log(
           "No exercises in database. Please create some. Error: " +
             response.status
         );
