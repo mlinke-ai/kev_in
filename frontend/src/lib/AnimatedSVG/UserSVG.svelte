@@ -7,7 +7,7 @@
 
 <svg focusable="false" aria-hidden="true" viewBox="-3 -2 30 30"
   ><path
-    in:draw={{ duration: 10000, easing: quintOut, delay: delayAnimation }}
+    in:draw={{ duration: 4000, easing: quintOut, delay: delayAnimation }}
     fill="none"
     stroke="#5382a1"
     stroke-width="0.3px"

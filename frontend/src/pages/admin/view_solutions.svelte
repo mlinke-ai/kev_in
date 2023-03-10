@@ -1,17 +1,13 @@
 <script lang="ts">
   import Page from "../../lib/Common/Page.svelte";
   import Card from "@smui/card";
-  import Menu from "@smui/menu";
-  import List, { Item, Separator, Text } from "@smui/list";
   import Button, { Label } from "@smui/button";
   import IconButton, { Icon } from "@smui/icon-button";
-  import { Svg } from "@smui/common";
-
   import { each } from "svelte/internal";
-  import { exercises } from "../../lib/Excercises/types";
 
   let solutions = [];
   let exercises = [];
+  let idxExToSol = []; //contains indizes of solution_exercises in exercises
   let solutionsData;
   let solutionsMeta;
   const maxDisplayed = 18;
@@ -20,23 +16,28 @@
   let nextSolutionsUrl;
   let solutionsLoaded = false;
 
+  enum exerciseIcons {
+    border_color,
+    abc,
+    extension,
+    bug_report,
+    assignment,
+    terminal,
+    code,
+  }
+
   const getSolutions = async () => {
     fetch(`${currentSolutionsUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
-          console.log(data);
           solutions = Object.values(data);
-          console.log(solutions);
           solutionsData = Object.values(solutions[0]);
           solutionsMeta = Object.values(solutions[1]);
-          console.log("solutionsData:");
-          console.log(solutionsData);
           nextSolutionsUrl = solutionsMeta.next_url;
           prevSolutionsUrl = solutionsMeta.prev_url;
           getExercisesToSolutions();
-          solutionsLoaded = true;
         });
       } else if (response.status === 204) {
         alert("No one has a solution handed in yet :(");
@@ -52,29 +53,24 @@
 
   getSolutions();
 
-  function getExercisesToSolutions(){
-    let requestUrl:string = `/exercise?`;
-    console.log(solutionsData.length);
-    solutionsData.forEach(element => {
+  function getExercisesToSolutions() {
+    let requestUrl: string = `/exercise?`;
+    solutionsData.forEach((element) => {
       requestUrl += `exercise_id=${element.solution_exercise}&`;
     });
     requestUrl = requestUrl.slice(0, -1);
     getExercises(requestUrl);
-    console.log(exercises.length)
   }
 
-  const getExercises =async (requestUrl:string) => {
+  const getExercises = async (requestUrl: string) => {
     fetch(`${requestUrl}`, {
       method: "GET",
     }).then((response) => {
       if (response.status === 200) {
         response.json().then((data) => {
-        console.log(data);
-        exercises = Object.values(data);
-        console.log(exercises);
-        exercises = exercises[0];
-        console.log("rightDataType?");
-        console.log(exercises);
+          exercises = Object.values(data);
+          exercises = exercises[0];
+          orderExercisesToSolutions();
         });
       } else if (response.status === 403) {
         alert(response.status);
@@ -85,6 +81,19 @@
       }
     });
   };
+
+  function orderExercisesToSolutions() {
+    solutionsData.forEach((solution) => {
+      let index = 0;
+      exercises.forEach((exercise) => {
+        if (solution.solution_exercise == exercise.exercise_id) {
+          idxExToSol.push(index);
+        }
+        index++;
+      });
+    });
+    solutionsLoaded = true;
+  }
 
   function showLastSolutions() {
     solutionsLoaded = false;
@@ -102,28 +111,41 @@
 <Page>
   <h1>Solutions</h1>
 
-  <p>Look at all solutions you've handed in.</p>
+  <p>Look at all solutions anyone has handed in.</p>
 
   {#if solutionsLoaded}
     <div class="grid-container">
       {#each solutionsData as solution, index}
         <div class="grid-item">
           <Card>
-            <a href="/#/error">
-              <!-- please add link to display this solution-->
+            <div class="card-grid">
+              <div class="card-grid-icon">
+                <Icon class="material-icons" style="transform: scale(2)">
+                  {exerciseIcons[
+                    exercises[idxExToSol[index]].exercise_type_value - 1
+                  ]}
+                </Icon>
+              </div>
 
-              #{solution.solution_id} - {index}
-              <!-- add ${exercises[index]} if request to backend gives required data -->
-            </a>
-            <p>
-              Handed in: {solution.solution_date}
-            </p>
+              <div class="card-grid-title">
+                <a href="/#/error">
+                  <!-- please add link to display this solution-->
+                  #{solution.solution_id}
+                  {exercises[idxExToSol[index]].exercise_title}
+                </a>
+              </div>
+              <div class="card-grid-correct">
+                {#if solution.solution_correct}
+                  <Icon class="material-icons">check</Icon>
+                {:else}
+                  <Icon class="material-icons">clear</Icon>
+                {/if}
+              </div>
 
-            {#if solution.solution_correct}
-              <Icon class="material-icons">check</Icon>
-            {:else}
-              <Icon class="material-icons">clear</Icon>
-            {/if}
+              <div class="card-grid-data">
+                Handed in: {solution.solution_date}
+              </div>
+            </div>
           </Card>
         </div>
       {/each}
@@ -150,12 +172,12 @@
   {/if}
 </Page>
 
-<style>
+<style lang="scss">
   .grid-container {
     max-width: 3fr;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
     padding: 10px;
     margin: auto auto;
     grid-auto-rows: auto;
@@ -165,19 +187,47 @@
   .grid-item {
     word-break: break-all;
     width: minmax(350px, 1fr);
-    background-color: #001a16;
+    background-color: var(--mdc-theme-primary);
     padding: 10px;
-    font-size: 30px;
+    font-family: monospace;
     text-align: center;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-areas:
+      "left right right"
+      "menu main main";
+    gap: 2px;
+  }
+
+  // .card-grid > div {
+  //   background-color: rgba(255, 255, 255, 0.5);
+  // }
+
+  .card-grid-icon {
+    margin: 10px;
+    grid-area: left;
+  }
+
+  .card-grid-title {
+    font-size: 24pt;
+    padding: 10px;
+    grid-area: right;
+  }
+
+  .card-grid-data {
+    font-size: 18pt;
+    padding: 10px;
+    text-align: center;
+    grid: main;
+  }
+  .card-grid-correct {
+    margin: 10px;
+    grid: menu;
   }
 
   .list-solutions-buttons {
     float: right;
   }
-
-  /* .display-icon {
-    margin-right: auto;
-    width: 50px;
-    height: 50px;
-  } */
 </style>

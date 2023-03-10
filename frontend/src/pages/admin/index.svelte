@@ -2,21 +2,11 @@
   import Page from "../../lib/Common/Page.svelte";
   import Menu from "@smui/menu";
   import List, { Item, Separator, Text } from "@smui/list";
-  import Card, {
-    Content,
-    PrimaryAction,
-    Media,
-    MediaContent,
-    Actions,
-    ActionButtons,
-    ActionIcons,
-  } from "@smui/card";
+  import Card from "@smui/card";
   //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
   import Button, { Label, Icon } from "@smui/button";
-  import { Svg } from "@smui/common";
   import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
-  import { accessLevels } from "../../lib/Common/types";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
   import Tooltip, { Wrapper } from "@smui/tooltip";
@@ -25,15 +15,9 @@
   let reqMeta;
   let totalExercises = 100;
   let solvedExercises = 50;
-  console.log(solvedExercises);
   let userProgress;
   let r = document.querySelector(":root");
   let statsLoaded = false;
-
-  // function myFunction_get() {
-  //   let rs = getComputedStyle(r);
-  //   alert("The value of --blue is: " + rs.getPropertyValue("--userProgress"));
-  // }
 
   const getTotalExercises = async () => {
     fetch(`/exercise`, {
@@ -71,7 +55,6 @@
       } else if (response.status === 204){
         //no correct solved exercises by new user
         statsLoaded = false;
-        //noCorrectExercise = true;
         solvedExercises = 0;
         setTotalExercises();
         setSolvedExercises();
@@ -96,8 +79,6 @@
   }
 
   function setSolvedExercises() {
-    //solvedExercises = Math.floor(totalExercises / 3);
-    //just for testcases, remove if getSolvedExercises() works properly
     // @ts-ignore
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
@@ -261,7 +242,7 @@
 
   .container {
     width: 100%;
-    background-color: rgba(0, 20, 17, 1);
+    background-color: var(--mdc-theme-surface);
     //rgba(0,20,17,1)
   }
 
@@ -274,7 +255,7 @@
 
   .total {
     width: var(--userProgress);
-    background-color: #005f50;
+    background-color: var(--mdc-theme-primary);
   }
   //muster for further progress bars
   // .name {width: percentage; background-color: rgba(0,20,17,1);}
@@ -284,8 +265,6 @@
   .header-outside {
     grid-area: header;
     font-family: monospace;
-    // width: auto;
-    // height: fit-content;
   }
 
   .menu-outside {
@@ -327,7 +306,8 @@
   }
 
   .grid-container-outside > div {
-    background-color: rgb(0, 57, 49);
+    background-color: rgba(190, 190, 170, 0.1);
+    font-family: monospace;
     font-size: 30px;
   }
 
@@ -355,7 +335,7 @@
   }
 
   .grid-container-inside > div {
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
     font-size: 30px;
   }
 
@@ -399,13 +379,6 @@
     cursor: pointer;
   }
 
-  // .display-button-2 {
-  //   font-size: 20pt;
-  //   align-items: center;
-  //   width: fit-content;
-  //   margin: 10px;
-  // }
-
   .add-exercise {
     width: fit-content;
     float: right;
@@ -424,5 +397,4 @@
     align-items: center;
   }
 
-  
 </style>

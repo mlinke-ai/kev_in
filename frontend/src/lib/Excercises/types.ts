@@ -11,12 +11,12 @@ export enum exercises {
 }
 
 export enum exerciseIcons {
-  gapText = "",
-  syntax = "",
+  gapText = "border_color",
+  syntax = "abc",
   parsonsPuzzle = "extension",
-  findTheBug = "",
-  documentation = "",
-  output = "",
+  findTheBug = "bug_report",
+  documentation = "assignment",
+  output = "terminal",
   programming = "code",
 }
 
@@ -41,6 +41,18 @@ export interface ExercisePost {
   exercise_solution: any;
 }
 
+export interface GetExerciseArgs {
+  exercise_id?: number;
+  exercise_title?: string;
+  exercise_description?: string;
+  exercise_type_name?: string;
+  exercise_type_value?: exercises;
+  exercise_language_type?: languages;
+  exercise_language_name?: string;
+  exercise_content?: object;
+  exercise_solution?: object;
+}
+
 export interface SolutionGet {
   evaluator_message: string;
   message: string;
@@ -59,4 +71,17 @@ export interface SolutionPost {
   solution_date: number;
   solution_duration: number;
   solution_content: unknown;
+}
+
+export interface GetSolutionArgs {
+  evaluator_message?: string;
+  message?: string;
+  solution_correct?: boolean;
+  solution_date?: string;
+  solution_duration?: number;
+  solution_exercise?: number;
+  solution_id?: number;
+  solution_pending?: boolean;
+  solution_user?: number;
+  solution_content?: unknown;
 }

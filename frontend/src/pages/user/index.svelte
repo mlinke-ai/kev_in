@@ -1,17 +1,7 @@
 <script>
   import Page from "../../lib/Common/Page.svelte";
-  import Card, {
-    Content,
-    PrimaryAction,
-    Media,
-    MediaContent,
-    Actions,
-    ActionButtons,
-    ActionIcons,
-  } from "@smui/card";
+  import Card from "@smui/card";
   //import LanguageCard from "../../lib/Common/LanguageCard.svelte";
-  import Button, { Label } from "@smui/button";
-  import GroupSvg from "../../lib/AnimatedSVG/GroupSVG.svelte";
   import ExerciseSvg from "../../lib/AnimatedSVG/ExerciseSVG.svelte";
   import { userName } from "../../stores";
   import { userID } from "../../stores";
@@ -25,12 +15,6 @@
   let r = document.querySelector(":root");
   let noCorrectExercise;
   let statsLoaded = false;
-
-
-  // function myFunction_get() {
-  //   let rs = getComputedStyle(r);
-  //   alert("The value of --blue is: " + rs.getPropertyValue("--userProgress"));
-  // }
 
   const getTotalExercises = async () => {
     fetch(`/exercise`, {
@@ -93,8 +77,6 @@
   }
 
   function setSolvedExercises() {
-    //solvedExercises = Math.floor(totalExercises / 3);
-    //just for testcases
     //@ts-ignore
     r.style.setProperty("--solvedExercises", solvedExercises + "px");
   }
@@ -186,8 +168,7 @@
 
   .container {
     width: 100%;
-    background-color: rgba(0,20,17,1);
-    //rgba(0,20,17,1)
+    background-color: var(--mdc-theme-surface);
   }
 
   .progress {
@@ -199,11 +180,11 @@
 
   .total {
     width: var(--userProgress);
-    background-color: #005f50;
+    background-color: var(--mdc-theme-primary);
   }
 
   //muster for further progress bars
-  // .name {width: percentage; background-color: rgba(0,20,17,1);}
+  // .name {width: percentage; background-color:var(--mdc-theme-primary);}
 
   // grid
 
@@ -216,7 +197,6 @@
     grid-area: menu;
   }
   .main-outside {
-    display: flex;
     width: fit-content;
     align-content: center;
     grid-area: main;
@@ -226,7 +206,6 @@
     align-content: center;
     grid-area: right;
     padding: 15px;
-    display: flex;
   }
 
   .footer-outside {
@@ -237,17 +216,17 @@
     display: grid;
     grid-template-areas:
       "header header header"
-      "main right right";
+      "main right right"
+      "footer footer footer";
     gap: 10px;
     background-color: transparent;
-    padding: 10px;
   }
 
   .grid-container-outside > div {
-    background-color: rgb(0, 57, 49);
+    background-color:rgba(190, 190, 170, 0.1);
     font-size: 30px;
     width: 100%;
-    //display: flex;
+    font-family: monospace;
   }
 
   .left-inside {
@@ -275,7 +254,7 @@
   }
 
   .grid-container-inside > div {
-    background-color: rgb(0, 57, 49);
+    background-color: transparent;
   }
 
   .label {
